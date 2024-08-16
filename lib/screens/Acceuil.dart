@@ -207,7 +207,7 @@ class _AccueilState extends State<Accueil> {
         children: [
           //  SizedBox(height: 180, child: Carrousels()),
 
-          SizedBox(height: 180, child: Carrousel()),
+          // SizedBox(height: 180, child: Carrousel()),
           // const SizedBox(
           //   height: 10,
           // ),
