@@ -85,6 +85,7 @@ dev_dependencies:
   font_awesome_flutter: ^10.7.0
   flutter_sound: ^9.2.13
   audioplayers: ^6.0.0
+  carousel_slider: ^5.0.0
   video_player: ^2.8.3
   flick_video_player: ^0.8.0
   pattern_formatter: ^4.0.0

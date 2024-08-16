@@ -205,34 +205,13 @@ class _AccueilState extends State<Accueil> {
       appBar: const CustomAppBar(),
       body: ListView(
         children: [
-          //  SizedBox(height: 180, child: Carrousels()),
-
-          // SizedBox(height: 180, child: Carrousel()),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // SizedBox(height: 180, child: isExist ? Carrousel(): CarrouselOffLine()),
+          SizedBox(height: 180, child: Carrousel()),
           const SizedBox(
             height: 10,
           ),
-          // isExist ?
-          // SizedBox(height: 100, child: AlertAcceuil()): Container(),
-          // const SizedBox(
-          //   height: 10,
-          // ),
+        
           DefautAcceuil(),
-          // isExist ?
-          // SizedBox(
-          //   child: GridView.count(
-          //     shrinkWrap: true,
-          //           physics: const NeverScrollableScrollPhysics(),
-          //           crossAxisCount: 2,
-          //           mainAxisSpacing: 2,
-          //           crossAxisSpacing: 5,
-          //           childAspectRatio: 2,
-          //     children: _buildCards(),
-          //   ),
-          // ) : DefautAcceuil(),
+        
           SizedBox(
             height: 20,
           )

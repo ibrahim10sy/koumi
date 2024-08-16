@@ -227,17 +227,7 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
       appBar: const CustomAppBar(),
       body: ListView(
         children: [
-          // SizedBox(height: 200, child: Carrousels()),
-          //  SizedBox(
-          // height: 180, child: isExist ? Carrousel() : CarrouselOffLine()),
-          // SizedBox(height: 180, child: Carrousel()),
-          // SizedBox(height: 100, child: isExist ? Carrousel(): CarrouselOffLine()),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          //  SizedBox(
-          // height: 180, child: isExist ? Carrousel() : CarrouselOffLine()),
-          // SizedBox(height: 100, child: AlertAcceuil()),
+          SizedBox(height: 180, child: Carrousel()),
           const SizedBox(
             height: 10,
           ),
