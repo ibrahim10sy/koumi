@@ -106,18 +106,19 @@ class _DetailAlerteState extends State<DetailAlerte> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
         title: Text(
           'Détail alerte',
           style: const TextStyle(
-              color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: SingleChildScrollView(

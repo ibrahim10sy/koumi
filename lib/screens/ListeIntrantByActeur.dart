@@ -8,6 +8,7 @@ import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Intrant.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
+import 'package:koumi/screens/AddIntrant.dart';
 import 'package:koumi/screens/DetailIntrant.dart';
 import 'package:koumi/service/IntrantService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
@@ -130,6 +131,19 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     });
   }
 
+ Future<void> _getResultFromNextScreen(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddIntrant()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        futureList = IntrantService()
+            .fetchIntrantByActeurWithPagination(acteur.idActeur!);
+      });
+    }
+  }
+
   Future<void> _getResultFromNextScreen1(
       BuildContext context, Intrant? intrant) async {
     final result = await Navigator.push(
@@ -160,31 +174,64 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            actions: 
+                [
+                        PopupMenuButton<String>(
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context) {
+                            return <PopupMenuEntry<String>>[
+                              PopupMenuItem<String>(
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter intrant ",
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    Navigator.of(context).pop();
+                                    _getResultFromNextScreen(context);
+                                  },
+                                ),
+                              ),
+                             
+                            ];
+                          },
+                        )
+                      ],
         title: const Text(
           "Mes intrants",
           style: TextStyle(
-            color: d_colorGreen,
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      body:GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
         child: Container(
           child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverToBoxAdapter(
                     child: Column(children: [
@@ -198,7 +245,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                             _searchController.clear();
                             _searchController = TextEditingController();
                           });
-                          debugPrint("Rechercher mode désactivé : $isSearchMode");
+                          debugPrint(
+                              "Rechercher mode désactivé : $isSearchMode");
                         }
                       },
                       icon: Icon(
@@ -220,7 +268,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                         controller: _searchController,
                         itemHeight: 25,
                         placeholder: 'Rechercher...',
-                        placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
                         suggestions: AutoComplet.getAgriculturalInputs,
                         suggestionsDecoration: SuggestionDecoration(
                           marginSuggestions: const EdgeInsets.all(8.0),
@@ -246,7 +295,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                         },
                       ),
                     ),
-        
+
                   // const SizedBox(height: 10),
                   // Padding(
                   //   padding: const EdgeInsets.all(10.0),
@@ -315,7 +364,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                               ConnectionState.waiting) {
                             return _buildShimmerEffect();
                           }
-        
+
                           if (!snapshot.hasData) {
                             return SingleChildScrollView(
                               child: Padding(
@@ -410,7 +459,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                               children: [
                                                 ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.circular(8.0),
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                   child: SizedBox(
                                                     height: 72,
                                                     child: filtereSearch[index]
@@ -432,9 +482,10 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                                                 const Center(
                                                                     child:
                                                                         CircularProgressIndicator()),
-                                                            errorWidget: (context,
-                                                                    url, error) =>
-                                                                Image.asset(
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    Image.asset(
                                                               'assets/images/default_image.png',
                                                               fit: BoxFit.cover,
                                                             ),
@@ -447,7 +498,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                                         .nomIntrant!,
                                                     style: TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.black87,
                                                     ),
                                                     maxLines: 1,
@@ -467,9 +519,9 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                                 Container(
                                                   alignment:
                                                       Alignment.bottomRight,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 10),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -479,142 +531,24 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                                           filtereSearch[index]
                                                               .statutIntrant!),
                                                       PopupMenuButton<String>(
-                                                        padding: EdgeInsets.zero,
-                                                        itemBuilder: (context) =>
-                                                            <PopupMenuEntry<
-                                                                String>>[
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        itemBuilder:
+                                                            (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: filtereSearch[
-                                                                              index]
-                                                                          .statutIntrant ==
-                                                                      false
-                                                                  ? Icon(
-                                                                      Icons.check,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .disabled_visible,
-                                                                      color: Colors
-                                                                              .orange[
-                                                                          400],
-                                                                    ),
-                                                              title: Text(
-                                                                filtereSearch[index]
-                                                                            .statutIntrant ==
-                                                                        false
-                                                                    ? "Activer"
-                                                                    : "Desactiver",
-                                                                style: TextStyle(
-                                                                  color: filtereSearch[index]
-                                                                              .statutIntrant ==
-                                                                          false
-                                                                      ? Colors
-                                                                          .green
-                                                                      : Colors.orange[
-                                                                          400],
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              onTap: () async {
-                                                                filtereSearch[index]
-                                                                            .statutIntrant ==
-                                                                        false
-                                                                    ? await IntrantService()
-                                                                        .activerIntrant(
-                                                                            filtereSearch[index]
-                                                                                .idIntrant!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Navigator.of(context).pop(),
-                                                                                  Provider.of<IntrantService>(context, listen: false).applyChange(),
-                                                                                  setState(() {
-                                                                                    page++;
-                                                                                    futureList = IntrantService().fetchIntrantByActeurWithPagination(acteur.idActeur!);
-                                                                                  }),
-                                                                                  // Navigator.of(context).pop(),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Activer avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 5),
-                                                                                    ),
-                                                                                  ),
-                                                                                })
-                                                                    : await IntrantService()
-                                                                        .desactiverIntrant(
-                                                                            filtereSearch[index]
-                                                                                .idIntrant!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Désactiver avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  ),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  Provider.of<IntrantService>(context, listen: false).applyChange(),
-                                                                                  setState(() {
-                                                                                    page++;
-                                                                                    futureList = IntrantService().fetchIntrantByActeurWithPagination(acteur.idActeur!);
-                                                                                  }),
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 5),
-                                                                                    ),
-                                                                                  ),
-                                                                                  // Navigator.of(context).pop(),
-                                                                                });
-                                                              },
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem<String>(
-                                                            child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.edit,
-                                                                color:
-                                                                    Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                               title: const Text(
                                                                 "Modifier la quantité",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color: Colors
                                                                       .green,
                                                                   fontWeight:
@@ -639,10 +573,9 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                                                       .applyChange();
                                                                   setState(() {
                                                                     page++;
-                                                                    futureList = IntrantService()
-                                                                        .fetchIntrantByActeurWithPagination(
-                                                                            acteur
-                                                                                .idActeur!);
+                                                                    futureList =
+                                                                        IntrantService()
+                                                                            .fetchIntrantByActeurWithPagination(acteur.idActeur!);
                                                                   });
                                                                   // Navigator.of(context).pop();
                                                                 });
@@ -651,15 +584,137 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading: filtereSearch[
+                                                                              index]
+                                                                          .statutIntrant ==
+                                                                      false
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .check,
+                                                                      color: Colors
+                                                                          .green,
+                                                                    )
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .disabled_visible,
+                                                                      color: Colors
+                                                                              .orange[
+                                                                          400],
+                                                                    ),
+                                                              title: Text(
+                                                                filtereSearch[index]
+                                                                            .statutIntrant ==
+                                                                        false
+                                                                    ? "Activer"
+                                                                    : "Desactiver",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: filtereSearch[index]
+                                                                              .statutIntrant ==
+                                                                          false
+                                                                      ? Colors
+                                                                          .green
+                                                                      : Colors.orange[
+                                                                          400],
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                filtereSearch[index]
+                                                                            .statutIntrant ==
+                                                                        false
+                                                                    ? await IntrantService()
+                                                                        .activerIntrant(filtereSearch[index]
+                                                                            .idIntrant!)
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Navigator.of(context).pop(),
+                                                                              Provider.of<IntrantService>(context, listen: false).applyChange(),
+                                                                              setState(() {
+                                                                                page++;
+                                                                                futureList = IntrantService().fetchIntrantByActeurWithPagination(acteur.idActeur!);
+                                                                              }),
+                                                                              // Navigator.of(context).pop(),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Activer avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            })
+                                                                        .catchError(
+                                                                            (onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Une erreur s'est produit"),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: Duration(seconds: 5),
+                                                                                    ),
+                                                                                  ),
+                                                                                })
+                                                                    : await IntrantService()
+                                                                        .desactiverIntrant(filtereSearch[index]
+                                                                            .idIntrant!)
+                                                                        .then((value) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Désactiver avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              ),
+                                                                              Navigator.of(context).pop(),
+                                                                              Provider.of<IntrantService>(context, listen: false).applyChange(),
+                                                                              setState(() {
+                                                                                page++;
+                                                                                futureList = IntrantService().fetchIntrantByActeurWithPagination(acteur.idActeur!);
+                                                                              }),
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Une erreur s'est produit"),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 5),
+                                                                                ),
+                                                                              ),
+                                                                              // Navigator.of(context).pop(),
+                                                                            });
+                                                              },
+                                                            ),
+                                                          ),
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.delete,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               title: const Text(
                                                                 "Supprimer",
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors.red,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -865,6 +920,15 @@ class _DialodEditState extends State<DialodEdit> {
     quantiteController.text = intrants.quantiteIntrant!.toString();
     super.initState();
   }
+  
+ Future<void> _getResultFromNextScreen(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddIntrant()));
+    log(result.toString());
+    if (result == true) {
+     
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -906,6 +970,40 @@ class _DialodEditState extends State<DialodEdit> {
                       final qte = quantiteController.text;
 
                       final qteF = double.tryParse(qte);
+                        if (qteF! > intrants.quantiteIntrant!) {
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Non autorisé"),
+                            content: Text(
+                                "Toute augmentation de quantité neccessite une nouvelle ajout de produits",
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                )),
+                            actions: [
+                              TextButton(
+                                child: Text("Fermer"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              TextButton(
+                                child: Text("Ajouter"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddIntrant(
+                                              )));
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+
+                        return;
+                      }
                       print(qte);
                       if (formkey.currentState!.validate()) {
                         try {

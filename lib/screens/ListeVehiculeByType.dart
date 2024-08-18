@@ -196,19 +196,20 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-      appBar: AppBar(
-          centerTitle: true,
-          toolbarHeight: 100,
+       appBar: AppBar(
+             backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 // Get.to(TypeVehicule());
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             typeVoiture.nom!.toUpperCase(),
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold),
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
           actions: [
             PopupMenuButton<String>(

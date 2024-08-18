@@ -345,21 +345,21 @@ class _StoreScreenState extends State<StoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //  FocusScope.of(context).unfocus();
     return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
-            'Toutes les boutiques',
+            'Toutes les magasins',
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           actions: !isExist
               ? [
@@ -367,14 +367,14 @@ class _StoreScreenState extends State<StoreScreen> {
                       onPressed: () {
                         magasinListeFuture = MagasinService().fetchAllMagasin();
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                 ]
               : [
                   IconButton(
                       onPressed: () {
                         magasinListeFuture = MagasinService().fetchAllMagasin();
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                   (typeActeurData
                               .map((e) => e.libelle!.toLowerCase())
                               .contains("commercant") ||

@@ -3,18 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
+import 'package:koumi/screens/ListeIntrantByActeur.dart';
+import 'package:koumi/screens/VehiculesActeur.dart';
+import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/widgets/AnimatedBackground.dart';
 import 'package:koumi/widgets/BottomNavBarAdmin.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
 import 'package:koumi/widgets/connection_verify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-
+import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
- 
-  @override 
+
+  @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
@@ -23,33 +26,34 @@ const d_colorPage = Color.fromRGBO(255, 255, 255, 1);
 class _SplashScreenState extends State<SplashScreen> {
   late Acteur acteur;
   late ConnectionVerify connectionVerify;
-  
+
   @override
   void didChangeDependencies() {
-  super.didChangeDependencies();
-  // Save the context when it changes
-  // _currentContext = context;
+    super.didChangeDependencies();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-  
   @override
   void initState() {
     super.initState();
-    checkEmailInSharedPreferences();
+    checkCodeActeurInSharedPreferences();
     // checkInternetConnection();
   }
 
-  void checkEmailInSharedPreferences() async {
+  void checkCodeActeurInSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? emailActeur = prefs.getString('whatsAppActeur');
-    if (emailActeur != null) {
+    String? codeAc = prefs.getString('codeActeur');
+    if (codeAc != null) {
       checkLoggedIn();
     } else {
       Timer(
         const Duration(seconds: 5),
         () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) =>  BottomNavigationPage()),
+          MaterialPageRoute(builder: (_) => BottomNavigationPage()),
         ),
       );
       // Si l'email de l'acteur n'est pas présent, redirige directement vers l'écran de connexion
@@ -95,67 +99,70 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-
-
-
   void checkLoggedIn() async {
     // Initialise les données de l'utilisateur à partir de SharedPreferences
     await Provider.of<ActeurProvider>(context, listen: false)
         .initializeActeurFromSharedPreferences();
 
-    // // Récupère l'objet Acteur
-    // acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-
     if (Provider.of<ActeurProvider>(context, listen: false).acteur != null) {
       acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-      // La suite de votre logique ici...
+      print("acteur ${acteur.toString()}");
+      // Vérifie si l'utilisateur est déjà connecté
+      if (acteur != null) {
+        // Vérifie si l'utilisateur est un administrateur
+        if (acteur.typeActeur!.any(
+            (type) => type.libelle!.toLowerCase() == 'admin' || type.libelle == 'Admin')) {
+          Timer(
+            const Duration(seconds: 3),
+            () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const BottomNavBarAdmin()),
+            ),
+          );
+        } else if (acteur.typeActeur!.any((type) =>
+            type.libelle!.toLowerCase() == 'transformateur' ||
+            type.libelle!.toLowerCase() == 'producteur' ||
+            type.libelle!.toLowerCase() == 'producteur' ||
+            type.libelle!.toLowerCase() == 'commercant' ||
+            type.libelle!.toLowerCase() == 'commerçant' ||
+            type.libelle!.toLowerCase() == 'commercants')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        } else if (acteur.typeActeur!.any((type) =>
+            type.libelle!.toLowerCase() == 'transporteur' ||
+            type.libelle!.toLowerCase() == 'transporteurs')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(VehiculeActeur(),
+                transition: Transition.leftToRight);
+          });
+        } else if (acteur.typeActeur!.any((type) =>
+            type.libelle!.toLowerCase() == 'fournisseur' ||
+            type.libelle!.toLowerCase() == 'fournisseurs')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(ListeIntrantByActeur(),
+                transition: Transition.leftToRight);
+          });
+        } 
+        else {
+          Timer(
+            const Duration(seconds: 2),
+            () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => BottomNavigationPage()),
+            ),
+          );
+        }
+      }
     } else {
       Timer(
         const Duration(seconds: 5),
         () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) =>  BottomNavigationPage()),
+          MaterialPageRoute(builder: (_) => BottomNavigationPage()),
         ),
       );
     }
-
-    // Vérifie si l'utilisateur est déjà connecté
-    if (acteur != null) {
-      // Vérifie si l'utilisateur est un administrateur
-      if (acteur.typeActeur!
-          .any((type) => type.libelle! == 'admin' || type.libelle == 'Admin')) {
-        Timer(
-          const Duration(seconds: 5),
-          () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const BottomNavBarAdmin()),
-          ),
-        );
-      } else {
-        Timer(
-          const Duration(seconds: 5),
-          () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) =>  BottomNavigationPage()),
-          ),
-        );
-      }
-    }
-    //  else {
-    //   // Redirige vers l'écran de connexion si l'utilisateur n'est pas connecté
-    //   Timer(
-    //     const Duration(seconds: 5),
-    //     () => Navigator.of(context).pushReplacement(
-    //       MaterialPageRoute(builder: (_) => const LoginScreen()),
-    //     ),
-    //   );
-    // }
-  }
-
-   @override
-  void dispose() {
-  // streamSubscription.cancel();
-  // if (streamSubscription != null) {
-  //     streamSubscription.cancel();
-  //   }
-    super.dispose();
   }
 
   @override

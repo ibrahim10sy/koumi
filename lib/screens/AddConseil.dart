@@ -240,17 +240,18 @@ class _AddConseilState extends State<AddConseil> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: const Text(
               "Ajout conseil ",
               style: TextStyle(
-                color: d_colorGreen,
+                color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -544,7 +545,7 @@ class _AddConseilState extends State<AddConseil> {
                                           Provider.of<ConseilService>(context,
                                                   listen: false)
                                               .applyChange(),
-                                         
+
                                           Navigator.of(context).pop()
                                         })
                                     .catchError((onError) => {
@@ -552,20 +553,20 @@ class _AddConseilState extends State<AddConseil> {
                                           setState(() {
                                             _isLoading = false;
                                           }),
-                              //              ScaffoldMessenger.of(context).showSnackBar(
-                              //   const SnackBar(
-                              //     content: Row(
-                              //       children: [
-                              //         Text(
-                              //           "La taille des fichiers ne doit pas depassé 25 MB",
-                              //           style: TextStyle(
-                              //               overflow: TextOverflow.ellipsis),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //     duration: Duration(seconds: 5),
-                              //   ),
-                              // )
+                                          //              ScaffoldMessenger.of(context).showSnackBar(
+                                          //   const SnackBar(
+                                          //     content: Row(
+                                          //       children: [
+                                          //         Text(
+                                          //           "La taille des fichiers ne doit pas depassé 25 MB",
+                                          //           style: TextStyle(
+                                          //               overflow: TextOverflow.ellipsis),
+                                          //         ),
+                                          //       ],
+                                          //     ),
+                                          //     duration: Duration(seconds: 5),
+                                          //   ),
+                                          // )
                                         });
                               }
                             } catch (e) {

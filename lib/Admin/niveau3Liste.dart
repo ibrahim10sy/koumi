@@ -25,37 +25,39 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _Niveau3ListeState extends State<Niveau3Liste> {
   // late ParametreGeneraux para;
-   late Acteur acteur;
+  late Acteur acteur;
   List<Niveau3Pays> niveau3Liste = [];
   // List<ParametreGeneraux> paraList = [];
   late TextEditingController _searchController;
   late Future<List<Niveau3Pays>> _liste;
   bool isLoadingLibelle = true;
-    String? libelleNiveau3Pays;
- 
+  String? libelleNiveau3Pays;
+
   Future<String> getLibelleNiveau3PaysByActor(String id) async {
-    final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
+    final response = await http
+        .get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
 
     if (response.statusCode == 200) {
       print("libelle : ${response.body}");
-      return response.body;  // Return the body directly since it's a plain string
+      return response
+          .body; // Return the body directly since it's a plain string
     } else {
       throw Exception('Failed to load libelle niveau3Pays');
     }
- }
+  }
 
-     Future<void> fetchPaysDataByActor() async {
+  Future<void> fetchPaysDataByActor() async {
     try {
       String libelle3 = await getLibelleNiveau3PaysByActor(acteur.idActeur!);
 
-      setState(() { 
+      setState(() {
         libelleNiveau3Pays = libelle3;
         isLoadingLibelle = false;
       });
     } catch (e) {
       setState(() {
         isLoadingLibelle = false;
-        });
+      });
       print('Error: $e');
     }
   }
@@ -64,13 +66,13 @@ class _Niveau3ListeState extends State<Niveau3Liste> {
     return await Niveau3Service()
         .fetchNiveau3ByNiveau2(widget.niveau2pays.idNiveau2Pays!);
   }
- 
+
   @override
   void initState() {
     _searchController = TextEditingController();
     // paraList = Provider.of<ParametreGenerauxProvider>(context, listen: false)
     //     .parametreList!;
-      acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     // para = paraList[0];
     _liste = getSousListe();
     fetchPaysDataByActor();
@@ -87,22 +89,23 @@ class _Niveau3ListeState extends State<Niveau3Liste> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 100,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
-        title: Text(
-          widget.niveau2pays.nomN2.toUpperCase(),
-          style:
-              const TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+        backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+          title: Text(
+            widget.niveau2pays.nomN2.toUpperCase(),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 10),
@@ -159,8 +162,8 @@ class _Niveau3ListeState extends State<Niveau3Liste> {
                           return Padding(
                             padding: EdgeInsets.all(10),
                             child: Center(
-                                child: Text(
-                                    "Aucun ${libelleNiveau3Pays} trouvé")),
+                                child:
+                                    Text("Aucun ${libelleNiveau3Pays} trouvé")),
                           );
                         } else {
                           niveau3Liste = snapshot.data!;
@@ -312,7 +315,7 @@ class _Niveau3ListeState extends State<Niveau3Liste> {
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
                                                                               })
-                                                                              : await Niveau3Service()
+                                                                  : await Niveau3Service()
                                                                       .desactiverNiveau3Pays(e
                                                                           .idNiveau3Pays!)
                                                                       .then(
@@ -421,11 +424,10 @@ class _Niveau3ListeState extends State<Niveau3Liste> {
               )
             ],
           ),
-        )
-    );
+        ));
   }
 
-   Widget _buildEtat(bool isState) {
+  Widget _buildEtat(bool isState) {
     return Container(
       width: 15,
       height: 15,

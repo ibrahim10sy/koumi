@@ -26,7 +26,7 @@ class ActeurProvider with ChangeNotifier {
     String? niveau3PaysActeur = prefs.getString('niveau3PaysActeur');
     String? localiteActeur = prefs.getString('localiteActeur');
 
-    if (emailActeur != null) {
+    if (whatsAppActeur != null) {
       // L'utilisateur est connecté
       isLogged = true;
     } else {
@@ -76,31 +76,7 @@ class ActeurProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> logout() async {
-  //   // Supprimer les données utilisateur
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? emailActeur = prefs.getString('emailActeur');
-  //   String? codeActeur = prefs.getString('codeActeur');
-
-  //   _acteur = null;
-
-  //   await prefs.clear();
-  //   if (emailActeur == null || emailActeur.isEmpty) {
-
-  //     debugPrint("Email shared : $emailActeur");
-  //   } else {
-  //     debugPrint("Email shared isExist : $emailActeur");
-  //   }
-
-  //   // Réenregistrer le codeActeur dans SharedPreferences
-  //   if (codeActeur != null) {
-  //     String savedCodeActeur = codeActeur;
-  //     prefs.setString('codeActeur', savedCodeActeur);
-  //   }
-  //   // Mettre à jour l'état de la connexion
-  //   isLogged = false;
-  //   notifyListeners();
-  // }
+  
   Future<void> logout() async {
     // Récupérer les données utilisateur avant de les effacer
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -117,12 +93,7 @@ class ActeurProvider with ChangeNotifier {
     } else {
       debugPrint("whatsAppActeur shared isExist : $whatsAppActeur");
     }
-    // Réenregistrer les valeurs nécessaires
-    // if (emailActeur != null && emailActeur.isNotEmpty) {
-    //   prefs.setString('emailActeur', emailActeur);
-    //   print("email acteur apres logout : $emailActeur");
-    // }
-
+    
     if (codeActeur != null) {
       prefs.setString('codeActeur', codeActeur);
       print("code acteur apres logout : $codeActeur");

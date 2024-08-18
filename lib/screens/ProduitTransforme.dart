@@ -58,7 +58,6 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
   bool isSearchMode = false;
   bool isFilterMode = false;
 
- 
   Future<List<Stock>> fetchStock(String pays, {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -115,8 +114,6 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
     }
     return stockListe;
   }
-
- 
 
   Future<List<Stock>> getAllStock() async {
     if (selectedCat != null) {
@@ -182,7 +179,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
     return stockListe;
   }
 
- void _scrollListener() {
+  void _scrollListener() {
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
         hasMore &&
@@ -206,7 +203,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
     debugPrint("no");
   }
 
- void _scrollListener1() {
+  void _scrollListener1() {
     if (scrollableController1.position.pixels >=
             scrollableController1.position.maxScrollExtent - 200 &&
         hasMore &&
@@ -311,8 +308,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
 
   @override
   void dispose() {
-
-      _searchController.dispose();
+    _searchController.dispose();
 
     scrollableController.dispose();
     scrollableController1.dispose();
@@ -339,19 +335,20 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: const Text(
             "Produits transformés",
             style: TextStyle(
-              color: d_colorGreen,
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -364,7 +361,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                             ? detectedCountry!
                             : "Mali");
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                 ]
               : [
                   IconButton(
@@ -373,7 +370,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                             ? detectedCountry!
                             : "Mali");
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                   (typeActeurData
                               .map((e) => e.libelle!.toLowerCase())
                               .contains("commercant") ||
@@ -427,25 +424,26 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                       SliverToBoxAdapter(
                           child: Column(children: [
                         if (!isSearchMode)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            isSearchMode = true;
-                            isFilterMode = true;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.search,
-                          color: d_colorGreen,
-                        ),
-                        label: Text(
-                          'Rechercher',
-                          style: TextStyle(color: d_colorGreen, fontSize: 17),
-                        ),
-                      ),
-                    ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isSearchMode = true;
+                                  isFilterMode = true;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.search,
+                                color: d_colorGreen,
+                              ),
+                              label: Text(
+                                'Rechercher',
+                                style: TextStyle(
+                                    color: d_colorGreen, fontSize: 17),
+                              ),
+                            ),
+                          ),
                         if (isSearchMode)
                           Align(
                               alignment: Alignment.centerRight,
@@ -469,8 +467,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                 ),
                                 label: Text(
                                   'Fermer',
-                                  style:
-                                      TextStyle(color: Colors.red, fontSize: 17),
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 17),
                                 ),
                               )),
                         Visibility(
@@ -485,30 +483,31 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                     ConnectionState.waiting) {
                                   return buildLoadingDropdown();
                                 }
-          
+
                                 if (snapshot.hasData) {
                                   dynamic jsonString =
                                       utf8.decode(snapshot.data.bodyBytes);
-                                  dynamic responseData = json.decode(jsonString);
-          
+                                  dynamic responseData =
+                                      json.decode(jsonString);
+
                                   if (responseData is List) {
                                     final response = responseData;
                                     final typeList = response
                                         .map((e) => CategorieProduit.fromMap(e))
-                                        .where(
-                                            (con) => con.statutCategorie == true)
+                                        .where((con) =>
+                                            con.statutCategorie == true)
                                         .toList();
-          
+
                                     if (typeList.isEmpty) {
                                       return buildEmptyDropdown();
                                     }
-          
+
                                     return buildDropdown(typeList);
                                   } else {
                                     return buildEmptyDropdown();
                                   }
                                 }
-          
+
                                 return buildEmptyDropdown();
                               },
                             ),
@@ -532,10 +531,12 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                               ),
                               onSuggestionSelected: (selectedItem) {
                                 if (mounted) {
-                                  _searchController.text = selectedItem.searchKey;
+                                  _searchController.text =
+                                      selectedItem.searchKey;
                                 }
                               },
-                              suggestionItemBuilder: (context, searchFieldItem) {
+                              suggestionItemBuilder:
+                                  (context, searchFieldItem) {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
@@ -558,7 +559,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                           // Rafraîchir les données ici
                         });
                         debugPrint("refresh page ${page}");
-          
+
                         selectedCat != null
                             ? setState(() {
                                 stockListeFuture1 = StockService()
@@ -589,21 +590,22 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                           ConnectionState.waiting) {
                                         return _buildShimmerEffect();
                                       }
-          
+
                                       if (!snapshot.hasData) {
                                         return const Padding(
                                           padding: EdgeInsets.all(10),
                                           child: Center(
-                                              child: Text("Aucun donné trouvé")),
+                                              child:
+                                                  Text("Aucun donné trouvé")),
                                         );
                                       } else {
                                         stockList = snapshot.data!;
-            String searchText = "";
-                                        
+                                        String searchText = "";
+
                                         List<Stock> produitsLocaux = stockList
                                             .where((stock) =>
-                                                stock
-                                                    .acteur!.niveau3PaysActeur! ==
+                                                stock.acteur!
+                                                    .niveau3PaysActeur! ==
                                                 detectedCountry)
                                             .where((cate) {
                                           String nomCat =
@@ -612,21 +614,21 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
-          
-                                        List<Stock> produitsEtrangers = stockList
-                                            .where((stock) =>
-                                                stock
-                                                    .acteur!.niveau3PaysActeur! !=
-                                                detectedCountry)
-                                            .where((cate) {
+
+                                        List<Stock> produitsEtrangers =
+                                            stockList
+                                                .where((stock) =>
+                                                    stock.acteur!
+                                                        .niveau3PaysActeur! !=
+                                                    detectedCountry)
+                                                .where((cate) {
                                           String nomCat =
                                               cate.nomProduit!.toLowerCase();
                                           searchText = _searchController.text
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
-          
-                                      
+
                                         List<Stock> filteredSearch =
                                             stockList.where((cate) {
                                           String nomCat =
@@ -655,8 +657,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 17,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                         ),
                                                       ],
@@ -715,8 +718,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                margin: EdgeInsets
-                                                                    .all(8),
+                                                                margin:
+                                                                    EdgeInsets
+                                                                        .all(8),
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -749,9 +753,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                     ),
                                                                     // SizedBox(height: 8),
                                                                     ListTile(
-                                                                      title: Text(
-                                                                        produitsLocaux[
-                                                                                index]
+                                                                      title:
+                                                                          Text(
+                                                                        produitsLocaux[index]
                                                                             .nomProduit!,
                                                                         style:
                                                                             TextStyle(
@@ -759,20 +763,18 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                         maxLines:
                                                                             2,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                       ),
                                                                       subtitle:
                                                                           Text(
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         "${produitsLocaux[index].quantiteStock!.toString()} ${produitsLocaux[index].unite!.nomUnite} ",
                                                                         style:
                                                                             TextStyle(
@@ -782,8 +784,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               15,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -792,7 +794,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           .symmetric(
                                                                           horizontal:
                                                                               15),
-                                                                      child: Text(
+                                                                      child:
+                                                                          Text(
                                                                         produitsLocaux[index].monnaie !=
                                                                                 null
                                                                             ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
@@ -801,8 +804,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                             TextStyle(
                                                                           fontSize:
                                                                               15,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -810,13 +813,13 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 ),
                                                               ));
                                                         } else {
-                                                          return isLoading == true
+                                                          return isLoading ==
+                                                                  true
                                                               ? Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical:
-                                                                              32),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          32),
                                                                   child: Center(
                                                                       child:
                                                                           const Center(
@@ -832,7 +835,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                       },
                                                     ),
                                                   ],
-          
+
                                                   // Section des produits étrangers
                                                   if (produitsEtrangers
                                                       .isNotEmpty) ...[
@@ -860,8 +863,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                         crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
-                                                      itemCount: produitsEtrangers
-                                                          .length,
+                                                      itemCount:
+                                                          produitsEtrangers
+                                                              .length,
                                                       // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                       itemBuilder:
                                                           (context, index) {
@@ -883,8 +887,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                margin: EdgeInsets
-                                                                    .all(8),
+                                                                margin:
+                                                                    EdgeInsets
+                                                                        .all(8),
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -917,9 +922,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                     ),
                                                                     // SizedBox(height: 8),
                                                                     ListTile(
-                                                                      title: Text(
-                                                                        produitsEtrangers[
-                                                                                index]
+                                                                      title:
+                                                                          Text(
+                                                                        produitsEtrangers[index]
                                                                             .nomProduit!,
                                                                         style:
                                                                             TextStyle(
@@ -927,20 +932,18 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                         maxLines:
                                                                             2,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                       ),
                                                                       subtitle:
                                                                           Text(
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         "${produitsEtrangers[index].quantiteStock!.toString()} ${produitsEtrangers[index].unite!.nomUnite} ",
                                                                         style:
                                                                             TextStyle(
@@ -950,8 +953,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               15,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -960,7 +963,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           .symmetric(
                                                                           horizontal:
                                                                               15),
-                                                                      child: Text(
+                                                                      child:
+                                                                          Text(
                                                                         produitsEtrangers[index].monnaie !=
                                                                                 null
                                                                             ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
@@ -969,8 +973,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                             TextStyle(
                                                                           fontSize:
                                                                               15,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -978,13 +982,13 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 ),
                                                               ));
                                                         } else {
-                                                          return isLoading == true
+                                                          return isLoading ==
+                                                                  true
                                                               ? Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical:
-                                                                              32),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          32),
                                                                   child: Center(
                                                                       child:
                                                                           const Center(
@@ -1017,21 +1021,22 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                           ConnectionState.waiting) {
                                         return _buildShimmerEffect();
                                       }
-          
+
                                       if (!snapshot.hasData) {
                                         return const Padding(
                                           padding: EdgeInsets.all(10),
                                           child: Center(
-                                              child: Text("Aucun donné trouvé")),
+                                              child:
+                                                  Text("Aucun donné trouvé")),
                                         );
                                       } else {
                                         stockList = snapshot.data!;
                                         String searchText = "";
-          
+
                                         List<Stock> produitsLocaux = stockList
                                             .where((stock) =>
-                                                stock
-                                                    .acteur!.niveau3PaysActeur! ==
+                                                stock.acteur!
+                                                    .niveau3PaysActeur! ==
                                                 detectedCountry)
                                             .where((cate) {
                                           String nomCat =
@@ -1040,20 +1045,21 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
-          
-                                        List<Stock> produitsEtrangers = stockList
-                                            .where((stock) =>
-                                                stock
-                                                    .acteur!.niveau3PaysActeur! !=
-                                                detectedCountry)
-                                            .where((cate) {
+
+                                        List<Stock> produitsEtrangers =
+                                            stockList
+                                                .where((stock) =>
+                                                    stock.acteur!
+                                                        .niveau3PaysActeur! !=
+                                                    detectedCountry)
+                                                .where((cate) {
                                           String nomCat =
                                               cate.nomProduit!.toLowerCase();
                                           searchText = _searchController.text
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
-          
+
                                         List<Stock> filteredSearch =
                                             stockList.where((cate) {
                                           String nomCat =
@@ -1062,9 +1068,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
-                                        
-                                        return filteredSearch
-                                                    .isEmpty &&
+
+                                        return filteredSearch.isEmpty &&
                                                 isLoading == false
                                             ? SingleChildScrollView(
                                                 child: Padding(
@@ -1082,8 +1087,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 17,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                         ),
                                                       ],
@@ -1142,8 +1148,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                margin: EdgeInsets
-                                                                    .all(8),
+                                                                margin:
+                                                                    EdgeInsets
+                                                                        .all(8),
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -1176,9 +1183,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                     ),
                                                                     // SizedBox(height: 8),
                                                                     ListTile(
-                                                                      title: Text(
-                                                                        produitsLocaux[
-                                                                                index]
+                                                                      title:
+                                                                          Text(
+                                                                        produitsLocaux[index]
                                                                             .nomProduit!,
                                                                         style:
                                                                             TextStyle(
@@ -1186,20 +1193,18 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                         maxLines:
                                                                             2,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                       ),
                                                                       subtitle:
                                                                           Text(
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         "${produitsLocaux[index].quantiteStock!.toString()} ${produitsLocaux[index].unite!.nomUnite} ",
                                                                         style:
                                                                             TextStyle(
@@ -1209,8 +1214,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               15,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -1219,7 +1224,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           .symmetric(
                                                                           horizontal:
                                                                               15),
-                                                                      child: Text(
+                                                                      child:
+                                                                          Text(
                                                                         produitsLocaux[index].monnaie !=
                                                                                 null
                                                                             ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
@@ -1228,8 +1234,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                             TextStyle(
                                                                           fontSize:
                                                                               15,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -1237,13 +1243,13 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 ),
                                                               ));
                                                         } else {
-                                                          return isLoading == true
+                                                          return isLoading ==
+                                                                  true
                                                               ? Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical:
-                                                                              32),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          32),
                                                                   child: Center(
                                                                       child:
                                                                           const Center(
@@ -1259,7 +1265,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                       },
                                                     ),
                                                   ],
-          
+
                                                   // Section des produits étrangers
                                                   if (produitsEtrangers
                                                       .isNotEmpty) ...[
@@ -1287,8 +1293,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                         crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
-                                                      itemCount: produitsEtrangers
-                                                          .length,
+                                                      itemCount:
+                                                          produitsEtrangers
+                                                              .length,
                                                       // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                       itemBuilder:
                                                           (context, index) {
@@ -1310,8 +1317,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                margin: EdgeInsets
-                                                                    .all(8),
+                                                                margin:
+                                                                    EdgeInsets
+                                                                        .all(8),
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -1344,9 +1352,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                     ),
                                                                     // SizedBox(height: 8),
                                                                     ListTile(
-                                                                      title: Text(
-                                                                        produitsEtrangers[
-                                                                                index]
+                                                                      title:
+                                                                          Text(
+                                                                        produitsEtrangers[index]
                                                                             .nomProduit!,
                                                                         style:
                                                                             TextStyle(
@@ -1354,20 +1362,18 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                         maxLines:
                                                                             2,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                       ),
                                                                       subtitle:
                                                                           Text(
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         "${produitsEtrangers[index].quantiteStock!.toString()} ${produitsEtrangers[index].unite!.nomUnite} ",
                                                                         style:
                                                                             TextStyle(
@@ -1377,8 +1383,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                               15,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -1387,7 +1393,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           .symmetric(
                                                                           horizontal:
                                                                               15),
-                                                                      child: Text(
+                                                                      child:
+                                                                          Text(
                                                                         produitsEtrangers[index].monnaie !=
                                                                                 null
                                                                             ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
@@ -1396,8 +1403,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                             TextStyle(
                                                                           fontSize:
                                                                               15,
-                                                                          color: Colors
-                                                                              .black87,
+                                                                          color:
+                                                                              Colors.black87,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -1405,13 +1412,13 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 ),
                                                               ));
                                                         } else {
-                                                          return isLoading == true
+                                                          return isLoading ==
+                                                                  true
                                                               ? Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical:
-                                                                              32),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          32),
                                                                   child: Center(
                                                                       child:
                                                                           const Center(

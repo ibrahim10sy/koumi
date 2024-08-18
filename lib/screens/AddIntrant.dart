@@ -78,18 +78,19 @@ class _AddIntrantState extends State<AddIntrant> {
         isLoading: _isLoading,
         child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-          appBar: AppBar(
+         appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context, true);
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
               'Ajout d\'intrant ',
               style: const TextStyle(
-                  color: d_colorGreen, fontWeight: FontWeight.bold,
+                  color: Colors.white, fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
           ),
@@ -588,7 +589,7 @@ class _AddIntrantState extends State<AddIntrant> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // Orange color code
+                          backgroundColor: d_colorOr, // Orange color code
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),

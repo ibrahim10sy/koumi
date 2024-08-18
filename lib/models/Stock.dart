@@ -16,6 +16,7 @@ class Stock {
    String? dateProduction;
    double? quantiteStock;
    int? prix;
+   int? nbreView;
    String? typeProduit;
    String? descriptionStock;
    String? photo;
@@ -40,6 +41,7 @@ class Stock {
     this.dateProduction,
      this.quantiteStock,
      this.prix,
+     this.nbreView,
      this.typeProduit,
      this.descriptionStock,
     this.photo,
@@ -56,10 +58,6 @@ class Stock {
      this.monnaie
   });
 
-  
-
- 
-
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'idStock': idStock,
@@ -70,6 +68,7 @@ class Stock {
       'dateProduction': dateProduction,
       'quantiteStock': quantiteStock,
       'prix': prix,
+      'nbreView': nbreView,
       'typeProduit': typeProduit,
       'descriptionStock': descriptionStock,
       'photo': photo,
@@ -97,6 +96,7 @@ class Stock {
     dateProduction: map['dateProduction'] ,
     quantiteStock: (map['quantiteStock'] as num).toDouble(),
     prix: (map['prix'] as num).toInt(),
+    nbreView: (map['nbreView'] as num).toInt(),
     typeProduit: map['typeProduit'] ,
     descriptionStock: map['descriptionStock'] ,
     photo: map['photo'] ,

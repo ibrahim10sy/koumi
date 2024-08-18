@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:country_code_picker/country_code_picker.dart';
@@ -18,10 +17,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-
 class UpdateAlertesOffLine extends StatefulWidget {
   final AlertesOffLine alertes;
-  const UpdateAlertesOffLine({super.key,required this.alertes});
+  const UpdateAlertesOffLine({super.key, required this.alertes});
 
   @override
   State<UpdateAlertesOffLine> createState() => _UpdateAlertesOfLineState();
@@ -30,10 +28,8 @@ class UpdateAlertesOffLine extends StatefulWidget {
 const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
-
 class _UpdateAlertesOfLineState extends State<UpdateAlertesOffLine> {
- 
-     TextEditingController _titreController = TextEditingController();
+  TextEditingController _titreController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   final recorder = FlutterSoundRecorder();
   final formkey = GlobalKey<FormState>();
@@ -52,8 +48,8 @@ class _UpdateAlertesOfLineState extends State<UpdateAlertesOffLine> {
   double _progressValue = 0;
   bool _hasUploadStarted = false;
   late AlertesOffLine alerte;
-  String selectedCountry ="";
-  String selectedCountryCode ="";
+  String selectedCountry = "";
+  String selectedCountryCode = "";
 
   void setProgress(double value) async {
     setState(() {
@@ -228,11 +224,11 @@ class _UpdateAlertesOfLineState extends State<UpdateAlertesOffLine> {
     print('audiosUploaded : $audiosUploaded');
   }
 
- @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-       initRecoder();
+    initRecoder();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     alerte = widget.alertes;
     _titreController.text = alerte.titreAlerteOffLine!;
@@ -240,29 +236,29 @@ class _UpdateAlertesOfLineState extends State<UpdateAlertesOffLine> {
     _tokenAudioController.text = alerte.audioAlerteOffLine!;
     _tokenImageController.text = alerte.photoAlerteOffLine!;
     _tokenTextController.text = alerte.videoAlerteOffLine!;
-    selectedCountry = alerte.pays != null ? alerte.pays! : "" ;
+    selectedCountry = alerte.pays != null ? alerte.pays! : "";
     selectedCountryCode = alerte.codePays != null ? alerte.codePays! : "";
-
   }
 
   @override
   void dispose() {
-recorder.closeRecorder();
+    recorder.closeRecorder();
     _tokenTextController.dispose();
     _tokenAudioController.dispose();
-    _tokenImageController.dispose();    super.dispose();
+    _tokenImageController.dispose();
+    super.dispose();
   }
 
-
- @override
+  @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
         isLoading: _isLoading,
         child: Scaffold(
             backgroundColor: const Color.fromARGB(255, 250, 250, 250),
             appBar: AppBar(
+                backgroundColor: d_colorOr,
                 centerTitle: true,
-                toolbarHeight: 100,
+                toolbarHeight: 75,
                 leading: IconButton(
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -355,7 +351,7 @@ recorder.closeRecorder();
                               ),
                             ),
                           ),
-                                                    SizedBox(
+                          SizedBox(
                             height: 10,
                           ),
                           Padding(
@@ -375,15 +371,18 @@ recorder.closeRecorder();
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
                             child: Container(
-                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                                  border: Border.all(
-                                    color: Colors.black26, // Couleur de la bordure
-                                    width: 2, // Largeur de la bordure
-                                  ),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                border: Border.all(
+                                  color:
+                                      Colors.black26, // Couleur de la bordure
+                                  width: 2, // Largeur de la bordure
                                 ),
+                              ),
                               child: CountryCodePicker(
-                                backgroundColor: Colors.transparent, // Fond transparent pour le picker
+                                backgroundColor: Colors
+                                    .transparent, // Fond transparent pour le picker
                                 onChanged: (CountryCode countryCode) {
                                   setState(() {
                                     selectedCountry = countryCode.name!;
@@ -391,7 +390,8 @@ recorder.closeRecorder();
                                     print("Pays : $selectedCountry");
                                   });
                                 },
-                                  initialSelection: selectedCountry, // Set initial selection based on detected country code
+                                initialSelection:
+                                    selectedCountry, // Set initial selection based on detected country code
                                 showCountryOnly: true,
                                 showOnlyCountryWhenClosed: true,
                                 alignLeft: true,
@@ -544,14 +544,21 @@ recorder.closeRecorder();
                                         audiosUploaded != null) {
                                       await AlertesOffLineService()
                                           .updateAlertesOffLine(
-                                              idAlerteOffLine: alerte.idAlerteOffLine!,
+                                              idAlerteOffLine:
+                                                  alerte.idAlerteOffLine!,
                                               titreAlerteOffLine: titre,
-                                              descriptionAlerteOffLine: description,
+                                              descriptionAlerteOffLine:
+                                                  description,
                                               pays: selectedCountry,
-                                              codePays: selectedCountryCode.isNotEmpty ? selectedCountryCode : "ML",
-                                              videoAlerteOffLine: _videoUploaded,
+                                              codePays:
+                                                  selectedCountryCode.isNotEmpty
+                                                      ? selectedCountryCode
+                                                      : "ML",
+                                              videoAlerteOffLine:
+                                                  _videoUploaded,
                                               photoAlerteOffLine: photoUploaded,
-                                              audioAlerteOffLine: audiosUploaded)
+                                              audioAlerteOffLine:
+                                                  audiosUploaded)
                                           .then((value) => {
                                                 _titreController.clear(),
                                                 _descriptionController.clear(),
@@ -598,11 +605,16 @@ recorder.closeRecorder();
                                     } else {
                                       await AlertesOffLineService()
                                           .updateAlertesOffLine(
-                                              idAlerteOffLine: alerte.idAlerteOffLine!,
+                                              idAlerteOffLine:
+                                                  alerte.idAlerteOffLine!,
                                               titreAlerteOffLine: titre,
                                               pays: selectedCountry,
-                                              codePays: selectedCountryCode.isNotEmpty ? selectedCountryCode : "ML",
-                                              descriptionAlerteOffLine: description)
+                                              codePays:
+                                                  selectedCountryCode.isNotEmpty
+                                                      ? selectedCountryCode
+                                                      : "ML",
+                                              descriptionAlerteOffLine:
+                                                  description)
                                           .then((value) => {
                                                 _titreController.clear(),
                                                 _descriptionController.clear(),

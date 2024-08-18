@@ -11,6 +11,7 @@ class Vehicule {
   String? codeVehicule;
   String? description;
   int? nbKilometrage;
+  int? nbreView;
   Map<String, int> prixParDestination;
   bool statutVehicule;
   String? photoVehicule;
@@ -30,6 +31,7 @@ class Vehicule {
     required this.codeVehicule,
     this.description,
     this.nbKilometrage,
+    this.nbreView,
     required this.prixParDestination,
     required this.statutVehicule,
     this.photoVehicule,
@@ -50,6 +52,7 @@ class Vehicule {
     String? codeVehicule,
     String? description,
     int? nbKilometrage,
+    int? nbreView,
     Map<String, int>? prixParDestination,
     bool? statutVehicule,
     String? photoVehicule,
@@ -69,6 +72,7 @@ class Vehicule {
       codeVehicule: codeVehicule ?? this.codeVehicule,
       description: description ?? this.description,
       nbKilometrage: nbKilometrage ?? this.nbKilometrage,
+      nbreView: nbreView ?? this.nbreView,
       prixParDestination: prixParDestination ?? this.prixParDestination,
       statutVehicule: statutVehicule ?? this.statutVehicule,
       photoVehicule: photoVehicule ?? this.photoVehicule,
@@ -92,6 +96,8 @@ factory Vehicule.fromMap(Map<String, dynamic> map) {
       description: map['description']
           as String?,
       nbKilometrage: map['nbKilometrage']
+          as int?,
+      nbreView: map['nbreView']
           as int?,
       prixParDestination: Map<String, int>.from(
           map['prixParDestination'] as Map<String, dynamic>),
@@ -123,6 +129,7 @@ factory Vehicule.fromMap(Map<String, dynamic> map) {
       'codeVehicule': codeVehicule,
       'description': description,
       'nbKilometrage': nbKilometrage,
+      'nbreView': nbreView,
       'prixParDestination': prixParDestination,
       'statutVehicule': statutVehicule,
       'photoVehicule': photoVehicule,

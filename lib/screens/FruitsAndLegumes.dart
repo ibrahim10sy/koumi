@@ -322,19 +322,20 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          centerTitle: true,
-          toolbarHeight: 100,
+         appBar: AppBar(
+             backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios)),
+              icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
           title: const Text(
             "Fruits & légumes",
             style: TextStyle(
-              color: d_colorGreen,
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -347,7 +348,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                             ? detectedCountry!
                             : "Mali");
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                 ]
               : [
                   IconButton(
@@ -356,7 +357,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                             ? detectedCountry!
                             : "Mali");
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                   (typeActeurData
                               .map((e) => e.libelle!.toLowerCase())
                               .contains("commercant") ||

@@ -2,11 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
 import 'package:koumi/models/Monnaie.dart';
-// import 'package:koumi/models/ParametreGeneraux.dart';
 import 'package:koumi/models/Stock.dart';
+import 'package:http/http.dart' as http;
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/providers/CartProvider.dart';
@@ -88,33 +89,6 @@ class _DetailProduitsState extends State<DetailProduits>
     return result;
   }
 
-//    Future<String> getMonnaieByActor(String id) async {
-//     final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/monnaie/$id'));
-
-//     if (response.statusCode == 200) {
-//       print("libelle : ${response.body}");
-//       return response.body;  // Return the body directly since it's a plain string
-//     } else {
-//       throw Exception('Failed to load monnaie');
-//     }
-// }
-
-//  Future<void> fetchPaysDataByActor() async {
-//     try {
-//       String monnaies = await getMonnaieByActor(acteur.idActeur!);
-
-//       setState(() {
-//         monnaie = monnaies;
-//         isLoadingLibelle = false;
-//       });
-//     } catch (e) {
-//       setState(() {
-//         isLoadingLibelle = false;
-//         });
-//       print('Error: $e');
-//     }
-//   }
-
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
@@ -133,18 +107,6 @@ class _DetailProduitsState extends State<DetailProduits>
     }
   }
 
-  // void verifyParam() {
-  //   paraList = Provider.of<ParametreGenerauxProvider>(context, listen: false)
-  //       .parametreList!;
-
-  //   if (paraList.isNotEmpty) {
-  //     para = paraList[0];
-  //   } else {
-  //     // Gérer le cas où la liste est null ou vide, par exemple :
-  //     // Afficher un message d'erreur, initialiser 'para' à une valeur par défaut, etc.
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -152,12 +114,24 @@ class _DetailProduitsState extends State<DetailProduits>
     // verifyParam();
     stock = widget.stock;
     rates = fetchConvert(stock);
-    setState(() {
-      stock = widget.stock;
-    });
-    // fetchPaysDataByActor();
-    // Initialiser le ValueNotifier
+
+    updateViews(stock);
     isDialOpenNotifier = ValueNotifier<bool>(false);
+  }
+
+  void updateViews(Stock s) async {
+    if (acteur.idActeur != s.acteur!.idActeur) {
+      final response = await http
+          .put(Uri.parse('$apiOnlineUrl/Stock/updateView/${s.idStock}'));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('updateView : ${s.nbreView}');
+            setState(() {
+          stock = widget.stock;
+        });
+      } else {
+        print('Failed to update view count');
+      }
+    }
   }
 
   @override
@@ -165,116 +139,18 @@ class _DetailProduitsState extends State<DetailProduits>
     const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
     return Scaffold(
         appBar: AppBar(
+            backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
-            centerTitle: true,
-            title: const Text("Détail Produit", style: TextStyle(fontSize: 20)),
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            title: const Text("Détail Produit",
+                style: TextStyle(fontSize: 20, color: Colors.white)),
             actions: isExist
-                ?
-                //         (widget.stock.acteur!.idActeur != acteur.idActeur! &&
-                // typeActeurData
-                //     .map((e) => e.libelle!.toLowerCase())
-                //     .contains("admin") ) ?
-                [
-                    //  PopupMenuButton<String>(
-                    //                                           padding: EdgeInsets.zero,
-                    //                                           itemBuilder: (context) =>
-                    //                                               <PopupMenuEntry<
-                    //                                                   String>>[
-                    //                                             PopupMenuItem<String>(
-                    //                                                 child: ListTile(
-                    //                                               leading: widget.stock.statutSotck ==
-                    //                                                       false
-                    //                                                   ? Icon(
-                    //                                                       Icons.check,
-                    //                                                       color: Colors
-                    //                                                           .green,
-                    //                                                     )
-                    //                                                   : Icon(
-                    //                                                       Icons
-                    //                                                           .disabled_visible,
-                    //                                                       color: Colors
-                    //                                                               .orange[
-                    //                                                           400]),
-                    //                                               title: Text(
-                    //                                                 widget.stock.statutSotck ==
-                    //                                                         false
-                    //                                                     ? "Activer"
-                    //                                                     : "Desactiver",
-                    //                                                 style: TextStyle(
-                    //                                                   color: widget.stock.statutSotck ==
-                    //                                                           false
-                    //                                                       ? Colors.green
-                    //                                                       : Colors.red,
-                    //                                                   fontWeight:
-                    //                                                       FontWeight
-                    //                                                           .bold,
-                    //                                                 ),
-                    //                                               ),
-                    //                                               onTap: () async {
-                    //                                                 // Changement d'état du magasin ici
-
-                    //                                                             widget.stock.statutSotck ==
-                    //                                                         false
-                    //                                                     ? await StockService()
-                    //                                                         .activerStock(
-                    //                                                             widget.stock.idStock!)
-                    //                                                         .then(
-                    //                                                             (value) =>
-                    //                                                                 {
-
-                    //                                                                   Navigator.of(context).pop(),
-                    //                                                                 })
-                    //                                                         .catchError(
-                    //                                                             (onError) =>
-                    //                                                                 {
-                    //                                                                   ScaffoldMessenger.of(context).showSnackBar(
-                    //                                                                     const SnackBar(
-                    //                                                                       content: Row(
-                    //                                                                         children: [
-                    //                                                                           Text("Une erreur s'est produit"),
-                    //                                                                         ],
-                    //                                                                       ),
-                    //                                                                       duration: Duration(seconds: 5),
-                    //                                                                     ),
-                    //                                                                   ),
-                    //                                                                   Navigator.of(context).pop(),
-                    //                                                                 })
-                    //                                                     : await StockService()
-                    //                                                         .desactiverStock(
-                    //                                                             widget.stock.idStock!)
-                    //                                                         .then(
-                    //                                                             (value) =>
-                    //                                                                 {
-
-                    //                                                                   Navigator.of(context).pop(),
-                    //                                                                 });
-
-                    //                                                 ScaffoldMessenger
-                    //                                                         .of(context)
-                    //                                                     .showSnackBar(
-                    //                                                   SnackBar(
-                    //                                                     content: Row(
-                    //                                                       children: [
-                    //                                                         Text(widget.stock.statutSotck ==
-                    //                                                                 false
-                    //                                                             ? "Activer avec succèss "
-                    //                                                             : "Desactiver avec succèss"),
-                    //                                                       ],
-                    //                                                     ),
-                    //                                                     duration:
-                    //                                                         Duration(
-                    //                                                             seconds:
-                    //                                                                 2),
-                    //                                                   ),
-                    //                                                 );
-                    //                                               },
-                    //                                             )),
-                    //                                           ],
-                    //                                         ),
+                ? [
                     acteur.idActeur != widget.stock.acteur!.idActeur
                         ? SizedBox()
                         : IconButton(
@@ -288,9 +164,7 @@ class _DetailProduitsState extends State<DetailProduits>
                                             stock: widget.stock,
                                           )));
                             },
-                            icon: Icon(
-                              Icons.edit,
-                            ),
+                            icon: Icon(Icons.edit, color: Colors.white),
                           )
                   ]
                 : null),
@@ -335,7 +209,7 @@ class _DetailProduitsState extends State<DetailProduits>
                       height: 40,
                       width: MediaQuery.of(context).size.width,
                       decoration: const BoxDecoration(
-                        color: Colors.orangeAccent,
+                        color: d_colorOr,
                       ),
                       child: Center(
                         child: Text(
@@ -345,6 +219,7 @@ class _DetailProduitsState extends State<DetailProduits>
                           style: const TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 20,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -358,50 +233,14 @@ class _DetailProduitsState extends State<DetailProduits>
                               fontSize: 20, fontStyle: FontStyle.italic),
                         ),
                         Text(
-                            textAlign: TextAlign.right,
-                            widget.stock
-                                .formeProduit!, // Use optional chaining and ??
-                            style: TextStyle(
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Quantité : ",
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
-                        Text(widget.stock.quantiteStock!.toInt().toString(),
-                            style: TextStyle(
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Unité Produit : ",
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
-                        Text(
-                          maxLines: 2,
                           textAlign: TextAlign.right,
-                          widget.stock.unite!.nomUnite == null
-                              ? ""
-                              : widget.stock.unite!.nomUnite!,
-                          style: TextStyle(
+                          widget.stock
+                              .formeProduit!, // Use optional chaining and ??
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
+                            fontSize: 16,
                           ),
                         ),
                       ],
@@ -410,18 +249,77 @@ class _DetailProduitsState extends State<DetailProduits>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Prix",
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
+                        Text(
+                          "Quantité : ",
+                          maxLines: 2,
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          widget.stock.quantiteStock!.toInt().toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Unité Produit : ",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          maxLines: 2,
+                          textAlign: TextAlign.right,
+                          widget.stock.unite!.nomUnite == null
+                              ? ""
+                              : widget.stock.unite!.nomUnite!,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Prix",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
                         Text(
                           maxLines: 2,
                           textAlign: TextAlign.right,
                           '${widget.stock.prix!.toInt()} ${widget.stock.monnaie!.libelle}',
-                          style: TextStyle(
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
+                            fontSize: 16,
                           ),
                         ),
                       ],
@@ -446,7 +344,7 @@ class _DetailProduitsState extends State<DetailProduits>
                       height: 40,
                       width: MediaQuery.of(context).size.width,
                       decoration: const BoxDecoration(
-                        color: Colors.orangeAccent,
+                        color: d_colorOr,
                       ),
                       child: Center(
                         child: Text(
@@ -454,6 +352,7 @@ class _DetailProduitsState extends State<DetailProduits>
                           style: const TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 20,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -469,7 +368,7 @@ class _DetailProduitsState extends State<DetailProduits>
                         style: TextStyle(
                             fontSize: 16, fontStyle: FontStyle.italic),
                         widget.stock.descriptionStock == null
-                            ? "A Henley shirt is a collarless pullover shirt, by a round neckline and a placket about 3 to 5 inches (8 to 13 cm) long and usually having 2–5 buttons."
+                            ? ""
                             : widget.stock.descriptionStock!,
                       ),
                     ),
@@ -477,63 +376,61 @@ class _DetailProduitsState extends State<DetailProduits>
                       height: 40,
                       width: MediaQuery.of(context).size.width,
                       decoration: const BoxDecoration(
-                        color: Colors.orangeAccent,
+                        color: d_colorOr,
                       ),
                       child: Center(
                         child: Text(
-                          "Autres information",
+                          "Autres informations",
                           style: const TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 20,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
                     const SizedBox(height: defaultPadding / 2),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Text(
-                          //   '${widget.stock.prix!.toInt()} (${widget.stock.monnaie!.libelle})', // Convertir en entier
-                          //   style: const TextStyle(
-                          //       overflow: TextOverflow.ellipsis,
-                          //       fontSize: 20,
-                          //       fontWeight: FontWeight.bold),
-                          // ),
-                          // Text(
-                          //   'Note', // Convertir en entier
-                          //   style: const TextStyle(
-                          //       overflow: TextOverflow.ellipsis,
-                          //       fontSize: 20,
-                          //       fontWeight: FontWeight.bold),
-                          // ),
 
-                          // RatingBar.builder(
-                          //   initialRating: 3,
-                          //   minRating: 0,
-                          //   maxRating: 5,
-                          //   direction: Axis.horizontal,
-                          //   allowHalfRating: false,
-                          //   itemCount: 5,
-                          //   itemSize: 30,
-                          //   itemBuilder: (context, _) => const Icon(
-                          //     Icons.star,
-                          //     color: Colors.amber,
-                          //   ),
-                          //   onRatingUpdate: (rating) {},
-                          // ),
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Nombre de vue : ",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
+                        Expanded(
+                          child: Text(
+                            maxLines: 2,
+                            textAlign: TextAlign.right,
+                            widget.stock.nbreView.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w800,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Speculation : ",
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
+                        Text(
+                          "Speculation : ",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
                         Expanded(
                           child: Text(
                             maxLines: 2,
@@ -541,11 +438,11 @@ class _DetailProduitsState extends State<DetailProduits>
                             widget.stock.speculation == null
                                 ? "Aucune spéculation"
                                 : widget.stock.speculation!.nomSpeculation!,
-                            style: TextStyle(
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w800,
                               overflow: TextOverflow.ellipsis,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -555,19 +452,25 @@ class _DetailProduitsState extends State<DetailProduits>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Type Produit : ",
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
+                        Text(
+                          "Type Produit : ",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
                         Flexible(
                           child: Text(
                             maxLines: 2,
                             textAlign: TextAlign.right,
                             widget.stock.typeProduit!,
-                            style: TextStyle(
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w800,
                               overflow: TextOverflow.ellipsis,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -576,19 +479,25 @@ class _DetailProduitsState extends State<DetailProduits>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Origine : ",
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
+                        Text(
+                          "Origine : ",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
                         Flexible(
                           child: Text(
                             maxLines: 2,
                             textAlign: TextAlign.right,
                             widget.stock.origineProduit!,
-                            style: TextStyle(
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w800,
                               overflow: TextOverflow.ellipsis,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -597,19 +506,25 @@ class _DetailProduitsState extends State<DetailProduits>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Date production : ",
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
+                        Text(
+                          "Date production : ",
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
                         Flexible(
                           child: Text(
                             maxLines: 2,
                             textAlign: TextAlign.right,
                             widget.stock.dateProduction!,
-                            style: TextStyle(
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w800,
                               overflow: TextOverflow.ellipsis,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -618,59 +533,76 @@ class _DetailProduitsState extends State<DetailProduits>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Fournisseur",
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
-                        Text(widget.stock.acteur!.nomActeur!,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic)),
+                        Text(
+                          "Fournisseur",
+                          maxLines: 2,
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          widget.stock.acteur!.nomActeur!,
+                          maxLines: 2,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                          ),
+                        ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Contact",
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 20, fontStyle: FontStyle.italic)),
                         Text(
-                            widget.stock.acteur!.whatsAppActeur != null
-                                ? widget.stock.acteur!.whatsAppActeur!
-                                : widget.stock.acteur!.telephoneActeur!,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic)),
+                          "Contact",
+                          maxLines: 2,
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          widget.stock.acteur!.whatsAppActeur != null
+                              ? widget.stock.acteur!.whatsAppActeur!
+                              : widget.stock.acteur!.telephoneActeur!,
+                          maxLines: 2,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      height: 70,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Code Qr: ",
-                              style: TextStyle(
-                                  fontSize: 20, fontStyle: FontStyle.italic)),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (_) {
-                                return DetailScreen(); // écran de détail avec l'image agrandie
-                              }));
-                            },
-                            child: Image.asset("assets/images/qr.png"),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // const SizedBox(height: 10),
+                    // Container(
+                    //   height: 70,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text("Code Qr: ",
+                    //           style: TextStyle(
+                    //               fontSize: 20, fontStyle: FontStyle.italic)),
+                    //       GestureDetector(
+                    //         onTap: () {
+                    //           Navigator.push(context,
+                    //               MaterialPageRoute(builder: (_) {
+                    //             return DetailScreen(); // écran de détail avec l'image agrandie
+                    //           }));
+                    //         },
+                    //         child: Image.asset("assets/images/qr.png"),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     const SizedBox(height: 20),
                     isExist == true
                         ? widget.stock.acteur!.idActeur == acteur.idActeur

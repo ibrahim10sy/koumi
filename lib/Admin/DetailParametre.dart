@@ -9,7 +9,7 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class DetailParametre extends StatefulWidget {
   final ParametreFiche parametreFiche;
- 
+
   const DetailParametre({Key? key, required this.parametreFiche})
       : super(key: key);
 
@@ -54,8 +54,9 @@ class _DetailParametreState extends State<DetailParametre> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         leading: _isEditing
             ? Container()
             : IconButton(
@@ -66,8 +67,8 @@ class _DetailParametreState extends State<DetailParametre> {
               ),
         title: Text(
           'Détails paramètre',
-          style:
-              const TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+          style: const TextStyle(
+              color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
           _isEditing
@@ -310,7 +311,7 @@ class _DetailParametreState extends State<DetailParametre> {
             controller: controller,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 17, 
+              fontSize: 17,
               color: Colors.black54,
             ),
             enabled: _isEditing,

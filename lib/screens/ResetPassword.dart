@@ -44,8 +44,9 @@ class _ResetPasswordState extends State<ResetPassword> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -156,7 +157,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             ),
                             obscureText: _obscureText,
                             keyboardType: TextInputType.number,
-                           validator: (val) {
+                            validator: (val) {
                               if (val == null || val.isEmpty) {
                                 return "Veillez entrez votre  mot de passe ";
                               }

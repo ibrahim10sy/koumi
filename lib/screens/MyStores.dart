@@ -191,19 +191,20 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
             backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+         appBar: AppBar(
+             backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context, true);
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
               'Mes boutiques',
               style: const TextStyle(
-                  color: d_colorGreen,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),

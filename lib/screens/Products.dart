@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:country_flags/country_flags.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
+import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/CategorieProduit.dart';
@@ -19,6 +21,7 @@ import 'package:koumi/screens/MyProduct.dart';
 import 'package:koumi/service/StockService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
 import 'package:koumi/widgets/DetectorPays.dart';
+import 'package:koumi/widgets/GetFlagPays.dart';
 import 'package:provider/provider.dart';
 import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -370,18 +373,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+             icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             'Tous les Produits',
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           actions: !isExist
               ? [
@@ -389,14 +392,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       onPressed: () {
                         stockListeFuture = getAllStocks();
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen))
+                      icon: const Icon(Icons.refresh, color: Colors.white))
                 ]
               : [
                   IconButton(
                       onPressed: () {
                         stockListeFuture = getAllStocks();
                       },
-                      icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                      icon: const Icon(Icons.refresh, color: Colors.white)),
                   (typeActeurData
                               .map((e) => e.libelle!.toLowerCase())
                               .contains("commercant") ||
@@ -406,6 +409,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           typeActeurData
                               .map((e) => e.libelle!.toLowerCase())
                               .contains("admin") ||
+                               typeActeurData
+                                .map((e) => e.libelle!.toLowerCase())
+                                .contains("transformateur") ||
                           typeActeurData
                               .map((e) => e.libelle!.toLowerCase())
                               .contains("producteur") ||
@@ -463,12 +469,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       : Container()
                 ]),
       body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
         child: Container(
           child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverToBoxAdapter(
                     child: Column(children: [
@@ -522,8 +529,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   Visibility(
                     visible: isSearchMode,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
                       child: FutureBuilder(
                         future: _catList,
                         builder: (_, snapshot) {
@@ -531,29 +538,29 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               ConnectionState.waiting) {
                             return buildLoadingDropdown();
                           }
-        
+
                           if (snapshot.hasData) {
                             dynamic jsonString =
                                 utf8.decode(snapshot.data.bodyBytes);
                             dynamic responseData = json.decode(jsonString);
-        
+
                             if (responseData is List) {
                               final response = responseData;
                               final typeList = response
                                   .map((e) => CategorieProduit.fromMap(e))
                                   .where((con) => con.statutCategorie == true)
                                   .toList();
-        
+
                               if (typeList.isEmpty) {
                                 return buildEmptyDropdown();
                               }
-        
+
                               return buildDropdown(typeList);
                             } else {
                               return buildEmptyDropdown();
                             }
                           }
-        
+
                           return buildEmptyDropdown();
                         },
                       ),
@@ -562,12 +569,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   Visibility(
                     visible: isSearchMode,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
                       child: SearchFieldAutoComplete<String>(
                         controller: _searchController,
                         placeholder: 'Rechercher...',
-                        placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
                         suggestions: AutoComplet.getAgriculturalProducts,
                         suggestionsDecoration: SuggestionDecoration(
                           marginSuggestions: const EdgeInsets.all(8.0),
@@ -591,7 +599,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       ),
                     ),
                   ),
-        
+
                   // Padding(
                   //   padding: const EdgeInsets.all(10.0),
                   //   child: ToggleButtons(
@@ -649,29 +657,29 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   //             ConnectionState.waiting) {
                   //           return buildLoadingDropdown();
                   //         }
-        
+
                   //         if (snapshot.hasData) {
                   //           dynamic jsonString =
                   //               utf8.decode(snapshot.data.bodyBytes);
                   //           dynamic responseData = json.decode(jsonString);
-        
+
                   //           if (responseData is List) {
                   //             final reponse = responseData;
                   //             final typeList = reponse
                   //                 .map((e) => CategorieProduit.fromMap(e))
                   //                 .where((con) => con.statutCategorie == true)
                   //                 .toList();
-        
+
                   //             if (typeList.isEmpty) {
                   //               return buildEmptyDropdown();
                   //             }
-        
+
                   //             return buildDropdown(typeList);
                   //           } else {
                   //             return buildEmptyDropdown();
                   //           }
                   //         }
-        
+
                   //         return buildEmptyDropdown();
                   //       },
                   //     ),
@@ -690,13 +698,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 // selectedCat != null ?StockService().fetchStockByCategorieWithPagination(selectedCat!.idCategorieProduit!) :
                 selectedCat != null
                     ? setState(() {
-                        stockListeFuture1 = StockService().fetchStockByCategorie(
-                            selectedCat!.idCategorieProduit!,
-                            detectedCountry != null ? detectedCountry! : "Mali");
+                        stockListeFuture1 = StockService()
+                            .fetchStockByCategorie(
+                                selectedCat!.idCategorieProduit!,
+                                detectedCountry != null
+                                    ? detectedCountry!
+                                    : "Mali");
                       })
                     : setState(() {
                         stockListeFuture = StockService().fetchStock(
-                            detectedCountry != null ? detectedCountry! : "Mali");
+                            detectedCountry != null
+                                ? detectedCountry!
+                                : "Mali");
                       });
               },
               child: selectedCat == null
@@ -718,7 +731,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -736,7 +750,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                   ),
                                 );
                               }
-        
+
                               if (!snapshot.hasData) {
                                 return SingleChildScrollView(
                                   child: Padding(
@@ -744,7 +758,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -769,26 +784,29 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                         stock.acteur!.niveau3PaysActeur! ==
                                         detectedCountry)
                                     .where((cate) {
-                                  String nomCat = cate.nomProduit!.toLowerCase();
+                                  String nomCat =
+                                      cate.nomProduit!.toLowerCase();
                                   searchText =
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
-        
+
                                 List<Stock> produitsEtrangers = stockListe
                                     .where((stock) =>
                                         stock.acteur!.niveau3PaysActeur! !=
                                         detectedCountry)
                                     .where((cate) {
-                                  String nomCat = cate.nomProduit!.toLowerCase();
+                                  String nomCat =
+                                      cate.nomProduit!.toLowerCase();
                                   searchText =
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
-        
+
                                 List<Stock> filteredSearch =
                                     stockListe.where((cate) {
-                                  String nomCat = cate.nomProduit!.toLowerCase();
+                                  String nomCat =
+                                      cate.nomProduit!.toLowerCase();
                                   searchText =
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
@@ -822,16 +840,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     : Column(
                                         children: [
                                           if (produitsLocaux.isNotEmpty) ...[
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                "Produits locaux",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: d_colorGreen,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
                                             GridView.builder(
                                               shrinkWrap: true,
                                               physics:
@@ -863,7 +871,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         );
                                                       },
                                                       child: Card(
-                                                        margin: EdgeInsets.all(8),
+                                                        margin:
+                                                            EdgeInsets.all(8),
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -876,14 +885,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                           8.0),
                                                               child: Container(
                                                                 height: 85,
-                                                                child: produitsLocaux[index]
-                                                                                .photo ==
+                                                                child: produitsLocaux[index].photo ==
                                                                             null ||
-                                                                        produitsLocaux[
-                                                                                index]
+                                                                        produitsLocaux[index]
                                                                             .photo!
                                                                             .isEmpty
-                                                                    ? Image.asset(
+                                                                    ? Image
+                                                                        .asset(
                                                                         "assets/images/default_image.png",
                                                                         fit: BoxFit
                                                                             .cover,
@@ -893,15 +901,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                             "https://koumi.ml/api-koumi/Stock/${produitsLocaux[index].idStock}/image",
                                                                         fit: BoxFit
                                                                             .cover,
-                                                                        placeholder: (context,
-                                                                                url) =>
-                                                                            const Center(
-                                                                                child: CircularProgressIndicator()),
+                                                                        placeholder:
+                                                                            (context, url) =>
+                                                                                const Center(child: CircularProgressIndicator()),
                                                                         errorWidget: (context,
                                                                                 url,
                                                                                 error) =>
-                                                                            Image
-                                                                                .asset(
+                                                                            Image.asset(
                                                                           'assets/images/default_image.png',
                                                                           fit: BoxFit
                                                                               .cover,
@@ -915,7 +921,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                 produitsLocaux[
                                                                         index]
                                                                     .nomProduit!,
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
@@ -933,7 +940,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     TextOverflow
                                                                         .ellipsis,
                                                                 "${produitsLocaux[index].quantiteStock!.toString()} ${produitsLocaux[index].unite!.nomUnite} ",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
@@ -958,7 +966,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         null
                                                                     ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
                                                                     : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 15,
                                                                   color: Colors
                                                                       .black87,
@@ -976,7 +985,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                   .symmetric(
                                                                   vertical: 32),
                                                           child: Center(
-                                                              child: const Center(
+                                                              child:
+                                                                  const Center(
                                                             child:
                                                                 CircularProgressIndicator(
                                                               color:
@@ -989,19 +999,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                               },
                                             ),
                                           ],
-        
+
                                           // Section des produits étrangers
                                           if (produitsEtrangers.isNotEmpty) ...[
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                "Produits etrangère",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: d_colorGreen,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
+                                            Text("Etranger"),
+                                        //    CodePays()
+                                        //         .getFlag(produitsEtrangers.where((stock) =>
+                                        // stock.acteur!.niveau3PaysActeur!)),
                                             GridView.builder(
                                               shrinkWrap: true,
                                               physics:
@@ -1013,7 +1017,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                 crossAxisSpacing: 5,
                                                 childAspectRatio: 0.8,
                                               ),
-                                              itemCount: produitsEtrangers.length,
+                                              itemCount:
+                                                  produitsEtrangers.length,
                                               // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                               itemBuilder: (context, index) {
                                                 if (index <
@@ -1033,7 +1038,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         );
                                                       },
                                                       child: Card(
-                                                        margin: EdgeInsets.all(8),
+                                                        margin:
+                                                            EdgeInsets.all(8),
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -1046,14 +1052,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                           8.0),
                                                               child: Container(
                                                                 height: 85,
-                                                                child: produitsEtrangers[index]
-                                                                                .photo ==
+                                                                child: produitsEtrangers[index].photo ==
                                                                             null ||
-                                                                        produitsEtrangers[
-                                                                                index]
+                                                                        produitsEtrangers[index]
                                                                             .photo!
                                                                             .isEmpty
-                                                                    ? Image.asset(
+                                                                    ? Image
+                                                                        .asset(
                                                                         "assets/images/default_image.png",
                                                                         fit: BoxFit
                                                                             .cover,
@@ -1063,15 +1068,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                             "https://koumi.ml/api-koumi/Stock/${produitsEtrangers[index].idStock}/image",
                                                                         fit: BoxFit
                                                                             .cover,
-                                                                        placeholder: (context,
-                                                                                url) =>
-                                                                            const Center(
-                                                                                child: CircularProgressIndicator()),
+                                                                        placeholder:
+                                                                            (context, url) =>
+                                                                                const Center(child: CircularProgressIndicator()),
                                                                         errorWidget: (context,
                                                                                 url,
                                                                                 error) =>
-                                                                            Image
-                                                                                .asset(
+                                                                            Image.asset(
                                                                           'assets/images/default_image.png',
                                                                           fit: BoxFit
                                                                               .cover,
@@ -1085,7 +1088,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                 produitsEtrangers[
                                                                         index]
                                                                     .nomProduit!,
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
@@ -1103,7 +1107,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     TextOverflow
                                                                         .ellipsis,
                                                                 "${produitsEtrangers[index].quantiteStock!.toString()} ${produitsEtrangers[index].unite!.nomUnite} ",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
@@ -1123,13 +1128,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       horizontal:
                                                                           15),
                                                               child: Text(
-                                                                produitsEtrangers[
-                                                                                index]
+                                                                produitsEtrangers[index]
                                                                             .monnaie !=
                                                                         null
                                                                     ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
                                                                     : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 15,
                                                                   color: Colors
                                                                       .black87,
@@ -1147,7 +1152,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                   .symmetric(
                                                                   vertical: 32),
                                                           child: Center(
-                                                              child: const Center(
+                                                              child:
+                                                                  const Center(
                                                             child:
                                                                 CircularProgressIndicator(
                                                               color:
@@ -1184,7 +1190,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -1202,7 +1209,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                   ),
                                 );
                               }
-        
+
                               if (!snapshot.hasData) {
                                 return SingleChildScrollView(
                                   child: Padding(
@@ -1210,7 +1217,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -1230,36 +1238,40 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               } else {
                                 stockListe = snapshot.data!;
                                 String searchText = "";
+
                                 List<Stock> produitsLocaux = stockListe
                                     .where((stock) =>
                                         stock.acteur!.niveau3PaysActeur! ==
                                         detectedCountry)
                                     .where((cate) {
-                                  String nomCat = cate.nomProduit!.toLowerCase();
+                                  String nomCat =
+                                      cate.nomProduit!.toLowerCase();
                                   searchText =
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
-        
+
                                 List<Stock> produitsEtrangers = stockListe
                                     .where((stock) =>
                                         stock.acteur!.niveau3PaysActeur! !=
                                         detectedCountry)
                                     .where((cate) {
-                                  String nomCat = cate.nomProduit!.toLowerCase();
+                                  String nomCat =
+                                      cate.nomProduit!.toLowerCase();
                                   searchText =
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
-        
+
                                 List<Stock> filteredSearch =
                                     stockListe.where((cate) {
-                                  String nomCat = cate.nomProduit!.toLowerCase();
+                                  String nomCat =
+                                      cate.nomProduit!.toLowerCase();
                                   searchText =
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
-        
+
                                 return filteredSearch.isEmpty &&
                                         isLoading == false
                                     ? SingleChildScrollView(
@@ -1287,23 +1299,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                           ),
                                         ),
                                       )
-                                    : filteredSearch.isEmpty && isLoading == true
+                                    : filteredSearch.isEmpty &&
+                                            isLoading == true
                                         ? _buildShimmerEffect()
                                         : Column(
                                             children: [
-                                              if (produitsLocaux.isNotEmpty) ...[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "Produits locaux",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: d_colorGreen,
-                                                        fontSize: 16),
-                                                  ),
-                                                ),
+                                              if (produitsLocaux
+                                                  .isNotEmpty) ...[
                                                 GridView.builder(
                                                   shrinkWrap: true,
                                                   physics:
@@ -1317,7 +1319,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                   ),
                                                   itemCount:
                                                       produitsLocaux.length,
-                                                  itemBuilder: (context, index) {
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     if (index <
                                                         produitsLocaux.length) {
                                                       return GestureDetector(
@@ -1325,8 +1328,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                             Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    DetailProduits(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DetailProduits(
                                                                   stock:
                                                                       produitsLocaux[
                                                                           index],
@@ -1336,7 +1340,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           },
                                                           child: Card(
                                                             margin:
-                                                                EdgeInsets.all(8),
+                                                                EdgeInsets.all(
+                                                                    8),
                                                             child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
@@ -1358,21 +1363,20 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         ? Image
                                                                             .asset(
                                                                             "assets/images/default_image.png",
-                                                                            fit: BoxFit
-                                                                                .cover,
+                                                                            fit:
+                                                                                BoxFit.cover,
                                                                           )
                                                                         : CachedNetworkImage(
                                                                             imageUrl:
                                                                                 "https://koumi.ml/api-koumi/Stock/${produitsLocaux[index].idStock}/image",
-                                                                            fit: BoxFit
-                                                                                .cover,
+                                                                            fit:
+                                                                                BoxFit.cover,
                                                                             placeholder: (context, url) =>
                                                                                 const Center(child: CircularProgressIndicator()),
                                                                             errorWidget: (context, url, error) =>
                                                                                 Image.asset(
                                                                               'assets/images/default_image.png',
-                                                                              fit:
-                                                                                  BoxFit.cover,
+                                                                              fit: BoxFit.cover,
                                                                             ),
                                                                           ),
                                                                   ),
@@ -1398,7 +1402,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         TextOverflow
                                                                             .ellipsis,
                                                                   ),
-                                                                  subtitle: Text(
+                                                                  subtitle:
+                                                                      Text(
                                                                     overflow:
                                                                         TextOverflow
                                                                             .ellipsis,
@@ -1424,8 +1429,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       horizontal:
                                                                           15),
                                                                   child: Text(
-                                                                    produitsLocaux[index]
-                                                                                .monnaie !=
+                                                                    produitsLocaux[index].monnaie !=
                                                                             null
                                                                         ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
                                                                         : "${produitsLocaux[index].prix.toString()} FCFA",
@@ -1464,22 +1468,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                   },
                                                 ),
                                               ],
-        
+
                                               // Section des produits étrangers
                                               if (produitsEtrangers
                                                   .isNotEmpty) ...[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "Produits etrangère",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: d_colorGreen,
-                                                        fontSize: 16),
-                                                  ),
-                                                ),
+                                                     Text("Etranger"),
+                                               
                                                 GridView.builder(
                                                   shrinkWrap: true,
                                                   physics:
@@ -1494,7 +1488,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                   itemCount:
                                                       produitsEtrangers.length,
                                                   // itemCount: stockListe.length + (isLoading ? 1 : 0),
-                                                  itemBuilder: (context, index) {
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     if (index <
                                                         produitsEtrangers
                                                             .length) {
@@ -1503,8 +1498,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                             Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    DetailProduits(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DetailProduits(
                                                                   stock:
                                                                       produitsEtrangers[
                                                                           index],
@@ -1514,7 +1510,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           },
                                                           child: Card(
                                                             margin:
-                                                                EdgeInsets.all(8),
+                                                                EdgeInsets.all(
+                                                                    8),
                                                             child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
@@ -1536,21 +1533,20 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         ? Image
                                                                             .asset(
                                                                             "assets/images/default_image.png",
-                                                                            fit: BoxFit
-                                                                                .cover,
+                                                                            fit:
+                                                                                BoxFit.cover,
                                                                           )
                                                                         : CachedNetworkImage(
                                                                             imageUrl:
                                                                                 "https://koumi.ml/api-koumi/Stock/${produitsEtrangers[index].idStock}/image",
-                                                                            fit: BoxFit
-                                                                                .cover,
+                                                                            fit:
+                                                                                BoxFit.cover,
                                                                             placeholder: (context, url) =>
                                                                                 const Center(child: CircularProgressIndicator()),
                                                                             errorWidget: (context, url, error) =>
                                                                                 Image.asset(
                                                                               'assets/images/default_image.png',
-                                                                              fit:
-                                                                                  BoxFit.cover,
+                                                                              fit: BoxFit.cover,
                                                                             ),
                                                                           ),
                                                                   ),
@@ -1576,7 +1572,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         TextOverflow
                                                                             .ellipsis,
                                                                   ),
-                                                                  subtitle: Text(
+                                                                  subtitle:
+                                                                      Text(
                                                                     overflow:
                                                                         TextOverflow
                                                                             .ellipsis,
@@ -1602,8 +1599,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       horizontal:
                                                                           15),
                                                                   child: Text(
-                                                                    produitsEtrangers[index]
-                                                                                .monnaie !=
+                                                                    produitsEtrangers[index].monnaie !=
                                                                             null
                                                                         ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
                                                                         : "${produitsEtrangers[index].prix.toString()} FCFA",

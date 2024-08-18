@@ -18,13 +18,11 @@ class AlertesOffLineScreen extends StatefulWidget {
   State<AlertesOffLineScreen> createState() => _AlertesOffLineScreenState();
 }
 
- const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
+const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
-
 class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
- 
-    late Acteur acteur = Acteur();
+  late Acteur acteur = Acteur();
   String? email = "";
   late List<TypeActeur> typeActeurData = [];
   late String type;
@@ -65,15 +63,14 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
     super.dispose();
   }
 
- 
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -113,7 +110,8 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddAlertesOffLineScreen()));
+                                      builder: (context) =>
+                                          AddAlertesOffLineScreen()));
                             },
                           ),
                         ),
@@ -183,7 +181,8 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Consumer<AlertesOffLineService>(builder: (context, alerteService, child) {
+            Consumer<AlertesOffLineService>(
+                builder: (context, alerteService, child) {
               return FutureBuilder(
                   future: alerteService.fetchAlertes(),
                   // future: _liste,
@@ -200,8 +199,10 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                     } else {
                       alerteList = snapshot.data!;
                       String searchText = "";
-                      List<AlertesOffLine> filtereSearch = alerteList.where((search) {
-                        String libelle = search.titreAlerteOffLine!.toLowerCase();
+                      List<AlertesOffLine> filtereSearch =
+                          alerteList.where((search) {
+                        String libelle =
+                            search.titreAlerteOffLine!.toLowerCase();
                         searchText = _searchController.text.toLowerCase();
                         return libelle.contains(searchText);
                       }).toList();
@@ -210,12 +211,13 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                               .isEmpty
                           ? Padding(
                               padding: EdgeInsets.all(10),
-                              child: Center(child: Text("Aucun alerte  trouvé")),
+                              child:
+                                  Center(child: Text("Aucun alerte  trouvé")),
                             )
                           : Column(
                               children: filtereSearch
                                   // .where(
-                                      // (element) => element.statutAlerteOffLine == true)
+                                  // (element) => element.statutAlerteOffLine == true)
                                   .map((e) => Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10, horizontal: 15),
@@ -285,8 +287,11 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                                                     fontStyle: FontStyle.italic,
                                                   )),
                                               SizedBox(height: 10),
-                                              typeActeurData.map((e) => e.libelle!.toLowerCase()).contains('admin')
-                                                  ?  Container(
+                                              typeActeurData
+                                                      .map((e) => e.libelle!
+                                                          .toLowerCase())
+                                                      .contains('admin')
+                                                  ? Container(
                                                       alignment:
                                                           Alignment.bottomRight,
                                                       padding: const EdgeInsets
@@ -297,8 +302,8 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                                                             MainAxisAlignment
                                                                 .spaceBetween,
                                                         children: [
-                                                          _buildEtat(
-                                                              e.statutAlerteOffLine!),
+                                                          _buildEtat(e
+                                                              .statutAlerteOffLine!),
                                                           PopupMenuButton<
                                                               String>(
                                                             padding:
@@ -508,8 +513,8 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                                                           ),
                                                         ],
                                                       ),
-                                                    ) : Container()
-                                                  
+                                                    )
+                                                  : Container()
                                             ]),
                                           ),
                                         ),
@@ -526,7 +531,7 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
   }
 
   Widget buildShimmerEffect() {
-   return SingleChildScrollView(
+    return SingleChildScrollView(
       child: Shimmer.fromColors(
         baseColor: Colors.grey[300]!,
         highlightColor: Colors.grey[100]!,

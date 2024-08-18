@@ -127,6 +127,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   List<TypeActeur> typeActeurData = ac.typeActeur!;
                   type = typeActeurData.map((data) => data.libelle).join(', ');
                   return ListTile(
+                    tileColor: Color.fromRGBO(255, 255, 255, 1),
                     leading: ac.logoActeur == null || ac.logoActeur!.isEmpty
                         ? ProfilePhoto(
                             totalWidth: 50,
@@ -213,30 +214,3 @@ class _CustomAppBarState extends State<CustomAppBar> {
           );
   }
 }
-//  IconButton(
-//                   onPressed: () async{
-//                      final acteurProvider = Provider.of<ActeurProvider>(
-//                                 context,
-//                                 listen: false);
-
-//                             // Déconnexion avec le provider
-//                             await acteurProvider.logout();
-//                             SharedPreferences prefs =
-//                                 await SharedPreferences.getInstance();
-//                             await prefs.clear();
-//                             //                   Navigator.pushReplacement(
-//                             // context,
-//                             // MaterialPageRoute(builder: (context) => LoginScreen()),
-//                             //                        );
-//                             Get.off(BottomNavigationPage(),
-//                                 duration: Duration(
-//                                     seconds:
-//                                         1), //duration of transitions, default 1 sec
-//                                 transition: Transition.leftToRight);
-//                   },
-//                   icon: Icon(
-//                     Icons.login,
-//                     color: d_colorGreen, // Ajout d'une couleur à l'icône
-//                     size: 30, // Ajout d'une taille à l'icône
-//                   ),
-//                 ),

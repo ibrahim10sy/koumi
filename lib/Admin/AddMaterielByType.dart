@@ -53,22 +53,23 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
   late TypeMateriel typeMateriel;
   late TypeMateriel type;
   bool isExist = false;
-   bool isLoadingLibelle = true;
-    String? libelleNiveau3Pays;
+  bool isLoadingLibelle = true;
+  String? libelleNiveau3Pays;
 
-
-     Future<String> getLibelleNiveau3PaysByActor(String id) async {
-    final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
+  Future<String> getLibelleNiveau3PaysByActor(String id) async {
+    final response = await http
+        .get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
 
     if (response.statusCode == 200) {
       print("libelle : ${response.body}");
-      return response.body;  // Return the body directly since it's a plain string
+      return response
+          .body; // Return the body directly since it's a plain string
     } else {
       throw Exception('Failed to load libelle niveau3Pays');
     }
-}
+  }
 
-     Future<void> fetchLibelleNiveau3Pays() async {
+  Future<void> fetchLibelleNiveau3Pays() async {
     try {
       String libelle = await getLibelleNiveau3PaysByActor(acteur.idActeur!);
       setState(() {
@@ -82,7 +83,6 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
       print('Error: $e');
     }
   }
-
 
   // void addDestinationAndPrix() {
   //   // Créer un nouveau contrôleur pour chaque champ
@@ -101,13 +101,11 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
     super.initState();
     verifyTypeMateriel();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-    _typeList =
-        http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
-  _niveau3List =
-        http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
+    _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
+    _niveau3List = http.get(Uri.parse(
+        '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
     fetchLibelleNiveau3Pays();
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
-  
   }
 
   void verifyTypeMateriel() {
@@ -206,17 +204,18 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
-          // leading: IconButton(
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     },
-          //     icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+          toolbarHeight: 75,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             "Ajout matériel",
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold,fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: SingleChildScrollView(
@@ -301,28 +300,33 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                       SizedBox(
                         height: 10,
                       ),
-                      isLoadingLibelle ?
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Chargement...",style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),)),
-                      )
-                      :
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 22,
-                        ),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                           libelleNiveau3Pays != null ? libelleNiveau3Pays!.toUpperCase() : "Localité",
-                            style:
-                                TextStyle(color: (Colors.black), fontSize: 18),
-                          ),
-                        ),
-                      ),
+                      isLoadingLibelle
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Chargement...",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                            )
+                          : Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 22,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  libelleNiveau3Pays != null
+                                      ? libelleNiveau3Pays!.toUpperCase()
+                                      : "Localité",
+                                  style: TextStyle(
+                                      color: (Colors.black), fontSize: 18),
+                                ),
+                              ),
+                            ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
@@ -344,9 +348,9 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                                 ),
                               );
                             }
-                          
+
                             if (snapshot.hasData) {
-                               dynamic jsonString =
+                              dynamic jsonString =
                                   utf8.decode(snapshot.data.bodyBytes);
                               dynamic responseData = json.decode(jsonString);
 
@@ -476,7 +480,7 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                       SizedBox(
                         height: 10,
                       ),
-                       Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
                         ),
@@ -687,8 +691,7 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                                           typeMateriel: type,
                                           photoMateriel: photo,
                                           acteur: acteur,
-                                          monnaie: monnaie
-                                          )
+                                          monnaie: monnaie)
                                       .then((value) => {
                                             Provider.of<MaterielService>(
                                                     context,
@@ -748,8 +751,7 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                                           etatMateriel: etat,
                                           typeMateriel: type,
                                           acteur: acteur,
-                                           monnaie: monnaie
-                                          )
+                                          monnaie: monnaie)
                                       .then((value) => {
                                             Provider.of<MaterielService>(
                                                     context,
@@ -833,8 +835,7 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
-                          )
-                          )
+                          ))
                     ],
                   ))
             ],

@@ -34,32 +34,34 @@ class _Niveau2ListState extends State<Niveau2List> {
   late TextEditingController _searchController;
   late Acteur acteur;
 
-   bool isLoadingLibelle = true;
-    String? libelleNiveau2Pays;
- 
+  bool isLoadingLibelle = true;
+  String? libelleNiveau2Pays;
+
   Future<String> getLibelleNiveau2PaysByActor(String id) async {
-    final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau2Pays/$id'));
+    final response = await http
+        .get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau2Pays/$id'));
 
     if (response.statusCode == 200) {
       print("libelle : ${response.body}");
-      return response.body;  // Return the body directly since it's a plain string
+      return response
+          .body; // Return the body directly since it's a plain string
     } else {
       throw Exception('Failed to load libelle niveau2Pays');
     }
- }
+  }
 
-    Future<void> fetchPaysDataByActor() async {
+  Future<void> fetchPaysDataByActor() async {
     try {
       String libelle2 = await getLibelleNiveau2PaysByActor(acteur.idActeur!);
 
-      setState(() { 
+      setState(() {
         libelleNiveau2Pays = libelle2;
         isLoadingLibelle = false;
       });
     } catch (e) {
       setState(() {
         isLoadingLibelle = false;
-        });
+      });
       print('Error: $e');
     }
   }
@@ -94,17 +96,18 @@ class _Niveau2ListState extends State<Niveau2List> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: Text(
           widget.niveau1pays.nomN1!.toUpperCase(),
-          style:
-              const TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: SingleChildScrollView(
@@ -161,8 +164,7 @@ class _Niveau2ListState extends State<Niveau2List> {
                     return Padding(
                       padding: EdgeInsets.all(10),
                       child: Center(
-                          child:
-                              Text("Aucun ${libelleNiveau2Pays} trouvé")),
+                          child: Text("Aucun ${libelleNiveau2Pays} trouvé")),
                     );
                   } else {
                     niveauList = snapshot.data!;
@@ -264,9 +266,8 @@ class _Niveau2ListState extends State<Niveau2List> {
                                                                               .applyChange(),
                                                                           setState(
                                                                               () {
-                                                                            _liste = Niveau2Service().fetchNiveau2ByNiveau1(widget
-                                                                                .niveau1pays
-                                                                                .idNiveau1Pays!);
+                                                                            _liste =
+                                                                                Niveau2Service().fetchNiveau2ByNiveau1(widget.niveau1pays.idNiveau1Pays!);
                                                                           }),
                                                                           Navigator.of(context)
                                                                               .pop(),
@@ -308,9 +309,8 @@ class _Niveau2ListState extends State<Niveau2List> {
                                                                               .applyChange(),
                                                                           setState(
                                                                               () {
-                                                                            _liste = Niveau2Service().fetchNiveau2ByNiveau1(widget
-                                                                                .niveau1pays
-                                                                                .idNiveau1Pays!);
+                                                                            _liste =
+                                                                                Niveau2Service().fetchNiveau2ByNiveau1(widget.niveau1pays.idNiveau1Pays!);
                                                                           }),
                                                                           Navigator.of(context)
                                                                               .pop(),
@@ -374,7 +374,7 @@ class _Niveau2ListState extends State<Niveau2List> {
                                                                           listen:
                                                                               false)
                                                                       .applyChange(),
-                                                                       setState(() {
+                                                                  setState(() {
                                                                     _liste = Niveau2Service().fetchNiveau2ByNiveau1(widget
                                                                         .niveau1pays
                                                                         .idNiveau1Pays!);

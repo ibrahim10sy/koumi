@@ -34,36 +34,38 @@ class _Niveau1ListState extends State<Niveau1List> {
   }
 
   bool isLoadingLibelle = true;
-    String? libelleNiveau1Pays;
-     late Acteur acteur;
- 
+  String? libelleNiveau1Pays;
+  late Acteur acteur;
+
   Future<String> getlibelleNiveau1PaysByActor(String id) async {
-    final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau1Pays/$id'));
+    final response = await http
+        .get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau1Pays/$id'));
 
     if (response.statusCode == 200) {
       print("libelle : ${response.body}");
-      return response.body;  // Return the body directly since it's a plain string
+      return response
+          .body; // Return the body directly since it's a plain string
     } else {
       throw Exception('Failed to load libelle niveau2Pays');
     }
- }
+  }
 
-    Future<void> fetchPaysDataByActor() async {
+  Future<void> fetchPaysDataByActor() async {
     try {
       String libelle2 = await getlibelleNiveau1PaysByActor(acteur.idActeur!);
 
-      setState(() { 
+      setState(() {
         libelleNiveau1Pays = libelle2;
         isLoadingLibelle = false;
       });
     } catch (e) {
       setState(() {
         isLoadingLibelle = false;
-        });
+      });
       print('Error: $e');
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -88,17 +90,18 @@ class _Niveau1ListState extends State<Niveau1List> {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             widget.pays.nomPays!.toUpperCase(),
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: SingleChildScrollView(
@@ -197,7 +200,8 @@ class _Niveau1ListState extends State<Niveau1List> {
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 )),
-                                            subtitle: Text(e.descriptionN1!.trim(),
+                                            subtitle: Text(
+                                                e.descriptionN1!.trim(),
                                                 style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 17,
@@ -257,7 +261,7 @@ class _Niveau1ListState extends State<Niveau1List> {
                                                                       (value) =>
                                                                           {
                                                                             Provider.of<Niveau1Service>(context, listen: false).applyChange(),
-                                                                             setState(() {
+                                                                            setState(() {
                                                                               _liste = Niveau1Service().fetchNiveau1ByPays(widget.pays.idPays!);
                                                                             }),
                                                                             Navigator.of(context).pop(),

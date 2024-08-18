@@ -352,18 +352,19 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
+         appBar: AppBar(
+             backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
             title: Text(
               "Matériels et Équipements",
               style: const TextStyle(
-                color: d_colorGreen,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -374,14 +375,14 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                         onPressed: () {
                           materielListeFuture = getAllMateriel();
                         },
-                        icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                        icon: const Icon(Icons.refresh, color: Colors.white,)),
                   ]
                 : [
                     IconButton(
                         onPressed: () {
                           materielListeFuture = getAllMateriel();
                         },
-                        icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                        icon: const Icon(Icons.refresh, color: Colors.white,)),
                     PopupMenuButton<String>(
                       padding: EdgeInsets.zero,
                       itemBuilder: (context) {

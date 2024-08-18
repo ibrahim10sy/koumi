@@ -18,7 +18,7 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _ActeurScreenState extends State<ActeurScreen> {
   late TextEditingController _searchController;
-   late ScrollController _scrollController;
+  late ScrollController _scrollController;
   List<Acteur> acteurList = [];
   bool _isLoading = false;
   late ActeurService _acteurService;
@@ -100,7 +100,7 @@ class _ActeurScreenState extends State<ActeurScreen> {
   @override
   void dispose() {
     _searchController.dispose();
-   _scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -117,17 +117,18 @@ class _ActeurScreenState extends State<ActeurScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             "Listes des acteurs",
             style: TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: Container(
@@ -195,7 +196,7 @@ class _ActeurScreenState extends State<ActeurScreen> {
               ];
             },
             body: SingleChildScrollView(
-                controller: _scrollController,
+              controller: _scrollController,
               child: Column(
                 children: [
                   Consumer<ActeurService>(

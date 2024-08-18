@@ -14,10 +14,11 @@ class _ParametreRegroupePageState extends State<ParametreRegroupePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -25,7 +26,9 @@ class _ParametreRegroupePageState extends State<ParametreRegroupePage> {
             icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
         title: Text(
           "Parametre regroupée",
-          style: TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold,
+          style: TextStyle(
+              color: d_colorGreen,
+              fontWeight: FontWeight.bold,
               overflow: TextOverflow.ellipsis),
         ),
         actions: [
@@ -43,6 +46,6 @@ class _ParametreRegroupePageState extends State<ParametreRegroupePage> {
       ),
     );
   }
-  
+
   void _showDialog() {}
 }

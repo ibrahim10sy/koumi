@@ -171,14 +171,15 @@ class _MesCommandeState extends State<MesCommande> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          toolbarHeight: 100,
+          appBar: AppBar(
+             backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
           title: Text(
             "Mes commandes",
             style: const TextStyle(
-              color: d_colorGreen,
+              color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
@@ -196,7 +197,7 @@ class _MesCommandeState extends State<MesCommande> {
                     });
                   });
                 },
-                icon: Icon(Icons.refresh)),
+                icon: Icon(Icons.refresh,color: Colors.white,)),
           ],
         ),
         body: !isExist

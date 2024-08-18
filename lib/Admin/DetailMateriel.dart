@@ -345,9 +345,10 @@ class _DetailMaterielState extends State<DetailMateriel> {
     return LoadingOverlay(
       isLoading: _isLoading,
       child: Scaffold(
-          appBar: AppBar(
-              centerTitle: true,
-              toolbarHeight: 100,
+            appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
               leading: _isEditing
                   ? IconButton(
                       onPressed: () {
@@ -355,6 +356,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                       },
                       icon: const Icon(
                         Icons.camera_alt,
+                        color: Colors.white,
                         // size: 60,
                       ),
                     )
@@ -363,18 +365,18 @@ class _DetailMaterielState extends State<DetailMateriel> {
                       Navigator.pop(context, true);
                       },
                       icon: const Icon(Icons.arrow_back_ios,
-                          color: d_colorGreen)),
+                          color: Colors.white)),
               title: _isEditing
                   ? Text(
                       'Modification',
                       style: const TextStyle(
-                          color: d_colorGreen, fontWeight: FontWeight.bold,
+                          color: Colors.white, fontWeight: FontWeight.bold,
                           fontSize: 20),
                     )
                   : Text(
                       'Détail matériel',
                       style: const TextStyle(
-                          color: d_colorGreen, fontWeight: FontWeight.bold,
+                          color: Colors.white, fontWeight: FontWeight.bold,
                           fontSize: 20),
                     ),
               actions: acteur.idActeur == materiels.acteur!.idActeur!
@@ -387,7 +389,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                                 });
                                 updateMethode();
                               },
-                              icon: Icon(Icons.check),
+                              icon: Icon(Icons.check,color: Colors.white,),
                             )
                           : IconButton(
                               onPressed: () async {
@@ -395,7 +397,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                                   _isEditing = true;
                                 });
                               },
-                              icon: Icon(Icons.edit),
+                              icon: Icon(Icons.edit,color: Colors.white,),
                             ),
                     ]
                   : null),
@@ -498,7 +500,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -506,6 +508,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 18,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -541,7 +544,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -549,6 +552,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),

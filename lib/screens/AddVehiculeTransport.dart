@@ -106,17 +106,18 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-          centerTitle: true,
-          toolbarHeight: 100,
+            backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             'Ajout de véhicule',
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: SingleChildScrollView(

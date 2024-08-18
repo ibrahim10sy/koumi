@@ -30,12 +30,13 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         title: Text(
           'Détail',
-          style:
-              const TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: SingleChildScrollView(
@@ -53,7 +54,7 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -73,7 +74,7 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -88,10 +89,9 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
         ),
         _buildItem(
             'Spéculation cultiver ', superficies.speculation.nomSpeculation!),
-             _buildItem('Intrant utilisé ',
+        _buildItem('Intrant utilisé ',
             superficies.intrants!.map((data) => data).join(', ')),
         _buildItem('Campagne agricole ', superficies.campagne.nomCampagne),
-       
       ],
     );
   }

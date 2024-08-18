@@ -190,20 +190,22 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 100,
+       appBar: AppBar(
+            backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: Text(
           widget.isEditable! ? 'Modifier de produit' : 'Ajout de produit',
           style: const TextStyle(
-              color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: SingleChildScrollView(

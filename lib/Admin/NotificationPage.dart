@@ -68,16 +68,18 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: Text(
             "Notifications",
-            style: TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold,fontSize: 20),
+            style: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           actions: [
             PopupMenuButton<String>(

@@ -1,8 +1,8 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 
-class CodePays {
-  Map<String, String> countries = {
+class Getflagpays {
+  static Map<String, String> countries = {
     "afghanistan": "AF",
     "albanie": "AL",
     "algérie": "DZ",
@@ -109,7 +109,7 @@ class CodePays {
     "malawi": "MW",
     "malaisie": "MY",
     "maldives": "MV",
-    "mali": "ML",
+    // "mali": "ML",
     "malte": "MT",
     "îles marshall": "MH",
     "mauritanie": "MR",
@@ -199,33 +199,10 @@ class CodePays {
     "yémen": "YE",
     "zambie": "ZM",
     "zimbabwe": "ZW",
+    "united states": "ML",
   };
 
-  Widget getFlag(String pays) {
-    String code = '';
-    String p = pays.toLowerCase();
-    countries.forEach((key, value) {
-      if (p == key) {
-        // setState(() {
-
-        // });
-        code = value;
-      }
-    });
-    return code.isEmpty
-        ? Image.asset(
-            "assets/images/sous.png",
-            width: 50,
-            height: 50,
-          )
-        : CountryFlag.fromCountryCode(
-            code,
-            height: 48,
-            width: 62,
-          );
-  }
-
-  Widget getFlags(String pays) {
+  static Widget getFlag(String pays) {
     String code = '';
     String p = pays.toLowerCase();
     countries.forEach((key, value) {
@@ -233,16 +210,10 @@ class CodePays {
         code = value;
       }
     });
-    return code.isEmpty
-        ? Text("Pays non trouvé",
-            style: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontSize: 15,
-                fontStyle: FontStyle.italic))
-        : CountryFlag.fromCountryCode(
-            "ML",
-            height: 35,
-            width: 35,
-          );
+    return CountryFlag.fromCountryCode(
+      code,
+      height: 30,
+      width: 30,
+    );
   }
 }

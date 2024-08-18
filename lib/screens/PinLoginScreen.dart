@@ -261,15 +261,22 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     return LoadingOverlay(
       isLoading: isLoading,
       child: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
+            backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
             leading: IconButton(
-                onPressed: () {
-                 Get.offAll(BottomNavigationPage(),
-                      transition: Transition.leftToRight);
-                  Provider.of<BottomNavigationService>(context, listen: false)
-                      .changeIndex(0);
-                },
-                icon: const Icon(Icons.arrow_back_ios)),
+              onPressed: () {
+                Get.offAll(BottomNavigationPage(),
+                    transition: Transition.leftToRight);
+                Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(0);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+              ),
+            ),
             actions: [
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
@@ -304,7 +311,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                 },
               )
             ]),
-        backgroundColor: const Color(0xFFFFFFFF),
         body: SafeArea(
           minimum: EdgeInsets.only(top: 10),
           child: ListView(

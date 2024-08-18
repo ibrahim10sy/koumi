@@ -143,15 +143,16 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: isEditing
               ? Container()
               : IconButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen),
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                 ),
           title: typeActeurData
                   .map((e) => e.libelle!.toLowerCase())
@@ -161,13 +162,13 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: d_colorGreen),
+                      color: Colors.white),
                 )
               : Text(
                   "Information sur la structure",
                   style: TextStyle(
                       fontSize: 20,
-                      color: d_colorGreen,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),
           actions: typeActeurData
@@ -263,7 +264,10 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                               }
                             } catch (e) {}
                           },
-                          icon: const Icon(Icons.save),
+                          icon: const Icon(
+                            Icons.save,
+                            color: Colors.white,
+                          ),
                         )
                       : IconButton(
                           onPressed: () {
@@ -271,7 +275,10 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                               isEditing = true; // Activer le mode édition
                             });
                           },
-                          icon: const Icon(Icons.edit),
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ),
                         ),
                 ]
               : null),

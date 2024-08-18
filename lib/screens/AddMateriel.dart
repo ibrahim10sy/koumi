@@ -185,21 +185,7 @@ class _AddMaterielState extends State<AddMateriel> {
 
   final FocusNode _fieldFocusNode = FocusNode();
   // Liste des suggestions
-  final List<String> _productNames = [
-    'Apple',
-    'Banana',
-    'Carrot',
-    'Dates',
-    'Eggplant',
-    'Fig',
-    'Grapes',
-    'Honeydew',
-    'Iceberg Lettuce',
-    'Jackfruit',
-    'Kale',
-    'Lemon',
-    // Ajoutez d'autres produits ici
-  ];
+ 
   void _handleButtonPress() async {
     // Afficher l'indicateur de chargement
     setState(() {
@@ -213,18 +199,19 @@ class _AddMaterielState extends State<AddMateriel> {
         isLoading: _isLoading,
         child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-          appBar: AppBar(
+         appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
-            // leading: IconButton(
-            //     onPressed: () {
-            //       Navigator.of(context).pop();
-            //     },
-            //     icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+            toolbarHeight: 75,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
               "Ajout matériel",
               style: const TextStyle(
-                  color: d_colorGreen,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),

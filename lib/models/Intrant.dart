@@ -10,6 +10,7 @@ class Intrant {
   final String? idIntrant;
   String? nomIntrant;
   double? quantiteIntrant;
+  int? nbreView;
   int? prixIntrant;
   final String? codeIntrant;
   final String? descriptionIntrant;
@@ -31,6 +32,7 @@ class Intrant {
     this.nomIntrant,
     this.quantiteIntrant,
     this.prixIntrant,
+    this.nbreView,
     this.codeIntrant,
     this.descriptionIntrant,
     this.photoIntrant,
@@ -54,6 +56,7 @@ class Intrant {
     String? nomIntrant,
     double? quantiteIntrant,
     int? prixIntrant,
+    int? nbreView,
     String? codeIntrant,
     String? descriptionIntrant,
     String? photoIntrant,
@@ -74,6 +77,7 @@ class Intrant {
       nomIntrant: nomIntrant ?? this.nomIntrant,
       quantiteIntrant: quantiteIntrant ?? this.quantiteIntrant,
       prixIntrant: prixIntrant ?? this.prixIntrant,
+      nbreView: nbreView ?? this.nbreView,
       codeIntrant: codeIntrant ?? this.codeIntrant,
       descriptionIntrant: descriptionIntrant ?? this.descriptionIntrant,
       photoIntrant: photoIntrant ?? this.photoIntrant,
@@ -97,6 +101,7 @@ class Intrant {
       'nomIntrant': nomIntrant,
       'quantiteIntrant': quantiteIntrant,
       'prixIntrant': prixIntrant,
+      'nbreView': nbreView,
       'codeIntrant': codeIntrant,
       'descriptionIntrant': descriptionIntrant,
       'photoIntrant': photoIntrant,
@@ -120,6 +125,7 @@ class Intrant {
       nomIntrant: map['nomIntrant'] != null ? map['nomIntrant'] as String : null,
       quantiteIntrant: map['quantiteIntrant'] != null ? map['quantiteIntrant'] as double : null,
       prixIntrant: map['prixIntrant'] != null ? map['prixIntrant'] as int : null,
+      nbreView: map['nbreView'] != null ? map['nbreView'] as int : null,
       codeIntrant: map['codeIntrant'] != null ? map['codeIntrant'] as String : null,
       descriptionIntrant: map['descriptionIntrant'] != null ? map['descriptionIntrant'] as String : null,
       photoIntrant: map['photoIntrant'] != null ? map['photoIntrant'] as String : null,
@@ -157,6 +163,7 @@ class Intrant {
       other.nomIntrant == nomIntrant &&
       other.quantiteIntrant == quantiteIntrant &&
       other.prixIntrant == prixIntrant &&
+      other.nbreView == nbreView &&
       other.codeIntrant == codeIntrant &&
       other.descriptionIntrant == descriptionIntrant &&
       other.photoIntrant == photoIntrant &&
@@ -179,6 +186,7 @@ class Intrant {
       nomIntrant.hashCode ^
       quantiteIntrant.hashCode ^
       prixIntrant.hashCode ^
+      nbreView.hashCode ^
       codeIntrant.hashCode ^
       descriptionIntrant.hashCode ^
       photoIntrant.hashCode ^

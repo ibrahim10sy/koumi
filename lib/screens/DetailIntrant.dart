@@ -7,6 +7,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
@@ -101,35 +102,6 @@ class _DetailIntrantState extends State<DetailIntrant> {
     return result;
   }
 
-  //  String? monnaie;
-
-//    Future<String> getMonnaieByActor(String id) async {
-//     final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/monnaie/$id'));
-
-//     if (response.statusCode == 200) {
-//       print("libelle : ${response.body}");
-//       return response.body;  // Return the body directly since it's a plain string
-//     } else {
-//       throw Exception('Failed to load monnaie');
-//     }
-// }
-
-//  Future<void> fetchPaysDataByActor() async {
-//     try {
-//       String monnaies = await getMonnaieByActor(acteur.idActeur!);
-
-//       setState(() {
-//         monnaie = monnaies;
-//         isLoadingLibelle = false;
-//       });
-//     } catch (e) {
-//       setState(() {
-//         isLoadingLibelle = false;
-//         });
-//       print('Error: $e');
-//     }
-//   }
-
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
@@ -154,6 +126,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
     verify();
 
     intrants = widget.intrant;
+    updateViews(intrants);
     rates = fetchConvert(intrants);
     print("rates ${rates.toString()}");
     _nomController.text = intrants.nomIntrant!;
@@ -166,6 +139,18 @@ class _DetailIntrantState extends State<DetailIntrant> {
     monnaieValue = intrants.monnaie!.idMonnaie;
     isDialOpenNotifier = ValueNotifier<bool>(false);
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
+  }
+
+  void updateViews(Intrant i) async {
+    if (acteur.idActeur != i.acteur!.idActeur) {
+      final response = await http
+          .put(Uri.parse('$apiOnlineUrl/intrant/updateView/${i.idIntrant}'));
+      if (response.statusCode == 200) {
+        print('updateView : ${i.nbreView}');
+      } else {
+        print('Failed to update view count');
+      }
+    }
   }
 
   Future<File> saveImagePermanently(String imagePath) async {
@@ -249,6 +234,32 @@ class _DetailIntrantState extends State<DetailIntrant> {
       final int prix = int.tryParse(_prixController.text) ?? 0;
       final String date = _dateController.text;
       final String unite = _uniteController.text;
+
+      if (quantite > intrants.quantiteIntrant!) {
+        setState(() {
+          // Afficher l'indicateur de chargement pendant l'opération
+          _isLoading = false;
+        });
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Non autorisé"),
+            content: Text(
+                "Toute augmentation de quantité neccessite une nouvelle ajout de produits",
+                style: TextStyle(
+                  color: Colors.black87,
+                )),
+            actions: [
+              TextButton(
+                child: Text("Fermer"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+
+        return;
+      }
 
       if (photo != null) {
         await IntrantService()
@@ -376,13 +387,15 @@ class _DetailIntrantState extends State<DetailIntrant> {
         child: Scaffold(
             backgroundColor: const Color.fromARGB(255, 250, 250, 250),
             appBar: AppBar(
+                backgroundColor: d_colorOr,
                 centerTitle: true,
-                toolbarHeight: 100,
+                toolbarHeight: 75,
                 leading: _isEditing
                     ? IconButton(
                         onPressed: _showImageSourceDialog,
                         icon: const Icon(
                           Icons.camera_alt,
+                          color: Colors.white,
                           // size: 60,
                         ),
                       )
@@ -390,20 +403,22 @@ class _DetailIntrantState extends State<DetailIntrant> {
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
-                        icon: const Icon(Icons.arrow_back_ios,
-                            color: d_colorGreen)),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        )),
                 title: _isEditing
                     ? Text(
                         'Modification',
                         style: const TextStyle(
-                            color: d_colorGreen,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       )
                     : Text(
                         'Détail intrant',
                         style: const TextStyle(
-                            color: d_colorGreen,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
@@ -417,7 +432,10 @@ class _DetailIntrantState extends State<DetailIntrant> {
                                   });
                                   updateMethode();
                                 },
-                                icon: Icon(Icons.check),
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                ),
                               )
                             : IconButton(
                                 onPressed: () async {
@@ -425,7 +443,10 @@ class _DetailIntrantState extends State<DetailIntrant> {
                                     _isEditing = true;
                                   });
                                 },
-                                icon: Icon(Icons.edit),
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
                               ),
                       ]
                     : null),
@@ -584,13 +605,14 @@ class _DetailIntrantState extends State<DetailIntrant> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
                 intrants.nomIntrant!.toUpperCase(),
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
+                    color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
@@ -604,7 +626,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -612,6 +634,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -621,14 +644,14 @@ class _DetailIntrantState extends State<DetailIntrant> {
         Padding(
           padding: EdgeInsets.all(8),
           child: ReadMoreText(
-            colorClickableText: Colors.orange,
+            colorClickableText: d_colorOr,
             trimLines: 2,
             trimMode: TrimMode.Line,
             trimCollapsedText: "Lire plus",
             trimExpandedText: "Lire moins",
             style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
             intrants.descriptionIntrant == null
-                ? "A Henley shirt is a collarless pullover shirt, by a round neckline and a placket about 3 to 5 inches (8 to 13 cm) long and usually having 2–5 buttons."
+                ? ""
                 : intrants.descriptionIntrant!,
           ),
         ),
@@ -639,20 +662,23 @@ class _DetailIntrantState extends State<DetailIntrant> {
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
-                'Autre information',
+                'Autres informations',
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
           ),
         ),
         // _buildItem('Spéculation ', intrants.speculation!.nomSpeculation!),
+        _getPays(intrants),
+        _buildItem('Nombre de vue  ', intrants.nbreView.toString()),
         _buildItem('Catégorie  ', intrants.categorieProduit!.libelleCategorie!),
         _buildItem(
             'Filière  ', intrants.categorieProduit!.filiere!.libelleFiliere!),
@@ -660,45 +686,6 @@ class _DetailIntrantState extends State<DetailIntrant> {
         acteur.idActeur != intrants.acteur!.idActeur
             ? _buildFournissuer()
             : Container(),
-        // isExist == true
-        //     ? widget.intrant.acteur!.idActeur == acteur.idActeur
-        //         ? SizedBox()
-        //         : Center(
-        //             child: acteur.idActeur != intrants.acteur!.idActeur!
-        //                 ? Center(
-        //                     child: SizedBox(
-        //                       width: 200,
-        //                       height: 60,
-        //                       child: ElevatedButton(
-        //                         onPressed: () {
-        //                           // _addToCart(widget.stock);
-        //                           if (acteur.idActeur ==
-        //                               intrants.acteur!.idActeur) {
-        //                             Snack.error(
-        //                                 titre: "Alerte",
-        //                                 message:
-        //                                     "Désolé!, Vous ne pouvez pas commander un produit qui vous appartient");
-        //                           } else {
-        //                             Provider.of<CartProvider>(context,
-        //                                     listen: false)
-        //                                 .addToCartInt(widget.intrant, 1, "");
-        //                           }
-        //                         },
-        //                         style: ElevatedButton.styleFrom(
-        //                             foregroundColor: Colors.orange,
-        //                             shape: const StadiumBorder()),
-        //                         child: Text(
-        //                           "Ajouter au panier",
-        //                           style: TextStyle(
-        //                               fontSize: 16,
-        //                               fontWeight: FontWeight.bold),
-        //                         ),
-        //                       ),
-        //                     ),
-        //                   )
-        //                 : Container(),
-        //           )
-        //     : Container(),
       ],
     );
   }
@@ -906,6 +893,29 @@ class _DetailIntrantState extends State<DetailIntrant> {
               ),
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _getPays(Intrant intrant) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Pays",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 16),
+            ),
+          ),
+          CodePays().getFlags(intrants.acteur!.niveau3PaysActeur!)
         ],
       ),
     );

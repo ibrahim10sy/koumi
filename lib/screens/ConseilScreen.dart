@@ -83,17 +83,18 @@ class _ConseilScreenState extends State<ConseilScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: const Text(
             "Conseils",
             style: TextStyle(
-              color: d_colorGreen,
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),

@@ -343,19 +343,23 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
-            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+            backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                )),
             title: const Text(
               "Compléments alimentaires",
               style: TextStyle(
-                color: d_colorGreen,
+                color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -368,7 +372,7 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
                               ? detectedCountry!
                               : "Mali");
                         },
-                        icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                        icon: const Icon(Icons.refresh, color: Colors.white)),
                     (typeActeurData
                                 .map((e) => e.libelle!.toLowerCase())
                                 .contains("commercant") ||
@@ -416,7 +420,7 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
                               ? detectedCountry!
                               : "Mali");
                         },
-                        icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                        icon: const Icon(Icons.refresh, color: Colors.white)),
                   ]),
         body: GestureDetector(
           onTap: () {

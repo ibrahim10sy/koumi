@@ -177,18 +177,19 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
+          appBar: AppBar(
+             backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context, true);
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
               'Mes véhicules',
               style: const TextStyle(
-                  color: d_colorGreen,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
@@ -202,7 +203,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                           .fetchVehiculeByActeur(acteur.idActeur!);
                     });
                   },
-                  icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                  icon: const Icon(Icons.refresh, color:  Colors.white)),
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
                 itemBuilder: (context) => <PopupMenuEntry<String>>[

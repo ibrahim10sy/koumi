@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class ListeMaterielByType extends StatefulWidget {
   final TypeMateriel? typeMateriel;
-  
+
   ListeMaterielByType({super.key, this.typeMateriel});
 
   @override
@@ -38,7 +38,8 @@ class _ListeMaterielByTypeState extends State<ListeMaterielByType> {
   bool hasMore = true;
 
   Future<List<Materiels>> getListe(String id) async {
-    final response = await MaterielService().fetchMaterielByTypeAndPaysWithPagination(id);
+    final response =
+        await MaterielService().fetchMaterielByTypeAndPaysWithPagination(id);
 
     return response;
   }
@@ -157,19 +158,20 @@ class _ListeMaterielByTypeState extends State<ListeMaterielByType> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           title: Text(
             type.nom!.toUpperCase(),
             style: const TextStyle(
-                color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           actions: [
             IconButton(
                 onPressed: () {
                   verifyTypeMateriel();
                 },
-                icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                icon: const Icon(Icons.refresh, color: Colors.white)),
             PopupMenuButton<String>(
               padding: EdgeInsets.zero,
               itemBuilder: (context) {
@@ -246,13 +248,13 @@ class _ListeMaterielByTypeState extends State<ListeMaterielByType> {
             ),
             const SizedBox(height: 10),
             RefreshIndicator(
-
-              onRefresh: () async{
-                           setState(() {
-                             page = 0;
-                             futureListe = MaterielService().fetchMaterielByTypeAndPaysWithPagination(type.idTypeMateriel!);
-                           });
-
+              onRefresh: () async {
+                setState(() {
+                  page = 0;
+                  futureListe = MaterielService()
+                      .fetchMaterielByTypeAndPaysWithPagination(
+                          type.idTypeMateriel!);
+                });
               },
               child: Consumer<MaterielService>(
                 builder: (context, materielService, child) {
@@ -346,7 +348,9 @@ class _ListeMaterielByTypeState extends State<ListeMaterielByType> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       DetailMateriel(
-                                                          materiel: filtereSearch[index])));
+                                                          materiel:
+                                                              filtereSearch[
+                                                                  index])));
                                         },
                                         child: Card(
                                             margin: EdgeInsets.all(8),
@@ -360,7 +364,9 @@ class _ListeMaterielByTypeState extends State<ListeMaterielByType> {
                                                             8.0),
                                                     child: SizedBox(
                                                         height: 85,
-                                                        child: filtereSearch[index].photoMateriel ==
+                                                        child: filtereSearch[
+                                                                            index]
+                                                                        .photoMateriel ==
                                                                     null ||
                                                                 filtereSearch[
                                                                         index]

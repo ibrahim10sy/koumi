@@ -324,19 +324,20 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
             backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          appBar: AppBar(
+             backgroundColor: d_colorOr,
             centerTitle: true,
-            toolbarHeight: 100,
+            toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(Icons.arrow_back_ios,color: Colors.white)),
             title: const Text(
               "Produits phytosanitaires",
               style: TextStyle(
-                color: d_colorGreen,
+                color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -350,7 +351,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                   ? detectedCountry!
                                   : "Mali");
                         },
-                        icon: const Icon(Icons.refresh, color: d_colorGreen)),
+                        icon: const Icon(Icons.refresh, color: Colors.white)),
                   ]
                 : (typeActeurData
                             .map((e) => e.libelle!.toLowerCase())
@@ -370,7 +371,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                       : "Mali");
                             },
                             icon:
-                                const Icon(Icons.refresh, color: d_colorGreen)),
+                                const Icon(Icons.refresh, color: Colors.white)),
                         PopupMenuButton<String>(
                           padding: EdgeInsets.zero,
                           itemBuilder: (context) {
@@ -428,7 +429,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                       : "Mali");
                             },
                             icon:
-                                const Icon(Icons.refresh, color: d_colorGreen)),
+                                const Icon(Icons.refresh, color: Colors.white)),
                       ]),
         body: GestureDetector(
           onTap: () {

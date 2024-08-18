@@ -53,8 +53,8 @@ class _AlerteScreenState extends State<AlerteScreen> {
 
   @override
   void dispose() {
-      _searchController.dispose();
-         _scrollController.dispose();
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -63,17 +63,18 @@ class _AlerteScreenState extends State<AlerteScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+          backgroundColor: d_colorOr,
           centerTitle: true,
-          toolbarHeight: 100,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios)),
+              icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
           title: const Text(
             "Alertes ",
             style: TextStyle(
-              color: d_colorGreen,
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -109,7 +110,6 @@ class _AlerteScreenState extends State<AlerteScreen> {
                             },
                           ),
                         ),
-                       
                         PopupMenuItem<String>(
                           child: ListTile(
                             leading: const Icon(
@@ -144,60 +144,60 @@ class _AlerteScreenState extends State<AlerteScreen> {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
-                                   Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            isSearchMode = !isSearchMode;
-                            _searchController.clear();
-                          });
-                        },
-                        icon: Icon(
-                          isSearchMode ? Icons.close : Icons.search,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        isSearchMode = !isSearchMode;
+                        _searchController.clear();
+                      });
+                    },
+                    icon: Icon(
+                      isSearchMode ? Icons.close : Icons.search,
+                      color: isSearchMode ? Colors.red : Colors.green,
+                    ),
+                    label: Text(
+                      isSearchMode ? 'Fermer' : 'Rechercher...',
+                      style: TextStyle(
                           color: isSearchMode ? Colors.red : Colors.green,
-                        ),
-                        label: Text(
-                          isSearchMode ? 'Fermer' : 'Rechercher...',
-                          style: TextStyle(
-                              color: isSearchMode ? Colors.red : Colors.green,
-                              fontSize: 17),
-                        ),
+                          fontSize: 17),
+                    ),
+                  ),
+                ),
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    if (isSearchMode)
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey[50],
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search, color: Colors.blueGrey[400]),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  controller: _searchController,
-                                  onChanged: (value) {
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: 'Rechercher',
-                                    border: InputBorder.none,
-                                    hintStyle:
-                                        TextStyle(color: Colors.blueGrey[400]),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                  ),
               ])),
             ];
           },

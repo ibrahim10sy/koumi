@@ -69,17 +69,18 @@ class _Niveau2PageState extends State<Niveau2Page> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
+        backgroundColor: d_colorOr,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: Text(
           "Niveau 2",
           style: const TextStyle(
-              color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
           PopupMenuButton<String>(
@@ -714,28 +715,28 @@ class _addNiveau2State extends State<addNiveau2> {
                         dynamic jsonString =
                             utf8.decode(snapshot.data.bodyBytes);
                         dynamic responseData = json.decode(jsonString);
-                        if(responseData is List){
+                        if (responseData is List) {
                           final reponse = responseData;
-                           final paysList = reponse
+                          final paysList = reponse
                               .map((e) => Pays.fromMap(e))
                               .where((con) => con.statutPays == true)
                               .toList();
 
-                         if (paysList.isEmpty) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun pays trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return DropdownButtonFormField<String>(
+                          if (paysList.isEmpty) {
+                            return DropdownButtonFormField(
+                              items: [],
+                              onChanged: null,
+                              decoration: InputDecoration(
+                                labelText: 'Aucun pays trouvé',
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            );
+                          }
+                          return DropdownButtonFormField<String>(
                             isExpanded: true,
                             items: paysList
                                 .map(
@@ -765,8 +766,7 @@ class _addNiveau2State extends State<addNiveau2> {
                               ),
                             ),
                           );
-                        }
-                       else {
+                        } else {
                           return DropdownButtonFormField(
                             items: [],
                             onChanged: null,
@@ -781,7 +781,7 @@ class _addNiveau2State extends State<addNiveau2> {
                           );
                         }
                       }
-                    return DropdownButtonFormField(
+                      return DropdownButtonFormField(
                         items: [],
                         onChanged: null,
                         decoration: InputDecoration(
@@ -819,9 +819,9 @@ class _addNiveau2State extends State<addNiveau2> {
                             utf8.decode(snapshot.data.bodyBytes);
                         dynamic responseData = json.decode(jsonString);
 
-                          if(responseData is List){
-                              final reponse = responseData;
-                              final niveauList = reponse
+                        if (responseData is List) {
+                          final reponse = responseData;
+                          final niveauList = reponse
                               .map((e) => Niveau1Pays.fromMap(e))
                               .where((con) => con.statutN1 == true)
                               .toList();
@@ -840,7 +840,7 @@ class _addNiveau2State extends State<addNiveau2> {
                               ),
                             );
                           }
-                               return DropdownButtonFormField<String>(
+                          return DropdownButtonFormField<String>(
                             isExpanded: true,
                             items: niveauList
                                 .map(
@@ -871,9 +871,9 @@ class _addNiveau2State extends State<addNiveau2> {
                             ),
                           );
                         }
-                          }
+                      }
 
-                          return DropdownButtonFormField(
+                      return DropdownButtonFormField(
                         items: [],
                         onChanged: null,
                         decoration: InputDecoration(
@@ -885,7 +885,6 @@ class _addNiveau2State extends State<addNiveau2> {
                           ),
                         ),
                       );
-                        
                     },
                   ),
                   SizedBox(height: 16),

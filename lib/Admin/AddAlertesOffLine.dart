@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:country_code_picker/country_code_picker.dart';
@@ -13,21 +12,20 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+
 class AddAlertesOffLineScreen extends StatefulWidget {
   const AddAlertesOffLineScreen({super.key});
 
   @override
-  State<AddAlertesOffLineScreen> createState() => _AddAlertesOffLineScreenState();
+  State<AddAlertesOffLineScreen> createState() =>
+      _AddAlertesOffLineScreenState();
 }
 
 const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
-
 class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
-
-  
-    TextEditingController _titreController = TextEditingController();
+  TextEditingController _titreController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   final recorder = FlutterSoundRecorder();
   final formkey = GlobalKey<FormState>();
@@ -194,7 +192,7 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
     );
   }
 
-   Future initRecoder() async {
+  Future initRecoder() async {
     final status = await Permission.microphone.request();
 
     if (status != PermissionStatus.granted) {
@@ -226,37 +224,36 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
   @override
   void initState() {
     super.initState();
-   initRecoder();
+    initRecoder();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
   }
 
   @override
   void dispose() {
- _tokenTextController.dispose();
+    _tokenTextController.dispose();
     _tokenAudioController.dispose();
-    _tokenImageController.dispose();    super.dispose();
+    _tokenImageController.dispose();
+    super.dispose();
   }
 
-    
-
-
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return LoadingOverlay(
         isLoading: _isLoading,
         child: Scaffold(
             backgroundColor: const Color.fromARGB(255, 250, 250, 250),
             appBar: AppBar(
+                backgroundColor: d_colorOr,
                 centerTitle: true,
-                toolbarHeight: 100,
+                toolbarHeight: 75,
                 leading: IconButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: const Icon(Icons.arrow_back_ios)),
+                    icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
                 title: const Text(
                   "Ajout d'alerte",
                   style: TextStyle(
-                    color: d_colorGreen,
+                    color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -302,7 +299,6 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
                               ),
                             ),
                           ),
-
                           SizedBox(
                             height: 10,
                           ),
@@ -341,7 +337,7 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
                               ),
                             ),
                           ),
-                                                    SizedBox(
+                          SizedBox(
                             height: 10,
                           ),
                           Padding(
@@ -362,14 +358,17 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
                                 vertical: 10, horizontal: 20),
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(8)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
                                 border: Border.all(
-                                  color: Colors.black26, // Couleur de la bordure
+                                  color:
+                                      Colors.black26, // Couleur de la bordure
                                   width: 2, // Largeur de la bordure
                                 ),
                               ),
                               child: CountryCodePicker(
-                                backgroundColor: Colors.transparent, // Fond transparent pour le picker
+                                backgroundColor: Colors
+                                    .transparent, // Fond transparent pour le picker
                                 onChanged: (CountryCode countryCode) {
                                   setState(() {
                                     selectedCountry = countryCode.name!;
@@ -377,7 +376,8 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
                                     print("Pays : $selectedCountry");
                                   });
                                 },
-                                  initialSelection: selectedCountry, // Set initial selection based on detected country code
+                                initialSelection:
+                                    selectedCountry, // Set initial selection based on detected country code
                                 showCountryOnly: true,
                                 showOnlyCountryWhenClosed: true,
                                 alignLeft: true,
@@ -531,11 +531,14 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
                                       await AlertesOffLineService()
                                           .creerAlertesOffLine(
                                               titreAlerteOffLine: titre,
-                                              descriptionAlerteOffLine: description,
+                                              descriptionAlerteOffLine:
+                                                  description,
                                               pays: selectedCountry,
                                               codePays: selectedCountryCode,
-                                              videoAlerteOffLine: _videoUploaded,
-                                              audioAlerteOffLine: audiosUploaded,
+                                              videoAlerteOffLine:
+                                                  _videoUploaded,
+                                              audioAlerteOffLine:
+                                                  audiosUploaded,
                                               photoAlerteOffLine: photoUploaded)
                                           .then((value) => {
                                                 // FirebaseApi()
@@ -587,11 +590,12 @@ class _AddAlertesOffLineScreenState extends State<AddAlertesOffLineScreen> {
                                     } else {
                                       await AlertesOffLineService()
                                           .creerAlertesOffLine(
-                                              titreAlerteOffLine: titre,
-                                              descriptionAlerteOffLine: description,
-                                              pays: selectedCountry,
-                                              codePays: selectedCountryCode,
-                                              )
+                                            titreAlerteOffLine: titre,
+                                            descriptionAlerteOffLine:
+                                                description,
+                                            pays: selectedCountry,
+                                            codePays: selectedCountryCode,
+                                          )
                                           .then((value) => {
                                                 // FirebaseApi()
                                                 //     .sendPushNotificationToTopic(

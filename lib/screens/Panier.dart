@@ -173,13 +173,15 @@ class _PanierState extends State<Panier> {
     return LoadingOverlay(
       isLoading: isLoading,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.orange,
+         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+         appBar: AppBar(
+             backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
           title: Text(
             "Panier",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          centerTitle: true,
           actions: !isExist
               ? null
               : [

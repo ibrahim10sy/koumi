@@ -53,18 +53,19 @@ class _ZoneState extends State<Zone> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 100,
+        appBar: AppBar(
+             backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+            icon: const Icon(Icons.arrow_back_ios, color:  Colors.white)),
         title: const Text(
           "Zone de production",
           style: TextStyle(
-              color: d_colorGreen, fontWeight: FontWeight.bold, fontSize: 20),
+              color:  Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
           PopupMenuButton<String>(

@@ -453,14 +453,16 @@ class _DetailTransportState extends State<DetailTransport> {
       isLoading: _isLoading,
       child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-          appBar: AppBar(
-              centerTitle: true,
-              toolbarHeight: 100,
+           appBar: AppBar(
+             backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
               leading: _isEditing
                   ? IconButton(
                       onPressed: _showImageSourceDialog,
                       icon: const Icon(
                         Icons.camera_alt,
+                        color: Colors.white,
                         // size: 60,
                       ),
                     )
@@ -469,20 +471,20 @@ class _DetailTransportState extends State<DetailTransport> {
                         Navigator.of(context).pop();
                       },
                       icon:
-                          const Icon(Icons.arrow_back_ios, color: d_colorGreen),
+                          const Icon(Icons.arrow_back_ios, color: Colors.white),
                     ),
               title: _isEditing
                   ? Text(
                       'Modification',
                       style: const TextStyle(
-                          color: d_colorGreen,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20),
                     )
                   : Text(
                       'Transport',
                       style: const TextStyle(
-                          color: d_colorGreen,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20),
                     ),
@@ -497,7 +499,7 @@ class _DetailTransportState extends State<DetailTransport> {
                                 });
                                 updateMethode();
                               },
-                              icon: Icon(Icons.check),
+                              icon: Icon(Icons.check,color: Colors.white,),
                             )
                           : IconButton(
                               onPressed: () async {
@@ -506,7 +508,7 @@ class _DetailTransportState extends State<DetailTransport> {
                                   vehicules = widget.vehicule;
                                 });
                               },
-                              icon: Icon(Icons.edit),
+                              icon: Icon(Icons.edit,color: Colors.white,),
                             ),
                     ]
                   : null),
