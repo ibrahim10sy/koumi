@@ -313,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.4"
+  dropdown_plus_plus:
+    dependency: "direct dev"
+    description:
+      name: dropdown_plus_plus
+      sha256: ef41042e085e8a832f299eddda88f19e128bc54057ece9648bcd948133070dd7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1+1"
   dropdown_search:
     dependency: "direct dev"
     description:

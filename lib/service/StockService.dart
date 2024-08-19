@@ -331,7 +331,8 @@ Future<List<Stock>> fetchStockByPays(String nomPays,
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/Stock/getAllStocksByPays?nomPays=${nomPays}&page=$page&size=$size'));
-
+   print(
+          "servcie : $apiOnlineUrl/Stock/getAllStocksByPays?nomPays=${nomPays}&page=$page&size=$size");
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
