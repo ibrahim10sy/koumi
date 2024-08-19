@@ -12,6 +12,7 @@ import 'package:koumi/constants.dart';
 import 'package:koumi/Admin/Zone.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/CategorieProduit.dart';
+import 'package:koumi/models/Pays.dart';
 import 'package:koumi/models/Stock.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
@@ -55,6 +56,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   late Future<List<Stock>> stockListeFuture1;
   late Future<List<Stock>> stockListeFutureNew;
   CategorieProduit? selectedCat;
+  String? nomP;
   String? typeValue;
   late Future _catList;
   bool isExist = false;
@@ -66,7 +68,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool isLoading = false;
   int size = sized;
   bool hasMore = true;
-
+ late Future _paysList;
+  String? paysValue;
   bool isLoadingLibelle = true;
   CountryProvider? countryProvider;
 
@@ -93,6 +96,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
       stockListe = await StockService().fetchStockByCategorie(
           selectedCat!.idCategorieProduit!,
           detectedCountry != null ? detectedCountry! : "mali");
+    } else if (nomP != null) {
+      stockListe = await StockService().fetchStockByPays(
+        nomP!,
+      );
     }
 
     return stockListe;
@@ -124,15 +131,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         });
       });
     }
-    //  fetchStock(detectedCountry != null
-    //               ? detectedCountry!
-    //               : "Mali")
-    //           .then((value) {
-    //         setState(() {
-    //           // Rafraîchir les données ici
-    //           debugPrint("page inc all ${page}");
-    //         });
-    //       });
+
     debugPrint("no");
   }
 
@@ -156,6 +155,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
         setState(() {
           // Rafraîchir les données ici
           debugPrint("page inc all ${page}");
+        });
+      });
+    } else if (scrollableController1.position.pixels >=
+            scrollableController1.position.maxScrollExtent - 200 &&
+        hasMore &&
+        !isLoading &&
+        nomP != null) {
+      // if (selectedCat != null) {
+      // Incrementez la page et récupérez les stocks par catégorie
+      debugPrint("yes - fetch by category and pays");
+      if (mounted)
+        setState(() {
+          // Rafraîchir les données ici
+          page++;
+        });
+
+      fetchStockByPays().then((value) {
+        setState(() {
+          // Rafraîchir les données ici
+          debugPrint("page pour pays ${nomP} inc all ${page}");
         });
       });
     }
@@ -272,6 +291,58 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return stockListe;
   }
 
+  Future<List<Stock>> fetchStockByPays({bool refresh = false}) async {
+    if (isLoading == true) return [];
+
+    setState(() {
+      isLoading = true;
+    });
+
+    if (refresh) {
+      setState(() {
+        stockListe.clear();
+        page = 0;
+        hasMore = true;
+      });
+    }
+
+    try {
+      final response = await http.get(Uri.parse(
+          '$apiOnlineUrl/Stock/getAllStocksByPays?nomPays=${nomP}&page=$page&size=$size'));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+          setState(() {
+            hasMore = false;
+          });
+        } else {
+          List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+          setState(() {
+            stockListe.addAll(newStocks.where((newStock) => !stockListe
+                .any((existStock) => existStock.idStock == newStock.idStock)));
+          });
+        }
+
+        debugPrint(
+            "response body all stock by categorie and pays with pagination ${page} par défilement soit ${stockListe.length}");
+      } else {
+        print(
+            'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+      }
+    } catch (e) {
+      print(
+          'Une erreur s\'est produite lors de la récupération des stocks: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+    return stockListe;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -281,7 +352,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController1.addListener(_scrollListener1);
     });
-
+   _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
     final paysProvider = Provider.of<DetectorPays>(context, listen: false);
     paysProvider.hasLocation
         ? detectedCountry =
@@ -291,19 +362,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
     verify();
     _searchController = TextEditingController();
     _catList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
-    // updateStockList();
     stockListeFuture = getAllStocks();
     stockListeFuture1 = getAllStock();
-    // stockListeFutureNew = getAll();
-    //  getAllStocks();
   }
 
   @override
   void dispose() {
-    // if (isSearchMode) {
-    //   _searchController = TextEditingController();
-    // } else {
-    // }
     _searchController.dispose();
     scrollableController.dispose();
     scrollableController1.dispose();
@@ -324,34 +388,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
         stockListeFuture = getAllStocks();
       });
     }
-  }
-
-  void _updateMode(int index) {
-    if (mounted) {
-      setState(() {
-        isSearchMode = index == 0;
-        if (!isSearchMode) {
-          _searchController.clear();
-          _searchController.dispose();
-          _searchController = TextEditingController();
-        }
-      });
-    }
-  }
-
-  void _selectMode(String mode) {
-    setState(() {
-      if (mode == 'Rechercher') {
-        isSearchMode = true;
-        isFilterMode = false;
-      } else if (mode == 'Filtrer') {
-        isSearchMode = false;
-        isFilterMode = true;
-      } else if (mode == 'Fermer') {
-        isSearchMode = false;
-        isFilterMode = false;
-      }
-    });
   }
 
   @override
@@ -415,82 +451,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   stockListeFuture = getAllStocks();
                 },
                 icon: const Icon(Icons.refresh, color: Colors.white))
-          ]
-          // : [
-          //     IconButton(
-          //         onPressed: () {
-          //           stockListeFuture = getAllStocks();
-          //         },
-          //         icon: const Icon(Icons.refresh, color: Colors.white)),
-          //     (typeActeurData
-          //                 .map((e) => e.libelle!.toLowerCase())
-          //                 .contains("commercant") ||
-          //             typeActeurData
-          //                 .map((e) => e.libelle!.toLowerCase())
-          //                 .contains("commerçant") ||
-          //             typeActeurData
-          //                 .map((e) => e.libelle!.toLowerCase())
-          //                 .contains("admin") ||
-          //                  typeActeurData
-          //                   .map((e) => e.libelle!.toLowerCase())
-          //                   .contains("transformateur") ||
-          //             typeActeurData
-          //                 .map((e) => e.libelle!.toLowerCase())
-          //                 .contains("producteur") ||
-          //             typeActeurData
-          //                 .map((e) => e.libelle!.toLowerCase())
-          //                 .contains("partenaires de développement") ||
-          //             typeActeurData
-          //                 .map((e) => e.libelle!.toLowerCase())
-          //                 .contains("partenaire de developpement"))
-          //         ? PopupMenuButton<String>(
-          //             padding: EdgeInsets.zero,
-          //             itemBuilder: (context) {
-          //               return <PopupMenuEntry<String>>[
-          //                 PopupMenuItem<String>(
-          //                   child: ListTile(
-          //                     leading: const Icon(
-          //                       Icons.add,
-          //                       color: Colors.green,
-          //                     ),
-          //                     title: const Text(
-          //                       "Ajouter produit",
-          //                       style: TextStyle(
-          //                         color: Colors.green,
-          //                         fontWeight: FontWeight.bold,
-          //                       ),
-          //                     ),
-          //                     onTap: () async {
-          //                       Navigator.of(context).pop();
-          //                       _getResultFromNextScreen1(context);
-          //                     },
-          //                   ),
-          //                 ),
-          //                 PopupMenuItem<String>(
-          //                   child: ListTile(
-          //                     leading: const Icon(
-          //                       Icons.remove_red_eye,
-          //                       color: Colors.green,
-          //                     ),
-          //                     title: const Text(
-          //                       "Mes produits",
-          //                       style: TextStyle(
-          //                         color: Colors.green,
-          //                         fontWeight: FontWeight.bold,
-          //                       ),
-          //                     ),
-          //                     onTap: () async {
-          //                       Navigator.of(context).pop();
-          //                       _getResultFromNextScreen2(context);
-          //                     },
-          //                   ),
-          //                 ),
-          //               ];
-          //             },
-          //           )
-          //         : Container()
-          //   ]
-          ),
+          ]),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -676,42 +637,162 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ),
                   Visibility(
                     visible: isSearchMode,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 10),
-                      child: FutureBuilder(
-                        future: _catList,
-                        builder: (_, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return buildLoadingDropdown();
-                          }
+                    child: Column(
+                      children: [
+                        FutureBuilder(
+                                      future: _paysList,
+                                      builder: (_, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return DropdownButtonFormField(
+                                            items: [],
+                                            isExpanded: true,
+                                            onChanged: null,
+                                            decoration: InputDecoration(
+                                              labelText: 'Chargement...',
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5,
+                                                      horizontal: 22),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                              ),
+                                            ),
+                                          );
+                                        }
 
-                          if (snapshot.hasData) {
-                            dynamic jsonString =
-                                utf8.decode(snapshot.data.bodyBytes);
-                            dynamic responseData = json.decode(jsonString);
+                                        if (snapshot.hasData) {
+                                          dynamic jsonString = utf8
+                                              .decode(snapshot.data.bodyBytes);
+                                          dynamic responseData =
+                                              json.decode(jsonString);
 
-                            if (responseData is List) {
-                              final response = responseData;
-                              final typeList = response
-                                  .map((e) => CategorieProduit.fromMap(e))
-                                  .where((con) => con.statutCategorie == true)
-                                  .toList();
+                                          // final reponse = json.decode(snapshot.data.body);
+                                          if (responseData is List) {
+                                            final paysList = responseData
+                                                .map((e) => Pays.fromMap(e))
+                                                .where((con) =>
+                                                    con.statutPays == true)
+                                                .toList();
+                                            if (paysList.isEmpty) {
+                                              return DropdownButtonFormField(
+                                                items: [],
+                                                isExpanded: true,
+                                                onChanged: null,
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                      'Aucun pays trouvé',
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 5,
+                                                          horizontal: 22),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            22),
+                                                  ),
+                                                ),
+                                              );
+                                            }
 
-                              if (typeList.isEmpty) {
-                                return buildEmptyDropdown();
+                                            return DropdownButtonFormField<
+                                                String>(
+                                              isExpanded: true,
+                                              items: paysList
+                                                  .map(
+                                                    (e) => DropdownMenuItem(
+                                                      value: e.idPays,
+                                                      child: Text(e.nomPays!),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                              value: paysValue,
+                                              onChanged: (newValue) {
+                                                setState(() {
+                                                  typeValue = null;
+                                                  paysValue = newValue;
+                                                  if (newValue != null) {
+                                                  Pays  pays = paysList.firstWhere(
+                                                        (element) =>
+                                                            element.idPays ==
+                                                            newValue);
+                                                   
+                                                  }
+                                                });
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText:
+                                                    '--Filtre par pays--',
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 22),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                        return DropdownButtonFormField(
+                                          items: [],
+                                          isExpanded: true,
+                                          onChanged: null,
+                                          decoration: InputDecoration(
+                                            labelText: 'Aucun pays trouvé',
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                    horizontal: 22),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 10),
+                          child: FutureBuilder(
+                            future: _catList,
+                            builder: (_, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return buildLoadingDropdown();
                               }
-
-                              return buildDropdown(typeList);
-                            } else {
+                        
+                              if (snapshot.hasData) {
+                                dynamic jsonString =
+                                    utf8.decode(snapshot.data.bodyBytes);
+                                dynamic responseData = json.decode(jsonString);
+                        
+                                if (responseData is List) {
+                                  final response = responseData;
+                                  final typeList = response
+                                      .map((e) => CategorieProduit.fromMap(e))
+                                      .where((con) => con.statutCategorie == true)
+                                      .toList();
+                        
+                                  if (typeList.isEmpty) {
+                                    return buildEmptyDropdown();
+                                  }
+                        
+                                  return buildDropdown(typeList);
+                                } else {
+                                  return buildEmptyDropdown();
+                                }
+                              }
+                        
                               return buildEmptyDropdown();
-                            }
-                          }
-
-                          return buildEmptyDropdown();
-                        },
-                      ),
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Visibility(
@@ -844,14 +925,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 });
                 debugPrint("refresh page ${page}");
                 // selectedCat != null ?StockService().fetchStockByCategorieWithPagination(selectedCat!.idCategorieProduit!) :
-                selectedCat != null
+                selectedCat != null || nomP != null
                     ? setState(() {
-                        stockListeFuture1 = StockService()
-                            .fetchStockByCategorie(
-                                selectedCat!.idCategorieProduit!,
-                                detectedCountry != null
-                                    ? detectedCountry!
-                                    : "Mali");
+                        nomP == null || nomP!.isEmpty
+                            ? stockListeFuture1 = StockService()
+                                .fetchStockByCategorie(
+                                    selectedCat!.idCategorieProduit!,
+                                    detectedCountry != null
+                                        ? detectedCountry!
+                                        : "Mali")
+                            : stockListeFuture1 =
+                                StockService().fetchStockByPays(nomP!);
                       })
                     : setState(() {
                         stockListeFuture = StockService().fetchStock(
@@ -860,7 +944,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 : "Mali");
                       });
               },
-              child: selectedCat == null
+              child: selectedCat == null && (nomP == null || nomP!.isEmpty)
                   ? SingleChildScrollView(
                       controller: scrollableController,
                       child: Consumer<StockService>(

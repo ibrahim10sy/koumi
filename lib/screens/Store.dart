@@ -906,18 +906,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Magasins locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         fontSize: 18),
-                                                    //   ),
-                                                    // ),
+                                                    
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -947,7 +936,11 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                           .idMagasin,
                                                                       nom: produitsLocaux[
                                                                               index]
-                                                                          .nomMagasin),
+                                                                          .nomMagasin,
+                                                                          ac:produitsLocaux[
+                                                                              index].acteur,
+                                                                          ),
+                                                                          
                                                                 ),
                                                               );
                                                             },

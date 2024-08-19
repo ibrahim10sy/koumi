@@ -189,7 +189,7 @@ class CodePays {
     "ukraine": "UA",
     "émirats arabes unis": "AE",
     "royaume-uni": "GB",
-    "états-unis": "US",
+    "united states": "US",
     "uruguay": "UY",
     "ouzbékistan": "UZ",
     "vanuatu": "VU",
@@ -427,7 +427,7 @@ class CodePays {
   Widget getFlags(String pays) {
     String code = '';
     String p = pays.toLowerCase();
-    countrie.forEach((key, value) {
+    countries.forEach((key, value) {
       if (p == key) {
         code = value;
       }
@@ -465,7 +465,7 @@ class CodePays {
   String p = pays.toLowerCase();
   
   // Rechercher le code du pays correspondant
-  String? code = countrie[p];
+  String? code = countries[p];
 
   // Si un code de pays est trouvé, retourner le widget CountryFlag
   if (code != null && code.isNotEmpty) {

@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
+import 'package:koumi/Admin/CodePays.dart';
+import 'package:koumi/Admin/Zone.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +26,8 @@ import 'package:shimmer/shimmer.dart';
 
 class ProductsByStoresScreen extends StatefulWidget {
   String? id, nom;
-  ProductsByStoresScreen({
-    super.key,
-    this.id,
-    this.nom,
-  });
+  Acteur? ac;
+  ProductsByStoresScreen({super.key, this.id, this.nom, this.ac});
 
   @override
   State<ProductsByStoresScreen> createState() => _ProductsByStoresScreenState();
@@ -61,7 +61,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
   bool isLoading = false;
   int size = sized;
   bool hasMore = true;
-
+  late Acteur act = Acteur();
   bool isLoadingLibelle = true;
 
   void verify() async {
@@ -251,11 +251,23 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
       //code will run when widget rendering complete
       scrollableController1.addListener(_scrollListener1);
     });
+    act = widget.ac!;
     verify();
+    updateViews();
     _searchController = TextEditingController();
     _catList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
 
     stockListeFuture = stockListeFuture1 = getAllStock();
+  }
+
+  updateViews() async {
+    final response = await http.put(
+      Uri.parse('$apiOnlineUrl/Magasin/updateView/${widget.id}'),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+    } else {
+      print('Échec de la mise à jour du nombre de vues');
+    }
   }
 
   @override
@@ -286,14 +298,39 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
     super.didChangeDependencies();
   }
 
+  Future<void> _getResultFromZonePage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Zone()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+    }
+  }
+
+  Future<void> _getResultFromNextScreen1(BuildContext context) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddAndUpdateProductScreen(
+                  isEditable: false,
+                )));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        stockListeFuture = stockListeFuture1 = getAllStock();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+      appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -308,172 +345,285 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                 fontWeight: FontWeight.bold,
                 fontSize: 20),
           ),
-          actions: !isExist
-              ? null
-              : [
-                  (typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("commercant") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("commerçant") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("admin") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("producteur"))
-                      ? PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.add,
-                                    color: Colors.green,
-                                  ),
-                                  title: const Text(
-                                    "Ajouter produit",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddAndUpdateProductScreen(
-                                          isEditable: false,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.remove_red_eye,
-                                    color: Colors.green,
-                                  ),
-                                  title: const Text(
-                                    "Mes produits",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MyProductScreen(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ];
-                          },
-                        )
-                      : PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.remove_red_eye,
-                                    color: Colors.green,
-                                  ),
-                                  title: const Text(
-                                    "Mes produits",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MyProductScreen(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ];
-                          },
-                        ),
-                ]),
+          actions: [
+            // !isExist
+            //     ? null
+            //     : [
+            //         (typeActeurData
+            //                     .map((e) => e.libelle!.toLowerCase())
+            //                     .contains("commercant") ||
+            //                 typeActeurData
+            //                     .map((e) => e.libelle!.toLowerCase())
+            //                     .contains("commerçant") ||
+            //                 typeActeurData
+            //                     .map((e) => e.libelle!.toLowerCase())
+            //                     .contains("admin") ||
+            //                 typeActeurData
+            //                     .map((e) => e.libelle!.toLowerCase())
+            //                     .contains("producteur"))
+            //             ? PopupMenuButton<String>(
+            //                 padding: EdgeInsets.zero,
+            //                 itemBuilder: (context) {
+            //                   return <PopupMenuEntry<String>>[
+            //                     PopupMenuItem<String>(
+            //                       child: ListTile(
+            //                         leading: const Icon(
+            //                           Icons.add,
+            //                           color: Colors.green,
+            //                         ),
+            //                         title: const Text(
+            //                           "Ajouter produit",
+            //                           style: TextStyle(
+            //                             color: Colors.green,
+            //                             fontWeight: FontWeight.bold,
+            //                           ),
+            //                         ),
+            //                         onTap: () async {
+            //                           Navigator.of(context).pop();
+            //                           Navigator.push(
+            //                             context,
+            //                             MaterialPageRoute(
+            //                               builder: (context) =>
+            //                                   AddAndUpdateProductScreen(
+            //                                 isEditable: false,
+            //                               ),
+            //                             ),
+            //                           );
+            //                         },
+            //                       ),
+            //                     ),
+            //                     PopupMenuItem<String>(
+            //                       child: ListTile(
+            //                         leading: const Icon(
+            //                           Icons.remove_red_eye,
+            //                           color: Colors.green,
+            //                         ),
+            //                         title: const Text(
+            //                           "Mes produits",
+            //                           style: TextStyle(
+            //                             color: Colors.green,
+            //                             fontWeight: FontWeight.bold,
+            //                           ),
+            //                         ),
+            //                         onTap: () async {
+            //                           Navigator.of(context).pop();
+            //                           Navigator.push(
+            //                             context,
+            //                             MaterialPageRoute(
+            //                               builder: (context) => MyProductScreen(),
+            //                             ),
+            //                           );
+            //                         },
+            //                       ),
+            //                     ),
+            //                   ];
+            //                 },
+            //               )
+            //             : PopupMenuButton<String>(
+            //                 padding: EdgeInsets.zero,
+            //                 itemBuilder: (context) {
+            //                   return <PopupMenuEntry<String>>[
+            //                     PopupMenuItem<String>(
+            //                       child: ListTile(
+            //                         leading: const Icon(
+            //                           Icons.remove_red_eye,
+            //                           color: Colors.green,
+            //                         ),
+            //                         title: const Text(
+            //                           "Mes produits",
+            //                           style: TextStyle(
+            //                             color: Colors.green,
+            //                             fontWeight: FontWeight.bold,
+            //                           ),
+            //                         ),
+            //                         onTap: () async {
+            //                           Navigator.of(context).pop();
+            //                           Navigator.push(
+            //                             context,
+            //                             MaterialPageRoute(
+            //                               builder: (context) => MyProductScreen(),
+            //                             ),
+            //                           );
+            //                         },
+            //                       ),
+            //                     ),
+            //                   ];
+            //                 },
+            //               ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CodePays().getFlagsApp(act.niveau3PaysActeur!),
+            )
+          ]),
       body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
         child: Container(
           child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverToBoxAdapter(
                     child: Column(children: [
-                  const SizedBox(height: 10),
-                  if (!isSearchMode)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            isSearchMode = true;
-                            isFilterMode = true;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.search,
-                          color: d_colorGreen,
-                        ),
-                        label: Text(
-                          'Rechercher',
-                          style: TextStyle(color: d_colorGreen, fontSize: 17),
-                        ),
-                      ),
-                    ),
-                  if (isSearchMode)
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          onPressed: () {
-                            if (mounted) {
-                              setState(() {
-                                isSearchMode = false;
-                                isFilterMode = false;
-                                _searchController.clear();
-                                _searchController = TextEditingController();
-                              });
-                              debugPrint(
-                                  "Rechercher mode désactivé : $isSearchMode");
-                            }
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            color: Colors.red,
-                          ),
-                          label: Text(
-                            'Fermer',
-                            style: TextStyle(color: Colors.red, fontSize: 17),
-                          ),
-                        )),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          isExist
+                              ? (typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains("commercant") ||
+                                      typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains("commerçant") ||
+                                      typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains("transformateur") ||
+                                      typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains("admin") ||
+                                      typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains("producteur") ||
+                                      typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains(
+                                              "partenaires de développement") ||
+                                      typeActeurData
+                                          .map((e) => e.libelle!.toLowerCase())
+                                          .contains(
+                                              "partenaire de developpement"))
+                                  ? TextButton(
+                                      onPressed: () {
+                                        // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                        showMenu<String>(
+                                          context: context,
+                                          position: RelativeRect.fromLTRB(
+                                            0,
+                                            50, // Adjust this value based on the desired position of the menu
+                                            MediaQuery.of(context).size.width,
+                                            0,
+                                          ),
+                                          items: [
+                                            PopupMenuItem<String>(
+                                              value: 'add_product',
+                                              child: ListTile(
+                                                leading: const Icon(
+                                                  Icons.list_alt_sharp,
+                                                  color: d_colorGreen,
+                                                ),
+                                                title: const Text(
+                                                  "Ajouter un produit",
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            PopupMenuItem<String>(
+                                              value: 'add_zone',
+                                              child: ListTile(
+                                                leading: const Icon(
+                                                  Icons.zoom_in_outlined,
+                                                  color: d_colorGreen,
+                                                ),
+                                                title: const Text(
+                                                  "Ajouter une zone de production",
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                          elevation: 8.0,
+                                        ).then((value) {
+                                          if (value != null) {
+                                            if (value == 'add_product') {
+                                              _getResultFromNextScreen1(
+                                                  context);
+                                            } else if (value == 'add_zone') {
+                                              _getResultFromZonePage(context);
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.add,
+                                            color: d_colorGreen,
+                                          ),
+                                          SizedBox(
+                                              width:
+                                                  8), // Space between icon and text
+                                          Text(
+                                            'Ajouter',
+                                            style: TextStyle(
+                                              color: d_colorGreen,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container()
+                              : Container(),
+                          if (!isSearchMode)
+                            TextButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isSearchMode = true;
+                                  isFilterMode = true;
+                                });
+                                debugPrint(
+                                    "rechercher mode value : ${isSearchMode}");
+                              },
+                              icon: Icon(
+                                Icons.search,
+                                color: d_colorGreen,
+                              ),
+                              label: Text(
+                                'Rechercher...',
+                                style: TextStyle(
+                                    color: d_colorGreen, fontSize: 17),
+                              ),
+                            ),
+                          if (isSearchMode)
+                            TextButton.icon(
+                              onPressed: () {
+                                if (mounted) {
+                                  setState(() {
+                                    isSearchMode = false;
+                                    isFilterMode = false;
+                                    _searchController.clear();
+                                    _searchController = TextEditingController();
+                                  });
+                                  debugPrint(
+                                      "Rechercher mode désactivé : $isSearchMode");
+                                }
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              label: Text(
+                                'Fermer',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 17),
+                              ),
+                            ),
+                        ]),
+                  ),
                   Visibility(
                     visible: isSearchMode,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
                       child: FutureBuilder(
                         future: _catList,
                         builder: (_, snapshot) {
@@ -481,29 +631,29 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                               ConnectionState.waiting) {
                             return buildLoadingDropdown();
                           }
-        
+
                           if (snapshot.hasData) {
                             dynamic jsonString =
                                 utf8.decode(snapshot.data.bodyBytes);
                             dynamic responseData = json.decode(jsonString);
-        
+
                             if (responseData is List) {
                               final response = responseData;
                               final typeList = response
                                   .map((e) => CategorieProduit.fromMap(e))
                                   .where((con) => con.statutCategorie == true)
                                   .toList();
-        
+
                               if (typeList.isEmpty) {
                                 return buildEmptyDropdown();
                               }
-        
+
                               return buildDropdown(typeList);
                             } else {
                               return buildEmptyDropdown();
                             }
                           }
-        
+
                           return buildEmptyDropdown();
                         },
                       ),
@@ -512,12 +662,13 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                   Visibility(
                     visible: isSearchMode,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
                       child: SearchFieldAutoComplete<String>(
                         controller: _searchController,
                         placeholder: 'Rechercher...',
-                        placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
                         suggestions: AutoComplet.getAgriculturalProducts,
                         suggestionsDecoration: SuggestionDecoration(
                           marginSuggestions: const EdgeInsets.all(8.0),
@@ -575,7 +726,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -600,7 +752,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -625,7 +778,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -651,7 +805,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                 //   searchText = _searchController.text.trim().toLowerCase();
                                 //   return libelle.contains(searchText);
                                 // }).toList();
-        
+
                                 return stockListe
                                         // .where((element) => element.statutSotck == true )
                                         .isEmpty
@@ -683,7 +837,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                     : Center(
                                         child: GridView.builder(
                                           shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
                                           gridDelegate:
                                               SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 2,
@@ -704,7 +859,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                             // // )
                                             // ;
                                             //     }
-        
+
                                             if (index < stockListe.length) {
                                               // var e = stockListe
                                               //     // .where((element) =>
@@ -733,7 +888,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                         ClipRRect(
                                                           borderRadius:
                                                               BorderRadius
-                                                                  .circular(8.0),
+                                                                  .circular(
+                                                                      8.0),
                                                           child: Container(
                                                             height: 85,
                                                             child: stockListe[index]
@@ -778,17 +934,20 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                             style: TextStyle(
                                                               fontSize: 16,
                                                               fontWeight:
-                                                                  FontWeight.bold,
-                                                              color:
-                                                                  Colors.black87,
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .black87,
                                                             ),
                                                             maxLines: 2,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                           subtitle: Text(
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             "${stockListe[index].quantiteStock!.toString()} ${stockListe[index].unite!.nomUnite} ",
                                                             style: TextStyle(
                                                               overflow:
@@ -796,9 +955,10 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                       .ellipsis,
                                                               fontSize: 15,
                                                               fontWeight:
-                                                                  FontWeight.bold,
-                                                              color:
-                                                                  Colors.black87,
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .black87,
                                                             ),
                                                           ),
                                                         ),
@@ -806,7 +966,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                           padding:
                                                               const EdgeInsets
                                                                   .symmetric(
-                                                                  horizontal: 15),
+                                                                  horizontal:
+                                                                      15),
                                                           child: Text(
                                                             stockListe[index]
                                                                         .monnaie !=
@@ -815,8 +976,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                 : "${stockListe[index].prix.toString()} ",
                                                             style: TextStyle(
                                                               fontSize: 15,
-                                                              color:
-                                                                  Colors.black87,
+                                                              color: Colors
+                                                                  .black87,
                                                             ),
                                                           ),
                                                         ),
@@ -871,7 +1032,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -889,7 +1051,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                   ),
                                 );
                               }
-        
+
                               if (!snapshot.hasData) {
                                 return SingleChildScrollView(
                                   child: Padding(
@@ -897,7 +1059,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -923,7 +1086,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                 //   searchText = _searchController.text.trim().toLowerCase();
                                 //   return libelle.contains(searchText);
                                 // }).toList();
-        
+
                                 return stockListe
                                             // .where((element) => element.statutSotck == true )
                                             .isEmpty &&
@@ -983,7 +1146,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                 // // )
                                                 // ;
                                                 //     }
-        
+
                                                 if (index < stockListe.length) {
                                                   return GestureDetector(
                                                       onTap: () {
@@ -999,7 +1162,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                         );
                                                       },
                                                       child: Card(
-                                                        margin: EdgeInsets.all(8),
+                                                        margin:
+                                                            EdgeInsets.all(8),
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -1012,14 +1176,13 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                           8.0),
                                                               child: Container(
                                                                 height: 85,
-                                                                child: stockListe[index]
-                                                                                .photo ==
+                                                                child: stockListe[index].photo ==
                                                                             null ||
-                                                                        stockListe[
-                                                                                index]
+                                                                        stockListe[index]
                                                                             .photo!
                                                                             .isEmpty
-                                                                    ? Image.asset(
+                                                                    ? Image
+                                                                        .asset(
                                                                         "assets/images/default_image.png",
                                                                         fit: BoxFit
                                                                             .cover,
@@ -1029,15 +1192,13 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                             "https://koumi.ml/api-koumi/Stock/${stockListe[index].idStock}/image",
                                                                         fit: BoxFit
                                                                             .cover,
-                                                                        placeholder: (context,
-                                                                                url) =>
-                                                                            const Center(
-                                                                                child: CircularProgressIndicator()),
+                                                                        placeholder:
+                                                                            (context, url) =>
+                                                                                const Center(child: CircularProgressIndicator()),
                                                                         errorWidget: (context,
                                                                                 url,
                                                                                 error) =>
-                                                                            Image
-                                                                                .asset(
+                                                                            Image.asset(
                                                                           'assets/images/default_image.png',
                                                                           fit: BoxFit
                                                                               .cover,
@@ -1048,9 +1209,11 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                             // SizedBox(height: 8),
                                                             ListTile(
                                                               title: Text(
-                                                                stockListe[index]
+                                                                stockListe[
+                                                                        index]
                                                                     .nomProduit!,
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
@@ -1068,7 +1231,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                     TextOverflow
                                                                         .ellipsis,
                                                                 "${stockListe[index].quantiteStock!.toString()} ${stockListe[index].unite!.nomUnite} ",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
@@ -1093,7 +1257,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                         null
                                                                     ? "${stockListe[index].prix.toString()} ${stockListe[index].monnaie!.libelle}"
                                                                     : "${stockListe[index].prix.toString()} FCFA",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 15,
                                                                   color: Colors
                                                                       .black87,
@@ -1109,9 +1274,11 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                           padding:
                                                               const EdgeInsets
                                                                   .symmetric(
-                                                                  horizontal: 32),
+                                                                  horizontal:
+                                                                      32),
                                                           child: Center(
-                                                              child: const Center(
+                                                              child:
+                                                                  const Center(
                                                             child:
                                                                 CircularProgressIndicator(
                                                               color:

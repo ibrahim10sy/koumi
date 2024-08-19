@@ -192,7 +192,8 @@ class _DetailProduitsState extends State<DetailProduits>
                             icon: Icon(Icons.edit, color: Colors.white),
                           )
                   ]
-                : [Padding(
+                : [
+                  Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CodePays().getFlagsApp(stock.acteur!.niveau3PaysActeur!),
                 )]),

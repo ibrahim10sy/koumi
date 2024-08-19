@@ -315,6 +315,56 @@ class StockService extends ChangeNotifier {
     return stockList;
   }
 
+Future<List<Stock>> fetchStockByPays(String nomPays,
+      {bool refresh = false}) async {
+    if (isLoading == true) return [];
+
+    
+
+    if (refresh) {
+      
+        stockList.clear();
+        page = 0;
+        hasMore = true;
+    }
+
+    try {
+      final response = await http.get(Uri.parse(
+          '$apiOnlineUrl/Stock/getAllStocksByPays?nomPays=${nomPays}&page=$page&size=$size'));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+          
+            hasMore = false;
+     
+        } else {
+          List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+        
+            stockList.addAll(newStocks.where((newStock) => !stockList
+                .any((existStock) => existStock.idStock == newStock.idStock)));
+      
+        }
+
+        debugPrint(
+            "response body all stock by categorie and pays with pagination ${page} par défilement soit ${stockList.length}");
+      } else {
+        print(
+            'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+      }
+    } catch (e) {
+      print(
+          'Une erreur s\'est produite lors de la récupération des stocks: $e');
+    } finally {
+    
+        isLoading = false;
+    
+    }
+    return stockList;
+  }
+
   Future<List<Stock>> fetchStockByCategorieAndFiliere(
       String idCategorie, String libelleFiliere, String niveau3PaysActeur,
       {bool refresh = false}) async {
