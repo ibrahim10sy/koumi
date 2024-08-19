@@ -121,55 +121,50 @@ class _CategoriPageState extends State<CategoriPage> {
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.add,
-                    color: Colors.green,
-                  ),
-                  title: const Text(
-                    "Ajouter une spéculation",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    afficherBottomSheet(context);
-                    // await showDialog(
-                    //   context: context,
-                    //   builder: (BuildContext context) => AlertDialog(
-                    //       backgroundColor: Colors.white,
-                    //       content: AddSpeculations()),
-                    // );
-                  },
-                ),
-              ),
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: Icon(
-                    Icons.add,
-                    color: Colors.orange[400],
-                  ),
-                  title: Text(
-                    "Ajouter catégorie",
-                    style: TextStyle(
-                      color: Colors.orange[400],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    _showBottomSheet();
-                  },
-                ),
-              ),
-            ],
-          )
+          // PopupMenuButton<String>(
+          //   padding: EdgeInsets.zero,
+          //   itemBuilder: (context) => <PopupMenuEntry<String>>[
+          //     PopupMenuItem<String>(
+          //       child: ListTile(
+          //         leading: const Icon(
+          //           Icons.add,
+          //           color: Colors.green,
+          //         ),
+          //         title: const Text(
+          //           "Ajouter une spéculation",
+          //           style: TextStyle(
+          //             color: Colors.green,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         onTap: () async {
+          //           Navigator.of(context).pop();
+          //           afficherBottomSheet(context);
+
+          //         },
+          //       ),
+          //     ),
+          //     PopupMenuItem<String>(
+          //       child: ListTile(
+          //         leading: Icon(
+          //           Icons.add,
+          //           color: Colors.orange[400],
+          //         ),
+          //         title: Text(
+          //           "Ajouter catégorie",
+          //           style: TextStyle(
+          //             color: Colors.orange[400],
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         onTap: () async {
+          //           Navigator.of(context).pop();
+          //           _showBottomSheet();
+          //         },
+          //       ),
+          //     ),
+          //   ],
+          // )
         ],
       ),
       body: Container(
@@ -178,45 +173,106 @@ class _CategoriPageState extends State<CategoriPage> {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
-                if (!isSearchMode)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          isSearchMode = true;
-                          isFilterMode = true;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.search,
-                        color: d_colorGreen,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                          showMenu<String>(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              0,
+                              50, // Adjust this value based on the desired position of the menu
+                              MediaQuery.of(context).size.width,
+                              0,
+                            ),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'add_fil',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter une spéculation",
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              PopupMenuItem<String>(
+                                value: 'add_cat',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter une catégorie",
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            elevation: 8.0,
+                          ).then((value) {
+                            if (value != null) {
+                              if (value == 'add_fil') {
+                                afficherBottomSheet(context);
+                              } else if (value == 'add_cat') {
+                                _showBottomSheet();
+                              }
+                            }
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: d_colorGreen,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Ajouter',
+                              style: TextStyle(
+                                color: d_colorGreen,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      label: Text(
-                        'Rechercher',
-                        style: TextStyle(color: d_colorGreen, fontSize: 17),
-                      ),
-                    ),
-                  ),
-                if (isSearchMode)
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
+                      TextButton.icon(
                         onPressed: () {
                           setState(() {
-                            isSearchMode = false;
-                            isFilterMode = false;
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
                           });
                         },
                         icon: Icon(
-                          Icons.close,
-                          color: Colors.red,
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
                         ),
                         label: Text(
-                          'Fermer',
-                          style: TextStyle(color: Colors.red, fontSize: 17),
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
                         ),
-                      )),
+                      ),
+                    ],
+                  ),
+                ),
+
                 Visibility(
                     visible: isSearchMode,
                     child: Padding(

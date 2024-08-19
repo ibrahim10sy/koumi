@@ -125,8 +125,7 @@ class CartProvider extends ChangeNotifier {
         // Sinon, affichez un message d'erreur
         Snack.error(
             titre: "Alerte",
-            message:
-                "Impossible d'ajouter l'intrant. On ne peut pas commander chez plusieurs personnes à la fois en une seule commande.");
+            message: "Veillez d'abord confirmer la commande déjà en cours.");
         return;
       }
     }

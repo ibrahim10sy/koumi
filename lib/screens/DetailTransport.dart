@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
@@ -49,6 +50,7 @@ class _DetailTransportState extends State<DetailTransport> {
   String? monnaieValue;
   late Future _monnaieList;
   late Monnaie monnaie = Monnaie();
+  int nbVue = 0;
   // List<ParametreGeneraux> paraList = [];
   // late ParametreGeneraux para = ParametreGeneraux();
   late ValueNotifier<bool> isDialOpenNotifier;
@@ -207,6 +209,13 @@ class _DetailTransportState extends State<DetailTransport> {
     _niveau3List = http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/read'));
 
     vehicules = widget.vehicule;
+    _loadNbVue();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await updateViews(vehicules);
+      setState(() {
+        vehicules.nbreView = nbVue;
+      });
+    });
     rates = fetchConvert(vehicules);
     print("rates ${rates.toString()}");
     typeVoiture = vehicules.typeVoiture;
@@ -232,6 +241,39 @@ class _DetailTransportState extends State<DetailTransport> {
     isDialOpenNotifier = ValueNotifier<bool>(false);
     fetchLibelleNiveau3Pays();
     super.initState();
+  }
+
+  Future<void> _loadNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nbVue = prefs.getInt('nbVue_${vehicules.idVehicule}') ??
+          vehicules.nbreView ??
+          0;
+    });
+  }
+
+  updateViews(Vehicule i) async {
+    if (acteur.idActeur != i.acteur.idActeur) {
+      final response = await http.put(
+        Uri.parse('$apiOnlineUrl/vehicule/updateView/${i.idVehicule}'),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() {
+          nbVue++;
+          i.nbreView = nbVue;
+          print('Nombre de vues mis à jour : ${i.nbreView}');
+          // Sauvegarder la nouvelle valeur de nbVue
+          _saveNbVue();
+        });
+      } else {
+        print('Échec de la mise à jour du nombre de vues');
+      }
+    }
+  }
+
+  Future<void> _saveNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('nbVue_${vehicules.idVehicule}', nbVue);
   }
 
   Future<File> saveImagePermanently(String imagePath) async {
@@ -453,10 +495,10 @@ class _DetailTransportState extends State<DetailTransport> {
       isLoading: _isLoading,
       child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-           appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          appBar: AppBar(
+              backgroundColor: d_colorOr,
+              centerTitle: true,
+              toolbarHeight: 75,
               leading: _isEditing
                   ? IconButton(
                       onPressed: _showImageSourceDialog,
@@ -499,7 +541,10 @@ class _DetailTransportState extends State<DetailTransport> {
                                 });
                                 updateMethode();
                               },
-                              icon: Icon(Icons.check,color: Colors.white,),
+                              icon: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              ),
                             )
                           : IconButton(
                               onPressed: () async {
@@ -508,44 +553,52 @@ class _DetailTransportState extends State<DetailTransport> {
                                   vehicules = widget.vehicule;
                                 });
                               },
-                              icon: Icon(Icons.edit,color: Colors.white,),
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
                             ),
                     ]
-                  : null),
+                  : [Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CodePays().getFlagsApp(vehicules.acteur.niveau3PaysActeur!),
+                  )]),
           body: SingleChildScrollView(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 photo != null
-                    ? Image.file(
+                    ? Center(
+                        child: Image.file(
                         photo!,
                         width: double.infinity,
                         height: 200,
                         fit: BoxFit.cover,
-                      )
-                    : vehicules.photoVehicule != null &&
-                            !vehicules.photoVehicule!.isEmpty
-                        ? Image.network(
-                            "https://koumi.ml/api-koumi/vehicule/${vehicules.idVehicule}/image",
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                            errorBuilder: (BuildContext context,
-                                Object exception, StackTrace? stackTrace) {
-                              return Image.asset(
-                                'assets/images/default_image.png',
+                      ))
+                    : Center(
+                        child: vehicules.photoVehicule != null &&
+                                !vehicules.photoVehicule!.isEmpty
+                            ? CachedNetworkImage(
+                                imageUrl:
+                                    "https://koumi.ml/api-koumi/vehicule/${vehicules.idVehicule}/image",
                                 fit: BoxFit.cover,
-                              );
-                            },
-                          )
-                        : Image.asset(
-                            "assets/images/default_image.png",
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 200,
-                          ),
-                SizedBox(height: 30),
+                                placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/images/default_image.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Image.asset(
+                                "assets/images/default_image.png",
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 200,
+                              ),
+                      ),
+                SizedBox(height: 20),
                 _isEditing ? _buildEditing() : _buildData(),
               ],
             ),
@@ -978,12 +1031,12 @@ class _DetailTransportState extends State<DetailTransport> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
           child: Container(
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -991,6 +1044,7 @@ class _DetailTransportState extends State<DetailTransport> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -1012,12 +1066,12 @@ class _DetailTransportState extends State<DetailTransport> {
         _buildPanel(),
         SizedBox(height: 10),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
           child: Container(
             height: 40,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              color: Colors.orangeAccent,
+              color: d_colorOr,
             ),
             child: Center(
               child: Text(
@@ -1025,41 +1079,56 @@ class _DetailTransportState extends State<DetailTransport> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
           ),
         ),
-        _buildDescription('Description : ', vehicules.description!),
-
-        acteur.idActeur != vehicules.acteur.idActeur
-            ? Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        color: Colors.orangeAccent,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Autre information",
-                          style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: ReadMoreText(
+            colorClickableText: d_colorOr,
+            trimLines: 2,
+            trimMode: TrimMode.Line,
+            trimCollapsedText: "Lire plus",
+            trimExpandedText: "Lire moins",
+            style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+            vehicules.description! == null ? "" : vehicules.description!,
+          ),
+        ),
+        // _buildDescription('Description : ', vehicules.description!),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+              child: Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  color: d_colorOr,
+                ),
+                child: Center(
+                  child: Text(
+                    "Autres informations",
+                    style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
                   ),
-                  _buildItem('Propriètaire : ', vehicules.acteur.nomActeur!),
-                  _buildItem('Adresse : ', vehicules.acteur.adresseActeur!),
-                  _buildItem('Pays : ', vehicules.acteur.niveau3PaysActeur!),
-                ],
-              )
-            : Container(),
+                ),
+              ),
+            ),
+            _getPays(vehicules),
+            _buildItem('Nombre de vue  ', vehicules.nbreView.toString()),
+            _buildItem('Propriètaire : ', vehicules.acteur.nomActeur!),
+            _buildItem('Téléphone : ', vehicules.acteur.whatsAppActeur!),
+            _buildItem('Adresse : ', vehicules.acteur.adresseActeur!),
+            _buildItem('Localité : ', vehicules.acteur.niveau3PaysActeur!),
+          ],
+        )
+
         // _buildItem('Description : ', vehicules.description!),
       ],
     );
@@ -1177,7 +1246,7 @@ class _DetailTransportState extends State<DetailTransport> {
 
   Widget _buildItem(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -1206,6 +1275,29 @@ class _DetailTransportState extends State<DetailTransport> {
               ),
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _getPays(Vehicule v) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Pays",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 16),
+            ),
+          ),
+          CodePays().getFlags(v.acteur.niveau3PaysActeur!)
         ],
       ),
     );

@@ -217,7 +217,7 @@ class _AddZoneState extends State<AddZone> {
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: const Text(
-            "Ajouter d'une Zone",
+            "Ajouter une Zone",
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

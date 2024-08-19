@@ -23,10 +23,10 @@ class _ZoneState extends State<Zone> {
   late Acteur acteur;
   late TextEditingController _searchController;
   bool isSearchMode = false;
-    late ScrollController _scrollController;
+  late ScrollController _scrollController;
   @override
   void initState() {
- _scrollController = ScrollController();
+    _scrollController = ScrollController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _searchController = TextEditingController();
     super.initState();
@@ -44,8 +44,8 @@ class _ZoneState extends State<Zone> {
 
   @override
   void dispose() {
-      _searchController.dispose();
-         _scrollController.dispose();
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -53,47 +53,21 @@ class _ZoneState extends State<Zone> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            icon: const Icon(Icons.arrow_back_ios, color:  Colors.white)),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: const Text(
           "Zone de production",
           style: TextStyle(
-              color:  Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        actions: [
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.add,
-                    color: Colors.green,
-                  ),
-                  title: const Text(
-                    "Ajouter une zone",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddZone()));
-                  },
-                ),
-              ),
-            ],
-          )
-        ],
+        actions: [],
       ),
       body: Container(
         child: NestedScrollView(
@@ -101,9 +75,70 @@ class _ZoneState extends State<Zone> {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
-                                   Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                          showMenu<String>(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              0,
+                              50, // Adjust this value based on the desired position of the menu
+                              MediaQuery.of(context).size.width,
+                              0,
+                            ),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'add_store',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.zoom_in_outlined,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter une zone de production",
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            elevation: 8.0,
+                          ).then((value) {
+                            if (value != null) {
+                              if (value == 'add_store') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddZone()));
+                              }
+                            }
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: d_colorGreen,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Ajouter',
+                              style: TextStyle(
+                                color: d_colorGreen,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextButton.icon(
                         onPressed: () {
                           setState(() {
                             isSearchMode = !isSearchMode;
@@ -112,49 +147,51 @@ class _ZoneState extends State<Zone> {
                         },
                         icon: Icon(
                           isSearchMode ? Icons.close : Icons.search,
-                          color: isSearchMode ? Colors.red : Colors.green,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
                         ),
                         label: Text(
                           isSearchMode ? 'Fermer' : 'Rechercher...',
                           style: TextStyle(
-                              color: isSearchMode ? Colors.red : Colors.green,
+                              color: isSearchMode ? Colors.red : d_colorGreen,
                               fontSize: 17),
                         ),
                       ),
-                    ),
-                    if (isSearchMode)
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey[50],
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search, color: Colors.blueGrey[400]),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  controller: _searchController,
-                                  onChanged: (value) {
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: 'Rechercher',
-                                    border: InputBorder.none,
-                                    hintStyle:
-                                        TextStyle(color: Colors.blueGrey[400]),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    ],
+                  ),
+                ),
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
                       ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ])),
             ];
           },

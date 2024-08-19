@@ -368,95 +368,94 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            actions: !isExist
-                ? [
-                    IconButton(
-                        onPressed: () {
-                          intrantListeFuture = fetchIntrantByCategorie(
-                              detectedCountry != null
-                                  ? detectedCountry!
-                                  : "Mali");
-                        },
-                        icon: const Icon(Icons.refresh, color: Colors.white)),
-                  ]
-                : (typeActeurData
-                            .map((e) => e.libelle!.toLowerCase())
-                            .contains("fournisseur") ||
-                        typeActeurData
-                            .map((e) => e.libelle!.toLowerCase())
-                            .contains("admin") ||
-                        typeActeurData
-                            .map((e) => e.libelle!.toLowerCase())
-                            .contains("fournisseurs"))
-                    ? [
-                        IconButton(
-                            onPressed: () {
-                              intrantListeFuture = fetchIntrantByCategorie(
-                                  detectedCountry != null
-                                      ? detectedCountry!
-                                      : "Mali");
-                            },
-                            icon:
-                                const Icon(Icons.refresh, color: Colors.white)),
-                        PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.add,
-                                    color: d_colorGreen,
-                                  ),
-                                  title: const Text(
-                                    "Ajouter intrant ",
-                                    style: TextStyle(
-                                      color: d_colorGreen,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen1(context);
-                                  },
-                                ),
-                              ),
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.remove_red_eye,
-                                    color: d_colorGreen,
-                                  ),
-                                  title: const Text(
-                                    "Mes intrants ",
-                                    style: TextStyle(
-                                      color: d_colorGreen,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen2(context);
-                                  },
-                                ),
-                              )
-                            ];
-                          },
-                        )
-                      ]
-                    : [
-                        IconButton(
-                            onPressed: () {
-                              intrantListeFuture = fetchIntrantByCategorie(
-                                  detectedCountry != null
-                                      ? detectedCountry!
-                                      : "Mali");
-                            },
-                            icon:
-                                const Icon(Icons.refresh, color: Colors.white)),
-                      ]),
+            actions:
+                //  !isExist
+                // ? [
+                //     IconButton(
+                //         onPressed: () {
+                //           intrantListeFuture = fetchIntrantByCategorie(
+                //               detectedCountry != null
+                //                   ? detectedCountry!
+                //                   : "Mali");
+                //         },
+                //         icon: const Icon(Icons.refresh, color: Colors.white)),
+                //   ]
+                // : (typeActeurData
+                //             .map((e) => e.libelle!.toLowerCase())
+                //             .contains("fournisseur") ||
+                //         typeActeurData
+                //             .map((e) => e.libelle!.toLowerCase())
+                //             .contains("admin") ||
+                //         typeActeurData
+                //             .map((e) => e.libelle!.toLowerCase())
+                //             .contains("fournisseurs"))
+                //     ? [
+                //         IconButton(
+                //             onPressed: () {
+                //               intrantListeFuture = fetchIntrantByCategorie(
+                //                   detectedCountry != null
+                //                       ? detectedCountry!
+                //                       : "Mali");
+                //             },
+                //             icon:
+                //                 const Icon(Icons.refresh, color: Colors.white)),
+                //         PopupMenuButton<String>(
+                //           padding: EdgeInsets.zero,
+                //           itemBuilder: (context) {
+                //             return <PopupMenuEntry<String>>[
+                //               PopupMenuItem<String>(
+                //                 child: ListTile(
+                //                   leading: const Icon(
+                //                     Icons.add,
+                //                     color: d_colorGreen,
+                //                   ),
+                //                   title: const Text(
+                //                     "Ajouter intrant ",
+                //                     style: TextStyle(
+                //                       color: d_colorGreen,
+                //                       fontSize: 18,
+                //                       fontWeight: FontWeight.bold,
+                //                     ),
+                //                   ),
+                //                   onTap: () async {
+                //                     Navigator.of(context).pop();
+                //                     _getResultFromNextScreen1(context);
+                //                   },
+                //                 ),
+                //               ),
+                //               PopupMenuItem<String>(
+                //                 child: ListTile(
+                //                   leading: const Icon(
+                //                     Icons.remove_red_eye,
+                //                     color: d_colorGreen,
+                //                   ),
+                //                   title: const Text(
+                //                     "Mes intrants ",
+                //                     style: TextStyle(
+                //                       color: d_colorGreen,
+                //                       fontSize: 18,
+                //                       fontWeight: FontWeight.bold,
+                //                     ),
+                //                   ),
+                //                   onTap: () async {
+                //                     Navigator.of(context).pop();
+                //                     _getResultFromNextScreen2(context);
+                //                   },
+                //                 ),
+                //               )
+                //             ];
+                //           },
+                //         )
+                //       ]
+                //     :
+                [
+              IconButton(
+                  onPressed: () {
+                    intrantListeFuture = fetchIntrantByCategorie(
+                        detectedCountry != null ? detectedCountry! : "Mali");
+                  },
+                  icon: const Icon(Icons.refresh, color: Colors.white)),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -468,54 +467,155 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                        if (!isSearchMode)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  isSearchMode = true;
-                                  isFilterMode = true;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.search,
-                                color: d_colorGreen,
-                              ),
-                              label: Text(
-                                'Rechercher',
-                                style: TextStyle(
-                                    color: d_colorGreen, fontSize: 17),
-                              ),
-                            ),
-                          ),
-                        if (isSearchMode)
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (mounted) {
-                                    setState(() {
-                                      isSearchMode = false;
-                                      isFilterMode = false;
-                                      _searchController.clear();
-                                      _searchController =
-                                          TextEditingController();
-                                    });
-                                    debugPrint(
-                                        "Rechercher mode désactivé : $isSearchMode");
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                                label: Text(
-                                  'Fermer',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 17),
-                                ),
-                              )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                !isExist
+                                    ? (typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("fournisseur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("admin") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("fournisseurs"))
+                                        ? TextButton(
+                                            onPressed: () {
+                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                              showMenu<String>(
+                                                context: context,
+                                                position: RelativeRect.fromLTRB(
+                                                  0,
+                                                  50, // Adjust this value based on the desired position of the menu
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  0,
+                                                ),
+                                                items: [
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_intrant',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.add,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un intrant",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'mesIntrant',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.remove_red_eye,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Mes intrants",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                                elevation: 8.0,
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  if (value == 'add_intrant') {
+                                                    _getResultFromNextScreen1(
+                                                        context);
+                                                  } else if (value ==
+                                                      'mesIntrant') {
+                                                    _getResultFromNextScreen2(
+                                                        context);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: d_colorGreen,
+                                                ),
+                                                SizedBox(
+                                                    width:
+                                                        8), // Space between icon and text
+                                                Text(
+                                                  'Ajouter',
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontSize: 17,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container()
+                                    : Container(),
+                                if (!isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSearchMode = true;
+                                        isFilterMode = true;
+                                      });
+                                      debugPrint(
+                                          "rechercher mode value : ${isSearchMode}");
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: d_colorGreen,
+                                    ),
+                                    label: Text(
+                                      'Rechercher...',
+                                      style: TextStyle(
+                                          color: d_colorGreen, fontSize: 17),
+                                    ),
+                                  ),
+                                if (isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      if (mounted) {
+                                        setState(() {
+                                          isSearchMode = false;
+                                          isFilterMode = false;
+                                          _searchController.clear();
+                                          _searchController =
+                                              TextEditingController();
+                                        });
+                                        debugPrint(
+                                            "Rechercher mode désactivé : $isSearchMode");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      'Fermer',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 17),
+                                    ),
+                                  ),
+                              ]),
+                        ),
                         Visibility(
                           visible: isSearchMode,
                           child: Padding(
@@ -720,19 +820,6 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Produits locaux",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: d_colorGreen,
-                                                            fontSize: 16),
-                                                      ),
-                                                    ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1143,19 +1230,6 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Produits locaux",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: d_colorGreen,
-                                                            fontSize: 16),
-                                                      ),
-                                                    ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:

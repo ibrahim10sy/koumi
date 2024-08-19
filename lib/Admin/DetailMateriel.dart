@@ -7,6 +7,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
@@ -321,12 +322,21 @@ class _DetailMaterielState extends State<DetailMateriel> {
     }
   }
 
+  int nbVue = 0;
+
   @override
   void initState() {
     super.initState();
     verify();
     _niveau3List = http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/read'));
     materiels = widget.materiel;
+    _loadNbVue();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await updateViews(materiels);
+      setState(() {
+        materiels.nbreView = nbVue;
+      });
+    });
     rates = fetchConvert(materiels);
     print("rates ${rates.toString()}");
     _nomController.text = materiels.nom!;
@@ -340,15 +350,48 @@ class _DetailMaterielState extends State<DetailMateriel> {
     isDialOpenNotifier = ValueNotifier<bool>(false);
   }
 
+  Future<void> _loadNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nbVue = prefs.getInt('nbVue_${materiels.idMateriel}') ??
+          materiels.nbreView ??
+          0;
+    });
+  }
+
+  updateViews(Materiels i) async {
+    if (acteur.idActeur != i.acteur!.idActeur) {
+      final response = await http.put(
+        Uri.parse('$apiOnlineUrl/Materiel/updateView/${i.idMateriel}'),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() {
+          nbVue++;
+          i.nbreView = nbVue;
+          print('Nombre de vues mis à jour : ${i.nbreView}');
+          // Sauvegarder la nouvelle valeur de nbVue
+          _saveNbVue();
+        });
+      } else {
+        print('Échec de la mise à jour du nombre de vues');
+      }
+    }
+  }
+
+  Future<void> _saveNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('nbVue_${materiels.idMateriel}', nbVue);
+  }
+
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
       isLoading: _isLoading,
       child: Scaffold(
-            appBar: AppBar(
-        backgroundColor: d_colorOr,
-        centerTitle: true,
-        toolbarHeight: 75,
+          appBar: AppBar(
+              backgroundColor: d_colorOr,
+              centerTitle: true,
+              toolbarHeight: 75,
               leading: _isEditing
                   ? IconButton(
                       onPressed: () {
@@ -362,7 +405,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                     )
                   : IconButton(
                       onPressed: () {
-                      Navigator.pop(context, true);
+                        Navigator.pop(context, true);
                       },
                       icon: const Icon(Icons.arrow_back_ios,
                           color: Colors.white)),
@@ -370,13 +413,15 @@ class _DetailMaterielState extends State<DetailMateriel> {
                   ? Text(
                       'Modification',
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20),
                     )
                   : Text(
                       'Détail matériel',
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20),
                     ),
               actions: acteur.idActeur == materiels.acteur!.idActeur!
@@ -389,7 +434,10 @@ class _DetailMaterielState extends State<DetailMateriel> {
                                 });
                                 updateMethode();
                               },
-                              icon: Icon(Icons.check,color: Colors.white,),
+                              icon: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              ),
                             )
                           : IconButton(
                               onPressed: () async {
@@ -397,44 +445,58 @@ class _DetailMaterielState extends State<DetailMateriel> {
                                   _isEditing = true;
                                 });
                               },
-                              icon: Icon(Icons.edit,color: Colors.white,),
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
                             ),
                     ]
-                  : null),
+                  : [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CodePays()
+                            .getFlagsApp(materiels.acteur!.niveau3PaysActeur!),
+                      )
+                    ]),
           body: SingleChildScrollView(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 photo != null
-                    ? Image.file(
-                        photo!,
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
+                    ? Center(
+                        child: Image.file(
+                          photo!,
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
                       )
-                    : materiels.photoMateriel != null &&
-                            materiels.photoMateriel!.isNotEmpty
-                        ? CachedNetworkImage(
-                            width: double.infinity,
-                            height: 200,
-                            imageUrl:
-                                'https://koumi.ml/api-koumi/Materiel/${materiels.idMateriel}/image',
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) => Image.asset(
-                              'assets/images/default_image.png',
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Image.asset(
-                            "assets/images/default_image.png",
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 200,
-                          ),
-                SizedBox(height: 30),
+                    : Center(
+                        child: materiels.photoMateriel != null &&
+                                materiels.photoMateriel!.isNotEmpty
+                            ? CachedNetworkImage(
+                                width: double.infinity,
+                                height: 200,
+                                imageUrl:
+                                    'https://koumi.ml/api-koumi/Materiel/${materiels.idMateriel}/image',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/images/default_image.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Image.asset(
+                                "assets/images/default_image.png",
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 200,
+                              ),
+                      ),
+                SizedBox(height: 20),
                 _isEditing ? _buildEditingData() : _buildData(),
               ],
             ),
@@ -495,7 +557,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
           child: Container(
             height: 40,
             width: MediaQuery.of(context).size.width,
@@ -518,11 +580,8 @@ class _DetailMaterielState extends State<DetailMateriel> {
         _buildItem('Type matériel: ', materiels.typeMateriel!.nom!),
         _buildItem('Localité : ', materiels.localisation!),
         _buildItem('Etat du matériel : ', materiels.etatMateriel!),
-        // !isExist ? _buildItem('Prix par heure : ',
-        //     "${materiels.prixParHeure.toString()} ${para.monnaie}"):
         _buildItem('Prix par heure : ',
             "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}"),
-
         FutureBuilder<Map<String, String>>(
           future: rates,
           builder: (context, snapshot) {
@@ -539,7 +598,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
         ),
         _buildItem('Date d\'ajout : ', materiels.dateAjout!),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
           child: Container(
             height: 40,
             width: MediaQuery.of(context).size.width,
@@ -558,8 +617,61 @@ class _DetailMaterielState extends State<DetailMateriel> {
             ),
           ),
         ),
-        _buildDescription(materiels.description!)
+        _buildDescription(materiels.description!),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+              child: Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  color: d_colorOr,
+                ),
+                child: Center(
+                  child: Text(
+                    "Autres informations",
+                    style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+            _getPays(materiels),
+            _buildItem('Nombre de vue  ', materiels.nbreView.toString()),
+            _buildItem('Propriètaire : ', materiels.acteur!.nomActeur!),
+            _buildItem('Téléphone : ', materiels.acteur!.whatsAppActeur!),
+            _buildItem('Adresse : ', materiels.acteur!.adresseActeur!),
+            _buildItem('Localité : ', materiels.acteur!.niveau3PaysActeur!),
+          ],
+        )
       ],
+    );
+  }
+
+  Widget _getPays(Materiels m) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Pays",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 16),
+            ),
+          ),
+          CodePays().getFlags(m.acteur!.niveau3PaysActeur!)
+        ],
+      ),
     );
   }
 
@@ -689,140 +801,6 @@ class _DetailMaterielState extends State<DetailMateriel> {
     );
   }
 
-  // Widget _buildEditingData() {
-  //   return Column(
-  //     children: [
-  //       _buildEditableDetailItem('Nom du matériel: ', _nomController),
-  //       _buildEditableDetailItem('Localité : ', _localiteController),
-  //       _buildEditableDetailItem('Etat du matériel : ', _etatController),
-  //       _buildEditableDetailItem('Prix par heure : ', _prixController),
-  //       _buildEditableDetailItem('Description : ', _descriptionController),
-  //        //l'erreur est dû a ce row
-  //        Row(
-  //         children: [
-  //           Padding(
-  //             padding: EdgeInsets.symmetric(
-  //               horizontal: 22,
-  //             ),
-  //             child: Align(
-  //               alignment: Alignment.topLeft,
-  //               child: Text(
-  //                 "Chosir la monnaie",
-  //                 style: TextStyle(color: (Colors.black), fontSize: 18),
-  //               ),
-  //             ),
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-  //             child: FutureBuilder(
-  //               future: _monnaieList,
-  //               builder: (_, snapshot) {
-  //                 if (snapshot.connectionState == ConnectionState.waiting) {
-  //                   return DropdownButtonFormField(
-  //                     items: [],
-  //                     onChanged: null,
-  //                     decoration: InputDecoration(
-  //                       labelText: 'Chargement...',
-  //                       contentPadding: const EdgeInsets.symmetric(
-  //                           vertical: 10, horizontal: 20),
-  //                       border: OutlineInputBorder(
-  //                         borderRadius: BorderRadius.circular(8),
-  //                       ),
-  //                     ),
-  //                   );
-  //                 }
-
-  //                 if (snapshot.hasData) {
-  //                   dynamic jsonString = utf8.decode(snapshot.data.bodyBytes);
-  //                   dynamic responseData = json.decode(jsonString);
-
-  //                   if (responseData is List) {
-  //                     List<Monnaie> speList =
-  //                         responseData.map((e) => Monnaie.fromMap(e)).toList();
-
-  //                     if (speList.isEmpty) {
-  //                       return DropdownButtonFormField(
-  //                         items: [],
-  //                         onChanged: null,
-  //                         decoration: InputDecoration(
-  //                           labelText: 'Aucun monnaie trouvé',
-  //                           contentPadding: const EdgeInsets.symmetric(
-  //                               vertical: 10, horizontal: 20),
-  //                           border: OutlineInputBorder(
-  //                             borderRadius: BorderRadius.circular(8),
-  //                           ),
-  //                         ),
-  //                       );
-  //                     }
-
-  //                     return DropdownButtonFormField<String>(
-  //                       isExpanded: true,
-  //                       items: speList
-  //                           .map(
-  //                             (e) => DropdownMenuItem(
-  //                               value: e.idMonnaie,
-  //                               child: Text(e.sigle!),
-  //                             ),
-  //                           )
-  //                           .toList(),
-  //                       value: monnaieValue,
-  //                       onChanged: (newValue) {
-  //                         setState(() {
-  //                           monnaieValue = newValue;
-  //                           if (newValue != null) {
-  //                             monnaie = speList.firstWhere(
-  //                               (element) => element.idMonnaie == newValue,
-  //                             );
-  //                           }
-  //                         });
-  //                       },
-  //                       decoration: InputDecoration(
-  //                         labelText: 'Sélectionner la monnaie',
-  //                         contentPadding: const EdgeInsets.symmetric(
-  //                             vertical: 10, horizontal: 20),
-  //                         border: OutlineInputBorder(
-  //                           borderRadius: BorderRadius.circular(8),
-  //                         ),
-  //                       ),
-  //                     );
-  //                   } else {
-  //                     // Handle case when response data is not a list
-  //                     return DropdownButtonFormField(
-  //                       items: [],
-  //                       onChanged: null,
-  //                       decoration: InputDecoration(
-  //                         labelText: 'Aucun monnaie trouvé',
-  //                         contentPadding: const EdgeInsets.symmetric(
-  //                             vertical: 10, horizontal: 20),
-  //                         border: OutlineInputBorder(
-  //                           borderRadius: BorderRadius.circular(8),
-  //                         ),
-  //                       ),
-  //                     );
-  //                   }
-  //                 } else {
-  //                   return DropdownButtonFormField(
-  //                     items: [],
-  //                     onChanged: null,
-  //                     decoration: InputDecoration(
-  //                       labelText: 'Aucun monnaie trouvé',
-  //                       contentPadding: const EdgeInsets.symmetric(
-  //                           vertical: 10, horizontal: 20),
-  //                       border: OutlineInputBorder(
-  //                         borderRadius: BorderRadius.circular(8),
-  //                       ),
-  //                     ),
-  //                   );
-  //                 }
-  //               },
-  //             ),
-  //           )
-  //         ],
-  //       )
-  //     ],
-  //   );
-  // }
-
   Future<void> _makePhoneWa(String whatsappNumber) async {
     final Uri launchUri = Uri(
       scheme: 'https',
@@ -903,7 +881,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
 
   Widget _buildItem(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

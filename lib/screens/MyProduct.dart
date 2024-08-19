@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:koumi/Admin/Zone.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/CategorieProduit.dart';
@@ -14,6 +15,7 @@ import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/AddAndUpdateProductScreen.dart';
 import 'package:koumi/screens/DetailProduits.dart';
+import 'package:koumi/screens/MyStores.dart';
 import 'package:koumi/screens/PinLoginScreen.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/StockService.dart';
@@ -269,6 +271,24 @@ class _MyProductScreenState extends State<MyProductScreen> {
     }
   }
 
+  Future<void> _getResultFromMagasinPage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MyStoresScreen()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+    }
+  }
+
+  Future<void> _getResultFromZonePage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Zone()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+    }
+  }
+
   void _updateMode(int index) {
     if (mounted) {
       setState(() {
@@ -346,54 +366,6 @@ class _MyProductScreenState extends State<MyProductScreen> {
                           Icons.refresh,
                           color: Colors.white,
                         )),
-                    (typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("commercant") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("commerçant") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("transformateur") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("admin") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("producteur") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("partenaires de développement") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("partenaire de developpement"))
-                        ? PopupMenuButton<String>(
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context) {
-                              return <PopupMenuEntry<String>>[
-                                PopupMenuItem<String>(
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.add,
-                                      color: Colors.green,
-                                    ),
-                                    title: const Text(
-                                      "Ajouter produit",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      Navigator.of(context).pop();
-                                      _getResultFromNextScreen1(context);
-                                    },
-                                  ),
-                                ),
-                              ];
-                            },
-                          )
-                        : Container()
                   ]
                 : null),
         body: !isExist
@@ -475,43 +447,139 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     (typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("commercant") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("commerçant") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("transformateur") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("admin") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("producteur") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("partenaires de développement") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("partenaire de developpement"))
-                        ?
-                                    TextButton.icon(
-                                      onPressed: () {
-
-                                      },
-                                      icon: Icon(
-                                        Icons.add,
-                                        color: d_colorGreen,
-                                      ),
-                                      label: Text(
-                                        'Ajouter',
-                                        style: TextStyle(
-                                          color: d_colorGreen,
-                                          fontSize: 17,
-                                        ),
-                                      ),
-                                    ) : Container(),
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("commercant") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("commerçant") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("transformateur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("admin") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("producteur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains(
+                                                    "partenaires de développement") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains(
+                                                    "partenaire de developpement"))
+                                        ? TextButton(
+                                            onPressed: () {
+                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                              showMenu<String>(
+                                                context: context,
+                                                position: RelativeRect.fromLTRB(
+                                                  0,
+                                                  50, // Adjust this value based on the desired position of the menu
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  0,
+                                                ),
+                                                items: [
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_product',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.list_alt_sharp,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un produit",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_store',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.store,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un magasin",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_zone',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.zoom_in_outlined,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter une zone de production",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                                elevation: 8.0,
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  if (value == 'add_product') {
+                                                    _getResultFromNextScreen1(
+                                                        context);
+                                                  } else if (value ==
+                                                      'add_store') {
+                                                    _getResultFromMagasinPage(
+                                                        context);
+                                                  } else if (value ==
+                                                      'add_zone') {
+                                                    _getResultFromZonePage(
+                                                        context);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: d_colorGreen,
+                                                ),
+                                                SizedBox(
+                                                    width:
+                                                        8), // Space between icon and text
+                                                Text(
+                                                  'Ajouter',
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontSize: 17,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container(),
                                     if (!isSearchMode)
                                       TextButton.icon(
                                         onPressed: () {

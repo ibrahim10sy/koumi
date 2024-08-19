@@ -266,16 +266,9 @@ class _StoreScreenState extends State<StoreScreen> {
         : detectedCountry = "Mali";
     print("pays dans store : $detectedCountry");
     verify();
-    // _focusNode.addListener(() {
-    //   if (!_focusNode.hasFocus) {
-    //     setState(() {
-    //       // Ferme la liste des suggestions si le focus est perdu
-    //     });
-    //   }
-    // });
+
     _searchController = TextEditingController();
     _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
-    // _magasinListe = http.get(Uri.parse('$apiOnlineUrl/Magasin/getAllMagagin'));
     _magasinList = getAllMagasinBySearch();
     _niveau1PaysList = http.get(
         Uri.parse('$apiOnlineUrl/niveau1Pays/listeNiveau1PaysByIdPays/${id}'));
@@ -310,7 +303,6 @@ class _StoreScreenState extends State<StoreScreen> {
   void dispose() {
     scrollableController.dispose();
     scrollableController1.dispose();
-    // _focusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -348,93 +340,76 @@ class _StoreScreenState extends State<StoreScreen> {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-          backgroundColor: d_colorOr,
-          centerTitle: true,
-          toolbarHeight: 75,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-          title: Text(
-            'Toutes les magasins',
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          actions: !isExist
-              ? [
-                  IconButton(
-                      onPressed: () {
-                        magasinListeFuture = MagasinService().fetchAllMagasin();
-                      },
-                      icon: const Icon(Icons.refresh, color: Colors.white)),
-                ]
-              : [
-                  IconButton(
-                      onPressed: () {
-                        magasinListeFuture = MagasinService().fetchAllMagasin();
-                      },
-                      icon: const Icon(Icons.refresh, color: Colors.white)),
-                  (typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("commercant") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("admin") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("commerçant") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("producteur"))
-                      ? PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              // PopupMenuItem<String>(
-                              //   child: ListTile(
-                              //     leading: const Icon(
-                              //       Icons.add,
-                              //       color: Colors.green,
-                              //     ),
-                              //     title: const Text(
-                              //       "Ajouter magasin",
-                              //       style: TextStyle(
-                              //         color: Colors.green,
-                              //         fontWeight: FontWeight.bold,
-                              //       ),
-                              //     ),
-                              //     onTap: () async {
-                              //       Navigator.of(context).pop();
-                              //       _getResultFromNextScreen2(context);
-                              //     },
-                              //   ),
-                              // ),
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.remove_red_eye,
-                                    color: Colors.green,
-                                  ),
-                                  title: const Text(
-                                    "Mes boutiques",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen1(context);
-                                  },
-                                ),
-                              ),
-                            ];
-                          },
-                        )
-                      : Container()
-                ],
-        ),
+            backgroundColor: d_colorOr,
+            centerTitle: true,
+            toolbarHeight: 75,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            title: Text(
+              'Tous les magasins',
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
+            actions:
+                //  !isExist?
+                [
+              IconButton(
+                  onPressed: () {
+                    magasinListeFuture = MagasinService().fetchAllMagasin();
+                  },
+                  icon: const Icon(Icons.refresh, color: Colors.white)),
+            ]
+            // : [
+            //     IconButton(
+            //         onPressed: () {
+            //           magasinListeFuture = MagasinService().fetchAllMagasin();
+            //         },
+            //         icon: const Icon(Icons.refresh, color: Colors.white)),
+            //     (typeActeurData
+            //                 .map((e) => e.libelle!.toLowerCase())
+            //                 .contains("commercant") ||
+            //             typeActeurData
+            //                 .map((e) => e.libelle!.toLowerCase())
+            //                 .contains("admin") ||
+            //             typeActeurData
+            //                 .map((e) => e.libelle!.toLowerCase())
+            //                 .contains("commerçant") ||
+            //             typeActeurData
+            //                 .map((e) => e.libelle!.toLowerCase())
+            //                 .contains("producteur"))
+            //         ? PopupMenuButton<String>(
+            //             padding: EdgeInsets.zero,
+            //             itemBuilder: (context) {
+            //               return <PopupMenuEntry<String>>[
+            //                 PopupMenuItem<String>(
+            //                   child: ListTile(
+            //                     leading: const Icon(
+            //                       Icons.remove_red_eye,
+            //                       color: Colors.green,
+            //                     ),
+            //                     title: const Text(
+            //                       "Mes boutiques",
+            //                       style: TextStyle(
+            //                         color: Colors.green,
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     onTap: () async {
+            //                       Navigator.of(context).pop();
+            //                     },
+            //                   ),
+            //                 ),
+            //               ];
+            //             },
+            //           )
+            //         : Container()
+            //   ],
+            ),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -446,55 +421,140 @@ class _StoreScreenState extends State<StoreScreen> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                        const SizedBox(height: 10),
-                        if (!isSearchMode)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  isSearchMode = true;
-                                  isFilterMode = true;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.search,
-                                color: d_colorGreen,
-                              ),
-                              label: Text(
-                                'Rechercher...',
-                                style: TextStyle(
-                                    color: d_colorGreen, fontSize: 17),
-                              ),
-                            ),
-                          ),
-                        if (isSearchMode)
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (mounted) {
-                                    setState(() {
-                                      isSearchMode = false;
-                                      isFilterMode = false;
-                                      _searchController.clear();
-                                      _searchController =
-                                          TextEditingController();
-                                    });
-                                    debugPrint(
-                                        "Rechercher mode désactivé : $isSearchMode");
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                                label: Text(
-                                  'Fermer',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 17),
-                                ),
-                              )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                isExist
+                                    ? TextButton(
+                                        onPressed: () {
+                                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                          showMenu<String>(
+                                            context: context,
+                                            position: RelativeRect.fromLTRB(
+                                              0,
+                                              50, // Adjust this value based on the desired position of the menu
+                                              MediaQuery.of(context).size.width,
+                                              0,
+                                            ),
+                                            items: [
+                                              PopupMenuItem<String>(
+                                                value: 'add_store',
+                                                child: ListTile(
+                                                  leading: const Icon(
+                                                    Icons.store,
+                                                    color: d_colorGreen,
+                                                  ),
+                                                  title: const Text(
+                                                    "Ajouter un magasin",
+                                                    style: TextStyle(
+                                                      color: d_colorGreen,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              PopupMenuItem<String>(
+                                                value: 'store',
+                                                child: ListTile(
+                                                  leading: const Icon(
+                                                    Icons.remove_red_eye,
+                                                    color: d_colorGreen,
+                                                  ),
+                                                  title: const Text(
+                                                    "Mes magasins",
+                                                    style: TextStyle(
+                                                      color: d_colorGreen,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                            elevation: 8.0,
+                                          ).then((value) {
+                                            if (value != null) {
+                                              if (value == 'add_store') {
+                                                _getResultFromNextScreen2(
+                                                    context);
+                                              }
+                                            } else if (value != null) {
+                                              if (value == 'store') {
+                                                _getResultFromNextScreen1(
+                                                    context);
+                                              }
+                                            }
+                                          });
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.add,
+                                              color: d_colorGreen,
+                                            ),
+                                            SizedBox(
+                                                width:
+                                                    8), // Space between icon and text
+                                            Text(
+                                              'Ajouter',
+                                              style: TextStyle(
+                                                color: d_colorGreen,
+                                                fontSize: 17,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(),
+                                if (!isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSearchMode = true;
+                                      });
+                                      debugPrint(
+                                          "rechercher mode value : ${isSearchMode}");
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: d_colorGreen,
+                                    ),
+                                    label: Text(
+                                      'Rechercher...',
+                                      style: TextStyle(
+                                          color: d_colorGreen, fontSize: 17),
+                                    ),
+                                  ),
+                                if (isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      if (mounted) {
+                                        setState(() {
+                                          isSearchMode = false;
+                                          isFilterMode = false;
+                                          _searchController.clear();
+                                          _searchController =
+                                              TextEditingController();
+                                        });
+                                        debugPrint(
+                                            "Rechercher mode désactivé : $isSearchMode");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      'Fermer',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 17),
+                                    ),
+                                  ),
+                              ]),
+                        ),
                         Visibility(
                             visible: isSearchMode,
                             child: Padding(
@@ -846,18 +906,18 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Magasins locaux",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18),
-                                                      ),
-                                                    ),
+                                                    // Padding(
+                                                    //   padding:
+                                                    //       const EdgeInsets.all(
+                                                    //           8.0),
+                                                    //   child: Text(
+                                                    //     "Magasins locaux",
+                                                    //     style: TextStyle(
+                                                    //         fontWeight:
+                                                    //             FontWeight.bold,
+                                                    //         fontSize: 18),
+                                                    //   ),
+                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -997,7 +1057,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                   ],
                                                   if (produitsEtrangers
                                                       .isNotEmpty) ...[
-                                                    Padding(
+                                                         Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
@@ -1006,9 +1066,11 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            fontSize: 18),
+                                                            color: d_colorGreen,
+                                                            fontSize: 16),
                                                       ),
                                                     ),
+                                                   
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1271,19 +1333,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                     children: [
                                                       if (produitsLocaux
                                                           .isNotEmpty) ...[
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                            "Magasins locaux",
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 18),
-                                                          ),
-                                                        ),
+                                                        
                                                         GridView.builder(
                                                           shrinkWrap: true,
                                                           physics:
@@ -1421,19 +1471,20 @@ class _StoreScreenState extends State<StoreScreen> {
                                                       ],
                                                       if (produitsEtrangers
                                                           .isNotEmpty) ...[
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                            "Magasins etrangère",
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 18),
-                                                          ),
-                                                        ),
+                                                         Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        "Magasins etrangère",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: d_colorGreen,
+                                                            fontSize: 16),
+                                                      ),
+                                                    ),
+                                                   
                                                         GridView.builder(
                                                           shrinkWrap: true,
                                                           physics:

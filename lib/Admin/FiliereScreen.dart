@@ -90,50 +90,50 @@ class _FiliereScreenState extends State<FiliereScreen> {
           ),
         ),
         actions: [
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.add,
-                    color: Colors.green,
-                  ),
-                  title: const Text(
-                    "Ajouter filière",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    // _showDialog();
-                    _showBottomSheet();
-                  },
-                ),
-              ),
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: Icon(
-                    Icons.add,
-                    color: Colors.orange[400],
-                  ),
-                  title: Text(
-                    "Ajouter catégorie",
-                    style: TextStyle(
-                      color: Colors.orange[400],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    _showBottomSheet1();
-                  },
-                ),
-              ),
-            ],
-          )
+          // PopupMenuButton<String>(
+          //   padding: EdgeInsets.zero,
+          //   itemBuilder: (context) => <PopupMenuEntry<String>>[
+          //     PopupMenuItem<String>(
+          //       child: ListTile(
+          //         leading: const Icon(
+          //           Icons.add,
+          //           color: Colors.green,
+          //         ),
+          //         title: const Text(
+          //           "Ajouter filière",
+          //           style: TextStyle(
+          //             color: Colors.green,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         onTap: () async {
+          //           Navigator.of(context).pop();
+          //           // _showDialog();
+          //           _showBottomSheet();
+          //         },
+          //       ),
+          //     ),
+          //     PopupMenuItem<String>(
+          //       child: ListTile(
+          //         leading: Icon(
+          //           Icons.add,
+          //           color: Colors.orange[400],
+          //         ),
+          //         title: Text(
+          //           "Ajouter catégorie",
+          //           style: TextStyle(
+          //             color: Colors.orange[400],
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         onTap: () async {
+          //           Navigator.of(context).pop();
+          //           _showBottomSheet1();
+          //         },
+          //       ),
+          //     ),
+          //   ],
+          // )
         ],
       ),
       body: Container(
@@ -143,28 +143,105 @@ class _FiliereScreenState extends State<FiliereScreen> {
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        onPressed: () {
-                          if (mounted) {
-                            setState(() {
-                              isSearchMode = !isSearchMode;
-                              _searchController.clear();
-                            });
-                          }
-                        },
-                        icon: Icon(
-                          isSearchMode ? Icons.close : Icons.search,
-                          color: isSearchMode ? Colors.red : Colors.green,
-                        ),
-                        label: Text(
-                          isSearchMode ? 'Fermer' : 'Rechercher...',
-                          style: TextStyle(
-                            color: isSearchMode ? Colors.red : Colors.green,
-                            fontSize: 17,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                              showMenu<String>(
+                                context: context,
+                                position: RelativeRect.fromLTRB(
+                                  0,
+                                  50, // Adjust this value based on the desired position of the menu
+                                  MediaQuery.of(context).size.width,
+                                  0,
+                                ),
+                                items: [
+                                  PopupMenuItem<String>(
+                                    value: 'add_fil',
+                                    child: ListTile(
+                                      leading: const Icon(
+                                        Icons.add,
+                                        color: d_colorGreen,
+                                      ),
+                                      title: const Text(
+                                        "Ajouter une filière",
+                                        style: TextStyle(
+                                          color: d_colorGreen,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem<String>(
+                                    value: 'add_cat',
+                                    child: ListTile(
+                                      leading: const Icon(
+                                        Icons.add,
+                                        color: d_colorGreen,
+                                      ),
+                                      title: const Text(
+                                        "Ajouter une catégorie",
+                                        style: TextStyle(
+                                          color: d_colorGreen,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                elevation: 8.0,
+                              ).then((value) {
+                                if (value != null) {
+                                  if (value == 'add_fil') {
+                                    _showBottomSheet();
+                                  } else if (value == 'add_cat') {
+                                    _showBottomSheet1();
+                                  }
+                                }
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.add,
+                                  color: d_colorGreen,
+                                ),
+                                SizedBox(
+                                    width: 8), // Space between icon and text
+                                Text(
+                                  'Ajouter',
+                                  style: TextStyle(
+                                    color: d_colorGreen,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                          TextButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                isSearchMode = !isSearchMode;
+                                _searchController.clear();
+                              });
+                            },
+                            icon: Icon(
+                              isSearchMode ? Icons.close : Icons.search,
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                            ),
+                            label: Text(
+                              isSearchMode ? 'Fermer' : 'Rechercher...',
+                              style: TextStyle(
+                                  color:
+                                      isSearchMode ? Colors.red : d_colorGreen,
+                                  fontSize: 17),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     if (isSearchMode)

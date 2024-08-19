@@ -295,10 +295,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   void dispose() {
     scrollableController.dispose();
     scrollableController1.dispose();
-    // if (isSearchMode) {
-    //   _searchController = TextEditingController();
-    // } else {
-    // }
+
     _searchController.dispose();
     super.dispose();
   }
@@ -352,15 +349,18 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
+        appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                )),
             title: Text(
               "Matériels et Équipements",
               style: const TextStyle(
@@ -369,68 +369,74 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                 fontSize: 20,
               ),
             ),
-            actions: !isExist
-                ? [
-                    IconButton(
-                        onPressed: () {
-                          materielListeFuture = getAllMateriel();
-                        },
-                        icon: const Icon(Icons.refresh, color: Colors.white,)),
-                  ]
-                : [
-                    IconButton(
-                        onPressed: () {
-                          materielListeFuture = getAllMateriel();
-                        },
-                        icon: const Icon(Icons.refresh, color: Colors.white,)),
-                    PopupMenuButton<String>(
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context) {
-                        return <PopupMenuEntry<String>>[
-                          PopupMenuItem<String>(
-                            child: ListTile(
-                              leading: const Icon(
-                                Icons.add,
-                                color: Colors.green,
-                              ),
-                              title: const Text(
-                                "Ajouter matériel ",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                _getResultFromNextScreen1(context);
-                              },
-                            ),
-                          ),
-                          PopupMenuItem<String>(
-                            child: ListTile(
-                              leading: const Icon(
-                                Icons.remove_red_eye,
-                                color: Colors.green,
-                              ),
-                              title: const Text(
-                                "Mes matériels ",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                _getResultFromNextScreen2(context);
-                              },
-                            ),
-                          )
-                        ];
-                      },
-                    )
-                  ]),
+            actions:
+                // !isExist
+                //     ?
+                [
+              IconButton(
+                  onPressed: () {
+                    materielListeFuture = getAllMateriel();
+                  },
+                  icon: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  )),
+            ]
+            // : [
+            //     IconButton(
+            //         onPressed: () {
+            //           materielListeFuture = getAllMateriel();
+            //         },
+            //         icon: const Icon(Icons.refresh, color: Colors.white,)),
+            //     PopupMenuButton<String>(
+            //       padding: EdgeInsets.zero,
+            //       itemBuilder: (context) {
+            //         return <PopupMenuEntry<String>>[
+            //           PopupMenuItem<String>(
+            //             child: ListTile(
+            //               leading: const Icon(
+            //                 Icons.add,
+            //                 color: Colors.green,
+            //               ),
+            //               title: const Text(
+            //                 "Ajouter matériel ",
+            //                 style: TextStyle(
+            //                   color: Colors.green,
+            //                   fontSize: 18,
+            //                   fontWeight: FontWeight.bold,
+            //                 ),
+            //               ),
+            //               onTap: () async {
+            //                 Navigator.of(context).pop();
+            //                 _getResultFromNextScreen1(context);
+            //               },
+            //             ),
+            //           ),
+            //           PopupMenuItem<String>(
+            //             child: ListTile(
+            //               leading: const Icon(
+            //                 Icons.remove_red_eye,
+            //                 color: Colors.green,
+            //               ),
+            //               title: const Text(
+            //                 "Mes matériels ",
+            //                 style: TextStyle(
+            //                   color: Colors.green,
+            //                   fontSize: 18,
+            //                   fontWeight: FontWeight.bold,
+            //                 ),
+            //               ),
+            //               onTap: () async {
+            //                 Navigator.of(context).pop();
+            //                 _getResultFromNextScreen2(context);
+            //               },
+            //             ),
+            //           )
+            //         ];
+            //       },
+            //     )
+            //   ]
+            ),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -442,55 +448,139 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                        const SizedBox(height: 10),
-                        if (!isSearchMode)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  isSearchMode = true;
-                                  isFilterMode = true;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.search,
-                                color: d_colorGreen,
-                              ),
-                              label: Text(
-                                'Rechercher...',
-                                style: TextStyle(
-                                    color: d_colorGreen, fontSize: 17),
-                              ),
-                            ),
-                          ),
-                        if (isSearchMode)
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (mounted) {
-                                    setState(() {
-                                      isSearchMode = false;
-                                      isFilterMode = false;
-                                      _searchController.clear();
-                                      _searchController =
-                                          TextEditingController();
-                                    });
-                                    debugPrint(
-                                        "Rechercher mode désactivé : $isSearchMode");
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                                label: Text(
-                                  'Fermer',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 17),
-                                ),
-                              )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                isExist
+                                    ? TextButton(
+                                        onPressed: () {
+                                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                          showMenu<String>(
+                                            context: context,
+                                            position: RelativeRect.fromLTRB(
+                                              0,
+                                              50, // Adjust this value based on the desired position of the menu
+                                              MediaQuery.of(context).size.width,
+                                              0,
+                                            ),
+                                            items: [
+                                              PopupMenuItem<String>(
+                                                value: 'add_mat',
+                                                child: ListTile(
+                                                  leading: const Icon(
+                                                    Icons.add,
+                                                    color: d_colorGreen,
+                                                  ),
+                                                  title: const Text(
+                                                    "Ajouter un matériel",
+                                                    style: TextStyle(
+                                                      color: d_colorGreen,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              PopupMenuItem<String>(
+                                                value: 'mesMat',
+                                                child: ListTile(
+                                                  leading: const Icon(
+                                                    Icons.remove_red_eye,
+                                                    color: d_colorGreen,
+                                                  ),
+                                                  title: const Text(
+                                                    "Mes matériels",
+                                                    style: TextStyle(
+                                                      color: d_colorGreen,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                            elevation: 8.0,
+                                          ).then((value) {
+                                            if (value != null) {
+                                              if (value == 'add_mat') {
+                                                _getResultFromNextScreen1(
+                                                    context);
+                                              } else if (value == 'mesMat') {
+                                                _getResultFromNextScreen2(
+                                                    context);
+                                              }
+                                            }
+                                          });
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.add,
+                                              color: d_colorGreen,
+                                            ),
+                                            SizedBox(
+                                                width:
+                                                    8), // Space between icon and text
+                                            Text(
+                                              'Ajouter',
+                                              style: TextStyle(
+                                                color: d_colorGreen,
+                                                fontSize: 17,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(),
+                                if (!isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSearchMode = true;
+                                        isFilterMode = true;
+                                      });
+                                      debugPrint(
+                                          "rechercher mode value : ${isSearchMode}");
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: d_colorGreen,
+                                    ),
+                                    label: Text(
+                                      'Rechercher...',
+                                      style: TextStyle(
+                                          color: d_colorGreen, fontSize: 17),
+                                    ),
+                                  ),
+                                if (isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      if (mounted) {
+                                        setState(() {
+                                          isSearchMode = false;
+                                          isFilterMode = false;
+                                          _searchController.clear();
+                                          _searchController =
+                                              TextEditingController();
+                                        });
+                                        debugPrint(
+                                            "Rechercher mode désactivé : $isSearchMode");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      'Fermer',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 17),
+                                    ),
+                                  ),
+                              ]),
+                        ),
                         Visibility(
                             visible: isSearchMode,
                             child: Padding(
@@ -712,19 +802,19 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                   children: [
                                                     if (produitsLocaux
                                                         .isNotEmpty) ...[
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Text(
-                                                          "Matériels locaux",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 18),
-                                                        ),
-                                                      ),
+                                                      // Padding(
+                                                      //   padding:
+                                                      //       const EdgeInsets
+                                                      //           .all(8.0),
+                                                      //   child: Text(
+                                                      //     "Matériels locaux",
+                                                      //     style: TextStyle(
+                                                      //         fontWeight:
+                                                      //             FontWeight
+                                                      //                 .bold,
+                                                      //         fontSize: 18),
+                                                      //   ),
+                                                      // ),
                                                       GridView.builder(
                                                         shrinkWrap: true,
                                                         physics:
@@ -871,18 +961,13 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                     if (produitsEtrangers
                                                         .isNotEmpty) ...[
                                                       Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Text(
-                                                          "Matériels etrangère",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 18),
-                                                        ),
-                                                      ),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Produits etrangère",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
                                                       GridView.builder(
                                                         shrinkWrap: true,
                                                         physics:
@@ -1147,19 +1232,19 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                       children: [
                                                         if (produitsLocaux
                                                             .isNotEmpty) ...[
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Text(
-                                                              "Matériels locaux",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 18),
-                                                            ),
-                                                          ),
+                                                          // Padding(
+                                                          //   padding:
+                                                          //       const EdgeInsets
+                                                          //           .all(8.0),
+                                                          //   child: Text(
+                                                          //     "Matériels locaux",
+                                                          //     style: TextStyle(
+                                                          //         fontWeight:
+                                                          //             FontWeight
+                                                          //                 .bold,
+                                                          //         fontSize: 18),
+                                                          //   ),
+                                                          // ),
                                                           GridView.builder(
                                                             shrinkWrap: true,
                                                             physics:
@@ -1298,18 +1383,13 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                         if (produitsEtrangers
                                                             .isNotEmpty) ...[
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Text(
-                                                              "Matériels etrangère",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 18),
-                                                            ),
-                                                          ),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Produits etrangère",
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
                                                           GridView.builder(
                                                             shrinkWrap: true,
                                                             physics:

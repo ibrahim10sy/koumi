@@ -47,11 +47,19 @@ class _ResetPasswordState extends State<ResetPassword> {
           backgroundColor: d_colorOr,
           centerTitle: true,
           toolbarHeight: 75,
+          title: Text(
+            "Modification du mot de passe",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           ),
         ),
         body: SingleChildScrollView(
@@ -65,16 +73,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                     height: 210,
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  "Modification du mot de passe",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: d_colorGreen,
-                  ),
-                ),
-                const SizedBox(height: 20),
                 Form(
                     key: _formKey,
                     child: Column(
@@ -126,7 +124,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 child: Text(erroMessage!,
                                     style: TextStyle(color: Colors.red)))
                             : Container(),
-                        const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: TextFormField(
@@ -171,7 +168,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: TextFormField(
@@ -216,7 +212,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () async {
                             final password = passwordController.text;

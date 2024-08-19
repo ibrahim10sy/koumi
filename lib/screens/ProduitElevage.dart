@@ -5,12 +5,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
+import 'package:koumi/Admin/Zone.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/CategorieProduit.dart';
 import 'package:koumi/models/Stock.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/AddAndUpdateProductScreen.dart';
 import 'package:koumi/screens/DetailProduits.dart';
+import 'package:koumi/screens/MyStores.dart';
 import 'package:koumi/service/StockService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
 import 'package:koumi/widgets/DetectorPays.dart';
@@ -337,6 +339,24 @@ class _ProduitElevageState extends State<ProduitElevage> {
     }
   }
 
+  Future<void> _getResultFromMagasinPage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MyStoresScreen()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+    }
+  }
+
+  Future<void> _getResultFromZonePage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Zone()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -350,8 +370,10 @@ class _ProduitElevageState extends State<ProduitElevage> {
                 Navigator.of(context).pop();
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-          actions: !isExist
-              ? [
+          actions: 
+          // !isExist
+          //     ? 
+              [
                   IconButton(
                       onPressed: () {
                         stockListeFuture = fetchStock(detectedCountry != null
@@ -360,55 +382,55 @@ class _ProduitElevageState extends State<ProduitElevage> {
                       },
                       icon: const Icon(Icons.refresh, color: Colors.white)),
                 ]
-              : [
-                  IconButton(
-                      onPressed: () {
-                        stockListeFuture = fetchStock(detectedCountry != null
-                            ? detectedCountry!
-                            : "Mali");
-                      },
-                      icon: const Icon(Icons.refresh, color: Colors.white)),
-                  (typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("commercant") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("commerçant") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("admin") ||
-                          typeActeurData
-                              .map((e) => e.libelle!.toLowerCase())
-                              .contains("producteur"))
-                      ? PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.add,
-                                    color: Colors.green,
-                                  ),
-                                  title: const Text(
-                                    "Ajouter produit",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen1(context);
-                                  },
-                                ),
-                              ),
-                            ];
-                          },
-                        )
-                      : Container()
-                ],
-          title: const Text(
+              // : [
+              //     IconButton(
+              //         onPressed: () {
+              //           stockListeFuture = fetchStock(detectedCountry != null
+              //               ? detectedCountry!
+              //               : "Mali");
+              //         },
+              //         icon: const Icon(Icons.refresh, color: Colors.white)),
+              //     (typeActeurData
+              //                 .map((e) => e.libelle!.toLowerCase())
+              //                 .contains("commercant") ||
+              //             typeActeurData
+              //                 .map((e) => e.libelle!.toLowerCase())
+              //                 .contains("commerçant") ||
+              //             typeActeurData
+              //                 .map((e) => e.libelle!.toLowerCase())
+              //                 .contains("admin") ||
+              //             typeActeurData
+              //                 .map((e) => e.libelle!.toLowerCase())
+              //                 .contains("producteur"))
+              //         ? PopupMenuButton<String>(
+              //             padding: EdgeInsets.zero,
+              //             itemBuilder: (context) {
+              //               return <PopupMenuEntry<String>>[
+              //                 PopupMenuItem<String>(
+              //                   child: ListTile(
+              //                     leading: const Icon(
+              //                       Icons.add,
+              //                       color: Colors.green,
+              //                     ),
+              //                     title: const Text(
+              //                       "Ajouter produit",
+              //                       style: TextStyle(
+              //                         color: Colors.green,
+              //                         fontWeight: FontWeight.bold,
+              //                       ),
+              //                     ),
+              //                     onTap: () async {
+              //                       Navigator.of(context).pop();
+              //                       _getResultFromNextScreen1(context);
+              //                     },
+              //                   ),
+              //                 ),
+              //               ];
+              //             },
+              //           )
+              //         : Container()
+              
+          ,title: const Text(
             "Produits d'élévages",
             style: TextStyle(
               color: Colors.white,
@@ -428,54 +450,194 @@ class _ProduitElevageState extends State<ProduitElevage> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                        if (!isSearchMode)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  isSearchMode = true;
-                                  isFilterMode = true;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.search,
-                                color: d_colorGreen,
-                              ),
-                              label: Text(
-                                'Rechercher',
-                                style: TextStyle(
-                                    color: d_colorGreen, fontSize: 17),
-                              ),
-                            ),
-                          ),
-                        if (isSearchMode)
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (mounted) {
-                                    setState(() {
-                                      isSearchMode = false;
-                                      isFilterMode = false;
-                                      _searchController.clear();
-                                      _searchController =
-                                          TextEditingController();
-                                    });
-                                    debugPrint(
-                                        "Rechercher mode désactivé : $isSearchMode");
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                                label: Text(
-                                  'Fermer',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 17),
-                                ),
-                              )),
+                         Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                !isExist
+                                    ? (typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("commercant") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("commerçant") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("transformateur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("admin") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("producteur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains(
+                                                    "partenaires de développement") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains(
+                                                    "partenaire de developpement"))
+                                        ? TextButton(
+                                            onPressed: () {
+                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                              showMenu<String>(
+                                                context: context,
+                                                position: RelativeRect.fromLTRB(
+                                                  0,
+                                                  50, // Adjust this value based on the desired position of the menu
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  0,
+                                                ),
+                                                items: [
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_product',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.list_alt_sharp,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un produit",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_store',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.store,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un magasin",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_zone',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.zoom_in_outlined,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter une zone de production",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                                elevation: 8.0,
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  if (value == 'add_product') {
+                                                    _getResultFromNextScreen1(
+                                                        context);
+                                                  } else if (value ==
+                                                      'add_store') {
+                                                    _getResultFromMagasinPage(
+                                                        context);
+                                                  } else if (value ==
+                                                      'add_zone') {
+                                                    _getResultFromZonePage(
+                                                        context);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: d_colorGreen,
+                                                ),
+                                                SizedBox(
+                                                    width:
+                                                        8), // Space between icon and text
+                                                Text(
+                                                  'Ajouter',
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontSize: 17,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container()
+                                    : Container(),
+                                if (!isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSearchMode = true;
+                                        isFilterMode = true;
+                                      });
+                                      debugPrint(
+                                          "rechercher mode value : ${isSearchMode}");
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: d_colorGreen,
+                                    ),
+                                    label: Text(
+                                      'Rechercher...',
+                                      style: TextStyle(
+                                          color: d_colorGreen, fontSize: 17),
+                                    ),
+                                  ),
+                                if (isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      if (mounted) {
+                                        setState(() {
+                                          isSearchMode = false;
+                                          isFilterMode = false;
+                                          _searchController.clear();
+                                          _searchController =
+                                              TextEditingController();
+                                        });
+                                        debugPrint(
+                                            "Rechercher mode désactivé : $isSearchMode");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      'Fermer',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 17),
+                                    ),
+                                  ),
+                              ]),
+                        ),
                         Visibility(
                           visible: isSearchMode,
                           child: Padding(
@@ -674,19 +836,19 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Produits locaux",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: d_colorGreen,
-                                                            fontSize: 16),
-                                                      ),
-                                                    ),
+                                                    // Padding(
+                                                    //   padding:
+                                                    //       const EdgeInsets.all(
+                                                    //           8.0),
+                                                    //   child: Text(
+                                                    //     "Produits locaux",
+                                                    //     style: TextStyle(
+                                                    //         fontWeight:
+                                                    //             FontWeight.bold,
+                                                    //         color: d_colorGreen,
+                                                    //         fontSize: 16),
+                                                    //   ),
+                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1104,19 +1266,19 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Produits locaux",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: d_colorGreen,
-                                                            fontSize: 16),
-                                                      ),
-                                                    ),
+                                                    // Padding(
+                                                    //   padding:
+                                                    //       const EdgeInsets.all(
+                                                    //           8.0),
+                                                    //   child: Text(
+                                                    //     "Produits locaux",
+                                                    //     style: TextStyle(
+                                                    //         fontWeight:
+                                                    //             FontWeight.bold,
+                                                    //         color: d_colorGreen,
+                                                    //         fontSize: 16),
+                                                    //   ),
+                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:

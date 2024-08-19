@@ -120,13 +120,21 @@ class _DetailIntrantState extends State<DetailIntrant> {
     }
   }
 
+  int nbVue = 0;
+
   @override
   void initState() {
     super.initState();
     verify();
 
     intrants = widget.intrant;
-    updateViews(intrants);
+    _loadNbVue();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await updateViews(intrants);
+      setState(() {
+        intrants.nbreView = nbVue;
+      });
+    });
     rates = fetchConvert(intrants);
     print("rates ${rates.toString()}");
     _nomController.text = intrants.nomIntrant!;
@@ -141,16 +149,36 @@ class _DetailIntrantState extends State<DetailIntrant> {
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
   }
 
-  void updateViews(Intrant i) async {
+  Future<void> _loadNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nbVue =
+          prefs.getInt('nbVue_${intrants.idIntrant}') ?? intrants.nbreView ?? 0;
+    });
+  }
+
+  updateViews(Intrant i) async {
     if (acteur.idActeur != i.acteur!.idActeur) {
-      final response = await http
-          .put(Uri.parse('$apiOnlineUrl/intrant/updateView/${i.idIntrant}'));
-      if (response.statusCode == 200) {
-        print('updateView : ${i.nbreView}');
+      final response = await http.put(
+        Uri.parse('$apiOnlineUrl/intrant/updateView/${i.idIntrant}'),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() {
+          nbVue++;
+          i.nbreView = nbVue;
+          print('Nombre de vues mis à jour : ${i.nbreView}');
+          // Sauvegarder la nouvelle valeur de nbVue
+          _saveNbVue();
+        });
       } else {
-        print('Failed to update view count');
+        print('Échec de la mise à jour du nombre de vues');
       }
     }
+  }
+
+  Future<void> _saveNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('nbVue_${intrants.idIntrant}', nbVue);
   }
 
   Future<File> saveImagePermanently(String imagePath) async {
@@ -449,7 +477,12 @@ class _DetailIntrantState extends State<DetailIntrant> {
                                 ),
                               ),
                       ]
-                    : null),
+                    :[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CodePays().getFlagsApp(intrants.acteur!.niveau3PaysActeur!),
+                    )
+                  ] ),
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

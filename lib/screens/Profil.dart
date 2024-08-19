@@ -439,6 +439,15 @@ class _ProfilState extends State<Profil> {
                                   .contains("producteur") ||
                               typeActeurData
                                   .map((e) => e.libelle!.toLowerCase())
+                                  .contains("partenaires de développement") ||
+                              typeActeurData
+                                  .map((e) => e.libelle!.toLowerCase())
+                                  .contains("partenaires de developpement") ||
+                              typeActeurData
+                                  .map((e) => e.libelle!.toLowerCase())
+                                  .contains("transformateur") ||
+                              typeActeurData
+                                  .map((e) => e.libelle!.toLowerCase())
                                   .contains("commerçant") ||
                               typeActeurData
                                   .map((e) => e.libelle!.toLowerCase())

@@ -208,34 +208,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
-            actions: [
-              PopupMenuButton<String>(
-                padding: EdgeInsets.zero,
-                itemBuilder: (context) {
-                  return <PopupMenuEntry<String>>[
-                    PopupMenuItem<String>(
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.add,
-                          color: Colors.green,
-                        ),
-                        title: const Text(
-                          "Ajouter magasin",
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                          _getResultFromNextScreen2(context);
-                        },
-                      ),
-                    ),
-                  ];
-                },
-              )
-            ]),
+           ),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -247,51 +220,119 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                        if (!isSearchMode)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  isSearchMode = true;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.search,
-                                color: d_colorGreen,
-                              ),
-                              label: Text(
-                                'Rechercher',
-                                style:
-                                    TextStyle(color: d_colorGreen, fontSize: 17),
-                              ),
-                            ),
-                          ),
-                        if (isSearchMode)
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (mounted) {
-                                    setState(() {
-                                      isSearchMode = false;
+                             Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                            onPressed: () {
+                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                              showMenu<String>(
+                                                context: context,
+                                                position: RelativeRect.fromLTRB(
+                                                  0,
+                                                  50, // Adjust this value based on the desired position of the menu
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  0,
+                                                ),
+                                                items: [
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_store',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.store,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un magasin",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                                elevation: 8.0,
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  if (value == 'add_store') {
+                                                   _getResultFromNextScreen2(context);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: d_colorGreen,
+                                                ),
+                                                SizedBox(
+                                                    width:
+                                                        8), // Space between icon and text
+                                                Text(
+                                                  'Ajouter',
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontSize: 17,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                      ,
+                                    if (!isSearchMode)
+                                      TextButton.icon(
+                                        onPressed: () {
+                                          setState(() {
+                                            isSearchMode = true;
+                                          });
+                                          debugPrint(
+                                              "rechercher mode value : ${isSearchMode}");
+                                        },
+                                        icon: Icon(
+                                          Icons.search,
+                                          color: d_colorGreen,
+                                        ),
+                                        label: Text(
+                                          'Rechercher...',
+                                          style: TextStyle(
+                                              color: d_colorGreen,
+                                              fontSize: 17),
+                                        ),
+                                      ),
+                                    if (isSearchMode)
+                                      TextButton.icon(
+                                        onPressed: () {
+                                          if (mounted) {
+                                            setState(() {
+                                              isSearchMode = false;
                                       _searchController.clear();
                                       _searchController = TextEditingController();
-                                    });
-                                    debugPrint(
-                                        "Rechercher mode désactivé : $isSearchMode");
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                                label: Text(
-                                  'Fermer',
-                                  style:
-                                      TextStyle(color: Colors.red, fontSize: 17),
-                                ),
-                              )),
+                                            });
+                                            debugPrint(
+                                                "Rechercher mode désactivé : $isSearchMode");
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                        ),
+                                        label: Text(
+                                          'Fermer',
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 17),
+                                        ),
+                                      ),
+                                  ]),
+                            ),
+                        
                         Visibility(
                             visible: isSearchMode,
                             child: Padding(

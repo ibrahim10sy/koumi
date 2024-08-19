@@ -88,7 +88,7 @@ class _AddIntrantState extends State<AddIntrant> {
                 },
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
-              'Ajout d\'intrant ',
+              'Ajouter un intrant ',
               style: const TextStyle(
                   color: Colors.white, fontWeight: FontWeight.bold,
                   fontSize: 20),

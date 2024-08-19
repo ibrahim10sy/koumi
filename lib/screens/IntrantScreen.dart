@@ -423,88 +423,16 @@ class _IntrantScreenState extends State<IntrantScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            actions: !isExist
-                ? null
-                : (typeActeurData
-                            .map((e) => e.libelle!.toLowerCase())
-                            .contains("fournisseur") ||
-                        typeActeurData
-                            .map((e) => e.libelle!.toLowerCase())
-                            .contains("admin") ||
-                        typeActeurData
-                            .map((e) => e.libelle!.toLowerCase())
-                            .contains("fournisseurs"))
-                    ? [
-                        IconButton(
-                            onPressed: () {
-                              intrantListeFuture = IntrantService()
-                                  .fetchIntrantByPays(
-                                      widget.detectedCountry! != null
-                                          ? widget.detectedCountry!
-                                          : "Mali");
-                            },
-                            icon:
-                                const Icon(Icons.refresh, color: Colors.white)),
-                        PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.add,
-                                    color: d_colorGreen,
-                                  ),
-                                  title: const Text(
-                                    "Ajouter intrant ",
-                                    style: TextStyle(
-                                      color: d_colorGreen,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen1(context);
-                                  },
-                                ),
-                              ),
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.remove_red_eye,
-                                    color: d_colorGreen,
-                                  ),
-                                  title: const Text(
-                                    "Mes intrants ",
-                                    style: TextStyle(
-                                      color: d_colorGreen,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen2(context);
-                                  },
-                                ),
-                              )
-                            ];
-                          },
-                        )
-                      ]
-                    : [
-                        IconButton(
-                            onPressed: () {
-                              intrantListeFuture = IntrantService()
-                                  .fetchIntrantByPays(
-                                      widget.detectedCountry! != null
-                                          ? widget.detectedCountry!
-                                          : "Mali");
-                            },
-                            icon:
-                                const Icon(Icons.refresh, color: Colors.white)),
-                      ]),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    intrantListeFuture = IntrantService().fetchIntrantByPays(
+                        widget.detectedCountry! != null
+                            ? widget.detectedCountry!
+                            : "Mali");
+                  },
+                  icon: const Icon(Icons.refresh, color: Colors.white)),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -521,20 +449,103 @@ class _IntrantScreenState extends State<IntrantScreen> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                TextButton.icon(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.add,
-                                    color: d_colorGreen,
-                                  ),
-                                  label: Text(
-                                    'Ajouter',
-                                    style: TextStyle(
-                                      color: d_colorGreen,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                ),
+                                isExist
+                                    ? (typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("fournisseur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("admin") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("fournisseurs"))
+                                        ? TextButton(
+                                            onPressed: () {
+                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                              showMenu<String>(
+                                                context: context,
+                                                position: RelativeRect.fromLTRB(
+                                                  0,
+                                                  50, // Adjust this value based on the desired position of the menu
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  0,
+                                                ),
+                                                items: [
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_intrant',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.add,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un intrant",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'mesIntrant',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.remove_red_eye,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Mes intrants",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                                elevation: 8.0,
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  if (value == 'add_intrant') {
+                                                    _getResultFromNextScreen1(
+                                                        context);
+                                                  } else if (value ==
+                                                      'mesIntrant') {
+                                                    _getResultFromNextScreen2(
+                                                        context);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: d_colorGreen,
+                                                ),
+                                                SizedBox(
+                                                    width:
+                                                        8), // Space between icon and text
+                                                Text(
+                                                  'Ajouter',
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontSize: 17,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container()
+                                    : Container(),
                                 if (!isSearchMode)
                                   TextButton.icon(
                                     onPressed: () {
@@ -718,6 +729,39 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                       } else {
                                         intrantListe = snapshot.data!;
                                         String searchText = "";
+
+                                        List<Intrant> produitsLocaux =
+                                            intrantListe
+                                                .where(
+                                          (element) =>
+                                              element
+                                                  .acteur!.niveau3PaysActeur! ==
+                                              widget.detectedCountry!,
+                                        )
+                                                .where((cate) {
+                                          String nomCat =
+                                              cate.nomIntrant!.toLowerCase();
+                                          searchText = _searchController.text
+                                              .toLowerCase();
+                                          return nomCat.contains(searchText);
+                                        }).toList();
+
+                                        List<Intrant> produitsEtrangers =
+                                            intrantListe
+                                                .where(
+                                          (element) =>
+                                              element
+                                                  .acteur!.niveau3PaysActeur! !=
+                                              widget.detectedCountry,
+                                        )
+                                                .where((cate) {
+                                          String nomCat =
+                                              cate.nomIntrant!.toLowerCase();
+                                          searchText = _searchController.text
+                                              .toLowerCase();
+                                          return nomCat.contains(searchText);
+                                        }).toList();
+
                                         List<Intrant> filteredSearch =
                                             intrantListe.where((cate) {
                                           String nomCat =
@@ -756,160 +800,300 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                                   ),
                                                 ),
                                               )
-                                            : GridView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 2,
-                                                  mainAxisSpacing: 10,
-                                                  crossAxisSpacing: 10,
-                                                  childAspectRatio: 0.8,
-                                                ),
-                                                itemCount:
-                                                    filteredSearch.length + 1,
-                                                itemBuilder: (context, index) {
-                                                  if (index <
-                                                      filteredSearch.length) {
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   MaterialPageRoute(
-                                                        //     builder: (context) =>
-                                                        //         DetailIntrant(
-                                                        //       intrant:
-                                                        //           filteredSearch[
-                                                        //               index],
-                                                        //     ),
-                                                        //   ),
-                                                        // );
-                                                        _getResultFromNextScreen3(
-                                                          context,
-                                                          filteredSearch[index],
-                                                        );
-                                                      },
-                                                      child: Card(
-                                                        margin:
-                                                            EdgeInsets.all(8),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .stretch,
-                                                          children: [
-                                                            ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0),
-                                                              child: SizedBox(
-                                                                height: 85,
-                                                                child: filteredSearch[index].photoIntrant ==
-                                                                            null ||
-                                                                        filteredSearch[index]
-                                                                            .photoIntrant!
-                                                                            .isEmpty
-                                                                    ? Image
-                                                                        .asset(
-                                                                        "assets/images/default_image.png",
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      )
-                                                                    : CachedNetworkImage(
-                                                                        imageUrl:
-                                                                            "https://koumi.ml/api-koumi/intrant/${intrantListe[index].idIntrant}/image",
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        placeholder:
-                                                                            (context, url) =>
-                                                                                const Center(child: CircularProgressIndicator()),
-                                                                        errorWidget: (context,
-                                                                                url,
-                                                                                error) =>
-                                                                            Image.asset(
-                                                                          'assets/images/default_image.png',
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
+                                            : Column(
+                                                children: [
+                                                  if (produitsLocaux
+                                                      .isNotEmpty) ...[
+                                                    GridView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      gridDelegate:
+                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 2,
+                                                        mainAxisSpacing: 10,
+                                                        crossAxisSpacing: 10,
+                                                        childAspectRatio: 0.8,
+                                                      ),
+                                                      itemCount:
+                                                          produitsLocaux.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        if (index <
+                                                            produitsLocaux
+                                                                .length) {
+                                                          return GestureDetector(
+                                                            onTap: () {
+                                                              _getResultFromNextScreen3(
+                                                                context,
+                                                                produitsLocaux[
+                                                                    index],
+                                                              );
+                                                            },
+                                                            child: Card(
+                                                              margin: EdgeInsets
+                                                                  .all(8),
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .stretch,
+                                                                children: [
+                                                                  ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                    child:
+                                                                        SizedBox(
+                                                                      height:
+                                                                          85,
+                                                                      child: produitsLocaux[index].photoIntrant == null ||
+                                                                              produitsLocaux[index].photoIntrant!.isEmpty
+                                                                          ? Image.asset(
+                                                                              "assets/images/default_image.png",
+                                                                              fit: BoxFit.cover,
+                                                                            )
+                                                                          : CachedNetworkImage(
+                                                                              imageUrl: "https://koumi.ml/api-koumi/intrant/${produitsLocaux[index].idIntrant}/image",
+                                                                              fit: BoxFit.cover,
+                                                                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                                              errorWidget: (context, url, error) => Image.asset(
+                                                                                'assets/images/default_image.png',
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ),
+                                                                    ),
+                                                                  ),
+                                                                  // SizedBox(height: 8),
+                                                                  ListTile(
+                                                                    title: Text(
+                                                                      produitsLocaux[
+                                                                              index]
+                                                                          .nomIntrant!,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        color: Colors
+                                                                            .black87,
                                                                       ),
+                                                                      maxLines:
+                                                                          2,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                    ),
+                                                                    subtitle:
+                                                                        Text(
+                                                                      "${produitsLocaux[index].quantiteIntrant.toString()} ${produitsLocaux[index].unite}",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        color: Colors
+                                                                            .black87,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            15),
+                                                                    child: Text(
+                                                                      produitsLocaux[index].monnaie !=
+                                                                              null
+                                                                          ? "${produitsLocaux[index].prixIntrant.toString()} ${produitsLocaux[index].monnaie!.libelle}"
+                                                                          : "${produitsLocaux[index].prixIntrant.toString()} FCFA ",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        color: Colors
+                                                                            .black87,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                ],
                                                               ),
                                                             ),
-                                                            // SizedBox(height: 8),
-                                                            ListTile(
-                                                              title: Text(
-                                                                filteredSearch[
-                                                                        index]
-                                                                    .nomIntrant!,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .black87,
-                                                                ),
-                                                                maxLines: 2,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                              subtitle: Text(
-                                                                "${filteredSearch[index].quantiteIntrant.toString()} ${filteredSearch[index].unite}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black87,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
+                                                          );
+                                                        } else {
+                                                          return isLoading ==
+                                                                  true
+                                                              ? Padding(
+                                                                  padding: const EdgeInsets
                                                                       .symmetric(
                                                                       horizontal:
-                                                                          15),
-                                                              child: Text(
-                                                                filteredSearch[index]
-                                                                            .monnaie !=
-                                                                        null
-                                                                    ? "${filteredSearch[index].prixIntrant.toString()} ${filteredSearch[index].monnaie!.libelle}"
-                                                                    : "${filteredSearch[index].prixIntrant.toString()} FCFA ",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black87,
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ],
+                                                                          32),
+                                                                  child: Center(
+                                                                      child:
+                                                                          const Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      color: Colors
+                                                                          .orange,
+                                                                    ),
+                                                                  )),
+                                                                )
+                                                              : Container();
+                                                        }
+                                                      },
+                                                    ),
+                                                    if (produitsEtrangers
+                                                        .isNotEmpty) ...[
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Text(
+                                                          "Produits etrangère",
+                                                          style: TextStyle(
+                                                              fontSize: 16),
                                                         ),
                                                       ),
-                                                    );
-                                                  } else {
-                                                    return isLoading == true
-                                                        ? Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        32),
-                                                            child: Center(
-                                                                child:
-                                                                    const Center(
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                                color: Colors
-                                                                    .orange,
+                                                      GridView.builder(
+                                                        shrinkWrap: true,
+                                                        physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                        gridDelegate:
+                                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount: 2,
+                                                          mainAxisSpacing: 10,
+                                                          crossAxisSpacing: 10,
+                                                          childAspectRatio: 0.8,
+                                                        ),
+                                                        itemCount:
+                                                            produitsEtrangers
+                                                                .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          if (index <
+                                                              produitsEtrangers
+                                                                  .length) {
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                _getResultFromNextScreen3(
+                                                                  context,
+                                                                  produitsEtrangers[
+                                                                      index],
+                                                                );
+                                                              },
+                                                              child: Card(
+                                                                margin:
+                                                                    EdgeInsets
+                                                                        .all(8),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .stretch,
+                                                                  children: [
+                                                                    ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                      child:
+                                                                          SizedBox(
+                                                                        height:
+                                                                            85,
+                                                                        child: produitsEtrangers[index].photoIntrant == null ||
+                                                                                produitsEtrangers[index].photoIntrant!.isEmpty
+                                                                            ? Image.asset(
+                                                                                "assets/images/default_image.png",
+                                                                                fit: BoxFit.cover,
+                                                                              )
+                                                                            : CachedNetworkImage(
+                                                                                imageUrl: "https://koumi.ml/api-koumi/intrant/${produitsEtrangers[index].idIntrant}/image",
+                                                                                fit: BoxFit.cover,
+                                                                                placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                                                errorWidget: (context, url, error) => Image.asset(
+                                                                                  'assets/images/default_image.png',
+                                                                                  fit: BoxFit.cover,
+                                                                                ),
+                                                                              ),
+                                                                      ),
+                                                                    ),
+                                                                    // SizedBox(height: 8),
+                                                                    ListTile(
+                                                                      title:
+                                                                          Text(
+                                                                        produitsEtrangers[index]
+                                                                            .nomIntrant!,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              Colors.black87,
+                                                                        ),
+                                                                        maxLines:
+                                                                            2,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                      subtitle:
+                                                                          Text(
+                                                                        "${produitsEtrangers[index].quantiteIntrant.toString()} ${produitsEtrangers[index].unite}",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color:
+                                                                              Colors.black87,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              15),
+                                                                      child:
+                                                                          Text(
+                                                                        produitsEtrangers[index].monnaie !=
+                                                                                null
+                                                                            ? "${produitsEtrangers[index].prixIntrant.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                            : "${produitsEtrangers[index].prixIntrant.toString()} FCFA ",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color:
+                                                                              Colors.black87,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            )),
-                                                          )
-                                                        : Container();
-                                                  }
-                                                },
+                                                            );
+                                                          } else {
+                                                            return isLoading ==
+                                                                    true
+                                                                ? Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            32),
+                                                                    child: Center(
+                                                                        child: const Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(
+                                                                        color: Colors
+                                                                            .orange,
+                                                                      ),
+                                                                    )),
+                                                                  )
+                                                                : Container();
+                                                          }
+                                                        },
+                                                      )
+                                                    ]
+                                                  ]
+                                                ],
                                               );
                                       }
                                     });
@@ -956,6 +1140,39 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                       } else {
                                         intrantListe = snapshot.data!;
                                         String searchText = "";
+
+                                        List<Intrant> produitsLocaux =
+                                            intrantListe
+                                                .where(
+                                          (element) =>
+                                              element
+                                                  .acteur!.niveau3PaysActeur! ==
+                                              widget.detectedCountry!,
+                                        )
+                                                .where((cate) {
+                                          String nomCat =
+                                              cate.nomIntrant!.toLowerCase();
+                                          searchText = _searchController.text
+                                              .toLowerCase();
+                                          return nomCat.contains(searchText);
+                                        }).toList();
+
+                                        List<Intrant> produitsEtrangers =
+                                            intrantListe
+                                                .where(
+                                          (element) =>
+                                              element
+                                                  .acteur!.niveau3PaysActeur! !=
+                                              widget.detectedCountry,
+                                        )
+                                                .where((cate) {
+                                          String nomCat =
+                                              cate.nomIntrant!.toLowerCase();
+                                          searchText = _searchController.text
+                                              .toLowerCase();
+                                          return nomCat.contains(searchText);
+                                        }).toList();
+
                                         List<Intrant> filteredSearch =
                                             intrantListe.where((cate) {
                                           String nomCat =
@@ -1002,180 +1219,293 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                                         .isEmpty &&
                                                     isLoading == true
                                                 ? _buildShimmerEffect()
-                                                : GridView.builder(
-                                                    shrinkWrap: true,
-                                                    physics:
-                                                        NeverScrollableScrollPhysics(),
-                                                    gridDelegate:
-                                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 2,
-                                                      mainAxisSpacing: 10,
-                                                      crossAxisSpacing: 10,
-                                                      childAspectRatio: 0.8,
-                                                    ),
-                                                    itemCount: filteredSearch
-                                                            .where((element) =>
-                                                                element
-                                                                    .statutIntrant ==
-                                                                true)
-                                                            .length +
-                                                        1,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      if (index <
-                                                          filteredSearch
-                                                              .length) {
-                                                        var e = filteredSearch
-                                                            .where((element) =>
-                                                                element
-                                                                    .statutIntrant ==
-                                                                true)
-                                                            .elementAt(index);
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            // Navigator.push(
-                                                            //   context,
-                                                            //   MaterialPageRoute(
-                                                            //     builder: (context) =>
-                                                            //         DetailIntrant(
-                                                            //       intrant: e,
-                                                            //     ),
-                                                            //   ),
-                                                            // );
-                                                            _getResultFromNextScreen3(
-                                                              context,
-                                                              filteredSearch[
-                                                                  index],
-                                                            );
-                                                          },
-                                                          child: Card(
-                                                            margin:
-                                                                EdgeInsets.all(
-                                                                    8),
-                                                            // decoration: BoxDecoration(
-                                                            //   color: Color.fromARGB(250, 250, 250, 250),
-                                                            //   borderRadius: BorderRadius.circular(15),
-                                                            //   boxShadow: [
-                                                            //     BoxShadow(
-                                                            //       color: Colors.grey.withOpacity(0.3),
-                                                            //       offset: Offset(0, 2),
-                                                            //       blurRadius: 8,
-                                                            //       spreadRadius: 2,
-                                                            //     ),
-                                                            //   ],
-                                                            // ),
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .stretch,
-                                                              children: [
-                                                                ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                  child:
-                                                                      SizedBox(
-                                                                    height: 85,
-                                                                    child: e.photoIntrant ==
-                                                                                null ||
-                                                                            e.photoIntrant!
-                                                                                .isEmpty
-                                                                        ? Image
-                                                                            .asset(
-                                                                            "assets/images/default_image.png",
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          )
-                                                                        : CachedNetworkImage(
-                                                                            imageUrl:
-                                                                                "https://koumi.ml/api-koumi/intrant/${e.idIntrant}/image",
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                            placeholder: (context, url) =>
-                                                                                const Center(child: CircularProgressIndicator()),
-                                                                            errorWidget: (context, url, error) =>
-                                                                                Image.asset(
-                                                                              'assets/images/default_image.png',
-                                                                              fit: BoxFit.cover,
-                                                                            ),
+                                                : Column(
+                                                    children: [
+                                                      if (produitsLocaux
+                                                          .isNotEmpty) ...[
+                                                        GridView.builder(
+                                                          shrinkWrap: true,
+                                                          physics:
+                                                              NeverScrollableScrollPhysics(),
+                                                          gridDelegate:
+                                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            mainAxisSpacing: 10,
+                                                            crossAxisSpacing:
+                                                                10,
+                                                            childAspectRatio:
+                                                                0.8,
+                                                          ),
+                                                          itemCount:
+                                                              produitsLocaux
+                                                                  .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            if (index <
+                                                                produitsLocaux
+                                                                    .length) {
+                                                              return GestureDetector(
+                                                                onTap: () {
+                                                                  _getResultFromNextScreen3(
+                                                                    context,
+                                                                    produitsLocaux[
+                                                                        index],
+                                                                  );
+                                                                },
+                                                                child: Card(
+                                                                  margin:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              8),
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .stretch,
+                                                                    children: [
+                                                                      ClipRRect(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
+                                                                        child:
+                                                                            SizedBox(
+                                                                          height:
+                                                                              85,
+                                                                          child: produitsLocaux[index].photoIntrant == null || produitsLocaux[index].photoIntrant!.isEmpty
+                                                                              ? Image.asset(
+                                                                                  "assets/images/default_image.png",
+                                                                                  fit: BoxFit.cover,
+                                                                                )
+                                                                              : CachedNetworkImage(
+                                                                                  imageUrl: "https://koumi.ml/api-koumi/intrant/${produitsLocaux[index].idIntrant}/image",
+                                                                                  fit: BoxFit.cover,
+                                                                                  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                                                  errorWidget: (context, url, error) => Image.asset(
+                                                                                    'assets/images/default_image.png',
+                                                                                    fit: BoxFit.cover,
+                                                                                  ),
+                                                                                ),
+                                                                        ),
+                                                                      ),
+                                                                      // SizedBox(height: 8),
+                                                                      ListTile(
+                                                                        title:
+                                                                            Text(
+                                                                          produitsLocaux[index]
+                                                                              .nomIntrant!,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
                                                                           ),
+                                                                          maxLines:
+                                                                              2,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                        subtitle:
+                                                                            Text(
+                                                                          "${produitsLocaux[index].quantiteIntrant.toString()} ${produitsLocaux[index].unite}",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                15),
+                                                                        child:
+                                                                            Text(
+                                                                          produitsLocaux[index].monnaie != null
+                                                                              ? "${produitsLocaux[index].prixIntrant.toString()} ${produitsLocaux[index].monnaie!.libelle}"
+                                                                              : "${produitsLocaux[index].prixIntrant.toString()} FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                                // SizedBox(height: 8),
-                                                                ListTile(
-                                                                  title: Text(
-                                                                    e.nomIntrant!,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: Colors
-                                                                          .black87,
-                                                                    ),
-                                                                    maxLines: 2,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                  ),
-                                                                  subtitle:
-                                                                      Text(
-                                                                    "${e.quantiteIntrant.toString()} ${e.unite}",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      color: Colors
-                                                                          .black87,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          15),
-                                                                  child: Text(
-                                                                    e.monnaie !=
-                                                                            null
-                                                                        ? "${e.prixIntrant.toString()} ${e.monnaie!.libelle}"
-                                                                        : "${e.prixIntrant.toString()} FCFA",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      color: Colors
-                                                                          .black87,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
+                                                              );
+                                                            } else {
+                                                              return isLoading ==
+                                                                      true
+                                                                  ? Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              32),
+                                                                      child: Center(
+                                                                          child: const Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          color:
+                                                                              Colors.orange,
+                                                                        ),
+                                                                      )),
+                                                                    )
+                                                                  : Container();
+                                                            }
+                                                          },
+                                                        ),
+                                                        if (produitsEtrangers
+                                                            .isNotEmpty) ...[
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Text(
+                                                              "Produits etrangère",
+                                                              style: TextStyle(
+                                                                  fontSize: 16),
                                                             ),
                                                           ),
-                                                        );
-                                                      } else {
-                                                        return isLoading == true
-                                                            ? Padding(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        32),
-                                                                child: Center(
+                                                          GridView.builder(
+                                                            shrinkWrap: true,
+                                                            physics:
+                                                                NeverScrollableScrollPhysics(),
+                                                            gridDelegate:
+                                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                              crossAxisCount: 2,
+                                                              mainAxisSpacing:
+                                                                  10,
+                                                              crossAxisSpacing:
+                                                                  10,
+                                                              childAspectRatio:
+                                                                  0.8,
+                                                            ),
+                                                            itemCount:
+                                                                produitsEtrangers
+                                                                    .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              if (index <
+                                                                  produitsEtrangers
+                                                                      .length) {
+                                                                return GestureDetector(
+                                                                  onTap: () {
+                                                                    _getResultFromNextScreen3(
+                                                                      context,
+                                                                      produitsEtrangers[
+                                                                          index],
+                                                                    );
+                                                                  },
+                                                                  child: Card(
+                                                                    margin: EdgeInsets
+                                                                        .all(8),
                                                                     child:
-                                                                        const Center(
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                    color: Colors
-                                                                        .orange,
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .stretch,
+                                                                      children: [
+                                                                        ClipRRect(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(8.0),
+                                                                          child:
+                                                                              SizedBox(
+                                                                            height:
+                                                                                85,
+                                                                            child: produitsEtrangers[index].photoIntrant == null || produitsEtrangers[index].photoIntrant!.isEmpty
+                                                                                ? Image.asset(
+                                                                                    "assets/images/default_image.png",
+                                                                                    fit: BoxFit.cover,
+                                                                                  )
+                                                                                : CachedNetworkImage(
+                                                                                    imageUrl: "https://koumi.ml/api-koumi/intrant/${produitsEtrangers[index].idIntrant}/image",
+                                                                                    fit: BoxFit.cover,
+                                                                                    placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                                                    errorWidget: (context, url, error) => Image.asset(
+                                                                                      'assets/images/default_image.png',
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
+                                                                                  ),
+                                                                          ),
+                                                                        ),
+                                                                        // SizedBox(height: 8),
+                                                                        ListTile(
+                                                                          title:
+                                                                              Text(
+                                                                            produitsEtrangers[index].nomIntrant!,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.black87,
+                                                                            ),
+                                                                            maxLines:
+                                                                                2,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                          subtitle:
+                                                                              Text(
+                                                                            "${produitsEtrangers[index].quantiteIntrant.toString()} ${produitsEtrangers[index].unite}",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: Colors.black87,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 15),
+                                                                          child:
+                                                                              Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? "${produitsEtrangers[index].prixIntrant.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                                : "${produitsEtrangers[index].prixIntrant.toString()} FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: Colors.black87,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
                                                                   ),
-                                                                )),
-                                                              )
-                                                            : Container();
-                                                      }
-                                                    },
+                                                                );
+                                                              } else {
+                                                                return isLoading ==
+                                                                        true
+                                                                    ? Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                32),
+                                                                        child: Center(
+                                                                            child: const Center(
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                            color:
+                                                                                Colors.orange,
+                                                                          ),
+                                                                        )),
+                                                                      )
+                                                                    : Container();
+                                                              }
+                                                            },
+                                                          )
+                                                        ]
+                                                      ]
+                                                    ],
                                                   );
                                       }
                                     });

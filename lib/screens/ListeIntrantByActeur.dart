@@ -131,7 +131,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     });
   }
 
- Future<void> _getResultFromNextScreen(BuildContext context) async {
+  Future<void> _getResultFromNextScreen(BuildContext context) async {
     final result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => AddIntrant()));
     log(result.toString());
@@ -184,37 +184,6 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
               Navigator.pop(context, true);
             },
             icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-            actions: 
-                [
-                        PopupMenuButton<String>(
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.add,
-                                    color: d_colorGreen,
-                                  ),
-                                  title: const Text(
-                                    "Ajouter intrant ",
-                                    style: TextStyle(
-                                      color: d_colorGreen,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    _getResultFromNextScreen(context);
-                                  },
-                                ),
-                              ),
-                             
-                            ];
-                          },
-                        )
-                      ],
         title: const Text(
           "Mes intrants",
           style: TextStyle(
@@ -235,30 +204,85 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
               return <Widget>[
                 SliverToBoxAdapter(
                     child: Column(children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      onPressed: () {
-                        if (mounted) {
-                          setState(() {
-                            isSearchMode = !isSearchMode;
-                            _searchController.clear();
-                            _searchController = TextEditingController();
-                          });
-                          debugPrint(
-                              "Rechercher mode désactivé : $isSearchMode");
-                        }
-                      },
-                      icon: Icon(
-                        isSearchMode ? Icons.close : Icons.search,
-                        color: isSearchMode ? Colors.red : Colors.green,
-                      ),
-                      label: Text(
-                        isSearchMode ? 'Fermer' : 'Rechercher...',
-                        style: TextStyle(
-                            color: isSearchMode ? Colors.red : Colors.green,
-                            fontSize: 17),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // The PopupMenuButton is used here to display the menu when the button is pressed.
+                            showMenu<String>(
+                              context: context,
+                              position: RelativeRect.fromLTRB(
+                                0,
+                                50, // Adjust this value based on the desired position of the menu
+                                MediaQuery.of(context).size.width,
+                                0,
+                              ),
+                              items: [
+                                PopupMenuItem<String>(
+                                  value: 'add_store',
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      Icons.add,
+                                      color: d_colorGreen,
+                                    ),
+                                    title: const Text(
+                                      "Ajouter un intrant",
+                                      style: TextStyle(
+                                        color: d_colorGreen,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              elevation: 8.0,
+                            ).then((value) {
+                              if (value != null) {
+                                if (value == 'add_store') {
+                                  _getResultFromNextScreen(context);
+                                }
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: d_colorGreen,
+                              ),
+                              SizedBox(width: 8), // Space between icon and text
+                              Text(
+                                'Ajouter',
+                                style: TextStyle(
+                                  color: d_colorGreen,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              isSearchMode = !isSearchMode;
+                              _searchController.clear();
+                            });
+                          },
+                          icon: Icon(
+                            isSearchMode ? Icons.close : Icons.search,
+                            color: isSearchMode ? Colors.red : d_colorGreen,
+                          ),
+                          label: Text(
+                            isSearchMode ? 'Fermer' : 'Rechercher...',
+                            style: TextStyle(
+                                color: isSearchMode ? Colors.red : d_colorGreen,
+                                fontSize: 17),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   if (isSearchMode)
@@ -920,14 +944,12 @@ class _DialodEditState extends State<DialodEdit> {
     quantiteController.text = intrants.quantiteIntrant!.toString();
     super.initState();
   }
-  
- Future<void> _getResultFromNextScreen(BuildContext context) async {
+
+  Future<void> _getResultFromNextScreen(BuildContext context) async {
     final result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => AddIntrant()));
     log(result.toString());
-    if (result == true) {
-     
-    }
+    if (result == true) {}
   }
 
   @override
@@ -970,7 +992,7 @@ class _DialodEditState extends State<DialodEdit> {
                       final qte = quantiteController.text;
 
                       final qteF = double.tryParse(qte);
-                        if (qteF! > intrants.quantiteIntrant!) {
+                      if (qteF! > intrants.quantiteIntrant!) {
                         Navigator.of(context).pop();
                         showDialog(
                           context: context,
@@ -993,9 +1015,7 @@ class _DialodEditState extends State<DialodEdit> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddIntrant(
-                                              )));
+                                          builder: (context) => AddIntrant()));
                                 },
                               ),
                             ],

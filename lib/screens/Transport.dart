@@ -370,155 +370,159 @@ class _TransportState extends State<Transport> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
-            actions: !isExist
-                ? [
-                    IconButton(
-                        onPressed: () {
-                          selectedType == null
-                              ? setState(() {
-                                  vehiculeListeFuture = VehiculeService()
-                                      .fetchVehicule(detectedCountry != null
-                                          ? detectedCountry!
-                                          : "Mali");
-                                })
-                              : setState(() {
-                                  vehiculeListeFuture1 = VehiculeService()
-                                      .fetchVehiculeByTypeVoitureWithPagination(
-                                          selectedType!.idTypeVoiture!,
-                                          detectedCountry != null
-                                              ? detectedCountry!
-                                              : "Mali");
-                                });
-                        },
-                        icon: const Icon(Icons.refresh, color: Colors.white)),
-                  ]
-                : [
-                    IconButton(
-                        onPressed: () {
-                          selectedType == null
-                              ? setState(() {
-                                  vehiculeListeFuture = VehiculeService()
-                                      .fetchVehicule(detectedCountry != null
-                                          ? detectedCountry!
-                                          : "Mali");
-                                })
-                              : setState(() {
-                                  vehiculeListeFuture1 = VehiculeService()
-                                      .fetchVehiculeByTypeVoitureWithPagination(
-                                          selectedType!.idTypeVoiture!,
-                                          detectedCountry != null
-                                              ? detectedCountry!
-                                              : "Mali");
-                                });
-                        },
-                        icon: const Icon(Icons.refresh, color: Colors.white)),
-                    (typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("transporteur") ||
-                            typeActeurData
-                                .map((e) => e.libelle!.toLowerCase())
-                                .contains("admin"))
-                        // (type.toLowerCase() == 'admin' ||
-                        //         type.toLowerCase() == 'transporteur')
-                        ? PopupMenuButton<String>(
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context) {
-                              return <PopupMenuEntry<String>>[
-                                PopupMenuItem<String>(
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.add,
-                                      color: Colors.green,
-                                    ),
-                                    title: const Text(
-                                      "Ajouter un vehicule",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      Navigator.of(context).pop();
-                                      _getResultFromNextScreen1(context);
-                                    },
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.green,
-                                    ),
-                                    title: const Text(
-                                      "Mes véhicules",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      Navigator.of(context).pop();
-                                      _getResultFromNextScreen2(context);
-                                    },
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.green,
-                                    ),
-                                    title: const Text(
-                                      "Transporteurs",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      Navigator.of(context).pop();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PageTransporteur()));
-                                    },
-                                  ),
-                                ),
-                              ];
-                            },
-                          )
-                        : PopupMenuButton<String>(
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context) {
-                              return <PopupMenuEntry<String>>[
-                                PopupMenuItem<String>(
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.green,
-                                    ),
-                                    title: const Text(
-                                      "Transporteurs",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      Navigator.of(context).pop();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PageTransporteur()));
-                                    },
-                                  ),
-                                ),
-                              ];
-                            },
-                          )
-                  ]),
+            actions:
+                // !isExist
+                //     ?
+                [
+              IconButton(
+                  onPressed: () {
+                    selectedType == null
+                        ? setState(() {
+                            vehiculeListeFuture = VehiculeService()
+                                .fetchVehicule(detectedCountry != null
+                                    ? detectedCountry!
+                                    : "Mali");
+                          })
+                        : setState(() {
+                            vehiculeListeFuture1 = VehiculeService()
+                                .fetchVehiculeByTypeVoitureWithPagination(
+                                    selectedType!.idTypeVoiture!,
+                                    detectedCountry != null
+                                        ? detectedCountry!
+                                        : "Mali");
+                          });
+                  },
+                  icon: const Icon(Icons.refresh, color: Colors.white)),
+            ]
+            // :
+            // [
+            //     IconButton(
+            //         onPressed: () {
+            //           selectedType == null
+            //               ? setState(() {
+            //                   vehiculeListeFuture = VehiculeService()
+            //                       .fetchVehicule(detectedCountry != null
+            //                           ? detectedCountry!
+            //                           : "Mali");
+            //                 })
+            //               : setState(() {
+            //                   vehiculeListeFuture1 = VehiculeService()
+            //                       .fetchVehiculeByTypeVoitureWithPagination(
+            //                           selectedType!.idTypeVoiture!,
+            //                           detectedCountry != null
+            //                               ? detectedCountry!
+            //                               : "Mali");
+            //                 });
+            //         },
+            //         icon: const Icon(Icons.refresh, color: Colors.white)),
+            //     (typeActeurData
+            //                 .map((e) => e.libelle!.toLowerCase())
+            //                 .contains("transporteur") ||
+            //             typeActeurData
+            //                 .map((e) => e.libelle!.toLowerCase())
+            //                 .contains("admin"))
+            //         // (type.toLowerCase() == 'admin' ||
+            //         //         type.toLowerCase() == 'transporteur')
+            //         ? PopupMenuButton<String>(
+            //             padding: EdgeInsets.zero,
+            //             itemBuilder: (context) {
+            //               return <PopupMenuEntry<String>>[
+            //                 PopupMenuItem<String>(
+            //                   child: ListTile(
+            //                     leading: const Icon(
+            //                       Icons.add,
+            //                       color: Colors.green,
+            //                     ),
+            //                     title: const Text(
+            //                       "Ajouter un vehicule",
+            //                       style: TextStyle(
+            //                         color: Colors.green,
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     onTap: () async {
+            //                       Navigator.of(context).pop();
+            //                       _getResultFromNextScreen1(context);
+            //                     },
+            //                   ),
+            //                 ),
+            //                 PopupMenuItem<String>(
+            //                   child: ListTile(
+            //                     leading: const Icon(
+            //                       Icons.remove_red_eye,
+            //                       color: Colors.green,
+            //                     ),
+            //                     title: const Text(
+            //                       "Mes véhicules",
+            //                       style: TextStyle(
+            //                         color: Colors.green,
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     onTap: () async {
+            //                       Navigator.of(context).pop();
+            //                       _getResultFromNextScreen2(context);
+            //                     },
+            //                   ),
+            //                 ),
+            //                 PopupMenuItem<String>(
+            //                   child: ListTile(
+            //                     leading: const Icon(
+            //                       Icons.remove_red_eye,
+            //                       color: Colors.green,
+            //                     ),
+            //                     title: const Text(
+            //                       "Transporteurs",
+            //                       style: TextStyle(
+            //                         color: Colors.green,
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     onTap: () async {
+            //                       Navigator.of(context).pop();
+            //                       Navigator.push(
+            //                           context,
+            //                           MaterialPageRoute(
+            //                               builder: (context) =>
+            //                                   PageTransporteur()));
+            //                     },
+            //                   ),
+            //                 ),
+            //               ];
+            //             },
+            //           )
+            //         : PopupMenuButton<String>(
+            //             padding: EdgeInsets.zero,
+            //             itemBuilder: (context) {
+            //               return <PopupMenuEntry<String>>[
+            //                 PopupMenuItem<String>(
+            //                   child: ListTile(
+            //                     leading: const Icon(
+            //                       Icons.remove_red_eye,
+            //                       color: Colors.green,
+            //                     ),
+            //                     title: const Text(
+            //                       "Transporteurs",
+            //                       style: TextStyle(
+            //                         color: Colors.green,
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     onTap: () async {
+            //                       Navigator.of(context).pop();
+            //                       Navigator.push(
+            //                           context,
+            //                           MaterialPageRoute(
+            //                               builder: (context) =>
+            //                                   PageTransporteur()));
+            //                     },
+            //                   ),
+            //                 ),
+            //               ];
+            //             },
+            //           )
+            //   ]
+            ),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -551,54 +555,150 @@ class _TransportState extends State<Transport> {
                   return <Widget>[
                     SliverToBoxAdapter(
                         child: Column(children: [
-                      const SizedBox(height: 10),
-                      if (!isSearchMode)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                isSearchMode = true;
-                                isFilterMode = true;
-                              });
-                            },
-                            icon: Icon(
-                              Icons.search,
-                              color: d_colorGreen,
-                            ),
-                            label: Text(
-                              'Rechercher...',
-                              style:
-                                  TextStyle(color: d_colorGreen, fontSize: 17),
-                            ),
-                          ),
-                        ),
-                      if (isSearchMode)
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: () {
-                                if (mounted) {
-                                  setState(() {
-                                    isSearchMode = false;
-                                    isFilterMode = false;
-                                    _searchController.clear();
-                                    _searchController = TextEditingController();
-                                  });
-                                  debugPrint(
-                                      "Rechercher mode désactivé : $isSearchMode");
-                                }
-                              },
-                              icon: Icon(
-                                Icons.close,
-                                color: Colors.red,
-                              ),
-                              label: Text(
-                                'Fermer',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 17),
-                              ),
-                            )),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              isExist
+                                  ? (typeActeurData
+                                              .map((e) =>
+                                                  e.libelle!.toLowerCase())
+                                              .contains("transporteur") ||
+                                          typeActeurData
+                                              .map((e) =>
+                                                  e.libelle!.toLowerCase())
+                                              .contains("admin"))
+                                      ? TextButton(
+                                          onPressed: () {
+                                            // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                            showMenu<String>(
+                                              context: context,
+                                              position: RelativeRect.fromLTRB(
+                                                0,
+                                                50, // Adjust this value based on the desired position of the menu
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                0,
+                                              ),
+                                              items: [
+                                                PopupMenuItem<String>(
+                                                  value: 'add',
+                                                  child: ListTile(
+                                                    leading: const Icon(
+                                                      Icons.add,
+                                                      color: d_colorGreen,
+                                                    ),
+                                                    title: const Text(
+                                                      "Ajouter un véhicule",
+                                                      style: TextStyle(
+                                                        color: d_colorGreen,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                PopupMenuItem<String>(
+                                                  value: 'mesvh',
+                                                  child: ListTile(
+                                                    leading: const Icon(
+                                                      Icons.remove_red_eye,
+                                                      color: d_colorGreen,
+                                                    ),
+                                                    title: const Text(
+                                                      "Mes véhicules",
+                                                      style: TextStyle(
+                                                        color: d_colorGreen,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                              elevation: 8.0,
+                                            ).then((value) {
+                                              if (value != null) {
+                                                if (value == 'add') {
+                                                  _getResultFromNextScreen1(
+                                                      context);
+                                                } else if (value == 'mesvh') {
+                                                  _getResultFromNextScreen2(
+                                                      context);
+                                                }
+                                              }
+                                            });
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                color: d_colorGreen,
+                                              ),
+                                              SizedBox(
+                                                  width:
+                                                      8), // Space between icon and text
+                                              Text(
+                                                'Ajouter',
+                                                style: TextStyle(
+                                                  color: d_colorGreen,
+                                                  fontSize: 17,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Container()
+                                  : Container(),
+                              if (!isSearchMode)
+                                TextButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      isSearchMode = true;
+                                      isFilterMode = true;
+                                    });
+                                    debugPrint(
+                                        "rechercher mode value : ${isSearchMode}");
+                                  },
+                                  icon: Icon(
+                                    Icons.search,
+                                    color: d_colorGreen,
+                                  ),
+                                  label: Text(
+                                    'Rechercher...',
+                                    style: TextStyle(
+                                        color: d_colorGreen, fontSize: 17),
+                                  ),
+                                ),
+                              if (isSearchMode)
+                                TextButton.icon(
+                                  onPressed: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        isSearchMode = false;
+                                        isFilterMode = false;
+                                        _searchController.clear();
+                                        _searchController =
+                                            TextEditingController();
+                                      });
+                                      debugPrint(
+                                          "Rechercher mode désactivé : $isSearchMode");
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                  ),
+                                  label: Text(
+                                    'Fermer',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 17),
+                                  ),
+                                ),
+                            ]),
+                      ),
                       Visibility(
                           visible: isSearchMode,
                           child: Padding(
@@ -786,17 +886,17 @@ class _TransportState extends State<Transport> {
                                             children: [
                                               if (produitsLocaux
                                                   .isNotEmpty) ...[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "Transport locaux",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18),
-                                                  ),
-                                                ),
+                                                // Padding(
+                                                //   padding:
+                                                //       const EdgeInsets.all(8.0),
+                                                //   child: Text(
+                                                //     "Transport locaux",
+                                                //     style: TextStyle(
+                                                //         fontWeight:
+                                                //             FontWeight.bold,
+                                                //         fontSize: 18),
+                                                //   ),
+                                                // ),
                                                 GridView.builder(
                                                   shrinkWrap: true,
                                                   physics:
@@ -950,10 +1050,8 @@ class _TransportState extends State<Transport> {
                                                       const EdgeInsets.all(8.0),
                                                   child: Text(
                                                     "Transport etrangère",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18),
+                                                    style:
+                                                        TextStyle(fontSize: 16),
                                                   ),
                                                 ),
                                                 GridView.builder(
@@ -1148,7 +1246,7 @@ class _TransportState extends State<Transport> {
                                     List<Vehicule> produitsEtrangers =
                                         vehiculeListe
                                             .where((stock) =>
-                                                stock.acteur!
+                                                stock.acteur
                                                     .niveau3PaysActeur! !=
                                                 detectedCountry)
                                             .where((search) {
@@ -1201,18 +1299,18 @@ class _TransportState extends State<Transport> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Transport locaux",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18),
-                                                      ),
-                                                    ),
+                                                    // Padding(
+                                                    //   padding:
+                                                    //       const EdgeInsets.all(
+                                                    //           8.0),
+                                                    //   child: Text(
+                                                    //     "Transport locaux",
+                                                    //     style: TextStyle(
+                                                    //         fontWeight:
+                                                    //             FontWeight.bold,
+                                                    //         fontSize: 18),
+                                                    //   ),
+                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1360,9 +1458,7 @@ class _TransportState extends State<Transport> {
                                                       child: Text(
                                                         "Transport etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18),
+                                                            fontSize: 16),
                                                       ),
                                                     ),
                                                     GridView.builder(

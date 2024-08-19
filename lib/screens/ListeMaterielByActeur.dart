@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Materiels.dart';
 import 'package:koumi/models/TypeMateriel.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
+import 'package:koumi/screens/AddMateriel.dart';
 import 'package:koumi/service/MaterielService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
 import 'package:provider/provider.dart';
@@ -142,10 +144,24 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
     });
   }
 
+  Future<void> _getResultFromNextScreen1(BuildContext context) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddMateriel(isEquipement: false)));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        futureListe = MaterielService()
+            .fetchMaterielByActeurWithPagination(acteur.idActeur!);
+      });
+    }
+  }
+
   @override
   void dispose() {
-   
-      _searchController.dispose();
+    _searchController.dispose();
     // Disposez le TextEditingController lorsque vous n'en avez plus besoin
     scrollableController.dispose();
     super.dispose();
@@ -155,8 +171,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
+        appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(
@@ -185,33 +201,90 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
           },
           child: Container(
               child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverToBoxAdapter(
                     child: Column(children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      onPressed: () {
-                        if (mounted) {
-                          setState(() {
-                            isSearchMode = !isSearchMode;
-                            _searchController.clear();
-                            _searchController = TextEditingController();
-                          });
-                          debugPrint("Rechercher mode désactivé : $isSearchMode");
-                        }
-                      },
-                      icon: Icon(
-                        isSearchMode ? Icons.close : Icons.search,
-                        color: isSearchMode ? Colors.red : Colors.green,
-                      ),
-                      label: Text(
-                        isSearchMode ? 'Fermer' : 'Rechercher...',
-                        style: TextStyle(
-                            color: isSearchMode ? Colors.red : Colors.green,
-                            fontSize: 17),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // The PopupMenuButton is used here to display the menu when the button is pressed.
+                            showMenu<String>(
+                              context: context,
+                              position: RelativeRect.fromLTRB(
+                                0,
+                                50, // Adjust this value based on the desired position of the menu
+                                MediaQuery.of(context).size.width,
+                                0,
+                              ),
+                              items: [
+                                PopupMenuItem<String>(
+                                  value: 'add_mat',
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      Icons.add,
+                                      color: d_colorGreen,
+                                    ),
+                                    title: const Text(
+                                      "Ajouter un matériel",
+                                      style: TextStyle(
+                                        color: d_colorGreen,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              elevation: 8.0,
+                            ).then((value) {
+                              if (value != null) {
+                                if (value == 'add_mat') {
+                                  _getResultFromNextScreen1(context);
+                                }
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: d_colorGreen,
+                              ),
+                              SizedBox(width: 8), // Space between icon and text
+                              Text(
+                                'Ajouter',
+                                style: TextStyle(
+                                  color: d_colorGreen,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              isSearchMode = !isSearchMode;
+                              _searchController.clear();
+                            });
+                          },
+                          icon: Icon(
+                            isSearchMode ? Icons.close : Icons.search,
+                            color: isSearchMode ? Colors.red : d_colorGreen,
+                          ),
+                          label: Text(
+                            isSearchMode ? 'Fermer' : 'Rechercher...',
+                            style: TextStyle(
+                                color: isSearchMode ? Colors.red : d_colorGreen,
+                                fontSize: 17),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   if (isSearchMode)
@@ -221,7 +294,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                         controller: _searchController,
                         itemHeight: 25,
                         placeholder: 'Rechercher...',
-                        placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
                         suggestions: AutoComplet.getMateriels,
                         suggestionsDecoration: SuggestionDecoration(
                           marginSuggestions: const EdgeInsets.all(8.0),
@@ -248,7 +322,7 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                         },
                       ),
                     ),
-          
+
                   // Padding(
                   //   padding: const EdgeInsets.all(10.0),
                   //   child: Container(
@@ -313,7 +387,7 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                 ConnectionState.waiting) {
                               return _buildShimmerEffect();
                             }
-          
+
                             if (!snapshot.hasData) {
                               return SingleChildScrollView(
                                 child: Padding(
@@ -356,7 +430,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                     child: Center(
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/images/notif.jpg'),
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
                                           SizedBox(
                                             height: 10,
                                           ),
@@ -391,7 +466,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 17,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
@@ -415,7 +491,7 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                           // var e = filtereSearch
                                           // .where((element) => element.statut== true)
                                           // .elementAt(index);
-          
+
                                           return GestureDetector(
                                               onTap: () {
                                                 Navigator.push(
@@ -437,11 +513,11 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                         ClipRRect(
                                                           borderRadius:
                                                               BorderRadius
-                                                                  .circular(8.0),
+                                                                  .circular(
+                                                                      8.0),
                                                           child: SizedBox(
                                                             height: 72,
-                                                            child: filtereSearch[
-                                                                                index]
+                                                            child: filtereSearch[index]
                                                                             .photoMateriel ==
                                                                         null ||
                                                                     filtereSearch[
@@ -484,13 +560,15 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                             style: TextStyle(
                                                               fontSize: 16,
                                                               fontWeight:
-                                                                  FontWeight.bold,
-                                                              color:
-                                                                  Colors.black87,
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .black87,
                                                             ),
                                                             maxLines: 2,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                           subtitle: Text(
                                                             filtereSearch[index]
@@ -500,8 +578,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                                   TextOverflow
                                                                       .ellipsis,
                                                               fontSize: 15,
-                                                              color:
-                                                                  Colors.black87,
+                                                              color: Colors
+                                                                  .black87,
                                                             ),
                                                           ),
                                                         ),
@@ -511,7 +589,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                           padding:
                                                               const EdgeInsets
                                                                   .symmetric(
-                                                                  horizontal: 10),
+                                                                  horizontal:
+                                                                      10),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -526,9 +605,10 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                                 padding:
                                                                     EdgeInsets
                                                                         .zero,
-                                                                itemBuilder: (context) =>
-                                                                    <PopupMenuEntry<
-                                                                        String>>[
+                                                                itemBuilder:
+                                                                    (context) =>
+                                                                        <PopupMenuEntry<
+                                                                            String>>[
                                                                   PopupMenuItem<
                                                                       String>(
                                                                     child:
@@ -536,24 +616,21 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                                       leading: filtereSearch[index].statut ==
                                                                               false
                                                                           ? Icon(
-                                                                              Icons
-                                                                                  .check,
-                                                                              color:
-                                                                                  Colors.green)
+                                                                              Icons.check,
+                                                                              color: Colors.green)
                                                                           : Icon(
                                                                               Icons.disabled_visible,
-                                                                              color:
-                                                                                  Colors.orange[400],
+                                                                              color: Colors.orange[400],
                                                                             ),
-                                                                      title: Text(
+                                                                      title:
+                                                                          Text(
                                                                         filtereSearch[index].statut ==
                                                                                 false
                                                                             ? "Activer"
                                                                             : "Desactiver",
                                                                         style:
                                                                             TextStyle(
-                                                                          color: filtereSearch[index].statut ==
-                                                                                  false
+                                                                          color: filtereSearch[index].statut == false
                                                                               ? Colors.green
                                                                               : Colors.orange[400],
                                                                           fontWeight:
@@ -618,9 +695,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                                                       ),
                                                                                       Navigator.of(context).pop(),
                                                                                     });
-          
-                                                                        ScaffoldMessenger.of(
-                                                                                context)
+
+                                                                        ScaffoldMessenger.of(context)
                                                                             .showSnackBar(
                                                                           const SnackBar(
                                                                             content:
@@ -652,8 +728,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                                                         "Supprimer",
                                                                         style:
                                                                             TextStyle(
-                                                                          color: Colors
-                                                                              .red,
+                                                                          color:
+                                                                              Colors.red,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                         ),
@@ -696,9 +772,9 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                         } else {
                                           return isLoading == true
                                               ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 32),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 32),
                                                   child: Center(
                                                       child: const Center(
                                                     child:

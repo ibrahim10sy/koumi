@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -173,12 +174,24 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
     super.dispose();
   }
 
+  Future<void> _getResultFromNextScreen1(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddVehicule()));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-          appBar: AppBar(
-             backgroundColor: d_colorOr,
+        appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(
@@ -203,34 +216,34 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                           .fetchVehiculeByActeur(acteur.idActeur!);
                     });
                   },
-                  icon: const Icon(Icons.refresh, color:  Colors.white)),
-              PopupMenuButton<String>(
-                padding: EdgeInsets.zero,
-                itemBuilder: (context) => <PopupMenuEntry<String>>[
-                  PopupMenuItem<String>(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.add,
-                        color: Colors.green,
-                      ),
-                      title: const Text(
-                        "Ajouter un vehicule",
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                      onTap: () async {
-                        Navigator.of(context).pop();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddVehicule()));
-                      },
-                    ),
-                  ),
-                ],
-              )
+                  icon: const Icon(Icons.refresh, color: Colors.white)),
+              // PopupMenuButton<String>(
+              //   padding: EdgeInsets.zero,
+              //   itemBuilder: (context) => <PopupMenuEntry<String>>[
+              //     PopupMenuItem<String>(
+              //       child: ListTile(
+              //         leading: const Icon(
+              //           Icons.add,
+              //           color: Colors.green,
+              //         ),
+              //         title: const Text(
+              //           "Ajouter un vehicule",
+              //           style: TextStyle(
+              //               color: Colors.green,
+              //               fontWeight: FontWeight.bold,
+              //               fontSize: 18),
+              //         ),
+              //         onTap: () async {
+              //           Navigator.of(context).pop();
+              //           Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                   builder: (context) => AddVehicule()));
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // )
             ]),
         body: GestureDetector(
           onTap: () {
@@ -253,46 +266,94 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                         return <Widget>[
                           SliverToBoxAdapter(
                               child: Column(children: [
-                            if (!isSearchMode)
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton.icon(
-                                  onPressed: () {
-                                    setState(() {
-                                      isSearchMode = true;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: d_colorGreen,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                      showMenu<String>(
+                                        context: context,
+                                        position: RelativeRect.fromLTRB(
+                                          0,
+                                          50, // Adjust this value based on the desired position of the menu
+                                          MediaQuery.of(context).size.width,
+                                          0,
+                                        ),
+                                        items: [
+                                          PopupMenuItem<String>(
+                                            value: 'add_store',
+                                            child: ListTile(
+                                              leading: const Icon(
+                                                Icons.add,
+                                                color: d_colorGreen,
+                                              ),
+                                              title: const Text(
+                                                "Ajouter un véhicule",
+                                                style: TextStyle(
+                                                  color: d_colorGreen,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        elevation: 8.0,
+                                      ).then((value) {
+                                        if (value != null) {
+                                          if (value == 'add_store') {
+                                            _getResultFromNextScreen1(context);
+                                          }
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.add,
+                                          color: d_colorGreen,
+                                        ),
+                                        SizedBox(
+                                            width:
+                                                8), // Space between icon and text
+                                        Text(
+                                          'Ajouter',
+                                          style: TextStyle(
+                                            color: d_colorGreen,
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  label: Text(
-                                    'Rechercher',
-                                    style: TextStyle(
-                                        color: d_colorGreen, fontSize: 17),
-                                  ),
-                                ),
-                              ),
-                            if (isSearchMode)
-                              Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton.icon(
+                                  TextButton.icon(
                                     onPressed: () {
                                       setState(() {
-                                        isSearchMode = false;
+                                        isSearchMode = !isSearchMode;
                                         _searchController.clear();
                                       });
                                     },
                                     icon: Icon(
-                                      Icons.close,
-                                      color: Colors.red,
+                                      isSearchMode ? Icons.close : Icons.search,
+                                      color: isSearchMode
+                                          ? Colors.red
+                                          : d_colorGreen,
                                     ),
                                     label: Text(
-                                      'Fermer',
+                                      isSearchMode ? 'Fermer' : 'Rechercher...',
                                       style: TextStyle(
-                                          color: Colors.red, fontSize: 17),
+                                          color: isSearchMode
+                                              ? Colors.red
+                                              : d_colorGreen,
+                                          fontSize: 17),
                                     ),
-                                  )),
+                                  ),
+                                ],
+                              ),
+                            ),
                             Visibility(
                               visible: isSearchMode,
                               child: Padding(
@@ -305,9 +366,10 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                       TextStyle(fontStyle: FontStyle.italic),
                                   suggestions: AutoComplet.getTransportVehicles,
                                   suggestionsDecoration: SuggestionDecoration(
-                                    marginSuggestions: const EdgeInsets.all(8.0),
-                                    color:
-                                        const Color.fromARGB(255, 236, 234, 234),
+                                    marginSuggestions:
+                                        const EdgeInsets.all(8.0),
+                                    color: const Color.fromARGB(
+                                        255, 236, 234, 234),
                                     borderRadius: BorderRadius.circular(16.0),
                                   ),
                                   onSuggestionSelected: (selectedItem) {
@@ -352,12 +414,13 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                           ConnectionState.waiting) {
                                         return _buildShimmerEffect();
                                       }
-          
+
                                       if (!snapshot.hasData) {
                                         return const Padding(
                                           padding: EdgeInsets.all(10),
                                           child: Center(
-                                              child: Text("Aucun donné trouvé")),
+                                              child:
+                                                  Text("Aucun donné trouvé")),
                                         );
                                       } else {
                                         vehiculeListe = snapshot.data!;
@@ -387,8 +450,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 17,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
                                                         ),
                                                       ],
@@ -420,11 +484,11 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                 builder: (context) =>
                                                                     DetailTransport(
                                                                         vehicule:
-                                                                            filtereSearch[
-                                                                                index])));
+                                                                            filtereSearch[index])));
                                                       },
                                                       child: Card(
-                                                        margin: EdgeInsets.all(8),
+                                                        margin:
+                                                            EdgeInsets.all(8),
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -437,14 +501,13 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                           8.0),
                                                               child: SizedBox(
                                                                 height: 72,
-                                                                child: filtereSearch[index]
-                                                                                .photoVehicule ==
+                                                                child: filtereSearch[index].photoVehicule ==
                                                                             null ||
-                                                                        filtereSearch[
-                                                                                index]
+                                                                        filtereSearch[index]
                                                                             .photoVehicule!
                                                                             .isEmpty
-                                                                    ? Image.asset(
+                                                                    ? Image
+                                                                        .asset(
                                                                         "assets/images/default_image.png",
                                                                         fit: BoxFit
                                                                             .cover,
@@ -454,15 +517,13 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                             "https://koumi.ml/api-koumi/vehicule/${filtereSearch[index].idVehicule}/image",
                                                                         fit: BoxFit
                                                                             .cover,
-                                                                        placeholder: (context,
-                                                                                url) =>
-                                                                            const Center(
-                                                                                child: CircularProgressIndicator()),
+                                                                        placeholder:
+                                                                            (context, url) =>
+                                                                                const Center(child: CircularProgressIndicator()),
                                                                         errorWidget: (context,
                                                                                 url,
                                                                                 error) =>
-                                                                            Image
-                                                                                .asset(
+                                                                            Image.asset(
                                                                           'assets/images/default_image.png',
                                                                           fit: BoxFit
                                                                               .cover,
@@ -476,7 +537,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                 filtereSearch[
                                                                         index]
                                                                     .nomVehicule,
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
@@ -493,7 +555,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                 filtereSearch[
                                                                         index]
                                                                     .localisation,
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
@@ -516,10 +579,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                     MainAxisAlignment
                                                                         .spaceBetween,
                                                                 children: [
-                                                                  _buildEtat(
-                                                                      filtereSearch[
-                                                                              index]
-                                                                          .statutVehicule),
+                                                                  _buildEtat(filtereSearch[
+                                                                          index]
+                                                                      .statutVehicule),
                                                                   PopupMenuButton<
                                                                       String>(
                                                                     padding:
@@ -527,14 +589,12 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                             .zero,
                                                                     itemBuilder:
                                                                         (context) =>
-                                                                            <PopupMenuEntry<
-                                                                                String>>[
+                                                                            <PopupMenuEntry<String>>[
                                                                       PopupMenuItem<
                                                                           String>(
                                                                         child:
                                                                             ListTile(
-                                                                          leading: filtereSearch[index].statutVehicule ==
-                                                                                  false
+                                                                          leading: filtereSearch[index].statutVehicule == false
                                                                               ? Icon(
                                                                                   Icons.check,
                                                                                   color: Colors.green,
@@ -550,11 +610,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                                 : "Desactiver",
                                                                             style:
                                                                                 TextStyle(
-                                                                              color: filtereSearch[index].statutVehicule == false
-                                                                                  ? Colors.green
-                                                                                  : Colors.orange[400],
-                                                                              fontWeight:
-                                                                                  FontWeight.bold,
+                                                                              color: filtereSearch[index].statutVehicule == false ? Colors.green : Colors.orange[400],
+                                                                              fontWeight: FontWeight.bold,
                                                                             ),
                                                                           ),
                                                                           onTap:
@@ -635,8 +692,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                             ListTile(
                                                                           leading:
                                                                               const Icon(
-                                                                            Icons
-                                                                                .delete,
+                                                                            Icons.delete,
                                                                             color:
                                                                                 Colors.red,
                                                                           ),
@@ -645,10 +701,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                             "Supprimer",
                                                                             style:
                                                                                 TextStyle(
-                                                                              color:
-                                                                                  Colors.red,
-                                                                              fontWeight:
-                                                                                  FontWeight.bold,
+                                                                              color: Colors.red,
+                                                                              fontWeight: FontWeight.bold,
                                                                             ),
                                                                           ),
                                                                           onTap:
@@ -700,8 +754,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                     const Center(
                                                               child:
                                                                   CircularProgressIndicator(
-                                                                color:
-                                                                    Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                             )),
                                                           )

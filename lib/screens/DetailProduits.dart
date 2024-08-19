@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
@@ -41,6 +42,7 @@ class _DetailProduitsState extends State<DetailProduits>
   late String type;
   late ValueNotifier<bool> isDialOpenNotifier;
   late Stock stock;
+  int nbVue = 0;
 
   bool isExist = false;
   String? email = "";
@@ -113,25 +115,48 @@ class _DetailProduitsState extends State<DetailProduits>
     verify();
     // verifyParam();
     stock = widget.stock;
-    rates = fetchConvert(stock);
 
-    updateViews(stock);
+    _loadNbVue();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await updateViews(stock);
+      setState(() {
+        stock.nbreView = nbVue;
+      });
+    });
+    rates = fetchConvert(stock);
     isDialOpenNotifier = ValueNotifier<bool>(false);
   }
 
-  void updateViews(Stock s) async {
+  Future<void> _loadNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nbVue = prefs.getInt('nbVue_${stock.idStock}') ?? stock.nbreView ?? 0;
+    });
+  }
+
+  updateViews(Stock s) async {
     if (acteur.idActeur != s.acteur!.idActeur) {
-      final response = await http
-          .put(Uri.parse('$apiOnlineUrl/Stock/updateView/${s.idStock}'));
+      final response = await http.put(
+        Uri.parse('$apiOnlineUrl/Stock/updateView/${s.idStock}'),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('updateView : ${s.nbreView}');
-            setState(() {
-          stock = widget.stock;
+        setState(() {
+          nbVue++;
+          s.nbreView = nbVue;
+          print('Nombre de vues mis à jour : ${s.nbreView}');
+          // Sauvegarder la nouvelle valeur de nbVue
+          _saveNbVue();
         });
       } else {
-        print('Failed to update view count');
+        print('Échec de la mise à jour du nombre de vues');
       }
     }
+  }
+
+  Future<void> _saveNbVue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('nbVue_${stock.idStock}', nbVue);
   }
 
   @override
@@ -167,7 +192,10 @@ class _DetailProduitsState extends State<DetailProduits>
                             icon: Icon(Icons.edit, color: Colors.white),
                           )
                   ]
-                : null),
+                : [Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CodePays().getFlagsApp(stock.acteur!.niveau3PaysActeur!),
+                )]),
         body: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
@@ -390,7 +418,7 @@ class _DetailProduitsState extends State<DetailProduits>
                       ),
                     ),
                     const SizedBox(height: defaultPadding / 2),
-
+                    _getPays(stock),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -407,7 +435,7 @@ class _DetailProduitsState extends State<DetailProduits>
                           child: Text(
                             maxLines: 2,
                             textAlign: TextAlign.right,
-                            widget.stock.nbreView.toString(),
+                            stock.nbreView.toString(),
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w800,
@@ -762,6 +790,29 @@ class _DetailProduitsState extends State<DetailProduits>
       path: phoneNumber,
     );
     await launchUrl(launchUri);
+  }
+
+  Widget _getPays(Stock m) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Pays",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 16),
+            ),
+          ),
+          CodePays().getFlags(m.acteur!.niveau3PaysActeur!)
+        ],
+      ),
+    );
   }
 
   Widget _buildItem(String title, String value) {
