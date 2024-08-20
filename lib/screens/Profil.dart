@@ -42,6 +42,9 @@ class _ProfilState extends State<Profil> {
   String? email = "";
 
   void verify() async {
+     await Provider.of<ActeurProvider>(context, listen: false)
+      .initializeActeurFromSharedPreferences();
+      
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
 

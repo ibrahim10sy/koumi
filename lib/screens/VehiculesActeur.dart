@@ -1,18 +1,22 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:koumi/constants.dart';
+import 'package:get/get.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/models/Vehicule.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/AddVehicule.dart';
 import 'package:koumi/screens/DetailTransport.dart';
+import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/VehiculeService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
+import 'package:koumi/widgets/BottomNavigationPage.dart';
 import 'package:provider/provider.dart';
 import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shimmer/shimmer.dart';
@@ -28,13 +32,13 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _VehiculeActeurState extends State<VehiculeActeur> {
-  late Acteur acteur;
+ 
   late List<TypeActeur> typeActeurData = [];
   late String type;
   late TextEditingController _searchController;
   List<Vehicule> vehiculeListe = [];
-  late Future<List<Vehicule>> _liste;
-
+  Future<List<Vehicule>>? _liste;
+ late Acteur acteur = Acteur();
   // late Future liste;
 
   Future<List<Vehicule>> getVehicule(String id) async {
@@ -44,26 +48,15 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
   }
 
   ScrollController scrollableController = ScrollController();
-
+  bool isExist = false;
+  String? email = "";
   int page = 0;
   bool isLoading = false;
   int size = sized;
   bool hasMore = true;
 
   void _scrollListener() {
-    // if (selectedCat != null &&  scrollableController1.position.pixels >=
-    //         scrollableController1.position.maxScrollExtent - 200 &&
-    //     hasMore &&
-    //     !isLoading ) {
-    //   // if (selectedCat != null) {
-    //     // Incrementez la page et récupérez les stocks par catégorie
-    //     debugPrint("yes - fetch by category");
-    //     setState(() {
-    //         // Rafraîchir les données ici
-    //     page++;
-    //    fetchStockByCategorie(selectedCat!.idCategorieProduit!);
-    //       });
-    //   }
+   
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
         hasMore &&
@@ -141,13 +134,36 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
     return vehiculeListe;
   }
 
+  void verify() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    email = prefs.getString('whatsAppActeur');
+    if (email != null) {
+      // Si l'email de l'acteur est présent, exécute checkLoggedIn
+      acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+      
+       typeActeurData = acteur.typeActeur!;
+    type = typeActeurData.map((data) => data.libelle).join(', ');
+      setState(() {
+        isExist = true;
+      });
+    } else {
+      setState(() {
+        isExist = false;
+      });
+    }
+  }
+
   @override
   void initState() {
-    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-    typeActeurData = acteur.typeActeur!;
-    type = typeActeurData.map((data) => data.libelle).join(', ');
+    verify();
+    // acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    // typeActeurData = acteur.typeActeur!;
+    // type = typeActeurData.map((data) => data.libelle).join(', ');
     _searchController = TextEditingController();
-    _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!);
+
+     isExist
+                                    ?
+    _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!): Container();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       //write or call your logic
       //code will run when widget rendering complete
@@ -196,7 +212,10 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
             toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context, true);
+                  Get.offAll(BottomNavigationPage(),
+                      transition: Transition.leftToRight);
+                  Provider.of<BottomNavigationService>(context, listen: false)
+                      .changeIndex(0);
                 },
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(

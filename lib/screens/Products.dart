@@ -93,20 +93,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<List<Stock>> getAllStock() async {
-  if (selectedCat != null) {
-    stockListe = await StockService().fetchStockByCategorie(
-        selectedCat!.idCategorieProduit!,
-        detectedCountry != null ? detectedCountry! : "mali");
-  } else if (nomP != null && nomP!.isNotEmpty) {
-    stockListe = await StockService().fetchStockByPays(nomP!);
-  } 
-  // else {
-  //   stockListe = await StockService().fetchAllStock();
-  // }
+    if (selectedCat != null) {
+      stockListe = await StockService().fetchStockByCategorie(
+          selectedCat!.idCategorieProduit!,
+          detectedCountry != null ? detectedCountry! : "mali");
+    } else if (nomP != null && nomP!.isNotEmpty) {
+      stockListe = await StockService().fetchStockByPays(nomP!);
+    }
+    // else {
+    //   stockListe = await StockService().fetchAllStock();
+    // }
 
-  return stockListe;
-}
-
+    return stockListe;
+  }
 
   Future<List<Stock>> getAllStocks() async {
     stockListe = await StockService()
@@ -138,40 +137,41 @@ class _ProductsScreenState extends State<ProductsScreen> {
     debugPrint("no");
   }
 
- void _scrollListener1() {
-  if (scrollableController1.position.pixels >=
-          scrollableController1.position.maxScrollExtent - 200 &&
-      hasMore &&
-      !isLoading) {
-    if (selectedCat != null) {
-      debugPrint("yes - fetch by category and pays");
-      if (mounted)
-        setState(() {
-          page++;
-        });
+  void _scrollListener1() {
+    if (scrollableController1.position.pixels >=
+            scrollableController1.position.maxScrollExtent - 200 &&
+        hasMore &&
+        !isLoading) {
+      if (selectedCat != null) {
+        debugPrint("yes - fetch by category and pays");
+        if (mounted)
+          setState(() {
+            page++;
+          });
 
-      fetchStockByCategorie(detectedCountry != null ? detectedCountry! : "Mali")
-          .then((value) {
-        setState(() {
-          debugPrint("page inc all ${page}");
+        fetchStockByCategorie(
+                detectedCountry != null ? detectedCountry! : "Mali")
+            .then((value) {
+          setState(() {
+            debugPrint("page inc all ${page}");
+          });
         });
-      });
-    } else if (nomP != null && nomP!.isNotEmpty) {
-      debugPrint("yes - fetch by country");
-      if (mounted)
-        setState(() {
-          page++;
-        });
+      } else if (nomP != null && nomP!.isNotEmpty) {
+        debugPrint("yes - fetch by country");
+        if (mounted)
+          setState(() {
+            page++;
+          });
 
-      fetchStockByPays().then((value) {
-        setState(() {
-          debugPrint("page pour pays ${nomP} inc all ${page}");
+        fetchStockByPays().then((value) {
+          setState(() {
+            debugPrint("page pour pays ${nomP} inc all ${page}");
+          });
         });
-      });
+      }
     }
+    debugPrint("no");
   }
-  debugPrint("no");
-}
 
   Future<List<Stock>> fetchStock(String niveau3PaysActeur,
       {bool refresh = false}) async {
@@ -418,6 +418,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
   }
 
+  void _onSearchPressed() {
+    setState(() {
+      isSearchMode = !isSearchMode;
+    });
+    _showSearchPopup(context); // Display the popup
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -585,10 +592,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           if (!isSearchMode)
                             TextButton.icon(
                               onPressed: () {
-                                setState(() {
-                                  isSearchMode = true;
-                                  isFilterMode = true;
-                                });
+                                // setState(() {
+                                //   isSearchMode = true;
+                                //   isFilterMode = true;
+                                // });
+                                _onSearchPressed();
                                 debugPrint(
                                     "rechercher mode value : ${isSearchMode}");
                               },
@@ -628,202 +636,323 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             ),
                         ]),
                   ),
-                  Visibility(
-                    visible: isSearchMode,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 10),
-                          child: FutureBuilder(
-                            future: _paysList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(22),
-                                          ),
-                                      suffixIcon: Icon(Icons.arrow_drop_down),
-                                      labelText: "Chargement..."),
-                                  cursorColor: Colors.green,
-                                );
-                              }
+                  // Visibility(
+                  //   visible: isSearchMode,
+                  //   child: Row(
+                  //     children: [
+                  //       Expanded(
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.symmetric(
+                  //               vertical: 3, horizontal: 10),
+                  //           child: FutureBuilder(
+                  //             future: _paysList,
+                  //             builder: (_, snapshot) {
+                  //               if (snapshot.connectionState ==
+                  //                   ConnectionState.waiting) {
+                  //                 return TextDropdownFormField(
+                  //                   options: [],
+                  //                   decoration: InputDecoration(
+                  //                       contentPadding:
+                  //                           const EdgeInsets.symmetric(
+                  //                               vertical: 5, horizontal: 20),
+                  //                       border: OutlineInputBorder(
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(22),
+                  //                       ),
+                  //                       suffixIcon: Icon(Icons.search),
+                  //                       labelText: "Chargement..."),
+                  //                   cursorColor: Colors.green,
+                  //                 );
+                  //               }
 
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
+                  //               if (snapshot.hasData) {
+                  //                 dynamic jsonString =
+                  //                     utf8.decode(snapshot.data.bodyBytes);
+                  //                 dynamic responseData =
+                  //                     json.decode(jsonString);
 
-                                if (responseData is List) {
-                                  final paysList = responseData
-                                      .map((e) => Pays.fromMap(e))
-                                      .where((con) => con.statutPays == true)
-                                      .toList();
-                                  if (paysList.isEmpty) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(22),
-                                          ),
-                                          suffixIcon:
-                                              Icon(Icons.arrow_drop_down),
-                                          labelText: "--Aucun pays trouvé--"),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
+                  //                 if (responseData is List) {
+                  //                   final paysList = responseData
+                  //                       .map((e) => Pays.fromMap(e))
+                  //                       .where((con) => con.statutPays == true)
+                  //                       .toList();
+                  //                   if (paysList.isEmpty) {
+                  //                     return TextDropdownFormField(
+                  //                       options: [],
+                  //                       decoration: InputDecoration(
+                  //                           contentPadding:
+                  //                               const EdgeInsets.symmetric(
+                  //                                   vertical: 5,
+                  //                                   horizontal: 20),
+                  //                           border: OutlineInputBorder(
+                  //                             borderRadius:
+                  //                                 BorderRadius.circular(22),
+                  //                           ),
+                  //                           suffixIcon: Icon(Icons.search),
+                  //                           labelText: "--Aucun pays trouvé--"),
+                  //                       cursorColor: Colors.green,
+                  //                     );
+                  //                   }
 
-                                  return DropdownFormField<Pays>(
-                                    onEmptyActionPressed: (String str) async {},
-                                    dropdownHeight: 200,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 5, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(22),
-                                        ),
-                                        suffixIcon: Icon(Icons.arrow_drop_down),
-                                        labelText: "--Filtrer par pays--"),
-                                    onSaved: (dynamic pays) {
-                                      nomP = pays?.nomPays;
-                                      print("onSaved : $nomP");
-                                    },
-                                    onChanged: (dynamic pays) {
-                                      nomP = pays?.nomPays;
-                                      print("selected : $nomP");
-                                    },
-                                    displayItemFn: (dynamic item) => Text(
-                                      item?.nomPays ?? '',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    findFn: (String str) async => paysList,
-                                    selectedFn: (dynamic item1, dynamic item2) {
-                                      if (item1 != null && item2 != null) {
-                                        return item1.idPays == item2.idPays;
-                                      }
-                                      return false;
-                                    },
-                                    filterFn: (dynamic item, String str) => item
-                                        .nomPays!
-                                        .toLowerCase()
-                                        .contains(str.toLowerCase()),
-                                    dropdownItemFn: (dynamic item,
-                                            int position,
-                                            bool focused,
-                                            bool selected,
-                                            Function() onTap) =>
-                                        ListTile(
-                                      title: Text(item.nomPays!),
-                                      tileColor: focused
-                                          ? Color.fromARGB(20, 0, 0, 0)
-                                          : Colors.transparent,
-                                      onTap: onTap,
-                                    ),
-                                  );
-                                }
-                              }
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(22),
-                                    ),
-                                    suffixIcon: Icon(Icons.arrow_drop_down),
-                                    labelText: "--Aucun pays trouvé--"),
-                                cursorColor: Colors.green,
-                              );
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 10),
-                          child: FutureBuilder(
-                            future: _catList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return buildLoadingDropdown();
-                              }
+                  //                   return DropdownFormField<Pays>(
+                  //                     onEmptyActionPressed:
+                  //                         (String str) async {},
+                  //                     dropdownHeight: 200,
+                  //                     decoration: InputDecoration(
+                  //                         contentPadding:
+                  //                             const EdgeInsets.symmetric(
+                  //                                 vertical: 5, horizontal: 20),
+                  //                         border: OutlineInputBorder(
+                  //                           borderRadius:
+                  //                               BorderRadius.circular(22),
+                  //                         ),
+                  //                         suffixIcon: Icon(Icons.search),
+                  //                         labelText: "--Filtrer par pays--"),
+                  //                     onSaved: (dynamic pays) {
+                  //                       print("onSaved : $nomP");
+                  //                     },
+                  //                     onChanged: (dynamic pays) {
+                  //                       nomP = pays?.nomPays;
+                  //                       setState(() {
+                  //                         nomP = pays?.nomPays;
+                  //                         page = 0;
+                  //                         hasMore = true;
+                  //                         fetchStockByPays(refresh: true);
+                  //                         if (page == 0 && isLoading == true) {
+                  //                           SchedulerBinding.instance
+                  //                               .addPostFrameCallback((_) {
+                  //                             scrollableController1.jumpTo(0.0);
+                  //                           });
+                  //                         }
+                  //                       });
+                  //                       print("selected : $nomP");
+                  //                     },
+                  //                     displayItemFn: (dynamic item) => Text(
+                  //                       item?.nomPays ?? '',
+                  //                       style: TextStyle(fontSize: 16),
+                  //                     ),
+                  //                     findFn: (String str) async => paysList,
+                  //                     selectedFn:
+                  //                         (dynamic item1, dynamic item2) {
+                  //                       if (item1 != null && item2 != null) {
+                  //                         return item1.idPays == item2.idPays;
+                  //                       }
+                  //                       return false;
+                  //                     },
+                  //                     filterFn: (dynamic item, String str) =>
+                  //                         item.nomPays!
+                  //                             .toLowerCase()
+                  //                             .contains(str.toLowerCase()),
+                  //                     dropdownItemFn: (dynamic item,
+                  //                             int position,
+                  //                             bool focused,
+                  //                             bool selected,
+                  //                             Function() onTap) =>
+                  //                         ListTile(
+                  //                       title: Text(item.nomPays!),
+                  //                       tileColor: focused
+                  //                           ? Color.fromARGB(20, 0, 0, 0)
+                  //                           : Colors.transparent,
+                  //                       onTap: onTap,
+                  //                     ),
+                  //                   );
+                  //                 }
+                  //               }
+                  //               return TextDropdownFormField(
+                  //                 options: [],
+                  //                 decoration: InputDecoration(
+                  //                     contentPadding:
+                  //                         const EdgeInsets.symmetric(
+                  //                             vertical: 5, horizontal: 20),
+                  //                     border: OutlineInputBorder(
+                  //                       borderRadius: BorderRadius.circular(22),
+                  //                     ),
+                  //                     suffixIcon: Icon(Icons.search),
+                  //                     labelText: "--Aucun pays trouvé--"),
+                  //                 cursorColor: Colors.green,
+                  //               );
+                  //             },
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Expanded(
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.symmetric(
+                  //               vertical: 3, horizontal: 10),
+                  //           child: FutureBuilder(
+                  //             future: _catList,
+                  //             builder: (_, snapshot) {
+                  //               if (snapshot.connectionState ==
+                  //                   ConnectionState.waiting) {
+                  //                 return TextDropdownFormField(
+                  //                   options: [],
+                  //                   decoration: InputDecoration(
+                  //                       contentPadding:
+                  //                           const EdgeInsets.symmetric(
+                  //                               vertical: 5, horizontal: 20),
+                  //                       border: OutlineInputBorder(
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(22),
+                  //                       ),
+                  //                       suffixIcon: Icon(Icons.arrow_drop_down),
+                  //                       labelText: "Chargement..."),
+                  //                   cursorColor: Colors.green,
+                  //                 );
+                  //               }
 
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
+                  //               if (snapshot.hasData) {
+                  //                 dynamic jsonString =
+                  //                     utf8.decode(snapshot.data.bodyBytes);
+                  //                 dynamic responseData =
+                  //                     json.decode(jsonString);
 
-                                if (responseData is List) {
-                                  final response = responseData;
-                                  final typeList = response
-                                      .map((e) => CategorieProduit.fromMap(e))
-                                      .where(
-                                          (con) => con.statutCategorie == true)
-                                      .toList();
+                  //                 if (responseData is List) {
+                  //                   final paysList = responseData
+                  //                       .map((e) => CategorieProduit.fromMap(e))
+                  //                       .where((con) =>
+                  //                           con.statutCategorie == true)
+                  //                       .toList();
+                  //                   if (paysList.isEmpty) {
+                  //                     return TextDropdownFormField(
+                  //                       options: [],
+                  //                       decoration: InputDecoration(
+                  //                           contentPadding:
+                  //                               const EdgeInsets.symmetric(
+                  //                                   vertical: 5,
+                  //                                   horizontal: 20),
+                  //                           border: OutlineInputBorder(
+                  //                             borderRadius:
+                  //                                 BorderRadius.circular(22),
+                  //                           ),
+                  //                           suffixIcon: Icon(Icons.search),
+                  //                           labelText:
+                  //                               "--Aucune catégorie trouvé--"),
+                  //                       cursorColor: Colors.green,
+                  //                     );
+                  //                   }
 
-                                  if (typeList.isEmpty) {
-                                    return buildEmptyDropdown();
-                                  }
-
-                                  return buildDropdown(typeList);
-                                } else {
-                                  return buildEmptyDropdown();
-                                }
-                              }
-
-                              return buildEmptyDropdown();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    visible: isSearchMode,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 10),
-                      child: SearchFieldAutoComplete<String>(
-                        controller: _searchController,
-                        placeholder: 'Rechercher...',
-                        placeholderStyle:
-                            TextStyle(fontStyle: FontStyle.italic),
-                        suggestions: AutoComplet.getAgriculturalProducts,
-                        suggestionsDecoration: SuggestionDecoration(
-                          marginSuggestions: const EdgeInsets.all(8.0),
-                          color: const Color.fromARGB(255, 236, 234, 234),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        onSuggestionSelected: (selectedItem) {
-                          if (mounted) {
-                            _searchController.text = selectedItem.searchKey;
-                          }
-                        },
-                        suggestionItemBuilder: (context, searchFieldItem) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              searchFieldItem.searchKey,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  //                   return DropdownFormField<CategorieProduit>(
+                  //                     onEmptyActionPressed:
+                  //                         (String str) async {},
+                  //                     dropdownHeight: 200,
+                  //                     decoration: InputDecoration(
+                  //                         contentPadding:
+                  //                             const EdgeInsets.symmetric(
+                  //                                 vertical: 5, horizontal: 20),
+                  //                         border: OutlineInputBorder(
+                  //                           borderRadius:
+                  //                               BorderRadius.circular(22),
+                  //                         ),
+                  //                         suffixIcon: Icon(Icons.search),
+                  //                         labelText:
+                  //                             "--Filtrer par catégorie--"),
+                  //                     onSaved: (dynamic cat) {
+                  //                       selectedCat = cat;
+                  //                       print("onSaved : $cat");
+                  //                     },
+                  //                     onChanged: (dynamic cat) {
+                  //                       setState(() {
+                  //                         selectedCat = cat;
+                  //                         page = 0;
+                  //                         hasMore = true;
+                  //                         fetchStockByCategorie(
+                  //                             detectedCountry != null
+                  //                                 ? detectedCountry!
+                  //                                 : "Mali",
+                  //                             refresh: true);
+                  //                         if (page == 0 && isLoading == true) {
+                  //                           SchedulerBinding.instance
+                  //                               .addPostFrameCallback((_) {
+                  //                             scrollableController1.jumpTo(0.0);
+                  //                           });
+                  //                         }
+                  //                       });
+                  //                     },
+                  //                     displayItemFn: (dynamic item) => Text(
+                  //                       item?.libelleCategorie ?? '',
+                  //                       style: TextStyle(fontSize: 16),
+                  //                     ),
+                  //                     findFn: (String str) async => paysList,
+                  //                     selectedFn:
+                  //                         (dynamic item1, dynamic item2) {
+                  //                       if (item1 != null && item2 != null) {
+                  //                         return item1.idCategorieProduit ==
+                  //                             item2.idCategorieProduit;
+                  //                       }
+                  //                       return false;
+                  //                     },
+                  //                     filterFn: (dynamic item, String str) =>
+                  //                         item.libelleCategorie!
+                  //                             .toLowerCase()
+                  //                             .contains(str.toLowerCase()),
+                  //                     dropdownItemFn: (dynamic item,
+                  //                             int position,
+                  //                             bool focused,
+                  //                             bool selected,
+                  //                             Function() onTap) =>
+                  //                         ListTile(
+                  //                       title: Text(item.libelleCategorie!),
+                  //                       tileColor: focused
+                  //                           ? Color.fromARGB(20, 0, 0, 0)
+                  //                           : Colors.transparent,
+                  //                       onTap: onTap,
+                  //                     ),
+                  //                   );
+                  //                 }
+                  //               }
+                  //               return TextDropdownFormField(
+                  //                 options: [],
+                  //                 decoration: InputDecoration(
+                  //                     contentPadding:
+                  //                         const EdgeInsets.symmetric(
+                  //                             vertical: 5, horizontal: 20),
+                  //                     border: OutlineInputBorder(
+                  //                       borderRadius: BorderRadius.circular(22),
+                  //                     ),
+                  //                     suffixIcon: Icon(Icons.search),
+                  //                     labelText: "--Aucune catégorie trouvé--"),
+                  //                 cursorColor: Colors.green,
+                  //               );
+                  //             },
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // Visibility(
+                  //   visible: isSearchMode,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(
+                  //         vertical: 3, horizontal: 10),
+                  //     child: SearchFieldAutoComplete<String>(
+                  //       controller: _searchController,
+                  //       placeholder: 'Rechercher un produit...',
+                  //       placeholderStyle:
+                  //           TextStyle(fontStyle: FontStyle.italic),
+                  //       suggestions: AutoComplet.getAgriculturalProducts,
+                  //       suggestionsDecoration: SuggestionDecoration(
+                  //         marginSuggestions: const EdgeInsets.all(8.0),
+                  //         color: const Color.fromARGB(255, 236, 234, 234),
+                  //         borderRadius: BorderRadius.circular(16.0),
+                  //       ),
+                  //       onSuggestionSelected: (selectedItem) {
+                  //         if (mounted) {
+                  //           _searchController.text = selectedItem.searchKey;
+                  //         }
+                  //       },
+                  //       suggestionItemBuilder: (context, searchFieldItem) {
+                  //         return Padding(
+                  //           padding: const EdgeInsets.all(8.0),
+                  //           child: Text(
+                  //             searchFieldItem.searchKey,
+                  //             style: TextStyle(color: Colors.black),
+                  //           ),
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 10),
                 ])),
               ];
@@ -855,7 +984,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 : "Mali");
                       });
               },
-              child: selectedCat == null && nomP == null 
+              child: selectedCat == null && nomP == null
                   ? SingleChildScrollView(
                       controller: scrollableController,
                       child: Consumer<StockService>(
@@ -1998,54 +2127,329 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
     );
   }
+
+  void _showSearchPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  visible: isSearchMode,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 10),
+                          child: FutureBuilder(
+                            future: _paysList,
+                            builder: (_, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Chargement..."),
+                                  cursorColor: Colors.green,
+                                );
+                              }
+
+                              if (snapshot.hasData) {
+                                dynamic jsonString =
+                                    utf8.decode(snapshot.data.bodyBytes);
+                                dynamic responseData = json.decode(jsonString);
+
+                                if (responseData is List) {
+                                  final paysList = responseData
+                                      .map((e) => Pays.fromMap(e))
+                                      .where((con) => con.statutPays == true)
+                                      .toList();
+                                  if (paysList.isEmpty) {
+                                    return TextDropdownFormField(
+                                      options: [],
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText: "--Aucun pays trouvé--"),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  return DropdownFormField<Pays>(
+                                    onEmptyActionPressed: (String str) async {},
+                                    dropdownHeight: 200,
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "--Filtrer par pays--"),
+                                    onSaved: (dynamic pays) {
+                                      print("onSaved : $nomP");
+                                    },
+                                    onChanged: (dynamic pays) {
+                                      nomP = pays?.nomPays;
+                                      setState(() {
+                                        nomP = pays?.nomPays;
+                                        page = 0;
+                                        hasMore = true;
+                                        fetchStockByPays(refresh: true);
+                                        if (page == 0 && isLoading == true) {
+                                          SchedulerBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            scrollableController1.jumpTo(0.0);
+                                          });
+                                        }
+                                      });
+                                      print("selected : $nomP");
+                                    },
+                                    displayItemFn: (dynamic item) => Text(
+                                      item?.nomPays ?? '',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    findFn: (String str) async => paysList,
+                                    selectedFn: (dynamic item1, dynamic item2) {
+                                      if (item1 != null && item2 != null) {
+                                        return item1.idPays == item2.idPays;
+                                      }
+                                      return false;
+                                    },
+                                    filterFn: (dynamic item, String str) => item
+                                        .nomPays!
+                                        .toLowerCase()
+                                        .contains(str.toLowerCase()),
+                                    dropdownItemFn: (dynamic item,
+                                            int position,
+                                            bool focused,
+                                            bool selected,
+                                            Function() onTap) =>
+                                        ListTile(
+                                      title: Text(item.nomPays!),
+                                      tileColor: focused
+                                          ? Color.fromARGB(20, 0, 0, 0)
+                                          : Colors.transparent,
+                                      onTap: onTap,
+                                    ),
+                                  );
+                                }
+                              }
+                              return TextDropdownFormField(
+                                options: [],
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(22),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "--Aucun pays trouvé--"),
+                                cursorColor: Colors.green,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 10),
+                          child: FutureBuilder(
+                            future: _catList,
+                            builder: (_, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.arrow_drop_down),
+                                      labelText: "Chargement..."),
+                                  cursorColor: Colors.green,
+                                );
+                              }
+
+                              if (snapshot.hasData) {
+                                dynamic jsonString =
+                                    utf8.decode(snapshot.data.bodyBytes);
+                                dynamic responseData = json.decode(jsonString);
+
+                                if (responseData is List) {
+                                  final paysList = responseData
+                                      .map((e) => CategorieProduit.fromMap(e))
+                                      .where(
+                                          (con) => con.statutCategorie == true)
+                                      .toList();
+                                  if (paysList.isEmpty) {
+                                    return TextDropdownFormField(
+                                      options: [],
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText:
+                                              "--Aucune catégorie trouvé--"),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  return DropdownFormField<CategorieProduit>(
+                                    onEmptyActionPressed: (String str) async {},
+                                    dropdownHeight: 200,
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "--Filtrer par catégorie--"),
+                                    onSaved: (dynamic cat) {
+                                      selectedCat = cat;
+                                      print("onSaved : $cat");
+                                    },
+                                    onChanged: (dynamic cat) {
+                                      setState(() {
+                                        selectedCat = cat;
+                                        page = 0;
+                                        hasMore = true;
+                                        fetchStockByCategorie(
+                                            detectedCountry != null
+                                                ? detectedCountry!
+                                                : "Mali",
+                                            refresh: true);
+                                        if (page == 0 && isLoading == true) {
+                                          SchedulerBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            scrollableController1.jumpTo(0.0);
+                                          });
+                                        }
+                                      });
+                                    },
+                                    displayItemFn: (dynamic item) => Text(
+                                      item?.libelleCategorie ?? '',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    findFn: (String str) async => paysList,
+                                    selectedFn: (dynamic item1, dynamic item2) {
+                                      if (item1 != null && item2 != null) {
+                                        return item1.idCategorieProduit ==
+                                            item2.idCategorieProduit;
+                                      }
+                                      return false;
+                                    },
+                                    filterFn: (dynamic item, String str) => item
+                                        .libelleCategorie!
+                                        .toLowerCase()
+                                        .contains(str.toLowerCase()),
+                                    dropdownItemFn: (dynamic item,
+                                            int position,
+                                            bool focused,
+                                            bool selected,
+                                            Function() onTap) =>
+                                        ListTile(
+                                      title: Text(item.libelleCategorie!),
+                                      tileColor: focused
+                                          ? Color.fromARGB(20, 0, 0, 0)
+                                          : Colors.transparent,
+                                      onTap: onTap,
+                                    ),
+                                  );
+                                }
+                              }
+                              return TextDropdownFormField(
+                                options: [],
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(22),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "--Aucune catégorie trouvé--"),
+                                cursorColor: Colors.green,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Visibility(
+                    visible: isSearchMode,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
+                      child: SearchFieldAutoComplete<String>(
+                        controller: _searchController,
+                        placeholder: 'Rechercher un produit...',
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
+                        suggestions: AutoComplet.getAgriculturalProducts,
+                        suggestionsDecoration: SuggestionDecoration(
+                          marginSuggestions: const EdgeInsets.all(8.0),
+                          color: const Color.fromARGB(255, 236, 234, 234),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        onSuggestionSelected: (selectedItem) {
+                          if (mounted) {
+                            _searchController.text = selectedItem.searchKey;
+                          }
+                        },
+                        suggestionItemBuilder: (context, searchFieldItem) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              searchFieldItem.searchKey,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
-
-
-//  Align(
-//                   alignment: Alignment.centerRight,
-//                   child: DropdownButtonHideUnderline(
-//                     child: DropdownButton<String>(
-//                       icon: Icon(Icons.more_vert, color: d_colorGreen),
-//                       onChanged: (String? newValue) {
-//                         if (newValue != null) {
-//                           _selectMode(newValue);
-//                         }
-//                       },
-//                       items: [
-//                         DropdownMenuItem<String>(
-//                           value: 'Rechercher',
-//                           child: Row(
-//                             children: [
-//                               Icon(Icons.search, color: Colors.black87),
-//                               SizedBox(width: 8.0),
-//                               Text('Rechercher',
-//                                   style: TextStyle(color: Colors.black87)),
-//                             ],
-//                           ),
-//                         ),
-//                         DropdownMenuItem<String>(
-//                           value: 'Filtrer',
-//                           child: Row(
-//                             children: [
-//                               Icon(Icons.filter_list, color: Colors.black87),
-//                               SizedBox(width: 8.0),
-//                               Text('Filtrer',
-//                                   style: TextStyle(color: Colors.black87)),
-//                             ],
-//                           ),
-//                         ),
-//                         DropdownMenuItem<String>(
-//                           value: 'Fermer',
-//                           child: Row(
-//                             children: [
-//                               Icon(Icons.close, color: Colors.black87),
-//                               SizedBox(width: 8.0),
-//                               Text('Fermer',
-//                                   style: TextStyle(color: Colors.black87)),
-//                             ],
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),

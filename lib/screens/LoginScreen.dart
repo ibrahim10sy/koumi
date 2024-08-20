@@ -11,7 +11,9 @@ import 'package:koumi/models/Speculation.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/ForgetPassScreen.dart';
+import 'package:koumi/screens/ListeIntrantByActeur.dart';
 import 'package:koumi/screens/RegisterScreen.dart';
+import 'package:koumi/screens/VehiculesActeur.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/widgets/BottomNavBarAdmin.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
@@ -43,7 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _currentAddress;
   Position? _currentPosition;
-
 
   Future<void> loginUser() async {
     final String emailActeur = emailController.text;
@@ -131,17 +132,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
         List<dynamic> typeActeurData = responseBody['typeActeur'];
         List<dynamic> speculationData = responseBody['speculation'];
-       
+
         List<TypeActeur> typeActeurList =
             typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
-       
+
         List<Speculation> speculationsList =
             speculationData.map((data) => Speculation.fromMap(data)).toList();
 
         // Extraire les libellés des types d'utilisateur et les ajouter à une nouvelle liste de chaînes
         List<String> userTypeLabels =
             typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
-       
+
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
 
@@ -172,19 +173,31 @@ class _LoginScreenState extends State<LoginScreen> {
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const BottomNavBarAdmin()),
-          // );
           Get.offAll(BottomNavBarAdmin(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
+        } else if (type.contains('transformateur') ||
+            type.contains('producteur') ||
+            type.contains('commercant') ||
+            type.contains('commerçant') ||
+            type.contains('transformateur')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        } else if (type.contains('transporteur')) {
+          Timer(const Duration(seconds: 3), () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => VehiculeActeur()));
+          });
+        } else if (type.contains('fournisseur')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(ListeIntrantByActeur(),
+                transition: Transition.leftToRight);
+          });
         } else {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //       builder: (context) => const BottomNavigationPage()),
-          // );
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
@@ -282,7 +295,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     const String baseUrl = '$apiOnlineUrl/acteur/login';
 
-
     ActeurProvider acteurProvider =
         Provider.of<ActeurProvider>(context, listen: false);
 
@@ -334,7 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
 // Extraire les libellés des types d'utilisateur et les ajouter à une nouvelle liste de chaînes
         List<String> userTypeLabels =
             typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
-        
+
         List<dynamic> speculationData = responseBody['speculation'];
         List<Speculation> speculationsList =
             speculationData.map((data) => Speculation.fromMap(data)).toList();
@@ -372,22 +384,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
         acteurProvider.setActeur(acteurs);
         print('loginUserWithoutSavedData ${acteurs.toString()}');
+
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const BottomNavBarAdmin()),
-          // );
           Get.offAll(BottomNavBarAdmin(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
+        } else if (type.contains('transformateur') ||
+            type.contains('producteur') ||
+            type.contains('commercant') ||
+            type.contains('commerçant') ||
+            type.contains('transformateur')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        } else if (type.contains('transporteur')) {
+          Timer(const Duration(seconds: 1), () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => VehiculeActeur()));
+          });
+        } else if (type.contains('fournisseur')) {
+          Timer(const Duration(seconds: 1), () {
+            Get.offAll(ListeIntrantByActeur(),
+                transition: Transition.leftToRight);
+          });
         } else {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //       builder: (context) => const BottomNavigationPage()),
-          // );
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
@@ -403,7 +428,8 @@ class _LoginScreenState extends State<LoginScreen> {
             return AlertDialog(
               title: const Center(child: Text('Connexion échouée !')),
               content: Text(
-                'Email ou mot de passe incorrect', // errorMessage, // Utiliser le message d'erreur du backend
+                'Email ou mot de passe incorrect',
+                // errorMessage,
                 textAlign: TextAlign.justify,
                 style: const TextStyle(color: Colors.black, fontSize: 20),
               ),
@@ -461,10 +487,10 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
             leading: IconButton(
                 onPressed: () {
-                 Get.offAll(BottomNavigationPage(),
-                    transition: Transition.leftToRight);
-                Provider.of<BottomNavigationService>(context, listen: false)
-                    .changeIndex(0);
+                  Get.offAll(BottomNavigationPage(),
+                      transition: Transition.leftToRight);
+                  Provider.of<BottomNavigationService>(context, listen: false)
+                      .changeIndex(0);
                 },
                 icon: const Icon(Icons.arrow_back_ios))),
         backgroundColor: const Color(0xFFFFFFFF),
@@ -626,7 +652,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           GestureDetector(
                             onTap: () {
                               print("ho");
-                             
+
                               Get.to(ForgetPassScreen(),
                                   duration: Duration(seconds: 1),
                                   transition: Transition.leftToRight);

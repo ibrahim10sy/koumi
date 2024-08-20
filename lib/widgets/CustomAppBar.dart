@@ -34,6 +34,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
   bool isExist = false;
 
   void verify() async {
+     await Provider.of<ActeurProvider>(context, listen: false)
+      .initializeActeurFromSharedPreferences();
+      
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {
@@ -58,8 +61,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     // if (Provider.of<ActeurProvider>(context, listen: false).acteur != null) {
     verify();
 
-    // }
-    // debugPrint("Acteur : ${acteur.nomActeur}");
   }
 
   @override

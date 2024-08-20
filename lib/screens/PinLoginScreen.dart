@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -10,8 +11,10 @@ import 'package:koumi/models/Speculation.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/ForgetPassScreen.dart';
+import 'package:koumi/screens/ListeIntrantByActeur.dart';
 import 'package:koumi/screens/LoginScreen.dart';
 import 'package:koumi/screens/RegisterScreen.dart';
+import 'package:koumi/screens/VehiculesActeur.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/widgets/BottomNavBarAdmin.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
@@ -25,6 +28,8 @@ class PinLoginScreen extends StatefulWidget {
   @override
   State<PinLoginScreen> createState() => _PinLoginScreenState();
 }
+
+const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _PinLoginScreenState extends State<PinLoginScreen> {
   String enteredPin = '';
@@ -57,14 +62,219 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     });
   }
 
-  Future<void> loginUser() async {
+  // Future<void> loginUser() async {
+  //   const String baseUrl = '$apiOnlineUrl/acteur/pinLogin';
+
+  //   ActeurProvider acteurProvider =
+  //       Provider.of<ActeurProvider>(context, listen: false);
+
+
+  //   // Assurez-vous que le code acteur est chargé
+  //   if (codeActeur == null) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Text("Connexion"),
+  //         content: Text(
+  //             "Veillez vous connectez d'abord avec votre email et le mot de passe puis réessayer plus tard",
+  //             style: TextStyle(
+  //               color: Colors.black87,
+  //             )),
+  //         actions: [
+  //           TextButton(
+  //             child: Text("OK"),
+  //             onPressed: () => Navigator.pop(context),
+  //           ),
+  //           TextButton(
+  //             child: Text("connexion"),
+  //             onPressed: () {
+  //               Get.offAll(LoginScreen(),
+  //                   duration: Duration(seconds: 1),
+  //                   transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     );
+
+  //     return;
+  //   }
+
+  //   // Construire l'URL de l'API avec le codeActeur récupéré
+  //   final Uri apiUrl =
+  //       Uri.parse('$baseUrl?codeActeur=$codeActeur&password=$enteredPin');
+
+  //   try {
+  //     final response = await http.get(
+  //       apiUrl,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     if (response.statusCode == 200) {
+  //       final responseBody = json.decode(utf8.decode(response.bodyBytes));
+
+  //       // Sauvegarder les données de l'utilisateur dans shared preferences
+  //       final password = responseBody['password'];
+  //       final codeActeur = responseBody['codeActeur'];
+  //       prefs.setString('password', password);
+  //       prefs.setString('codeActeur', codeActeur);
+  //       final nomActeur = responseBody['nomActeur'];
+  //       final emailActeur = responseBody['emailActeur'];
+  //       final idActeur = responseBody['idActeur'];
+  //       final adresseActeur = responseBody['adresseActeur'];
+  //       final telephoneActeur = responseBody['telephoneActeur'];
+  //       final whatsAppActeur = responseBody['whatsAppActeur'];
+  //       final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
+  //       final localiteActeur = responseBody['localiteActeur'];
+
+  //       prefs.setString('nomActeur', nomActeur);
+  //       prefs.setString('idActeur', idActeur);
+  //       prefs.setString('adresseActeur', adresseActeur);
+  //       prefs.setString('telephoneActeur', telephoneActeur);
+  //       prefs.setString('whatsAppActeur', whatsAppActeur);
+  //       prefs.setString('niveau3PaysActeur', niveau3PaysActeur);
+  //       prefs.setString('localiteActeur', localiteActeur);
+  //       prefs.setString('emailActeur', emailActeur);
+
+  //       // Enregistrer la liste des types d'utilisateur dans SharedPreferences
+  //       List<dynamic> speculationData = responseBody['speculation'];
+  //       List<Speculation> speculationList =
+  //           speculationData.map((data) => Speculation.fromMap(data)).toList();
+
+  //       List<dynamic> typeActeurData = responseBody['typeActeur'];
+  //       List<TypeActeur> typeActeurList =
+  //           typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
+
+  //       List<String> userTypeLabels =
+  //           typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
+  //       List<String> speculationLabels = speculationList
+  //           .map((typeActeur) => typeActeur.nomSpeculation!)
+  //           .toList();
+
+  //       prefs.setStringList('speculation', speculationLabels);
+  //       prefs.setStringList('userType', userTypeLabels);
+
+  //       Acteur acteur = Acteur(
+  //         idActeur: responseBody['idActeur'],
+  //         resetToken: responseBody['resetToken'],
+  //         tokenCreationDate: responseBody['tokenCreationDate'],
+  //         codeActeur: codeActeur,
+  //         nomActeur: responseBody['nomActeur'],
+  //         adresseActeur: responseBody['adresseActeur'],
+  //         telephoneActeur: responseBody['telephoneActeur'],
+  //         latitude: responseBody['latitude'],
+  //         longitude: responseBody['longitude'],
+  //         photoSiegeActeur: responseBody['photoSiegeActeur'],
+  //         logoActeur: responseBody['logoActeur'],
+  //         whatsAppActeur: responseBody['whatsAppActeur'],
+  //         niveau3PaysActeur: responseBody['niveau3PaysActeur'],
+  //         dateAjout: responseBody['dateAjout'],
+  //         dateModif: responseBody['dateModif'],
+  //         personneModif: responseBody['personneModif'],
+  //         localiteActeur: responseBody['localiteActeur'],
+  //         emailActeur: responseBody['emailActeur'],
+  //         statutActeur: responseBody['statutActeur'],
+  //         typeActeur: typeActeurList,
+  //         speculation: speculationList,
+  //         password: password,
+  //       );
+
+  //       acteurProvider.setActeur(acteur);
+  //         print("login acteur :${acteur.toString()}");
+
+
+  //       final List<String> type =
+  //           acteur.typeActeur!.map((e) => e.libelle!.toLowerCase()).toList();
+  //       if (type.contains('admin') || type.contains('Admin')) {
+  //         Get.off(BottomNavBarAdmin(),
+  //             duration: Duration(seconds: 1),
+  //             transition: Transition.leftToRight);
+  //       } else if (type.contains('transformateur') ||
+  //           type.contains('producteur') ||
+  //           type.contains('commercant') ||
+  //           type.contains('commerçant') ||
+  //           type.contains('transformateur')) {
+  //         Timer(const Duration(seconds: 3), () {
+  //           Get.offAll(BottomNavigationPage(),
+  //               transition: Transition.leftToRight);
+  //           Provider.of<BottomNavigationService>(context, listen: false)
+  //               .changeIndex(1);
+  //         });
+  //       } else if (type.contains('transporteur')) {
+  //         Timer(const Duration(seconds: 3), () {
+  //            Navigator.pushReplacement(context,
+  //               MaterialPageRoute(builder: (context) => VehiculeActeur()));
+  //           // Get.offAll(VehiculeActeur(), transition: Transition.leftToRight);
+  //         });
+  //       } else if (type.contains('fournisseur')) {
+  //         Timer(const Duration(seconds: 3), () {
+  //           Get.offAll(ListeIntrantByActeur(),
+  //               transition: Transition.leftToRight);
+  //         });
+  //       } else {
+  //         Get.off(BottomNavigationPage(),
+  //             duration: Duration(seconds: 1),
+  //             transition: Transition.leftToRight);
+  //       }
+  //     } else {
+  //       enteredPin = '';
+  //       String errorMessage = '';
+  //       final responseBody = json.decode(utf8.decode(response.bodyBytes));
+  //       errorMessage = responseBody['message'];
+  //       if (errorMessage.contains('Code Pin incorrect')) {
+  //         errorMessage = 'Code Pin incorrect';
+  //       } else if (errorMessage.contains(
+  //           'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !')) {
+  //         errorMessage =
+  //             'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !';
+  //       }
+  //       print("if : $errorMessage");
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Center(
+  //               child: Text(
+  //             errorMessage,
+  //             maxLines: 2,
+  //           )),
+  //           duration: Duration(seconds: 5),
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     String errorMessage = "";
+  //     debugPrint(e.toString());
+  //     if (e is Exception) {
+  //       final exception = e;
+  //       if (exception.toString().contains('Code Pin incorrect')) {
+  //         errorMessage = 'Code Pin incorrect';
+  //       } else if (exception.toString().contains(
+  //           'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !')) {
+  //         errorMessage =
+  //             'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !';
+  //       }
+  //       print("error : $errorMessage");
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Center(child: Text(errorMessage, maxLines: 2)),
+  //           duration: Duration(seconds: 5),
+  //         ),
+  //       );
+  //       throw Exception(errorMessage);
+  //     }
+  //   }
+  // }
+
+ Future<void> loginUser() async {
     const String baseUrl = '$apiOnlineUrl/acteur/pinLogin';
+
 
     ActeurProvider acteurProvider =
         Provider.of<ActeurProvider>(context, listen: false);
-    prefs = await SharedPreferences.getInstance();
 
-    // Assurez-vous que le code acteur est chargé
+     // Assurez-vous que le code acteur est chargé
     if (codeActeur == null) {
       showDialog(
         context: context,
@@ -95,8 +305,8 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
       return;
     }
 
-    // Construire l'URL de l'API avec le codeActeur récupéré
-    final Uri apiUrl =
+
+   final Uri apiUrl =
         Uri.parse('$baseUrl?codeActeur=$codeActeur&password=$enteredPin');
 
     try {
@@ -109,73 +319,107 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
 
       if (response.statusCode == 200) {
         final responseBody = json.decode(utf8.decode(response.bodyBytes));
-
+       
         // Sauvegarder les données de l'utilisateur dans shared preferences
-        final password = responseBody['password'];
-        final emailActeur = responseBody['emailActeur'];
-        prefs.setString('emailActeur', emailActeur);
-        prefs.setString('password', password);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+       
+      
         final nomActeur = responseBody['nomActeur'];
         final idActeur = responseBody['idActeur'];
         final adresseActeur = responseBody['adresseActeur'];
         final telephoneActeur = responseBody['telephoneActeur'];
         final whatsAppActeur = responseBody['whatsAppActeur'];
+        final emailActeur = responseBody['emailActeur'];
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
-
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
+        prefs.setString('emailActeur', emailActeur);
         prefs.setString('adresseActeur', adresseActeur);
         prefs.setString('telephoneActeur', telephoneActeur);
         prefs.setString('whatsAppActeur', whatsAppActeur);
         prefs.setString('niveau3PaysActeur', niveau3PaysActeur);
         prefs.setString('localiteActeur', localiteActeur);
+         prefs.setString('codeActeur', codeActeur!);
+        prefs.setString('password', enteredPin);
+        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
 
         // Enregistrer la liste des types d'utilisateur dans SharedPreferences
-        List<dynamic> speculationData = responseBody['speculation'];
-        List<Speculation> speculationList =
-            speculationData.map((data) => Speculation.fromMap(data)).toList();
 
         List<dynamic> typeActeurData = responseBody['typeActeur'];
+        List<dynamic> speculationData = responseBody['speculation'];
+
         List<TypeActeur> typeActeurList =
             typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
 
+        List<Speculation> speculationsList =
+            speculationData.map((data) => Speculation.fromMap(data)).toList();
+
+        // Extraire les libellés des types d'utilisateur et les ajouter à une nouvelle liste de chaînes
         List<String> userTypeLabels =
             typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
-        List<String> speculationLabels = speculationList
-            .map((typeActeur) => typeActeur.nomSpeculation!)
-            .toList();
 
-        prefs.setStringList('speculation', speculationLabels);
+        List<String> speculationLabels =
+            speculationsList.map((spec) => spec.nomSpeculation!).toList();
+
+    // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
         prefs.setStringList('userType', userTypeLabels);
-
-        Acteur acteur = Acteur(
+        prefs.setStringList('specType', speculationLabels);
+        Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
           nomActeur: responseBody['nomActeur'],
           adresseActeur: responseBody['adresseActeur'],
-          codeActeur: responseBody['codeActeur'],
+          codeActeur: codeActeur,
           telephoneActeur: responseBody['telephoneActeur'],
           whatsAppActeur: responseBody['whatsAppActeur'],
+          niveau3PaysActeur: responseBody['niveau3PaysActeur'],
           dateAjout: responseBody['dateAjout'],
           localiteActeur: responseBody['localiteActeur'],
-          niveau3PaysActeur: responseBody['niveau3PaysActeur'],
-          emailActeur: emailActeur,
+          emailActeur: responseBody['emailActeur'],
           statutActeur: responseBody['statutActeur'],
           typeActeur: typeActeurList,
-          speculation: speculationList,
-          password: password,
+          speculation: speculationsList,
+          password: enteredPin,
         );
 
-        acteurProvider.setActeur(acteur);
+        acteurProvider.setActeur(acteurs);
+        print("login acteur :${acteurs.toString()}");
 
         final List<String> type =
-            acteur.typeActeur!.map((e) => e.libelle!).toList();
+            acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
-          Get.off(BottomNavBarAdmin(),
+          Get.offAll(BottomNavBarAdmin(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
+        } else if (type.contains('transformateur') ||
+            type.contains('producteur') ||
+            type.contains('commercant') ||
+            type.contains('commerçant') ||
+            type.contains('transformateur')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        } else if (type.contains('transporteur')) {
+          Timer(const Duration(seconds: 3), () {
+            Get.offAll(VehiculeActeur(),
+              transition: Transition.leftToRight);
+                Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(4);
+          });
+        } else if (type.contains('fournisseur')) {
+          Timer(const Duration(seconds: 3), () {
+          
+                 Get.offAll(ListeIntrantByActeur(),
+              transition: Transition.leftToRight);
+      
+                Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(5);
+          });
         } else {
-          Get.off(BottomNavigationPage(),
+          Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
         }
@@ -263,7 +507,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
+            // backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(

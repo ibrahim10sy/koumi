@@ -60,110 +60,119 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  Future<void> clearCart() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('cart');
-    // Récupérer le codeActeur depuis SharedPreferences
-    String? codeActeur = prefs.getString('codeActeur');
-    String? emailActeur = prefs.getString('emailActeur');
-
-    if (emailActeur == null || emailActeur.isEmpty) {
-      // Nettoyer toutes les données de SharedPreferences
-      // await prefs.clear();
-      debugPrint("Email shared : $emailActeur");
-    } else {
-      debugPrint("Email shared isExist : $emailActeur");
-    }
-
-// Vérifier si le codeActeur est présent dans SharedPreferences
-    if (codeActeur == null || codeActeur.isEmpty) {
-      // Gérer le cas où le codeActeur est manquant
-      // Sauvegarder le codeActeur avant de nettoyer les SharedPreferences
-      String savedCodeActeur = "VF212";
-      // String savedCodeActeur = codeActeur;
-
-      // Nettoyer toutes les données de SharedPreferences
-      await prefs.clear();
-
-      // Réenregistrer le codeActeur dans SharedPreferences
-      prefs.setString('codeActeur', savedCodeActeur);
-    } else {
-      // Sauvegarder le codeActeur avant de nettoyer les SharedPreferences
-      String savedCodeActeur = "VF212";
-
-      // // Nettoyer toutes les données de SharedPreferences
-      await prefs.clear();
-
-      // // Réenregistrer le codeActeur dans SharedPreferences
-      prefs.setString('codeActeur', savedCodeActeur);
-    }
-  }
-
   void checkLoggedIn() async {
-    // Initialise les données de l'utilisateur à partir de SharedPreferences
-    await Provider.of<ActeurProvider>(context, listen: false)
-        .initializeActeurFromSharedPreferences();
+  // Initialise les données de l'utilisateur à partir de SharedPreferences
+  await Provider.of<ActeurProvider>(context, listen: false)
+      .initializeActeurFromSharedPreferences();
 
-    if (Provider.of<ActeurProvider>(context, listen: false).acteur != null) {
-      acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-      print("acteur ${acteur.toString()}");
-      // Vérifie si l'utilisateur est déjà connecté
-      if (acteur != null) {
-        // Vérifie si l'utilisateur est un administrateur
-        if (acteur.typeActeur!.any(
-            (type) => type.libelle!.toLowerCase() == 'admin' || type.libelle == 'Admin')) {
-          Timer(
-            const Duration(seconds: 3),
-            () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const BottomNavBarAdmin()),
-            ),
-          );
-        } else if (acteur.typeActeur!.any((type) =>
-            type.libelle!.toLowerCase() == 'transformateur' ||
-            type.libelle!.toLowerCase() == 'producteur' ||
-            type.libelle!.toLowerCase() == 'producteur' ||
-            type.libelle!.toLowerCase() == 'commercant' ||
-            type.libelle!.toLowerCase() == 'commerçant' ||
-            type.libelle!.toLowerCase() == 'commercants')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(BottomNavigationPage(),
-                transition: Transition.leftToRight);
-            Provider.of<BottomNavigationService>(context, listen: false)
-                .changeIndex(1);
-          });
-        } else if (acteur.typeActeur!.any((type) =>
-            type.libelle!.toLowerCase() == 'transporteur' ||
-            type.libelle!.toLowerCase() == 'transporteurs')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(VehiculeActeur(),
-                transition: Transition.leftToRight);
-          });
-        } else if (acteur.typeActeur!.any((type) =>
-            type.libelle!.toLowerCase() == 'fournisseur' ||
-            type.libelle!.toLowerCase() == 'fournisseurs')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(ListeIntrantByActeur(),
-                transition: Transition.leftToRight);
-          });
-        } 
-        else {
-          Timer(
-            const Duration(seconds: 2),
-            () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => BottomNavigationPage()),
-            ),
-          );
-        }
+  // Vérifie si l'utilisateur est connecté
+  if (Provider.of<ActeurProvider>(context, listen: false).acteur != null) {
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    print("acteur splash  ${acteur.nomActeur}");
+
+    // Vérifie le type de profil et effectue la redirection appropriée
+    if (acteur.codeActeur != null) {
+      if (acteur.typeActeur!.any((type) =>
+          type.libelle!.toLowerCase() == 'admin' ||
+          type.libelle == 'Admin')) {
+        Timer(
+          const Duration(seconds: 3),
+          () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const BottomNavBarAdmin()),
+          ),
+        );
+      }  else {
+        // Redirection par défaut si le type de profil ne correspond à aucun des cas ci-dessus
+        Timer(
+          const Duration(seconds: 2),
+          () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => BottomNavigationPage()),
+          ),
+        );
       }
-    } else {
-      Timer(
-        const Duration(seconds: 5),
-        () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => BottomNavigationPage()),
-        ),
-      );
     }
+  } else {
+    // Redirection par défaut si l'utilisateur n'est pas trouvé
+    Timer(
+      const Duration(seconds: 2),
+      () => Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => BottomNavigationPage()),
+      ),
+    );
   }
+}
+//   void checkLoggedIn() async {
+//   // Initialise les données de l'utilisateur à partir de SharedPreferences
+//   await Provider.of<ActeurProvider>(context, listen: false)
+//       .initializeActeurFromSharedPreferences();
+
+//   // Vérifie si l'utilisateur est connecté
+//   if (Provider.of<ActeurProvider>(context, listen: false).acteur != null) {
+//     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+//     print("acteur splash  ${acteur.nomActeur}");
+
+//     // Vérifie le type de profil et effectue la redirection appropriée
+//     if (acteur.codeActeur != null) {
+//       if (acteur.typeActeur!.any((type) =>
+//           type.libelle!.toLowerCase() == 'admin' ||
+//           type.libelle == 'Admin')) {
+//         Timer(
+//           const Duration(seconds: 3),
+//           () => Navigator.of(context).pushReplacement(
+//             MaterialPageRoute(builder: (_) => const BottomNavBarAdmin()),
+//           ),
+//         );
+//       } else if (acteur.typeActeur!.any((type) =>
+//           type.libelle!.toLowerCase() == 'transformateur' ||
+//           type.libelle!.toLowerCase() == 'producteur' ||
+//           type.libelle!.toLowerCase() == 'commercant' ||
+//           type.libelle!.toLowerCase() == 'commerçant' ||
+//           type.libelle!.toLowerCase() == 'commercants')) {
+//         Timer(const Duration(seconds: 3), () {
+//           Get.offAll(BottomNavigationPage(),
+//               transition: Transition.leftToRight);
+//           Provider.of<BottomNavigationService>(context, listen: false)
+//               .changeIndex(1);
+//         });
+//       } else if (acteur.typeActeur!.any((type) =>
+//           type.libelle!.toLowerCase() == 'transporteur' ||
+//           type.libelle!.toLowerCase() == 'transporteurs')) {
+//         Timer(const Duration(seconds: 3), () {
+//             Get.offAll(VehiculeActeur(),
+//               transition: Transition.leftToRight);
+//                 Provider.of<BottomNavigationService>(context, listen: false)
+//                     .changeIndex(4);
+//         });
+//       } else if (acteur.typeActeur!.any((type) =>
+//           type.libelle!.toLowerCase() == 'fournisseur' ||
+//           type.libelle!.toLowerCase() == 'fournisseurs')) {
+//         Timer(const Duration(seconds: 3), () {
+
+//           Get.offAll(ListeIntrantByActeur(),
+//               transition: Transition.leftToRight);
+//           Provider.of<BottomNavigationService>(context, listen: false)
+//                     .changeIndex(5);
+//         });
+//       } else {
+//         // Redirection par défaut si le type de profil ne correspond à aucun des cas ci-dessus
+//         Timer(
+//           const Duration(seconds: 2),
+//           () => Navigator.of(context).pushReplacement(
+//             MaterialPageRoute(builder: (_) => BottomNavigationPage()),
+//           ),
+//         );
+//       }
+//     }
+//   } else {
+//     // Redirection par défaut si l'utilisateur n'est pas trouvé
+//     Timer(
+//       const Duration(seconds: 2),
+//       () => Navigator.of(context).pushReplacement(
+//         MaterialPageRoute(builder: (_) => BottomNavigationPage()),
+//       ),
+//     );
+//   }
+// }
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -370,67 +371,67 @@ class _ProduitElevageState extends State<ProduitElevage> {
                 Navigator.of(context).pop();
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-          actions: 
-          // !isExist
-          //     ? 
+          actions:
+              // !isExist
+              //     ?
               [
-                  IconButton(
-                      onPressed: () {
-                        stockListeFuture = fetchStock(detectedCountry != null
-                            ? detectedCountry!
-                            : "Mali");
-                      },
-                      icon: const Icon(Icons.refresh, color: Colors.white)),
-                ]
-              // : [
-              //     IconButton(
-              //         onPressed: () {
-              //           stockListeFuture = fetchStock(detectedCountry != null
-              //               ? detectedCountry!
-              //               : "Mali");
-              //         },
-              //         icon: const Icon(Icons.refresh, color: Colors.white)),
-              //     (typeActeurData
-              //                 .map((e) => e.libelle!.toLowerCase())
-              //                 .contains("commercant") ||
-              //             typeActeurData
-              //                 .map((e) => e.libelle!.toLowerCase())
-              //                 .contains("commerçant") ||
-              //             typeActeurData
-              //                 .map((e) => e.libelle!.toLowerCase())
-              //                 .contains("admin") ||
-              //             typeActeurData
-              //                 .map((e) => e.libelle!.toLowerCase())
-              //                 .contains("producteur"))
-              //         ? PopupMenuButton<String>(
-              //             padding: EdgeInsets.zero,
-              //             itemBuilder: (context) {
-              //               return <PopupMenuEntry<String>>[
-              //                 PopupMenuItem<String>(
-              //                   child: ListTile(
-              //                     leading: const Icon(
-              //                       Icons.add,
-              //                       color: Colors.green,
-              //                     ),
-              //                     title: const Text(
-              //                       "Ajouter produit",
-              //                       style: TextStyle(
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold,
-              //                       ),
-              //                     ),
-              //                     onTap: () async {
-              //                       Navigator.of(context).pop();
-              //                       _getResultFromNextScreen1(context);
-              //                     },
-              //                   ),
-              //                 ),
-              //               ];
-              //             },
-              //           )
-              //         : Container()
-              
-          ,title: const Text(
+            IconButton(
+                onPressed: () {
+                  stockListeFuture = fetchStock(
+                      detectedCountry != null ? detectedCountry! : "Mali");
+                },
+                icon: const Icon(Icons.refresh, color: Colors.white)),
+          ]
+          // : [
+          //     IconButton(
+          //         onPressed: () {
+          //           stockListeFuture = fetchStock(detectedCountry != null
+          //               ? detectedCountry!
+          //               : "Mali");
+          //         },
+          //         icon: const Icon(Icons.refresh, color: Colors.white)),
+          //     (typeActeurData
+          //                 .map((e) => e.libelle!.toLowerCase())
+          //                 .contains("commercant") ||
+          //             typeActeurData
+          //                 .map((e) => e.libelle!.toLowerCase())
+          //                 .contains("commerçant") ||
+          //             typeActeurData
+          //                 .map((e) => e.libelle!.toLowerCase())
+          //                 .contains("admin") ||
+          //             typeActeurData
+          //                 .map((e) => e.libelle!.toLowerCase())
+          //                 .contains("producteur"))
+          //         ? PopupMenuButton<String>(
+          //             padding: EdgeInsets.zero,
+          //             itemBuilder: (context) {
+          //               return <PopupMenuEntry<String>>[
+          //                 PopupMenuItem<String>(
+          //                   child: ListTile(
+          //                     leading: const Icon(
+          //                       Icons.add,
+          //                       color: Colors.green,
+          //                     ),
+          //                     title: const Text(
+          //                       "Ajouter produit",
+          //                       style: TextStyle(
+          //                         color: Colors.green,
+          //                         fontWeight: FontWeight.bold,
+          //                       ),
+          //                     ),
+          //                     onTap: () async {
+          //                       Navigator.of(context).pop();
+          //                       _getResultFromNextScreen1(context);
+          //                     },
+          //                   ),
+          //                 ),
+          //               ];
+          //             },
+          //           )
+          //         : Container()
+
+          ,
+          title: const Text(
             "Produits d'élévages",
             style: TextStyle(
               color: Colors.white,
@@ -450,7 +451,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                         Padding(
+                        Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -648,7 +649,21 @@ class _ProduitElevageState extends State<ProduitElevage> {
                               builder: (_, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  return buildLoadingDropdown();
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        icon: Icon(Icons.search),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                        ),
+                                        suffixIcon: Icon(Icons.arrow_drop_down),
+                                        labelText: "Chargement..."),
+                                    cursorColor: Colors.green,
+                                  );
                                 }
 
                                 if (snapshot.hasData) {
@@ -658,24 +673,112 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                       json.decode(jsonString);
 
                                   if (responseData is List) {
-                                    final response = responseData;
-                                    final typeList = response
+                                    final paysList = responseData
                                         .map((e) => CategorieProduit.fromMap(e))
                                         .where((con) =>
                                             con.statutCategorie == true)
                                         .toList();
-
-                                    if (typeList.isEmpty) {
-                                      return buildEmptyDropdown();
+                                    if (paysList.isEmpty) {
+                                      return TextDropdownFormField(
+                                        options: [],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                    horizontal: 20),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                            suffixIcon: Icon(Icons.search),
+                                            labelText:
+                                                "--Aucune catégorie trouvé--"),
+                                        cursorColor: Colors.green,
+                                      );
                                     }
 
-                                    return buildDropdown(typeList);
-                                  } else {
-                                    return buildEmptyDropdown();
+                                    return DropdownFormField<CategorieProduit>(
+                                      onEmptyActionPressed:
+                                          (String str) async {},
+                                      dropdownHeight: 200,
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText:
+                                              "--Filtrer par catégorie--"),
+                                      onSaved: (dynamic cat) {
+                                        selectedCat = cat;
+                                        print("onSaved : $cat");
+                                      },
+                                      onChanged: (dynamic cat) {
+                                        setState(() {
+                                          selectedCat = cat;
+                                          page = 0;
+                                          hasMore = true;
+                                          fetchStockByCategorie(
+                                              detectedCountry != null
+                                                  ? detectedCountry!
+                                                  : "Mali",
+                                              refresh: true);
+                                          if (page == 0 && isLoading == true) {
+                                            SchedulerBinding.instance
+                                                .addPostFrameCallback((_) {
+                                              scrollableController1.jumpTo(0.0);
+                                            });
+                                          }
+                                        });
+                                      },
+                                      displayItemFn: (dynamic item) => Text(
+                                        item?.libelleCategorie ?? '',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      findFn: (String str) async => paysList,
+                                      selectedFn:
+                                          (dynamic item1, dynamic item2) {
+                                        if (item1 != null && item2 != null) {
+                                          return item1.idCategorieProduit ==
+                                              item2.idCategorieProduit;
+                                        }
+                                        return false;
+                                      },
+                                      filterFn: (dynamic item, String str) =>
+                                          item.libelleCategorie!
+                                              .toLowerCase()
+                                              .contains(str.toLowerCase()),
+                                      dropdownItemFn: (dynamic item,
+                                              int position,
+                                              bool focused,
+                                              bool selected,
+                                              Function() onTap) =>
+                                          ListTile(
+                                        title: Text(item.libelleCategorie!),
+                                        tileColor: focused
+                                            ? Color.fromARGB(20, 0, 0, 0)
+                                            : Colors.transparent,
+                                        onTap: onTap,
+                                      ),
+                                    );
                                   }
                                 }
-
-                                return buildEmptyDropdown();
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "--Aucune catégorie trouvé--"),
+                                  cursorColor: Colors.green,
+                                );
                               },
                             ),
                           ),
@@ -687,7 +790,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                 vertical: 3, horizontal: 10),
                             child: SearchFieldAutoComplete<String>(
                               controller: _searchController,
-                              placeholder: 'Rechercher...',
+                              placeholder: 'Rechercher un produit ...',
                               placeholderStyle:
                                   TextStyle(fontStyle: FontStyle.italic),
                               suggestions: AutoComplet.getAgriculturalProducts,

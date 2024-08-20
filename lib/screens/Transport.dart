@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -701,44 +701,138 @@ class _TransportState extends State<Transport> {
                       ),
                       Visibility(
                           visible: isSearchMode,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 10),
-                            child: FutureBuilder(
-                              future: _typeList,
-                              builder: (_, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return buildLoadingDropdown();
-                                }
+                          child:  Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 10),
+                          child: FutureBuilder(
+                            future: _typeList,
+                            builder: (_, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      icon: Icon(Icons.search),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.arrow_drop_down),
+                                      labelText: "Chargement..."),
+                                  cursorColor: Colors.green,
+                                );
+                              }
 
-                                if (snapshot.hasData) {
-                                  dynamic jsonString =
-                                      utf8.decode(snapshot.data.bodyBytes);
-                                  dynamic responseData =
-                                      json.decode(jsonString);
+                              if (snapshot.hasData) {
+                                dynamic jsonString =
+                                    utf8.decode(snapshot.data.bodyBytes);
+                                dynamic responseData = json.decode(jsonString);
 
-                                  if (responseData is List) {
-                                    final reponse = responseData;
-                                    final typeList = reponse
-                                        .map((e) => TypeVoiture.fromMap(e))
-                                        .where((con) => con.statutType == true)
-                                        .toList();
-
-                                    if (typeList.isEmpty) {
-                                      return buildEmptyDropdown();
-                                    }
-
-                                    return buildDropdown(typeList);
-                                  } else {
-                                    return buildEmptyDropdown();
+                                if (responseData is List) {
+                                  final paysList = responseData
+                                      .map((e) => TypeVoiture.fromMap(e))
+                                      .where(
+                                          (con) => con.statutType == true)
+                                      .toList();
+                                  if (paysList.isEmpty) {
+                                    return TextDropdownFormField(
+                                      options: [],
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText:
+                                              "--Aucune catégorie trouvé--"),
+                                      cursorColor: Colors.green,
+                                    );
                                   }
-                                }
 
-                                return buildEmptyDropdown();
-                              },
-                            ),
-                          )),
+                                  return DropdownFormField<TypeVoiture>(
+                                    onEmptyActionPressed: (String str) async {},
+                                    dropdownHeight: 200,
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "--Filtrer par catégorie--"),
+                                    onSaved: (dynamic cat) {
+                                      selectedType = cat;
+                                      print("onSaved : $cat");
+                                    },
+                                    onChanged: (dynamic cat) {
+                                      setState(() {
+                                        selectedType = cat;
+                                        page = 0;
+                                        hasMore = true;
+                                        fetchVehiculeByTypeVoitureWithPagination(selectedType!.idTypeVoiture!,
+              detectedCountry != null ? detectedCountry! : "Mali",
+              refresh: true);
+                                        if (page == 0 && isLoading == true) {
+                                          SchedulerBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            scrollableController1.jumpTo(0.0);
+                                          });
+                                        }
+                                      });
+                                    },
+                                    displayItemFn: (dynamic item) => Text(
+                                      item?.nom! ?? '',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    findFn: (String str) async => paysList,
+                                    selectedFn: (dynamic item1, dynamic item2) {
+                                      if (item1 != null && item2 != null) {
+                                        return item1.idTypeVoiture ==
+                                            item2.idTypeVoiture;
+                                      }
+                                      return false;
+                                    },
+                                    filterFn: (dynamic item, String str) => item
+                                        .nom!
+                                        .toLowerCase()
+                                        .contains(str.toLowerCase()),
+                                    dropdownItemFn: (dynamic item,
+                                            int position,
+                                            bool focused,
+                                            bool selected,
+                                            Function() onTap) =>
+                                        ListTile(
+                                      title: Text(item.nom!),
+                                      tileColor: focused
+                                          ? Color.fromARGB(20, 0, 0, 0)
+                                          : Colors.transparent,
+                                      onTap: onTap,
+                                    ),
+                                  );
+                                }
+                              }
+                              return TextDropdownFormField(
+                                options: [],
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(22),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "--Aucune catégorie trouvé--"),
+                                cursorColor: Colors.green,
+                              );
+                            },
+                          ),
+                        ),),
                       Visibility(
                         visible: isSearchMode,
                         child: Padding(
@@ -746,7 +840,7 @@ class _TransportState extends State<Transport> {
                               vertical: 3, horizontal: 10),
                           child: SearchFieldAutoComplete<String>(
                             controller: _searchController,
-                            placeholder: 'Rechercher...',
+                            placeholder: 'Rechercher une véhicule...',
                             placeholderStyle:
                                 TextStyle(fontStyle: FontStyle.italic),
                             suggestions: AutoComplet.getTransportVehicles,

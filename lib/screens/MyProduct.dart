@@ -188,6 +188,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
   }
 
   void verify() async {
+     await Provider.of<ActeurProvider>(context, listen: false)
+      .initializeActeurFromSharedPreferences();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {

@@ -16,6 +16,7 @@ import 'package:koumi/widgets/LoadingOverlay.dart';
 import 'package:provider/provider.dart';
 import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListeIntrantByActeur extends StatefulWidget {
   const ListeIntrantByActeur({super.key});
@@ -28,11 +29,10 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
-  late Acteur acteur;
   late TextEditingController _searchController;
   List<Intrant> intrantListe = [];
-  late Future futureList;
-
+   Future? futureList;
+ late Acteur acteur = Acteur();
   // List<ParametreGeneraux> paraList = [];
   // late ParametreGeneraux para = ParametreGeneraux();
 
@@ -40,6 +40,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
   bool isLoading = false;
   int size = sized;
   bool hasMore = true;
+  bool isExist = false;
+  String? email = "";
   ScrollController scrollableController = ScrollController();
 
   bool isLoadingLibelle = true;
@@ -119,13 +121,32 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     }
   }
 
+  void verify() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    email = prefs.getString('whatsAppActeur');
+    if (email != null) {
+      // Si l'email de l'acteur est présent, exécute checkLoggedIn
+      acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+      
+      setState(() {
+        isExist = true;
+      });
+    } else {
+      setState(() {
+        isExist = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-    futureList = fetchIntrantByActeur(acteur.idActeur!);
-
+    // acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    verify();
+     isExist
+                                    ?
+    futureList = fetchIntrantByActeur(acteur.idActeur!):Container();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController.addListener(_scrollListener);
     });

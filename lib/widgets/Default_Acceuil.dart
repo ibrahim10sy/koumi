@@ -51,6 +51,8 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
   bool isExist = false;
 
   void verify() async {
+     await Provider.of<ActeurProvider>(context, listen: false)
+      .initializeActeurFromSharedPreferences();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {

@@ -629,7 +629,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                 vertical: 3, horizontal: 10),
                             child: SearchFieldAutoComplete<String>(
                               controller: _searchController,
-                              placeholder: 'Rechercher...',
+                              placeholder: 'Rechercher matériel...',
                               placeholderStyle:
                                   TextStyle(fontStyle: FontStyle.italic),
                               suggestions: AutoComplet.getMateriels,

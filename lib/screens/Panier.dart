@@ -48,6 +48,8 @@ class _PanierState extends State<Panier> {
   bool isExist = false;
 
   void verify() async {
+     await Provider.of<ActeurProvider>(context, listen: false)
+      .initializeActeurFromSharedPreferences();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {
