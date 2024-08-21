@@ -200,11 +200,11 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
         backgroundColor: d_colorOr,
         centerTitle: true,
         toolbarHeight: 75,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+        // leading: IconButton(
+        //     onPressed: () {
+        //       Navigator.pop(context, true);
+        //     },
+        //     icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: const Text(
           "Mes intrants",
           style: TextStyle(

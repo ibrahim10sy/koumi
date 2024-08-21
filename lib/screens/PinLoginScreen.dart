@@ -68,7 +68,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   //   ActeurProvider acteurProvider =
   //       Provider.of<ActeurProvider>(context, listen: false);
 
-
   //   // Assurez-vous que le code acteur est chargé
   //   if (codeActeur == null) {
   //     showDialog(
@@ -185,7 +184,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   //       acteurProvider.setActeur(acteur);
   //         print("login acteur :${acteur.toString()}");
 
-
   //       final List<String> type =
   //           acteur.typeActeur!.map((e) => e.libelle!.toLowerCase()).toList();
   //       if (type.contains('admin') || type.contains('Admin')) {
@@ -267,14 +265,13 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   //   }
   // }
 
- Future<void> loginUser() async {
+  Future<void> loginUser() async {
     const String baseUrl = '$apiOnlineUrl/acteur/pinLogin';
-
 
     ActeurProvider acteurProvider =
         Provider.of<ActeurProvider>(context, listen: false);
 
-     // Assurez-vous que le code acteur est chargé
+    // Assurez-vous que le code acteur est chargé
     if (codeActeur == null) {
       showDialog(
         context: context,
@@ -305,8 +302,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
       return;
     }
 
-
-   final Uri apiUrl =
+    final Uri apiUrl =
         Uri.parse('$baseUrl?codeActeur=$codeActeur&password=$enteredPin');
 
     try {
@@ -319,11 +315,10 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
 
       if (response.statusCode == 200) {
         final responseBody = json.decode(utf8.decode(response.bodyBytes));
-       
+
         // Sauvegarder les données de l'utilisateur dans shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
-       
-      
+
         final nomActeur = responseBody['nomActeur'];
         final idActeur = responseBody['idActeur'];
         final adresseActeur = responseBody['adresseActeur'];
@@ -340,7 +335,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         prefs.setString('whatsAppActeur', whatsAppActeur);
         prefs.setString('niveau3PaysActeur', niveau3PaysActeur);
         prefs.setString('localiteActeur', localiteActeur);
-         prefs.setString('codeActeur', codeActeur!);
+        prefs.setString('codeActeur', codeActeur!);
         prefs.setString('password', enteredPin);
         // Enregistrer la liste des types d'utilisateur dans SharedPreferences
 
@@ -362,7 +357,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
 
-    // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
+        // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
         prefs.setStringList('userType', userTypeLabels);
         prefs.setStringList('specType', speculationLabels);
         Acteur acteurs = Acteur(
@@ -391,37 +386,41 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           Get.offAll(BottomNavBarAdmin(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
-        } else if (type.contains('transformateur') ||
-            type.contains('producteur') ||
-            type.contains('commercant') ||
-            type.contains('commerçant') ||
-            type.contains('transformateur')) {
-          Timer(const Duration(seconds: 3), () {
+        } else if (acteurs.typeActeur!.any((type) =>
+            type.libelle!.toLowerCase() == 'producteur' ||
+            type.libelle!.toLowerCase() == 'commercant' ||
+            type.libelle!.toLowerCase() == 'commerçant' ||
+            type.libelle!.toLowerCase() == 'transformeur' ||
+            type.libelle!.toLowerCase() == 'partenaires de développement')) {
+          Timer(const Duration(seconds: 2), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
                 .changeIndex(1);
           });
-        } else if (type.contains('transporteur')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(VehiculeActeur(),
-              transition: Transition.leftToRight);
-                Provider.of<BottomNavigationService>(context, listen: false)
-                    .changeIndex(4);
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
+          Timer(const Duration(seconds: 2), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
-        } else if (type.contains('fournisseur')) {
-          Timer(const Duration(seconds: 3), () {
-          
-                 Get.offAll(ListeIntrantByActeur(),
-              transition: Transition.leftToRight);
-      
-                Provider.of<BottomNavigationService>(context, listen: false)
-                    .changeIndex(5);
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
+          // Mise à jour de l'index de navigation
+          Timer(const Duration(seconds: 2), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else {
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
+          Provider.of<BottomNavigationService>(context, listen: false)
+              .changeIndex(0);
         }
       } else {
         enteredPin = '';

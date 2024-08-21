@@ -32,13 +32,12 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _VehiculeActeurState extends State<VehiculeActeur> {
- 
   late List<TypeActeur> typeActeurData = [];
   late String type;
   late TextEditingController _searchController;
   List<Vehicule> vehiculeListe = [];
   Future<List<Vehicule>>? _liste;
- late Acteur acteur = Acteur();
+  late Acteur acteur = Acteur();
   // late Future liste;
 
   Future<List<Vehicule>> getVehicule(String id) async {
@@ -56,7 +55,6 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
   bool hasMore = true;
 
   void _scrollListener() {
-   
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
         hasMore &&
@@ -140,9 +138,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
     if (email != null) {
       // Si l'email de l'acteur est présent, exécute checkLoggedIn
       acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-      
-       typeActeurData = acteur.typeActeur!;
-    type = typeActeurData.map((data) => data.libelle).join(', ');
+
+      typeActeurData = acteur.typeActeur!;
+      type = typeActeurData.map((data) => data.libelle).join(', ');
       setState(() {
         isExist = true;
       });
@@ -161,9 +159,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
     // type = typeActeurData.map((data) => data.libelle).join(', ');
     _searchController = TextEditingController();
 
-     isExist
-                                    ?
-    _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!): Container();
+    isExist
+        ? _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!)
+        : Container();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       //write or call your logic
       //code will run when widget rendering complete
@@ -210,14 +208,14 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
             backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
-            leading: IconButton(
-                onPressed: () {
-                  Get.offAll(BottomNavigationPage(),
-                      transition: Transition.leftToRight);
-                  Provider.of<BottomNavigationService>(context, listen: false)
-                      .changeIndex(0);
-                },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            // leading: IconButton(
+            //     onPressed: () {
+            //       Get.offAll(BottomNavigationPage(),
+            //           transition: Transition.leftToRight);
+            //       Provider.of<BottomNavigationService>(context, listen: false)
+            //           .changeIndex(0);
+            //     },
+            //     icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
               'Mes véhicules',
               style: const TextStyle(
@@ -465,7 +463,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                           height: 10,
                                                         ),
                                                         Text(
-                                                          'Aucune vehiucle trouvé',
+                                                          'Aucun véhicule trouvé',
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 17,

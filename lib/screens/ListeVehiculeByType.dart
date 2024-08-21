@@ -171,7 +171,7 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
     //   _searchController = TextEditingController();
     // } else {
     // }
-      _searchController.dispose();
+    _searchController.dispose();
     scrollableController.dispose();
     super.dispose();
   }
@@ -196,10 +196,10 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -238,9 +238,9 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
             )
           ]),
       body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
         child: Container(
           child: NestedScrollView(
               headerSliverBuilder:
@@ -248,61 +248,62 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                 return <Widget>[
                   SliverToBoxAdapter(
                       child: Column(children: [
-                     Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      onPressed: () {
-                        if (mounted) {
-                          setState(() {
-                            isSearchMode = !isSearchMode;
-                            _searchController.clear();
-                            _searchController = TextEditingController();
-                          });
-                          debugPrint("Rechercher mode désactivé : $isSearchMode");
-                        }
-                      },
-                      icon: Icon(
-                        isSearchMode ? Icons.close : Icons.search,
-                        color: isSearchMode ? Colors.red : Colors.green,
-                      ),
-                      label: Text(
-                        isSearchMode ? 'Fermer' : 'Rechercher...',
-                        style: TextStyle(
-                            color: isSearchMode ? Colors.red : Colors.green,
-                            fontSize: 17),
-                      ),
-                    ),
-                  ),
-                  if (isSearchMode)
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: SearchFieldAutoComplete<String>(
-                        controller: _searchController,
-                        itemHeight: 25,
-                        placeholder: 'Rechercher...',
-                        placeholderStyle:
-                            TextStyle(fontStyle: FontStyle.italic),
-                        suggestions: AutoComplet.getTransportVehicles,
-                        suggestionsDecoration: SuggestionDecoration(
-                          marginSuggestions: const EdgeInsets.all(8.0),
-                          color: const Color.fromARGB(255, 236, 234, 234),
-                          borderRadius: BorderRadius.circular(16.0),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: () {
+                          if (mounted) {
+                            setState(() {
+                              isSearchMode = !isSearchMode;
+                              _searchController.clear();
+                              _searchController = TextEditingController();
+                            });
+                            debugPrint(
+                                "Rechercher mode désactivé : $isSearchMode");
+                          }
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : Colors.green,
                         ),
-                        onSuggestionSelected: (selectedItem) {
-                          _searchController.text = selectedItem.searchKey;
-                          // setState(() {});
-                        },
-                        suggestionItemBuilder: (context, searchFieldItem) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              searchFieldItem.searchKey,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          );
-                        },
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : Colors.green,
+                              fontSize: 17),
+                        ),
                       ),
                     ),
+                    if (isSearchMode)
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: SearchFieldAutoComplete<String>(
+                          controller: _searchController,
+                          itemHeight: 25,
+                          placeholder: 'Rechercher...',
+                          placeholderStyle:
+                              TextStyle(fontStyle: FontStyle.italic),
+                          suggestions: AutoComplet.getTransportVehicles,
+                          suggestionsDecoration: SuggestionDecoration(
+                            marginSuggestions: const EdgeInsets.all(8.0),
+                            color: const Color.fromARGB(255, 236, 234, 234),
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          onSuggestionSelected: (selectedItem) {
+                            _searchController.text = selectedItem.searchKey;
+                            // setState(() {});
+                          },
+                          suggestionItemBuilder: (context, searchFieldItem) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                searchFieldItem.searchKey,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     // const SizedBox(height: 10),
                     //  Padding(
                     //   padding: const EdgeInsets.all(10.0),
@@ -357,7 +358,9 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                     futureListe = VehiculeService()
                         .fetchVehiculeByTypeVoitureWithPagination(
                             typeVoiture.idTypeVoiture!,
-                            detectedCountry != null ? detectedCountry! : "mali");
+                            detectedCountry != null
+                                ? detectedCountry!
+                                : "mali");
                   });
                 },
                 child: SingleChildScrollView(
@@ -373,7 +376,7 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                               ConnectionState.waiting) {
                             return _buildShimmerEffect();
                           }
-        
+
                           if (!snapshot.hasData) {
                             return SingleChildScrollView(
                               child: Padding(
@@ -386,7 +389,7 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                         height: 10,
                                       ),
                                       Text(
-                                        'Aucune vehiucle trouvé',
+                                        'Aucun véhicule trouvé',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 17,
@@ -430,7 +433,8 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  DetailTransport(vehicule: e)));
+                                                  DetailTransport(
+                                                      vehicule: e)));
                                     },
                                     child: Card(
                                       margin: EdgeInsets.all(8),
@@ -458,9 +462,9 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                           const Center(
                                                               child:
                                                                   CircularProgressIndicator()),
-                                                      errorWidget:
-                                                          (context, url, error) =>
-                                                              Image.asset(
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Image.asset(
                                                         'assets/images/default_image.png',
                                                         fit: BoxFit.cover,
                                                       ),
@@ -493,7 +497,8 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                 horizontal: 10),
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 _buildEtat(e.statutVehicule),
                                                 PopupMenuButton<String>(
@@ -523,12 +528,11 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                               ? "Activer"
                                                               : "Desactiver",
                                                           style: TextStyle(
-                                                            color:
-                                                                e.statutVehicule ==
-                                                                        false
-                                                                    ? Colors.green
-                                                                    : Colors.orange[
-                                                                        400],
+                                                            color: e.statutVehicule ==
+                                                                    false
+                                                                ? Colors.green
+                                                                : Colors.orange[
+                                                                    400],
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),
@@ -540,18 +544,14 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                   .activerVehicules(e
                                                                       .idVehicule)
                                                                   .then(
-                                                                      (value) => {
-                                                                            Provider.of<VehiculeService>(context, listen: false)
-                                                                                .applyChange(),
-                                                                            setState(
-                                                                                () {
-                                                                              futureListe =
-                                                                                  getListe(typeVoiture.idTypeVoiture!);
+                                                                      (value) =>
+                                                                          {
+                                                                            Provider.of<VehiculeService>(context, listen: false).applyChange(),
+                                                                            setState(() {
+                                                                              futureListe = getListe(typeVoiture.idTypeVoiture!);
                                                                             }),
-                                                                            Navigator.of(context)
-                                                                                .pop(),
-                                                                            ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(
+                                                                            Navigator.of(context).pop(),
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
                                                                               const SnackBar(
                                                                                 content: Row(
                                                                                   children: [
@@ -565,8 +565,7 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                   .catchError(
                                                                       (onError) =>
                                                                           {
-                                                                            ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
                                                                               const SnackBar(
                                                                                 content: Row(
                                                                                   children: [
@@ -576,29 +575,24 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                                 duration: Duration(seconds: 5),
                                                                               ),
                                                                             ),
-                                                                            Navigator.of(context)
-                                                                                .pop(),
+                                                                            Navigator.of(context).pop(),
                                                                           })
                                                               : await VehiculeService()
                                                                   .desactiverVehicules(e
                                                                       .idVehicule)
                                                                   .then(
-                                                                      (value) => {
-                                                                            Provider.of<VehiculeService>(context, listen: false)
-                                                                                .applyChange(),
-                                                                            setState(
-                                                                                () {
-                                                                              futureListe =
-                                                                                  getListe(typeVoiture.idTypeVoiture!);
+                                                                      (value) =>
+                                                                          {
+                                                                            Provider.of<VehiculeService>(context, listen: false).applyChange(),
+                                                                            setState(() {
+                                                                              futureListe = getListe(typeVoiture.idTypeVoiture!);
                                                                             }),
-                                                                            Navigator.of(context)
-                                                                                .pop(),
+                                                                            Navigator.of(context).pop(),
                                                                           })
                                                                   .catchError(
                                                                       (onError) =>
                                                                           {
-                                                                            ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
                                                                               const SnackBar(
                                                                                 content: Row(
                                                                                   children: [
@@ -608,10 +602,9 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                                 duration: Duration(seconds: 5),
                                                                               ),
                                                                             ),
-                                                                            Navigator.of(context)
-                                                                                .pop(),
+                                                                            Navigator.of(context).pop(),
                                                                           });
-        
+
                                                           ScaffoldMessenger.of(
                                                                   context)
                                                               .showSnackBar(
@@ -622,8 +615,10 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                       "Désactiver avec succèss "),
                                                                 ],
                                                               ),
-                                                              duration: Duration(
-                                                                  seconds: 2),
+                                                              duration:
+                                                                  Duration(
+                                                                      seconds:
+                                                                          2),
                                                             ),
                                                           );
                                                         },
@@ -653,7 +648,8 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                             listen:
                                                                                 false)
                                                                         .applyChange(),
-                                                                    setState(() {
+                                                                    setState(
+                                                                        () {
                                                                       futureListe =
                                                                           getListe(
                                                                               typeVoiture.idTypeVoiture!);
@@ -664,8 +660,7 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                                                                   })
                                                               .catchError(
                                                                   (onError) => {
-                                                                        ScaffoldMessenger.of(
-                                                                                context)
+                                                                        ScaffoldMessenger.of(context)
                                                                             .showSnackBar(
                                                                           const SnackBar(
                                                                             content:

@@ -333,7 +333,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailMateriel(materiel: materiel),
+        builder: (context) => DetailMateriel( materiel: materiel,isEquipement: true),
       ),
     );
     log(result.toString());
@@ -483,23 +483,23 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                   ),
                                                 ),
                                               ),
-                                              PopupMenuItem<String>(
-                                                value: 'mesMat',
-                                                child: ListTile(
-                                                  leading: const Icon(
-                                                    Icons.remove_red_eye,
-                                                    color: d_colorGreen,
-                                                  ),
-                                                  title: const Text(
-                                                    "Mes matériels",
-                                                    style: TextStyle(
-                                                      color: d_colorGreen,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                              // PopupMenuItem<String>(
+                                              //   value: 'mesMat',
+                                              //   child: ListTile(
+                                              //     leading: const Icon(
+                                              //       Icons.remove_red_eye,
+                                              //       color: d_colorGreen,
+                                              //     ),
+                                              //     title: const Text(
+                                              //       "Mes matériels",
+                                              //       style: TextStyle(
+                                              //         color: d_colorGreen,
+                                              //         fontWeight:
+                                              //             FontWeight.bold,
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
                                             ],
                                             elevation: 8.0,
                                           ).then((value) {

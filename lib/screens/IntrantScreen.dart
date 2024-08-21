@@ -494,23 +494,23 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  PopupMenuItem<String>(
-                                                    value: 'mesIntrant',
-                                                    child: ListTile(
-                                                      leading: const Icon(
-                                                        Icons.remove_red_eye,
-                                                        color: d_colorGreen,
-                                                      ),
-                                                      title: const Text(
-                                                        "Mes intrants",
-                                                        style: TextStyle(
-                                                          color: d_colorGreen,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  // PopupMenuItem<String>(
+                                                  //   value: 'mesIntrant',
+                                                  //   child: ListTile(
+                                                  //     leading: const Icon(
+                                                  //       Icons.remove_red_eye,
+                                                  //       color: d_colorGreen,
+                                                  //     ),
+                                                  //     title: const Text(
+                                                  //       "Mes intrants",
+                                                  //       style: TextStyle(
+                                                  //         color: d_colorGreen,
+                                                  //         fontWeight:
+                                                  //             FontWeight.bold,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
                                                 ],
                                                 elevation: 8.0,
                                               ).then((value) {

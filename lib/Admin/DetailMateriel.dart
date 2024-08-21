@@ -26,8 +26,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailMateriel extends StatefulWidget {
+  bool? isEquipement = false;
   final Materiels materiel;
-  const DetailMateriel({super.key, required this.materiel});
+  DetailMateriel({super.key, required this.materiel, this.isEquipement});
 
   @override
   State<DetailMateriel> createState() => _DetailMaterielState();
@@ -580,8 +581,13 @@ class _DetailMaterielState extends State<DetailMateriel> {
         _buildItem('Type matériel: ', materiels.typeMateriel!.nom!),
         _buildItem('Localité : ', materiels.localisation!),
         _buildItem('Etat du matériel : ', materiels.etatMateriel!),
-        _buildItem('Prix par heure : ',
-            "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}"),
+       
+         widget.isEquipement! ?
+          _buildItem('Prix du matériel : ',
+              "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}")
+        :
+          _buildItem('Prix par heure : ',
+              "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}"),
         FutureBuilder<Map<String, String>>(
           future: rates,
           builder: (context, snapshot) {

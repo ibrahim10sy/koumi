@@ -59,8 +59,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   void _setupNavigationItems() {
     print('isExist set: $isExist');
     if (isExist) {
-      // print('isExist if : ${!isExist}');
-
       if (typeActeurData!
               .map((e) => e.libelle!.toLowerCase())
               .contains("commercant") ||
@@ -203,7 +201,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     } else {
       pages = [
         const Accueil(),
-  
+        MyProductScreen(),
+        Panier(),
         const Profil(),
       ];
 
@@ -212,6 +211,16 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           backgroundColor: Color.fromARGB(255, 250, 250, 250),
           icon: Icon(Icons.home_filled),
           label: "Accueil",
+        ),
+        BottomNavigationBarItem(
+          backgroundColor: Color.fromARGB(255, 250, 250, 250),
+          icon: Icon(Icons.list_alt_sharp),
+          label: "Mes Produits",
+        ),
+        BottomNavigationBarItem(
+          backgroundColor: Color.fromARGB(255, 250, 250, 250),
+          icon: Icon(Icons.shopping_cart),
+          label: "Panier",
         ),
         BottomNavigationBarItem(
           backgroundColor: Color.fromARGB(255, 250, 250, 250),
@@ -257,10 +266,10 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() {
-      Provider.of<BottomNavigationService>(context, listen: false)
-          .changeIndex(0);
-    });
+    // Future.microtask(() {
+    //   Provider.of<BottomNavigationService>(context, listen: false)
+    //       .changeIndex(0);
+    // });
     verify();
     _setupNavigationItems();
     Get.put(ConnectionVerify(), permanent: true);

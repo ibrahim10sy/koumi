@@ -169,38 +169,51 @@ class _LoginScreenState extends State<LoginScreen> {
 
         acteurProvider.setActeur(acteurs);
         print("login acteur :${acteurs.toString()}");
-
+       
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
           Get.offAll(BottomNavBarAdmin(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
-        } else if (type.contains('transformateur') ||
-            type.contains('producteur') ||
-            type.contains('commercant') ||
-            type.contains('commerçant') ||
-            type.contains('transformateur')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(BottomNavigationPage(),
-                transition: Transition.leftToRight);
-            Provider.of<BottomNavigationService>(context, listen: false)
-                .changeIndex(1);
+        } else if (acteurs.typeActeur!.any((type) =>
+            type.libelle!.toLowerCase() == 'producteur' ||
+            type.libelle!.toLowerCase() == 'commercant' ||
+            type.libelle!.toLowerCase() == 'commerçant' ||
+            type.libelle!.toLowerCase() == 'transformeur' ||
+            type.libelle!.toLowerCase() == 'partenaires de développement')) {
+          // Index pour les intrants
+          Timer(const Duration(seconds: 2), () {
+             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Provider.of<BottomNavigationService>(context,
+                                      listen: false)
+                                  .changeIndex(1);
           });
-        } else if (type.contains('transporteur')) {
-          Timer(const Duration(seconds: 3), () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => VehiculeActeur()));
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
+         
+          Timer(const Duration(seconds: 2), () {
+             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Provider.of<BottomNavigationService>(context,
+                                      listen: false)
+                                  .changeIndex(1);
           });
-        } else if (type.contains('fournisseur')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(ListeIntrantByActeur(),
-                transition: Transition.leftToRight);
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
+          // Index pour les véhicules
+          // Mise à jour de l'index de navigation
+          Timer(const Duration(seconds: 2), () {
+             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Provider.of<BottomNavigationService>(context,
+                                      listen: false)
+                                  .changeIndex(1);
           });
         } else {
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
+          Provider.of<BottomNavigationService>(context, listen: false)
+              .changeIndex(0);
         }
       } else {
         // Traitement en cas d'échec
@@ -384,33 +397,44 @@ class _LoginScreenState extends State<LoginScreen> {
 
         acteurProvider.setActeur(acteurs);
         print('loginUserWithoutSavedData ${acteurs.toString()}');
-
+       
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
           Get.offAll(BottomNavBarAdmin(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
-        } else if (type.contains('transformateur') ||
-            type.contains('producteur') ||
-            type.contains('commercant') ||
-            type.contains('commerçant') ||
-            type.contains('transformateur')) {
-          Timer(const Duration(seconds: 3), () {
-            Get.offAll(BottomNavigationPage(),
-                transition: Transition.leftToRight);
-            Provider.of<BottomNavigationService>(context, listen: false)
-                .changeIndex(1);
+        } else if (acteurs.typeActeur!.any((type) =>
+            type.libelle!.toLowerCase() == 'producteur' ||
+            type.libelle!.toLowerCase() == 'commercant' ||
+            type.libelle!.toLowerCase() == 'commerçant' ||
+            type.libelle!.toLowerCase() == 'transformeur' ||
+            type.libelle!.toLowerCase() == 'partenaires de développement')) {
+          // Index pour les intrants
+          Timer(const Duration(seconds: 2), () {
+             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Provider.of<BottomNavigationService>(context,
+                                      listen: false)
+                                  .changeIndex(1);
           });
-        } else if (type.contains('transporteur')) {
-          Timer(const Duration(seconds: 1), () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => VehiculeActeur()));
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
+         
+          Timer(const Duration(seconds: 2), () {
+             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Provider.of<BottomNavigationService>(context,
+                                      listen: false)
+                                  .changeIndex(1);
           });
-        } else if (type.contains('fournisseur')) {
-          Timer(const Duration(seconds: 1), () {
-            Get.offAll(ListeIntrantByActeur(),
-                transition: Transition.leftToRight);
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
+          // Index pour les véhicules
+          // Mise à jour de l'index de navigation
+          Timer(const Duration(seconds: 2), () {
+             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Provider.of<BottomNavigationService>(context,
+                                      listen: false)
+                                  .changeIndex(1);
           });
         } else {
           Get.offAll(BottomNavigationPage(),

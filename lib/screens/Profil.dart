@@ -664,11 +664,7 @@ class _ProfilState extends State<Profil> {
                               // Déconnexion avec le provider
                               await acteurProvider.logout();
 
-                              Get.offAll(BottomNavigationPage(),
-                                  // duration: Duration(
-                                  //     seconds:
-                                  //         1), //duration of transitions, default 1 sec
-                                  transition: Transition.leftToRight);
+                              Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
                               Provider.of<BottomNavigationService>(context,
                                       listen: false)
                                   .changeIndex(0);

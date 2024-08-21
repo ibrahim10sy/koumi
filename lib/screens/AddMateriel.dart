@@ -19,6 +19,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:pattern_formatter/pattern_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 class AddMateriel extends StatefulWidget {
   bool? isEquipement = false;
@@ -185,7 +186,7 @@ class _AddMaterielState extends State<AddMateriel> {
 
   final FocusNode _fieldFocusNode = FocusNode();
   // Liste des suggestions
- 
+
   void _handleButtonPress() async {
     // Afficher l'indicateur de chargement
     setState(() {
@@ -199,7 +200,7 @@ class _AddMaterielState extends State<AddMateriel> {
         isLoading: _isLoading,
         child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
+          appBar: AppBar(
             backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
@@ -678,125 +679,6 @@ class _AddMaterielState extends State<AddMateriel> {
                             ),
                           ),
                         ),
-                      //  Padding(
-                      //     padding: const EdgeInsets.symmetric(
-                      //         vertical: 10, horizontal: 20),
-                      //     child: Autocomplete<String>(
-                      //       optionsBuilder:
-                      //           (TextEditingValue textEditingValue) {
-                      //         if (textEditingValue.text.isEmpty) {
-                      //           return const Iterable<String>.empty();
-                      //         } else {
-                      //           return AutoComplet.getTransport()
-                      //               .where((String option) {
-                      //             return option.toLowerCase().contains(
-                      //                 textEditingValue.text.toLowerCase());
-                      //           });
-                      //         }
-                      //       },
-                      //       fieldViewBuilder: (BuildContext context,
-                      //           TextEditingController textEditingController,
-                      //           FocusNode focusNode,
-                      //           VoidCallback onFieldSubmitted) {
-                      //         return TextField(
-                      //           controller: textEditingController,
-                      //           focusNode: focusNode,
-                      //           maxLines: null,
-                      //           decoration: InputDecoration(
-                      //             hintText: "Nom",
-                      //             contentPadding: const EdgeInsets.symmetric(
-                      //                 vertical: 10, horizontal: 20),
-                      //             border: OutlineInputBorder(
-                      //               borderRadius: BorderRadius.circular(8),
-                      //             ),
-                      //           ),
-                      //         );
-                      //       },
-                      //       optionsViewBuilder: (BuildContext context,
-                      //           AutocompleteOnSelected<String> onSelected,
-                      //           Iterable<String> options) {
-                      //         return Align(
-                      //           alignment: Alignment.topLeft,
-                      //           child: Material(
-                      //             elevation: 4.0,
-                      //             child: Container(
-                      //               width:
-                      //                   MediaQuery.of(context).size.width * 0.8,
-                      //               color: Colors.white,
-                      //               child: ListView.separated(
-                      //                 padding: EdgeInsets.all(10.0),
-                      //                 itemCount: options.length,
-                      //                 itemBuilder:
-                      //                     (BuildContext context, int index) {
-                      //                   final String option =
-                      //                       options.elementAt(index);
-                      //                   return GestureDetector(
-                      //                     onTap: () {
-                      //                       onSelected(option);
-                      //                     },
-                      //                     child: ListTile(
-                      //                       title: Text(option),
-                      //                     ),
-                      //                   );
-                      //                 },
-                      //                 separatorBuilder:
-                      //                     (BuildContext context, int index) {
-                      //                   return const Divider();
-                      //                 },
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         );
-                      //       },
-                      //       onSelected: (String value) {
-                      //         _nomController.text = value;
-                      //         print("valeur : ${_nomController.text}");
-                      //       },
-                      //     ),
-                      //   ),
-
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(
-                        //       vertical: 10, horizontal: 20),
-                        //   child: Autocomplete<String>(
-                        //     optionsBuilder:
-                        //         (TextEditingValue textEditingValue) {
-                        //       if (textEditingValue.text.isEmpty) {
-                        //         return const Iterable<String>.empty();
-                        //       }
-
-                        //     },
-                        //     onSelected: (String selection) {
-                        //       _nomController.text = selection;
-                        //       print("nom : ${_nomController.text}");
-                        //     },
-                        //     fieldViewBuilder: (BuildContext context,
-                        //         TextEditingController
-                        //             fieldTextEditingController,
-                        //         FocusNode fieldFocusNode,
-                        //         VoidCallback onFieldSubmitted) {
-                        //       return TextFormField(
-                        //         controller: _nomController,
-                        //         focusNode: fieldFocusNode,
-                        //         autofocus: true,
-                        //         validator: (value) {
-                        //           if (value == null || value.isEmpty) {
-                        //             return "Veuillez remplir le champs";
-                        //           }
-                        //           return null;
-                        //         },
-                        //         decoration: InputDecoration(
-                        //           hintText: "Nom produit",
-                        //           contentPadding: const EdgeInsets.symmetric(
-                        //               vertical: 10, horizontal: 20),
-                        //           border: OutlineInputBorder(
-                        //             borderRadius: BorderRadius.circular(8),
-                        //           ),
-                        //         ),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                         SizedBox(
                           height: 10,
                         ),
@@ -859,23 +741,22 @@ class _AddMaterielState extends State<AddMateriel> {
                             builder: (_, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
+                                return TextDropdownFormField(
+                                  options: [],
                                   decoration: InputDecoration(
-                                    labelText: 'Chargement...',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Chargement..."),
+                                  cursorColor: Colors.green,
                                 );
                               }
 
                               if (snapshot.hasData) {
-                                // dynamic responseData =
-                                //     json.decode(snapshot.data.body);
                                 dynamic jsonString =
                                     utf8.decode(snapshot.data.bodyBytes);
                                 dynamic responseData = json.decode(jsonString);
@@ -886,13 +767,28 @@ class _AddMaterielState extends State<AddMateriel> {
                                       .map((e) => Niveau3Pays.fromMap(e))
                                       .where((con) => con.statutN3 == true)
                                       .toList();
-
                                   if (niveau3List.isEmpty) {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
+                                    return TextDropdownFormField(
+                                      options: [],
                                       decoration: InputDecoration(
-                                        labelText: 'Aucun localité trouvé',
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText:
+                                              "--Aucune localité trouvé--"),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  return DropdownFormField<Niveau3Pays>(
+                                    onEmptyActionPressed: (String str) async {},
+                                    dropdownHeight: 200,
+                                    decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.symmetric(
                                                 vertical: 10, horizontal: 20),
@@ -900,73 +796,58 @@ class _AddMaterielState extends State<AddMateriel> {
                                           borderRadius:
                                               BorderRadius.circular(8),
                                         ),
-                                      ),
-                                    );
-                                  }
-
-                                  return DropdownButtonFormField<String>(
-                                    isExpanded: true,
-                                    items: niveau3List
-                                        .map(
-                                          (e) => DropdownMenuItem(
-                                            value: e.idNiveau3Pays,
-                                            child: Text(e.nomN3),
-                                          ),
-                                        )
-                                        .toList(),
-                                    value: n3Value,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        n3Value = newValue;
-                                        if (newValue != null) {
-                                          Niveau3Pays selectedNiveau3 =
-                                              niveau3List.firstWhere(
-                                            (element) =>
-                                                element.idNiveau3Pays ==
-                                                newValue,
-                                          );
-                                          niveau3 = selectedNiveau3.nomN3;
-                                          print("niveau 3 : $niveau3");
-                                        }
-                                      });
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Rechercher une localité"),
+                                    onSaved: (dynamic n) {
+                                      niveau3 = n?.nomN3;
+                                      print("onSaved : $niveau3");
                                     },
-                                    decoration: InputDecoration(
-                                      labelText: 'Selectionner une localité',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                    onChanged: (dynamic n) {
+                                      niveau3 = n?.nomN3;
+                                      print("selected : $niveau3");
+                                    },
+                                    displayItemFn: (dynamic item) => Text(
+                                      item?.nomN3 ?? '',
+                                      style: TextStyle(fontSize: 16),
                                     ),
-                                  );
-                                } else {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucun localité trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                    findFn: (String str) async => niveau3List,
+                                    selectedFn: (dynamic item1, dynamic item2) {
+                                      if (item1 != null && item2 != null) {
+                                        return item1.idNiveau3Pays ==
+                                            item2.idNiveau3Pays;
+                                      }
+                                      return false;
+                                    },
+                                    filterFn: (dynamic item, String str) => item
+                                        .nomN3!
+                                        .toLowerCase()
+                                        .contains(str.toLowerCase()),
+                                    dropdownItemFn: (dynamic item,
+                                            int position,
+                                            bool focused,
+                                            bool selected,
+                                            Function() onTap) =>
+                                        ListTile(
+                                      title: Text(item.nomN3!),
+                                      tileColor: focused
+                                          ? Color.fromARGB(20, 0, 0, 0)
+                                          : Colors.transparent,
+                                      onTap: onTap,
                                     ),
                                   );
                                 }
                               }
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
+                              return TextDropdownFormField(
+                                options: [],
                                 decoration: InputDecoration(
-                                  labelText: 'Aucun localité trouvé',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "--Aucune localité trouvé--"),
+                                cursorColor: Colors.green,
                               );
                             },
                           ),
@@ -1169,17 +1050,18 @@ class _AddMaterielState extends State<AddMateriel> {
                             builder: (_, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
+                                return TextDropdownFormField(
+                                  options: [],
                                   decoration: InputDecoration(
-                                    labelText: 'Chargement...',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Chargement..."),
+                                  cursorColor: Colors.green,
                                 );
                               }
 
@@ -1189,16 +1071,33 @@ class _AddMaterielState extends State<AddMateriel> {
                                 dynamic responseData = json.decode(jsonString);
 
                                 if (responseData is List) {
-                                  List<Monnaie> speList = responseData
+                                  final reponse = responseData;
+                                  final monaieList = reponse
                                       .map((e) => Monnaie.fromMap(e))
+                                      .where((con) => con.statut == true)
                                       .toList();
-
-                                  if (speList.isEmpty) {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
+                                  if (monaieList.isEmpty) {
+                                    return TextDropdownFormField(
+                                      options: [],
                                       decoration: InputDecoration(
-                                        labelText: 'Aucun monnaie trouvé',
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText:
+                                              "--Aucune monnaie trouvé--"),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  return DropdownFormField<Monnaie>(
+                                    onEmptyActionPressed: (String str) async {},
+                                    dropdownHeight: 200,
+                                    decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.symmetric(
                                                 vertical: 10, horizontal: 20),
@@ -1206,91 +1105,92 @@ class _AddMaterielState extends State<AddMateriel> {
                                           borderRadius:
                                               BorderRadius.circular(8),
                                         ),
-                                      ),
-                                    );
-                                  }
-
-                                  return DropdownButtonFormField<String>(
-                                    isExpanded: true,
-                                    items: speList
-                                        .map(
-                                          (e) => DropdownMenuItem(
-                                            value: e.idMonnaie,
-                                            child: Text(e.libelle!),
-                                          ),
-                                        )
-                                        .toList(),
-                                    value: monnaieValue,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        monnaieValue = newValue;
-                                        if (newValue != null) {
-                                          monnaie = speList.firstWhere(
-                                            (element) =>
-                                                element.idMonnaie == newValue,
-                                          );
-                                        }
-                                      });
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Rechercher une monnaie"),
+                                    onSaved: (dynamic n) {
+                                      monnaie = n;
+                                      print("onSaved : $monnaie");
                                     },
-                                    decoration: InputDecoration(
-                                      labelText: 'Sélectionner la monnaie',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                    onChanged: (dynamic n) {
+                                      monnaie = n;
+                                      print("selected : $monnaie");
+                                    },
+                                    displayItemFn: (dynamic item) => Text(
+                                      item?.libelle ?? '',
+                                      style: TextStyle(fontSize: 16),
                                     ),
-                                  );
-                                } else {
-                                  // Handle case when response data is not a list
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucun monnaie trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                    findFn: (String str) async => monaieList,
+                                    selectedFn: (dynamic item1, dynamic item2) {
+                                      if (item1 != null && item2 != null) {
+                                        return item1.idMonnaie ==
+                                            item2.idMonnaie;
+                                      }
+                                      return false;
+                                    },
+                                    filterFn: (dynamic item, String str) => item
+                                        .libelle!
+                                        .toLowerCase()
+                                        .contains(str.toLowerCase()),
+                                    dropdownItemFn: (dynamic item,
+                                            int position,
+                                            bool focused,
+                                            bool selected,
+                                            Function() onTap) =>
+                                        ListTile(
+                                      title: Text(item.libelle!),
+                                      tileColor: focused
+                                          ? Color.fromARGB(20, 0, 0, 0)
+                                          : Colors.transparent,
+                                      onTap: onTap,
                                     ),
                                   );
                                 }
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun monnaie trouvé',
+                              }
+                              return TextDropdownFormField(
+                                options: [],
+                                decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                  ),
-                                );
-                              }
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "--Aucune monnaie trouvé--"),
+                                cursorColor: Colors.green,
+                              );
                             },
                           ),
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 22,
-                          ),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Prix par heure",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
+                        widget.isEquipement!
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 22,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Prix du matériel",
+                                    style: TextStyle(
+                                        color: (Colors.black), fontSize: 18),
+                                  ),
+                                ),
+                              )
+                            : Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 22,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Prix par heure",
+                                    style: TextStyle(
+                                        color: (Colors.black), fontSize: 18),
+                                  ),
+                                ),
+                              ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),

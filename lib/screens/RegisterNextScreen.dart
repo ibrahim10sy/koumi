@@ -470,7 +470,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  suffixIcon: Icon(Icons.search),
                                   labelText: "Chargement..."),
                               cursorColor: Colors.green,
                             );
@@ -497,7 +497,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      suffixIcon: Icon(Icons.arrow_drop_down),
+                                      suffixIcon: Icon(Icons.search),
                                       labelText: "--Aucune localité trouvé--"),
                                   cursorColor: Colors.green,
                                 );
@@ -512,8 +512,8 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    suffixIcon: Icon(Icons.arrow_drop_down),
-                                    labelText: "Selectionner une localité"),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "Rechercher une localité"),
                                 onSaved: (dynamic n) {
                                   niveau3 = n?.nomN3;
                                   print("onSaved : $niveau3");
@@ -561,161 +561,13 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                suffixIcon: Icon(Icons.arrow_drop_down),
-                                labelText: "--Aucun pays trouvé--"),
+                                suffixIcon: Icon(Icons.search),
+                                labelText: "--Aucune localité trouvé--"),
                             cursorColor: Colors.green,
                           );
                         },
                       ),
-                      // FutureBuilder(
-                      //   future: _niveau3List,
-                      //   builder: (_, snapshot) {
-                      //     if (snapshot.connectionState ==
-                      //         ConnectionState.waiting) {
-                      //       return DropdownSearch<String>(
-                      //         items: [],
-                      //         popupProps: PopupProps.menu(
-                      //           showSearchBox: true,
-                      //         ),
-                      //         // dropdownButtonProps: DropdownButtonProps(color: Colors.blue),
-                      //         dropdownDecoratorProps: DropDownDecoratorProps(
-                      //           textAlignVertical: TextAlignVertical.center,
-                      //           dropdownSearchDecoration: InputDecoration(
-                      //             labelText: 'Chargement...',
-                      //             contentPadding: const EdgeInsets.symmetric(
-                      //                 vertical: 10, horizontal: 20),
-                      //             border: OutlineInputBorder(
-                      //               borderRadius: BorderRadius.circular(8),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         onChanged: null,
-                      //       );
-                      //     }
-
-                      //     if (snapshot.hasData) {
-                      //       dynamic jsonString =
-                      //           utf8.decode(snapshot.data.bodyBytes);
-                      //       dynamic responseData = json.decode(jsonString);
-
-                      //       if (responseData is List) {
-                      //         final reponse = responseData;
-                      //         final niveau3List = reponse
-                      //             .map((e) => Niveau3Pays.fromMap(e))
-                      //             .where((con) => con.statutN3 == true)
-                      //             .toList();
-
-                      //         if (niveau3List.isEmpty) {
-                      //           return DropdownSearch<String>(
-                      //             items: [],
-                      //             popupProps: PopupProps.menu(
-                      //                 showSearchBox: true,
-                      //                 title: Text("Tapez pour rechercher une localité",
-                      //                     style: TextStyle(
-                      //                         fontWeight: FontWeight.w600)),
-                      //                 searchFieldProps: TextFieldProps(
-                      //                   autocorrect: true,
-                      //                 )),
-                      //             dropdownButtonProps:
-                      //                 DropdownButtonProps(color: Colors.orange),
-                      //             dropdownDecoratorProps:
-                      //                 DropDownDecoratorProps(
-                      //               textAlignVertical: TextAlignVertical.center,
-                      //               dropdownSearchDecoration: InputDecoration(
-                      //                 labelText: 'Chargement...',
-                      //                 contentPadding:
-                      //                     const EdgeInsets.symmetric(
-                      //                         vertical: 10, horizontal: 20),
-                      //                 border: OutlineInputBorder(
-                      //                   borderRadius: BorderRadius.circular(8),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             onChanged: null,
-                      //           );
-                      //         }
-
-                      //         return DropdownSearch<String>(
-                      //           items: niveau3List.map((e) => e.nomN3).toList(),
-
-                      //           onChanged: (newValue) {
-                      //             setState(() {
-                      //               n3Value = niveau3List
-                      //                   .firstWhere((element) =>
-                      //                       element.nomN3 == newValue)
-                      //                   .idNiveau3Pays;
-                      //               niveau3 = newValue!;
-                      //               print("niveau 3 : $niveau3");
-                      //             });
-                      //           },
-
-                      //           popupProps: PopupProps.menu(
-                      //               showSearchBox: true,
-                      //               title: Padding(
-                      //                 padding: const EdgeInsets.all(12.0),
-                      //                 child: Text("Rechercher une localité",
-                      //                     style: TextStyle(
-                      //                         fontWeight: FontWeight.w600)),
-                      //               ),
-                      //               searchFieldProps: TextFieldProps(
-                      //                 autocorrect: true,
-                      //               )),
-                      //           dropdownDecoratorProps: DropDownDecoratorProps(
-                      //               textAlignVertical: TextAlignVertical.center,
-                      //               dropdownSearchDecoration: InputDecoration(
-                      //                 hintText: 'Selectionner une localité',
-                      //                 contentPadding:
-                      //                     const EdgeInsets.symmetric(
-                      //                         vertical: 10, horizontal: 20),
-                      //                 border: OutlineInputBorder(
-                      //                   borderRadius: BorderRadius.circular(8),
-                      //                 ),
-                      //               )),
-
-                      //           // selectedItem: niveau3,
-                      //         );
-                      //       } else {
-                      //         return DropdownSearch<String>(
-                      //           items: [],
-                      //           popupProps: PopupProps.menu(
-                      //             showSearchBox: true,
-                      //           ),
-                      //           dropdownDecoratorProps: DropDownDecoratorProps(
-                      //             textAlignVertical: TextAlignVertical.center,
-                      //             dropdownSearchDecoration: InputDecoration(
-                      //               labelText: 'Aucune localité trouvée',
-                      //               contentPadding: const EdgeInsets.symmetric(
-                      //                   vertical: 10, horizontal: 20),
-                      //               border: OutlineInputBorder(
-                      //                 borderRadius: BorderRadius.circular(8),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           onChanged: null,
-                      //         );
-                      //       }
-                      //     }
-
-                      //     return DropdownSearch<String>(
-                      //       items: [],
-                      //       popupProps: PopupProps.menu(
-                      //         showSearchBox: true,
-                      //       ),
-                      //       dropdownDecoratorProps: DropDownDecoratorProps(
-                      //         textAlignVertical: TextAlignVertical.center,
-                      //         dropdownSearchDecoration: InputDecoration(
-                      //           labelText: 'Aucune localité trouvée',
-                      //           contentPadding: const EdgeInsets.symmetric(
-                      //               vertical: 10, horizontal: 20),
-                      //           border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(8),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       onChanged: null,
-                      //     );
-                      //   },
-                      // ),
+                     
                       const SizedBox(
                         height: 10,
                       ),
