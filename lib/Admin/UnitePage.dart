@@ -24,19 +24,22 @@ class _UnitePageState extends State<UnitePage> {
   TextEditingController sigleController = TextEditingController();
   TextEditingController descController = TextEditingController();
   late TextEditingController _searchController;
+bool isSearchMode = false;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _searchController = TextEditingController();
+    _scrollController = ScrollController();
 
     super.initState();
   }
 
   @override
   void dispose() {
-    _searchController
-        .dispose(); // Disposez le TextEditingController lorsque vous n'en avez plus besoin
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -59,359 +62,450 @@ class _UnitePageState extends State<UnitePage> {
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) {
-              return <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.add,
-                      color: Colors.green,
-                    ),
-                    title: const Text(
-                      "Unité de mesure",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onTap: () async {
-                      Navigator.of(context).pop();
-                      _showBottomSheet();
-                    },
-                  ),
-                ),
-              ];
-            },
-          )
+          // PopupMenuButton<String>(
+          //   padding: EdgeInsets.zero,
+          //   itemBuilder: (context) {
+          //     return <PopupMenuEntry<String>>[
+          //       PopupMenuItem<String>(
+          //         child: ListTile(
+          //           leading: const Icon(
+          //             Icons.add,
+          //             color: Colors.green,
+          //           ),
+          //           title: const Text(
+          //             "Unité de mesure",
+          //             style: TextStyle(
+          //               color: Colors.green,
+          //               fontSize: 18,
+          //               fontWeight: FontWeight.bold,
+          //             ),
+          //           ),
+          //           onTap: () async {
+          //             Navigator.of(context).pop();
+          //             _showBottomSheet();
+          //           },
+          //         ),
+          //       ),
+          //     ];
+          //   },
+          // )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey[50], // Couleur d'arrière-plan
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.search,
-                        color: Colors.blueGrey[400]), // Couleur de l'icône
-                    SizedBox(
-                        width:
-                            10), // Espacement entre l'icône et le champ de recherche
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          setState(() {});
+      body: Container(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                  child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                          showMenu<String>(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              0,
+                              50, // Adjust this value based on the desired position of the menu
+                              MediaQuery.of(context).size.width,
+                              0,
+                            ),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'add_store',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter une unité ",
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            elevation: 8.0,
+                          ).then((value) {
+                            if (value != null) {
+                              if (value == 'add_store') {
+                                _showBottomSheet();
+                              }
+                            }
+                          });
                         },
-                        decoration: InputDecoration(
-                          hintText: 'Rechercher',
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              color: Colors
-                                  .blueGrey[400]), // Couleur du texte d'aide
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: d_colorGreen,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Ajouter',
+                              style: TextStyle(
+                                color: d_colorGreen,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
+                        ),
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Consumer<UniteService>(
-              builder: (context, typeService, child) {
-                return FutureBuilder(
-                    future: typeService.fetchUnite(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.orange,
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
                           ),
-                        );
-                      }
-
-                      if (!snapshot.hasData) {
-                        return const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Center(child: Text("Aucun unité trouvé")),
-                        );
-                      } else {
-                        uniteList = snapshot.data!;
-                        String searchText = "";
-                        List<Unite> filtereSearch = uniteList.where((search) {
-                          String libelle = search.sigleUnite!.toLowerCase();
-                          searchText = _searchController.text.toLowerCase();
-                          return libelle.contains(searchText);
-                        }).toList();
-                        return Column(
-                            children: filtereSearch
-                                .map((e) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.9,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.2),
-                                              offset: const Offset(0, 2),
-                                              blurRadius: 5,
-                                              spreadRadius: 2,
+                        ],
+                      ),
+                    ),
+                  ),
+              ])),
+            ];
+          },
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+               
+                Consumer<UniteService>(
+                  builder: (context, typeService, child) {
+                    return FutureBuilder(
+                        future: typeService.fetchUnite(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            );
+                          }
+          
+                          if (!snapshot.hasData) {
+                            return const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Center(child: Text("Aucun unité trouvé")),
+                            );
+                          } else {
+                            uniteList = snapshot.data!;
+                            String searchText = "";
+                            List<Unite> filtereSearch = uniteList.where((search) {
+                              String libelle = search.sigleUnite!.toLowerCase();
+                              searchText = _searchController.text.toLowerCase();
+                              return libelle.contains(searchText);
+                            }).toList();
+                            return Column(
+                                children: filtereSearch
+                                    .map((e) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 15),
+                                          child: Container(
+                                            width:
+                                                MediaQuery.of(context).size.width *
+                                                    0.9,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color:
+                                                      Colors.grey.withOpacity(0.2),
+                                                  offset: const Offset(0, 2),
+                                                  blurRadius: 5,
+                                                  spreadRadius: 2,
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            ListTile(
-                                                title: Text(
-                                                    e.sigleUnite!.toUpperCase(),
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    )),
-                                                subtitle:
-                                                    Text(e.description!.trim(),
+                                            child: Column(
+                                              children: [
+                                                ListTile(
+                                                    title: Text(
+                                                        e.sigleUnite!.toUpperCase(),
                                                         style: const TextStyle(
-                                                          color: Colors.black87,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FontStyle.italic,
-                                                        ))),
-                                            Container(
-                                              alignment: Alignment.bottomRight,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  _buildEtat(e.statutUnite!),
-                                                  PopupMenuButton<String>(
-                                                    padding: EdgeInsets.zero,
-                                                    itemBuilder: (context) =>
-                                                        <PopupMenuEntry<
-                                                            String>>[
-                                                      PopupMenuItem<String>(
-                                                        child: ListTile(
-                                                          leading:
-                                                              e.statutUnite ==
-                                                                      false
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .check,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .disabled_visible,
-                                                                      color: Colors
-                                                                              .orange[
-                                                                          400],
-                                                                    ),
-                                                          title: Text(
-                                                            e.statutUnite ==
-                                                                    false
-                                                                ? "Activer"
-                                                                : "Desactiver",
-                                                            style: TextStyle(
-                                                              color: e.statutUnite ==
-                                                                      false
-                                                                  ? Colors.green
-                                                                  : Colors.orange[
-                                                                      400],
+                                                          color: Colors.black,
+                                                          fontSize: 20,
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                        )),
+                                                    subtitle:
+                                                        Text(e.description!.trim(),
+                                                            style: const TextStyle(
+                                                              color: Colors.black87,
+                                                              fontSize: 17,
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                                  FontWeight.w500,
+                                                              fontStyle:
+                                                                  FontStyle.italic,
+                                                            ))),
+                                                Container(
+                                                  alignment: Alignment.bottomRight,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      _buildEtat(e.statutUnite!),
+                                                      PopupMenuButton<String>(
+                                                        padding: EdgeInsets.zero,
+                                                        itemBuilder: (context) =>
+                                                            <PopupMenuEntry<
+                                                                String>>[
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading:
+                                                                  e.statutUnite ==
+                                                                          false
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .check,
+                                                                          color: Colors
+                                                                              .green,
+                                                                        )
+                                                                      : Icon(
+                                                                          Icons
+                                                                              .disabled_visible,
+                                                                          color: Colors
+                                                                                  .orange[
+                                                                              400],
+                                                                        ),
+                                                              title: Text(
+                                                                e.statutUnite ==
+                                                                        false
+                                                                    ? "Activer"
+                                                                    : "Desactiver",
+                                                                style: TextStyle(
+                                                                  color: e.statutUnite ==
+                                                                          false
+                                                                      ? Colors.green
+                                                                      : Colors.orange[
+                                                                          400],
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                e.statutUnite ==
+                                                                        false
+                                                                    ? await UniteService()
+                                                                        .activerUnite(e
+                                                                            .idUnite!)
+                                                                        .then(
+                                                                            (value) =>
+                                                                                {
+                                                                                  Provider.of<UniteService>(context, listen: false).applyChange(),
+                                                                                  Navigator.of(context).pop(),
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Activer avec succèss "),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: Duration(seconds: 2),
+                                                                                    ),
+                                                                                  )
+                                                                                })
+                                                                        .catchError(
+                                                                            (onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Une erreur s'est produit : $onError"),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: const Duration(seconds: 5),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Navigator.of(context).pop(),
+                                                                                })
+                                                                    : await UniteService()
+                                                                        .desactiverUnite(e
+                                                                            .idUnite!)
+                                                                        .then(
+                                                                            (value) =>
+                                                                                {
+                                                                                  Provider.of<UniteService>(context, listen: false).applyChange(),
+                                                                                  Navigator.of(context).pop(),
+                                                                                })
+                                                                        .catchError(
+                                                                            (onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Une erreur s'est produit : $onError"),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: const Duration(seconds: 5),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Navigator.of(context).pop(),
+                                                                                });
+          
+                                                                ScaffoldMessenger
+                                                                        .of(context)
+                                                                    .showSnackBar(
+                                                                  const SnackBar(
+                                                                    content: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            " Desactiver avec succèss "),
+                                                                      ],
+                                                                    ),
+                                                                    duration:
+                                                                        Duration(
+                                                                            seconds:
+                                                                                2),
+                                                                  ),
+                                                                );
+                                                              },
                                                             ),
                                                           ),
-                                                          onTap: () async {
-                                                            e.statutUnite ==
-                                                                    false
-                                                                ? await UniteService()
-                                                                    .activerUnite(e
-                                                                        .idUnite!)
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading: const Icon(
+                                                                Icons.edit,
+                                                                color: Colors.green,
+                                                              ),
+                                                              title: const Text(
+                                                                "Modifier",
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors.green,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                                bottomUpdatesheet(
+                                                                    context, e);
+                                                              },
+                                                            ),
+                                                          ),
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading: const Icon(
+                                                                Icons.delete,
+                                                                color: Colors.red,
+                                                              ),
+                                                              title: const Text(
+                                                                "Supprimer",
+                                                                style: TextStyle(
+                                                                  color: Colors.red,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                await UniteService()
+                                                                    .deleteUnite(
+                                                                        e.idUnite!)
                                                                     .then(
-                                                                        (value) =>
+                                                                        (value) => {
+                                                                              Provider.of<UniteService>(context, listen: false)
+                                                                                  .applyChange(),
+                                                                              Navigator.of(context)
+                                                                                  .pop(),
+                                                                            })
+                                                                    .catchError(
+                                                                        (onError) =>
                                                                             {
-                                                                              Provider.of<UniteService>(context, listen: false).applyChange(),
-                                                                              Navigator.of(context).pop(),
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                              ScaffoldMessenger.of(context)
+                                                                                  .showSnackBar(
                                                                                 const SnackBar(
                                                                                   content: Row(
                                                                                     children: [
-                                                                                      Text("Activer avec succèss "),
+                                                                                      Text("Ce type d'acteur est déjà associer à un acteur"),
                                                                                     ],
                                                                                   ),
                                                                                   duration: Duration(seconds: 2),
                                                                                 ),
                                                                               )
-                                                                            })
-                                                                    .catchError(
-                                                                        (onError) =>
-                                                                            {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text("Une erreur s'est produit : $onError"),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: const Duration(seconds: 5),
-                                                                                ),
-                                                                              ),
-                                                                              Navigator.of(context).pop(),
-                                                                            })
-                                                                : await UniteService()
-                                                                    .desactiverUnite(e
-                                                                        .idUnite!)
-                                                                    .then(
-                                                                        (value) =>
-                                                                            {
-                                                                              Provider.of<UniteService>(context, listen: false).applyChange(),
-                                                                              Navigator.of(context).pop(),
-                                                                            })
-                                                                    .catchError(
-                                                                        (onError) =>
-                                                                            {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text("Une erreur s'est produit : $onError"),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: const Duration(seconds: 5),
-                                                                                ),
-                                                                              ),
-                                                                              Navigator.of(context).pop(),
                                                                             });
-
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Row(
-                                                                  children: [
-                                                                    Text(
-                                                                        " Desactiver avec succèss "),
-                                                                  ],
-                                                                ),
-                                                                duration:
-                                                                    Duration(
-                                                                        seconds:
-                                                                            2),
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                      PopupMenuItem<String>(
-                                                        child: ListTile(
-                                                          leading: const Icon(
-                                                            Icons.edit,
-                                                            color: Colors.green,
-                                                          ),
-                                                          title: const Text(
-                                                            "Modifier",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.green,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              },
                                                             ),
                                                           ),
-                                                          onTap: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            bottomUpdatesheet(
-                                                                context, e);
-                                                          },
-                                                        ),
-                                                      ),
-                                                      PopupMenuItem<String>(
-                                                        child: ListTile(
-                                                          leading: const Icon(
-                                                            Icons.delete,
-                                                            color: Colors.red,
-                                                          ),
-                                                          title: const Text(
-                                                            "Supprimer",
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          onTap: () async {
-                                                            await UniteService()
-                                                                .deleteUnite(
-                                                                    e.idUnite!)
-                                                                .then(
-                                                                    (value) => {
-                                                                          Provider.of<UniteService>(context, listen: false)
-                                                                              .applyChange(),
-                                                                          Navigator.of(context)
-                                                                              .pop(),
-                                                                        })
-                                                                .catchError(
-                                                                    (onError) =>
-                                                                        {
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(
-                                                                            const SnackBar(
-                                                                              content: Row(
-                                                                                children: [
-                                                                                  Text("Ce type d'acteur est déjà associer à un acteur"),
-                                                                                ],
-                                                                              ),
-                                                                              duration: Duration(seconds: 2),
-                                                                            ),
-                                                                          )
-                                                                        });
-                                                          },
-                                                        ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ))
-                                .toList());
-                      }
-                    });
-              },
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ))
+                                    .toList());
+                          }
+                        });
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

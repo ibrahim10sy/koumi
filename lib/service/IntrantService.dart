@@ -263,10 +263,99 @@ class IntrantService extends ChangeNotifier {
     return intrantList;
   }
 
+  Future<List<Intrant>> fetchAllByPays(String nomPays, {bool refresh = false }) async {
+    if (isLoading) return [];
 
-  
+      isLoading = true;
 
+    if (refresh) {
+    
+        intrantList.clear();
+        page = 0;
+        hasMore = true;
+     
+    }
 
+    try {
+      final response = await http.get(Uri.parse('$apiOnlineUrl/intrant/getAllIntrantByPaysWithPagination?nomPays=$nomPays&page=$page&size=$size'));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+         
+            hasMore = false;
+          
+        } else {
+          
+            List<Intrant> newIntrant =
+              body.map((e) => Intrant.fromMap(e)).toList();
+          intrantList.addAll(newIntrant.where((newIntrant) => !intrantList.any(
+              (existingIntrant) =>
+                  existingIntrant.idIntrant == newIntrant.idIntrant)));
+        }
+
+        debugPrint("response body all intrant by pays with pagination $page par défilement soit ${intrantList.length}");
+       return intrantList;
+      } else {
+        print('Échec de la requête intrant cat avec le code d\'état: ${response.statusCode} |  ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Une erreur s\'est produite lors de la récupération des intrants: $e');
+    } finally {
+     
+        isLoading = false;
+      
+    }
+    return intrantList;
+  }
+
+  Future<List<Intrant>> fetchAllByPaysAndFiliere(String libelle, String nomPays, {bool refresh = false }) async {
+    if (isLoading) return [];
+
+      isLoading = true;
+
+    if (refresh) {
+    
+        intrantList.clear();
+        page = 0;
+        hasMore = true;
+     
+    }
+
+    try {
+      final response = await http.get(Uri.parse('$apiOnlineUrl/intrant/listeIntrantByLibelleAndPays?libelle=${libelle}&nomPays=$nomPays&page=$page&size=$size'));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+         
+            hasMore = false;
+          
+        } else {
+            List<Intrant> newIntrant =
+              body.map((e) => Intrant.fromMap(e)).toList();
+          intrantList.addAll(newIntrant.where((newIntrant) => !intrantList.any(
+              (existingIntrant) =>
+                  existingIntrant.idIntrant == newIntrant.idIntrant)));
+        }
+        debugPrint("response body all intrant by pays with pagination $page par défilement soit ${intrantList.length}");
+       return intrantList;
+      } else {
+        print('Échec de la requête intrant cat avec le code d\'état: ${response.statusCode} |  ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Une erreur s\'est produite lors de la récupération des intrants: $e');
+    } finally {
+        isLoading = false;
+    }
+    return intrantList;
+  }
 
   Future<List<Intrant>> fetchIntrantByCategorie( String niveau3PaysActeur, String idCategorieProduit,  {bool refresh = false}) async {
     if (isLoading == true) return [];

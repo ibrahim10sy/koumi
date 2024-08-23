@@ -171,11 +171,19 @@ class _MesCommandeState extends State<MesCommande> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              )),
           title: Text(
             "Mes commandes",
             style: const TextStyle(
@@ -197,7 +205,10 @@ class _MesCommandeState extends State<MesCommande> {
                     });
                   });
                 },
-                icon: Icon(Icons.refresh,color: Colors.white,)),
+                icon: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                )),
           ],
         ),
         body: !isExist
@@ -554,16 +565,12 @@ class _MesCommandeState extends State<MesCommande> {
                                                               onPressed:
                                                                   () async {
                                                                 try {
-                                                                
                                                                   commande.statutConfirmation! ==
-                                                                      false
-                                                                  ?
-                                                                  await CommandeService()
-                                                                      .disableCommane(
-                                                                          commande
+                                                                          false
+                                                                      ? await CommandeService()
+                                                                          .disableCommane(commande
                                                                               .idCommande!)
-                                                                      .then(
-                                                                          (value) =>
+                                                                          .then((value) =>
                                                                               {
                                                                                 Navigator.of(context).pop(),
                                                                                 // Mettre à jour la liste
@@ -586,8 +593,7 @@ class _MesCommandeState extends State<MesCommande> {
                                                                                   ),
                                                                                 ),
                                                                               })
-                                                                      .catchError(
-                                                                          (onError) =>
+                                                                          .catchError((onError) =>
                                                                               {
                                                                                 print("onError : ${onError.toString()}"),
                                                                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -602,12 +608,10 @@ class _MesCommandeState extends State<MesCommande> {
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
                                                                               })
-                                                                   : await CommandeService()
-                                                                      .disableCommandeWithNotif(
-                                                                          commande
+                                                                      : await CommandeService()
+                                                                          .disableCommandeWithNotif(commande
                                                                               .idCommande!)
-                                                                      .then(
-                                                                          (value) =>
+                                                                          .then((value) =>
                                                                               {
                                                                                 Navigator.of(context).pop(),
                                                                                 // Mettre à jour la liste
@@ -630,8 +634,7 @@ class _MesCommandeState extends State<MesCommande> {
                                                                                   ),
                                                                                 ),
                                                                               })
-                                                                      .catchError(
-                                                                          (onError) =>
+                                                                          .catchError((onError) =>
                                                                               {
                                                                                 print("onError : ${onError.toString()}"),
                                                                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -645,7 +648,8 @@ class _MesCommandeState extends State<MesCommande> {
                                                                                   ),
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
-                                                                              });;
+                                                                              });
+                                                                  ;
                                                                 } catch (e) {
                                                                   print(
                                                                       "catch : ${e.toString()}");

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -123,6 +124,9 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+               SizedBox(
+                height: 10,
+              ),
               Form(
                   key: formkey,
                   child: Column(
@@ -162,49 +166,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                           ),
                         ),
                       ),
-// Padding(
-//                         padding: const EdgeInsets.symmetric(
-//                             vertical: 10, horizontal: 20),
-//                         child: Autocomplete<String>(
-//                           optionsBuilder: (TextEditingValue textEditingValue) {
-//                             if (textEditingValue.text.isEmpty) {
-//                               return const Iterable<String>.empty();
-//                             }
-//                             return AutoComplet.getTransportVehicles()
-//                                 .where((String option) {
-//                               return option.toLowerCase().contains(
-//                                   textEditingValue.text.toLowerCase());
-//                             });
-//                           },
-//                           onSelected: (String selection) {
-//                             _nomController.text = selection;
-//                             print("nom : ${_nomController.text}");
-//                           },
-//                           fieldViewBuilder: (BuildContext context,
-//                               TextEditingController fieldTextEditingController,
-//                               FocusNode fieldFocusNode,
-//                               VoidCallback onFieldSubmitted) {
-//                             return TextFormField(
-//                               controller: fieldTextEditingController,
-//                               focusNode: fieldFocusNode,
-//                               validator: (value) {
-//                                 if (value == null || value.isEmpty) {
-//                                   return "Veuillez remplir le champs";
-//                                 }
-//                                 return null;
-//                               },
-//                               decoration: InputDecoration(
-//                                 hintText: "Nom produit",
-//                                 contentPadding: const EdgeInsets.symmetric(
-//                                     vertical: 10, horizontal: 20),
-//                                 border: OutlineInputBorder(
-//                                   borderRadius: BorderRadius.circular(8),
-//                                 ),
-//                               ),
-//                             );
-//                           },
-//                         ),
-//                       ),
+
                       SizedBox(
                         height: 10,
                       ),
@@ -308,23 +270,21 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                           builder: (_, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
+                              return TextDropdownFormField(
+                                options: [],
                                 decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "Chargement..."),
+                                cursorColor: Colors.green,
                               );
                             }
 
                             if (snapshot.hasData) {
-                              // dynamic responseData =
-                              //     json.decode(snapshot.data.body);
                               dynamic jsonString =
                                   utf8.decode(snapshot.data.bodyBytes);
                               dynamic responseData = json.decode(jsonString);
@@ -335,83 +295,85 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                                     .map((e) => Niveau3Pays.fromMap(e))
                                     .where((con) => con.statutN3 == true)
                                     .toList();
-
                                 if (niveau3List.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
+                                  return TextDropdownFormField(
+                                    options: [],
                                     decoration: InputDecoration(
-                                      labelText: 'Aucun localité trouvé',
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucune localité trouvé--"),
+                                    cursorColor: Colors.green,
+                                  );
+                                }
+
+                                return DropdownFormField<Niveau3Pays>(
+                                  onEmptyActionPressed: (String str) async {},
+                                  dropdownHeight: 200,
+                                  decoration: InputDecoration(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               vertical: 10, horizontal: 20),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  items: niveau3List
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idNiveau3Pays,
-                                          child: Text(e.nomN3),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: n3Value,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      n3Value = newValue;
-                                      if (newValue != null) {
-                                        Niveau3Pays selectedNiveau3 =
-                                            niveau3List.firstWhere(
-                                          (element) =>
-                                              element.idNiveau3Pays == newValue,
-                                        );
-                                        niveau3 = selectedNiveau3.nomN3;
-                                        print("niveau 3 : $niveau3");
-                                      }
-                                    });
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Rechercher une localité"),
+                                  onSaved: (dynamic n) {
+                                    niveau3 = n?.nomN3;
+                                    print("onSaved : $niveau3");
                                   },
-                                  decoration: InputDecoration(
-                                    labelText: 'Selectionner une localité',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                  onChanged: (dynamic n) {
+                                    niveau3 = n?.nomN3;
+                                    print("selected : $niveau3");
+                                  },
+                                  displayItemFn: (dynamic item) => Text(
+                                    item?.nomN3 ?? '',
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun localité trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                  findFn: (String str) async => niveau3List,
+                                  selectedFn: (dynamic item1, dynamic item2) {
+                                    if (item1 != null && item2 != null) {
+                                      return item1.idNiveau3Pays ==
+                                          item2.idNiveau3Pays;
+                                    }
+                                    return false;
+                                  },
+                                  filterFn: (dynamic item, String str) => item
+                                      .nomN3!
+                                      .toLowerCase()
+                                      .contains(str.toLowerCase()),
+                                  dropdownItemFn: (dynamic item,
+                                          int position,
+                                          bool focused,
+                                          bool selected,
+                                          Function() onTap) =>
+                                      ListTile(
+                                    title: Text(item.nomN3!),
+                                    tileColor: focused
+                                        ? Color.fromARGB(20, 0, 0, 0)
+                                        : Colors.transparent,
+                                    onTap: onTap,
                                   ),
                                 );
                               }
                             }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
+                            return TextDropdownFormField(
+                              options: [],
                               decoration: InputDecoration(
-                                labelText: 'Aucun localité trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Aucune localité trouvé--"),
+                              cursorColor: Colors.green,
                             );
                           },
                         ),
@@ -477,7 +439,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange, // Orange color code
+                            backgroundColor: d_colorOr, // Orange color code
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),

@@ -35,6 +35,8 @@ class _SousRegionPageState extends State<SousRegionPage> {
   late Future _continentList;
   late TextEditingController _searchController;
   List<Pays> paysList = [];
+  bool isSearchMode = false;
+  late ScrollController _scrollController;
 
   Future<List<Pays>> getPaysListe(String id) async {
     return await PaysService().fetchPaysBySousRegion(id);
@@ -42,17 +44,16 @@ class _SousRegionPageState extends State<SousRegionPage> {
 
   @override
   void initState() {
-  
     _continentList = http.get(Uri.parse('$apiOnlineUrl/continent/read'));
     _searchController = TextEditingController();
-
+    _scrollController = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _searchController
-        .dispose(); // Disposez le TextEditingController lorsque vous n'en avez plus besoin
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -60,10 +61,10 @@ class _SousRegionPageState extends State<SousRegionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -75,370 +76,485 @@ class _SousRegionPageState extends State<SousRegionPage> {
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           actions: [
-            PopupMenuButton<String>(
-              padding: EdgeInsets.zero,
-              itemBuilder: (context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.add,
-                      color: Colors.green,
-                    ),
-                    title: const Text(
-                      "Ajouter une sous région ",
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                    onTap: () async {
-                      Navigator.of(context).pop();
-                      _showBottomSheet();
-                    },
-                  ),
-                ),
-              ],
-            )
+            // PopupMenuButton<String>(
+            //   padding: EdgeInsets.zero,
+            //   itemBuilder: (context) => <PopupMenuEntry<String>>[
+            //     PopupMenuItem<String>(
+            //       child: ListTile(
+            //         leading: const Icon(
+            //           Icons.add,
+            //           color: Colors.green,
+            //         ),
+            //         title: const Text(
+            //           "Ajouter une sous région ",
+            //           style: TextStyle(
+            //               color: Colors.green,
+            //               fontWeight: FontWeight.bold,
+            //               overflow: TextOverflow.ellipsis),
+            //         ),
+            //         onTap: () async {
+            //           Navigator.of(context).pop();
+            //           _showBottomSheet();
+            //         },
+            //       ),
+            //     ),
+            //   ],
+            // )
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey[50], // Couleur d'arrière-plan
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.search,
-                        color: Colors.blueGrey[400]), // Couleur de l'icône
-                    SizedBox(
-                        width:
-                            10), // Espacement entre l'icône et le champ de recherche
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Rechercher',
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              color: Colors
-                                  .blueGrey[400]), // Couleur du texte d'aide
+        body: Container(
+          child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverToBoxAdapter(
+                    child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // The PopupMenuButton is used here to display the menu when the button is pressed.
+                            showMenu<String>(
+                              context: context,
+                              position: RelativeRect.fromLTRB(
+                                0,
+                                50, // Adjust this value based on the desired position of the menu
+                                MediaQuery.of(context).size.width,
+                                0,
+                              ),
+                              items: [
+                                PopupMenuItem<String>(
+                                  value: 'add_store',
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      Icons.add,
+                                      color: d_colorGreen,
+                                    ),
+                                    title: const Text(
+                                      "Ajouter une sous région ",
+                                      style: TextStyle(
+                                        color: d_colorGreen,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              elevation: 8.0,
+                            ).then((value) {
+                              if (value != null) {
+                                if (value == 'add_store') {
+                                  _showBottomSheet();
+                                }
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: d_colorGreen,
+                              ),
+                              SizedBox(width: 8), // Space between icon and text
+                              Text(
+                                'Ajouter',
+                                style: TextStyle(
+                                  color: d_colorGreen,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              isSearchMode = !isSearchMode;
+                              _searchController.clear();
+                            });
+                          },
+                          icon: Icon(
+                            isSearchMode ? Icons.close : Icons.search,
+                            color: isSearchMode ? Colors.red : d_colorGreen,
+                          ),
+                          label: Text(
+                            isSearchMode ? 'Fermer' : 'Rechercher...',
+                            style: TextStyle(
+                                color: isSearchMode ? Colors.red : d_colorGreen,
+                                fontSize: 17),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (isSearchMode)
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey[50],
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.search, color: Colors.blueGrey[400]),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) {
+                                  if (mounted) {
+                                    setState(() {});
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Rechercher',
+                                  border: InputBorder.none,
+                                  hintStyle:
+                                      TextStyle(color: Colors.blueGrey[400]),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Consumer<SousRegionService>(
-              builder: (context, sousService, child) {
-                return FutureBuilder(
-                    future: sousService.fetchSousRegion(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.orange,
-                          ),
-                        );
-                      }
+                ])),
+              ];
+            },
+            body: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(children: [
+                Consumer<SousRegionService>(
+                  builder: (context, sousService, child) {
+                    return FutureBuilder(
+                        future: sousService.fetchSousRegion(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            );
+                          }
 
-                      if (!snapshot.hasData) {
-                        return const Padding(
-                          padding: EdgeInsets.all(10),
-                          child:
-                              Center(child: Text("Aucun sous region trouvé")),
-                        );
-                      } else {
-                        regionList = snapshot.data!;
-                        String searchText = "";
-                        List<SousRegion> filtereSearch =
-                            regionList.where((search) {
-                          String libelle = search.nomSousRegion.toLowerCase();
-                          searchText = _searchController.text.toLowerCase();
-                          return libelle.contains(searchText);
-                        }).toList();
-                        return Column(
-                            children: filtereSearch
-                                .map((e) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PaysList(sousRegion: e)));
-                                        },
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                                offset: const Offset(0, 2),
-                                                blurRadius: 5,
-                                                spreadRadius: 2,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              ListTile(
-                                                  leading: Image.asset(
-                                                    "assets/images/sous.png",
-                                                    width: 50,
-                                                    height: 50,
+                          if (!snapshot.hasData) {
+                            return const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Center(
+                                  child: Text("Aucun sous region trouvé")),
+                            );
+                          } else {
+                            regionList = snapshot.data!;
+                            String searchText = "";
+                            List<SousRegion> filtereSearch =
+                                regionList.where((search) {
+                              String libelle =
+                                  search.nomSousRegion.toLowerCase();
+                              searchText = _searchController.text.toLowerCase();
+                              return libelle.contains(searchText);
+                            }).toList();
+                            return Column(
+                                children: filtereSearch
+                                    .map((e) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 15),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PaysList(
+                                                              sousRegion: e)));
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                    offset: const Offset(0, 2),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2,
                                                   ),
-                                                  title: Text(
-                                                      e.nomSousRegion
-                                                          .toUpperCase(),
-                                                      style: const TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 20,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      )),
-                                                  subtitle: Text(
-                                                      e.continent.nomContinent
-                                                          .trim(),
-                                                      style: const TextStyle(
-                                                        color: Colors.black87,
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FontStyle.italic,
-                                                      ))),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 15),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text("Continent :",
-                                                        style: TextStyle(
-                                                          color: Colors.black87,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FontStyle.italic,
-                                                        )),
-                                                    Text(
-                                                        e.continent
-                                                            .nomContinent,
-                                                        style: TextStyle(
-                                                          color: Colors.black87,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                        ))
-                                                  ],
-                                                ),
+                                                ],
                                               ),
-                                              FutureBuilder(
-                                                  future: PaysService()
-                                                      .fetchPaysBySousRegion(
-                                                          e.idSousRegion!),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState
-                                                            .waiting) {
-                                                      return const Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          color: Colors.orange,
-                                                        ),
-                                                      );
-                                                    }
-
-                                                    if (!snapshot.hasData) {
-                                                      return Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 15),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                                "Nombre pays :",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontStyle:
-                                                                      FontStyle
-                                                                          .italic,
-                                                                )),
-                                                            Text("0",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  fontSize: 18,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w800,
-                                                                ))
-                                                          ],
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      paysList = snapshot.data!;
-                                                      return Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 15),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                                "Nombre pays :",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontStyle:
-                                                                      FontStyle
-                                                                          .italic,
-                                                                )),
-                                                            Text(
-                                                                paysList.length
-                                                                    .toString(),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  fontSize: 18,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w800,
-                                                                ))
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }
-                                                  }),
-                                              // const Padding(
-                                              //   padding: EdgeInsets.symmetric(
-                                              //       horizontal: 15),
-                                              //   child: Row(
-                                              //     mainAxisAlignment:
-                                              //         MainAxisAlignment
-                                              //             .spaceBetween,
-                                              //     children: [
-                                              //       Text("Nombre pays :",
-                                              //           style: TextStyle(
-                                              //             color: Colors.black87,
-                                              //             fontSize: 17,
-                                              //             fontWeight:
-                                              //                 FontWeight.w500,
-                                              //             fontStyle:
-                                              //                 FontStyle.italic,
-                                              //           )),
-                                              //       Text(_paysListe.,
-                                              //           style: TextStyle(
-                                              //             color: Colors.black87,
-                                              //             fontSize: 18,
-                                              //             fontWeight:
-                                              //                 FontWeight.w800,
-                                              //           ))
-                                              //     ],
-                                              //   ),
-                                              // ),
-                                              Container(
-                                                alignment:
-                                                    Alignment.bottomRight,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    _buildEtat(
-                                                        e.statutSousRegion),
-                                                    PopupMenuButton<String>(
-                                                      padding: EdgeInsets.zero,
-                                                      itemBuilder: (context) =>
-                                                          <PopupMenuEntry<
-                                                              String>>[
-                                                        PopupMenuItem<String>(
-                                                          child: ListTile(
-                                                            leading:
-                                                                e.statutSousRegion ==
-                                                                        false
-                                                                    ? Icon(
-                                                                        Icons
-                                                                            .check,
-                                                                        color: Colors
-                                                                            .green,
-                                                                      )
-                                                                    : Icon(
-                                                                        Icons
-                                                                            .disabled_visible,
-                                                                        color: Colors
-                                                                            .orange[400],
-                                                                      ),
-                                                            title: Text(
-                                                              e.statutSousRegion ==
-                                                                      false
-                                                                  ? "Activer"
-                                                                  : "Desactiver",
-                                                              style: TextStyle(
-                                                                color: e.statutSousRegion ==
-                                                                        false
-                                                                    ? Colors
-                                                                        .green
-                                                                    : Colors.orange[
-                                                                        400],
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                              child: Column(
+                                                children: [
+                                                  ListTile(
+                                                      leading: Image.asset(
+                                                        "assets/images/sous.png",
+                                                        width: 50,
+                                                        height: 50,
+                                                      ),
+                                                      title: Text(
+                                                          e.nomSousRegion
+                                                              .toUpperCase(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 20,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          )),
+                                                      subtitle: Text(
+                                                          e.continent
+                                                              .nomContinent
+                                                              .trim(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontStyle: FontStyle
+                                                                .italic,
+                                                          ))),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 15),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text("Continent :",
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .black87,
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontStyle:
+                                                                  FontStyle
+                                                                      .italic,
+                                                            )),
+                                                        Text(
+                                                            e.continent
+                                                                .nomContinent,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .black87,
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                            ))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  FutureBuilder(
+                                                      future: PaysService()
+                                                          .fetchPaysBySousRegion(
+                                                              e.idSousRegion!),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot
+                                                                .connectionState ==
+                                                            ConnectionState
+                                                                .waiting) {
+                                                          return const Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.orange,
                                                             ),
-                                                            onTap: () async {
-                                                              e.statutSousRegion ==
-                                                                      false
-                                                                  ? await SousRegionService()
-                                                                      .activerSousRegion(e
-                                                                          .idSousRegion!)
-                                                                      .then(
-                                                                          (value) =>
+                                                          );
+                                                        }
+
+                                                        if (!snapshot.hasData) {
+                                                          return Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        15),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                    "Nombre pays :",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .black87,
+                                                                      fontSize:
+                                                                          17,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontStyle:
+                                                                          FontStyle
+                                                                              .italic,
+                                                                    )),
+                                                                Text("0",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .black87,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                    ))
+                                                              ],
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          paysList =
+                                                              snapshot.data!;
+                                                          return Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        15),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                    "Nombre pays :",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .black87,
+                                                                      fontSize:
+                                                                          17,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontStyle:
+                                                                          FontStyle
+                                                                              .italic,
+                                                                    )),
+                                                                Text(
+                                                                    paysList
+                                                                        .length
+                                                                        .toString(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .black87,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                    ))
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }
+                                                      }),
+                                                  // const Padding(
+                                                  //   padding: EdgeInsets.symmetric(
+                                                  //       horizontal: 15),
+                                                  //   child: Row(
+                                                  //     mainAxisAlignment:
+                                                  //         MainAxisAlignment
+                                                  //             .spaceBetween,
+                                                  //     children: [
+                                                  //       Text("Nombre pays :",
+                                                  //           style: TextStyle(
+                                                  //             color: Colors.black87,
+                                                  //             fontSize: 17,
+                                                  //             fontWeight:
+                                                  //                 FontWeight.w500,
+                                                  //             fontStyle:
+                                                  //                 FontStyle.italic,
+                                                  //           )),
+                                                  //       Text(_paysListe.,
+                                                  //           style: TextStyle(
+                                                  //             color: Colors.black87,
+                                                  //             fontSize: 18,
+                                                  //             fontWeight:
+                                                  //                 FontWeight.w800,
+                                                  //           ))
+                                                  //     ],
+                                                  //   ),
+                                                  // ),
+                                                  Container(
+                                                    alignment:
+                                                        Alignment.bottomRight,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        _buildEtat(
+                                                            e.statutSousRegion),
+                                                        PopupMenuButton<String>(
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          itemBuilder:
+                                                              (context) =>
+                                                                  <PopupMenuEntry<
+                                                                      String>>[
+                                                            PopupMenuItem<
+                                                                String>(
+                                                              child: ListTile(
+                                                                leading:
+                                                                    e.statutSousRegion ==
+                                                                            false
+                                                                        ? Icon(
+                                                                            Icons.check,
+                                                                            color:
+                                                                                Colors.green,
+                                                                          )
+                                                                        : Icon(
+                                                                            Icons.disabled_visible,
+                                                                            color:
+                                                                                Colors.orange[400],
+                                                                          ),
+                                                                title: Text(
+                                                                  e.statutSousRegion ==
+                                                                          false
+                                                                      ? "Activer"
+                                                                      : "Desactiver",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: e.statutSousRegion ==
+                                                                            false
+                                                                        ? Colors
+                                                                            .green
+                                                                        : Colors
+                                                                            .orange[400],
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                onTap:
+                                                                    () async {
+                                                                  e.statutSousRegion ==
+                                                                          false
+                                                                      ? await SousRegionService()
+                                                                          .activerSousRegion(e
+                                                                              .idSousRegion!)
+                                                                          .then((value) =>
                                                                               {
                                                                                 Provider.of<SousRegionService>(context, listen: false).applyChange(),
                                                                                 // setState(() {
@@ -456,8 +572,7 @@ class _SousRegionPageState extends State<SousRegionPage> {
                                                                                   ),
                                                                                 )
                                                                               })
-                                                                      .catchError(
-                                                                          (onError) =>
+                                                                          .catchError((onError) =>
                                                                               {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                                                   const SnackBar(
@@ -471,17 +586,15 @@ class _SousRegionPageState extends State<SousRegionPage> {
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
                                                                               })
-                                                                  : await SousRegionService()
-                                                                      .desactiverSousRegion(e
-                                                                          .idSousRegion!)
-                                                                      .then(
-                                                                          (value) =>
+                                                                      : await SousRegionService()
+                                                                          .desactiverSousRegion(e
+                                                                              .idSousRegion!)
+                                                                          .then((value) =>
                                                                               {
                                                                                 Provider.of<SousRegionService>(context, listen: false).applyChange(),
                                                                                 Navigator.of(context).pop(),
                                                                               })
-                                                                      .catchError(
-                                                                          (onError) =>
+                                                                          .catchError((onError) =>
                                                                               {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                                                   const SnackBar(
@@ -496,110 +609,124 @@ class _SousRegionPageState extends State<SousRegionPage> {
                                                                                 Navigator.of(context).pop(),
                                                                               });
 
-                                                              ScaffoldMessenger
-                                                                      .of(context)
-                                                                  .showSnackBar(
-                                                                const SnackBar(
-                                                                  content: Row(
-                                                                    children: [
-                                                                      Text(
-                                                                          "Désactiver avec succèss "),
-                                                                    ],
-                                                                  ),
-                                                                  duration:
-                                                                      Duration(
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(
+                                                                    const SnackBar(
+                                                                      content:
+                                                                          Row(
+                                                                        children: [
+                                                                          Text(
+                                                                              "Désactiver avec succèss "),
+                                                                        ],
+                                                                      ),
+                                                                      duration: Duration(
                                                                           seconds:
                                                                               2),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                            PopupMenuItem<
+                                                                String>(
+                                                              child: ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons.edit,
+                                                                  color: Colors
+                                                                      .green,
                                                                 ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                        PopupMenuItem<String>(
-                                                          child: ListTile(
-                                                            leading: const Icon(
-                                                              Icons.edit,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                            title: const Text(
-                                                              "Modifier",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .green,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                title:
+                                                                    const Text(
+                                                                  "Modifier",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .green,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                onTap:
+                                                                    () async {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  bottomUpdatesheet(
+                                                                      context,
+                                                                      e);
+                                                                },
                                                               ),
                                                             ),
-                                                            onTap: () async {
-                                                                Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              bottomUpdatesheet(
-                                                                  context, e);
-                                                            },
-                                                          ),
-                                                        ),
-                                                        PopupMenuItem<String>(
-                                                          child: ListTile(
-                                                            leading: const Icon(
-                                                              Icons.delete,
-                                                              color: Colors.red,
-                                                            ),
-                                                            title: const Text(
-                                                              "Supprimer",
-                                                              style: TextStyle(
-                                                                color:
-                                                                    Colors.red,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                            PopupMenuItem<
+                                                                String>(
+                                                              child: ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons.delete,
+                                                                  color: Colors
+                                                                      .red,
+                                                                ),
+                                                                title:
+                                                                    const Text(
+                                                                  "Supprimer",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                onTap:
+                                                                    () async {
+                                                                  await SousRegionService()
+                                                                      .deleteSousRegion(e
+                                                                          .idSousRegion!)
+                                                                      .then(
+                                                                          (value) =>
+                                                                              {
+                                                                                Provider.of<SousRegionService>(context, listen: false).applyChange(),
+                                                                                Navigator.of(context).pop(),
+                                                                              })
+                                                                      .catchError(
+                                                                          (onError) =>
+                                                                              {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  const SnackBar(
+                                                                                    content: Row(
+                                                                                      children: [
+                                                                                        Text("Impossible de supprimer"),
+                                                                                      ],
+                                                                                    ),
+                                                                                    duration: Duration(seconds: 2),
+                                                                                  ),
+                                                                                )
+                                                                              });
+                                                                },
                                                               ),
                                                             ),
-                                                            onTap: () async {
-                                                              await SousRegionService()
-                                                                  .deleteSousRegion(e
-                                                                      .idSousRegion!)
-                                                                  .then(
-                                                                      (value) =>
-                                                                          {
-                                                                            Provider.of<SousRegionService>(context, listen: false).applyChange(),
-                                                                            Navigator.of(context).pop(),
-                                                                          })
-                                                                  .catchError(
-                                                                      (onError) =>
-                                                                          {
-                                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                                              const SnackBar(
-                                                                                content: Row(
-                                                                                  children: [
-                                                                                    Text("Impossible de supprimer"),
-                                                                                  ],
-                                                                                ),
-                                                                                duration: Duration(seconds: 2),
-                                                                              ),
-                                                                            )
-                                                                          });
-                                                            },
-                                                          ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ))
-                                .toList());
-                      }
-                    });
-              },
+                                        ))
+                                    .toList());
+                          }
+                        });
+                  },
+                ),
+              ]),
             ),
-          ]),
+          ),
         ));
   }
 

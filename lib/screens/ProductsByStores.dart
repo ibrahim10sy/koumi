@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/Admin/Zone.dart';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductsByStoresScreen extends StatefulWidget {
-  String? id, nom;
-  Acteur? ac;
-  ProductsByStoresScreen({super.key, this.id, this.nom, this.ac});
+  String? id, nom, pays;
+  ProductsByStoresScreen({super.key, this.id, this.nom, this.pays});
 
   @override
   State<ProductsByStoresScreen> createState() => _ProductsByStoresScreenState();
@@ -61,8 +61,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
   bool isLoading = false;
   int size = sized;
   bool hasMore = true;
-  late Acteur act = Acteur();
   bool isLoadingLibelle = true;
+  String? p;
 
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -251,12 +251,12 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
       //code will run when widget rendering complete
       scrollableController1.addListener(_scrollListener1);
     });
-    act = widget.ac!;
+    p = widget.pays!;
     verify();
     updateViews();
     _searchController = TextEditingController();
     _catList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
-
+      
     stockListeFuture = stockListeFuture1 = getAllStock();
   }
 
@@ -452,7 +452,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
             //               ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CodePays().getFlagsApp(act.niveau3PaysActeur!),
+              child: CodePays().getFlagsApp(p!),
             )
           ]),
       body: GestureDetector(
@@ -629,7 +629,18 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                         builder: (_, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return buildLoadingDropdown();
+                            return TextDropdownFormField(
+                              options: [],
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(22),
+                                  ),
+                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  labelText: "Chargement..."),
+                              cursorColor: Colors.green,
+                            );
                           }
 
                           if (snapshot.hasData) {
@@ -638,23 +649,100 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                             dynamic responseData = json.decode(jsonString);
 
                             if (responseData is List) {
-                              final response = responseData;
-                              final typeList = response
+                              final paysList = responseData
                                   .map((e) => CategorieProduit.fromMap(e))
                                   .where((con) => con.statutCategorie == true)
                                   .toList();
-
-                              if (typeList.isEmpty) {
-                                return buildEmptyDropdown();
+                              if (paysList.isEmpty) {
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.search, size: 19),
+                                      labelText: "Aucune catégorie trouvé"),
+                                  cursorColor: Colors.green,
+                                );
                               }
 
-                              return buildDropdown(typeList);
-                            } else {
-                              return buildEmptyDropdown();
+                              return DropdownFormField<CategorieProduit>(
+                                onEmptyActionPressed: (String str) async {},
+                                dropdownHeight: 200,
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(22),
+                                    ),
+                                    suffixIcon: Icon(Icons.search, size: 19),
+                                    labelText: "Filtrer par catégorie"),
+                                onSaved: (dynamic cat) {
+                                  selectedCat = cat;
+                                  print("onSaved : $cat");
+                                },
+                                onChanged: (dynamic cat) {
+                                  setState(() {
+                                    selectedCat = cat;
+                                    page = 0;
+                                    hasMore = true;
+                                    fetchStockByCategorieAndMagasin(
+                                        refresh: true);
+
+                                    if (page == 0 && isLoading == true) {
+                                      SchedulerBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        scrollableController1.jumpTo(0.0);
+                                      });
+                                    }
+                                  });
+                                },
+                                displayItemFn: (dynamic item) => Text(
+                                  item?.libelleCategorie ?? '',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                findFn: (String str) async => paysList,
+                                selectedFn: (dynamic item1, dynamic item2) {
+                                  if (item1 != null && item2 != null) {
+                                    return item1.idCategorieProduit ==
+                                        item2.idCategorieProduit;
+                                  }
+                                  return false;
+                                },
+                                filterFn: (dynamic item, String str) => item
+                                    .libelleCategorie!
+                                    .toLowerCase()
+                                    .contains(str.toLowerCase()),
+                                dropdownItemFn: (dynamic item,
+                                        int position,
+                                        bool focused,
+                                        bool selected,
+                                        Function() onTap) =>
+                                    ListTile(
+                                  title: Text(item.libelleCategorie!),
+                                  tileColor: focused
+                                      ? Color.fromARGB(20, 0, 0, 0)
+                                      : Colors.transparent,
+                                  onTap: onTap,
+                                ),
+                              );
                             }
                           }
-
-                          return buildEmptyDropdown();
+                          return TextDropdownFormField(
+                            options: [],
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(22),
+                                ),
+                                suffixIcon: Icon(Icons.search, size: 19),
+                                labelText: "Aucune catégorie trouvé"),
+                            cursorColor: Colors.green,
+                          );
                         },
                       ),
                     ),

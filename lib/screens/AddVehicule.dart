@@ -102,9 +102,9 @@ class _AddVehiculeState extends State<AddVehicule> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -119,6 +119,9 @@ class _AddVehiculeState extends State<AddVehicule> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                height: 10,
+              ),
               Form(
                   key: formkey,
                   child: Column(
@@ -136,7 +139,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
-                       Padding(
+                      Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
                         child: TextFormField(
@@ -158,7 +161,6 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
-                   
                       SizedBox(
                         height: 10,
                       ),
@@ -385,110 +387,14 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
-                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                            future: _niveau3List,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Chargement..."),
-                                  cursorColor: Colors.green,
-                                );
-                              }
-
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final niveau3List = reponse
-                                      .map((e) => Niveau3Pays.fromMap(e))
-                                      .where((con) => con.statutN3 == true)
-                                      .toList();
-                                  if (niveau3List.isEmpty) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText:
-                                              "--Aucune localité trouvé--"),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-
-                                  return DropdownFormField<Niveau3Pays>(
-                                    onEmptyActionPressed: (String str) async {},
-                                    dropdownHeight: 200,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Rechercher une localité"),
-                                    onSaved: (dynamic n) {
-                                      niveau3 = n?.nomN3;
-                                      print("onSaved : $niveau3");
-                                    },
-                                    onChanged: (dynamic n) {
-                                      niveau3 = n?.nomN3;
-                                      print("selected : $niveau3");
-                                    },
-                                    displayItemFn: (dynamic item) => Text(
-                                      item?.nomN3 ?? '',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    findFn: (String str) async => niveau3List,
-                                    selectedFn: (dynamic item1, dynamic item2) {
-                                      if (item1 != null && item2 != null) {
-                                        return item1.idNiveau3Pays ==
-                                            item2.idNiveau3Pays;
-                                      }
-                                      return false;
-                                    },
-                                    filterFn: (dynamic item, String str) => item
-                                        .nomN3!
-                                        .toLowerCase()
-                                        .contains(str.toLowerCase()),
-                                    dropdownItemFn: (dynamic item,
-                                            int position,
-                                            bool focused,
-                                            bool selected,
-                                            Function() onTap) =>
-                                        ListTile(
-                                      title: Text(item.nomN3!),
-                                      tileColor: focused
-                                          ? Color.fromARGB(20, 0, 0, 0)
-                                          : Colors.transparent,
-                                      onTap: onTap,
-                                    ),
-                                  );
-                                }
-                              }
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        child: FutureBuilder(
+                          future: _niveau3List,
+                          builder: (_, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return TextDropdownFormField(
                                 options: [],
                                 decoration: InputDecoration(
@@ -498,12 +404,105 @@ class _AddVehiculeState extends State<AddVehicule> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     suffixIcon: Icon(Icons.search),
-                                    labelText: "--Aucune localité trouvé--"),
+                                    labelText: "Chargement..."),
                                 cursorColor: Colors.green,
                               );
-                            },
-                          ),
+                            }
+
+                            if (snapshot.hasData) {
+                              dynamic jsonString =
+                                  utf8.decode(snapshot.data.bodyBytes);
+                              dynamic responseData = json.decode(jsonString);
+
+                              if (responseData is List) {
+                                final reponse = responseData;
+                                final niveau3List = reponse
+                                    .map((e) => Niveau3Pays.fromMap(e))
+                                    .where((con) => con.statutN3 == true)
+                                    .toList();
+                                if (niveau3List.isEmpty) {
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucune localité trouvé--"),
+                                    cursorColor: Colors.green,
+                                  );
+                                }
+
+                                return DropdownFormField<Niveau3Pays>(
+                                  onEmptyActionPressed: (String str) async {},
+                                  dropdownHeight: 200,
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Rechercher une localité"),
+                                  onSaved: (dynamic n) {
+                                    niveau3 = n?.nomN3;
+                                    print("onSaved : $niveau3");
+                                  },
+                                  onChanged: (dynamic n) {
+                                    niveau3 = n?.nomN3;
+                                    print("selected : $niveau3");
+                                  },
+                                  displayItemFn: (dynamic item) => Text(
+                                    item?.nomN3 ?? '',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  findFn: (String str) async => niveau3List,
+                                  selectedFn: (dynamic item1, dynamic item2) {
+                                    if (item1 != null && item2 != null) {
+                                      return item1.idNiveau3Pays ==
+                                          item2.idNiveau3Pays;
+                                    }
+                                    return false;
+                                  },
+                                  filterFn: (dynamic item, String str) => item
+                                      .nomN3!
+                                      .toLowerCase()
+                                      .contains(str.toLowerCase()),
+                                  dropdownItemFn: (dynamic item,
+                                          int position,
+                                          bool focused,
+                                          bool selected,
+                                          Function() onTap) =>
+                                      ListTile(
+                                    title: Text(item.nomN3!),
+                                    tileColor: focused
+                                        ? Color.fromARGB(20, 0, 0, 0)
+                                        : Colors.transparent,
+                                    onTap: onTap,
+                                  ),
+                                );
+                              }
+                            }
+                            return TextDropdownFormField(
+                              options: [],
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Aucune localité trouvé--"),
+                              cursorColor: Colors.green,
+                            );
+                          },
                         ),
+                      ),
                       SizedBox(
                         height: 10,
                       ),
@@ -566,12 +565,13 @@ class _AddVehiculeState extends State<AddVehicule> {
                                     setState(() {
                                       typeValue = null;
                                       n3Value = null;
+                                      niveau3 == null;
                                     })
                                   });
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange, // Orange color code
+                            backgroundColor: d_colorOr, // Orange color code
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),

@@ -265,11 +265,11 @@ class _MyProductScreenState extends State<MyProductScreen> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      setState(() {
-        selectedCat != null
-            ? stockListeFuture1 = fetchAllStock()
-            : stockListeFuture = fetchAllStock();
-      });
+      // setState(() {
+      //   selectedCat != null
+      //       ? stockListeFuture1 = fetchAllStock()
+      //       : stockListeFuture = fetchAllStock();
+      // });
     }
   }
 

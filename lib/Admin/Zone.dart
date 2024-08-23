@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:koumi/Admin/AddZone.dart';
@@ -24,10 +26,18 @@ class _ZoneState extends State<Zone> {
   late TextEditingController _searchController;
   bool isSearchMode = false;
   late ScrollController _scrollController;
+  Future<List<ZoneProduction>>? _liste;
+
+  Future<List<ZoneProduction>> getZone(String id) async {
+    final response = await ZoneProductionService().fetchZoneByActeur(id);
+    return response;
+  }
+
   @override
   void initState() {
     _scrollController = ScrollController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    _liste = getZone(acteur.idActeur!);
     _searchController = TextEditingController();
     super.initState();
   }
@@ -40,6 +50,16 @@ class _ZoneState extends State<Zone> {
         isSearchMode = false;
       }
     });
+  }
+
+  Future<void> _getResultFromZonePage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddZone()));
+    log(result.toString());
+    if (result == true) {
+       _liste = getZone(acteur.idActeur!);
+      print("Rafraichissement en cours");
+    }
   }
 
   @override
@@ -113,10 +133,7 @@ class _ZoneState extends State<Zone> {
                           ).then((value) {
                             if (value != null) {
                               if (value == 'add_store') {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AddZone()));
+                                _getResultFromZonePage(context);
                               }
                             }
                           });
@@ -201,7 +218,8 @@ class _ZoneState extends State<Zone> {
               Consumer<ZoneProductionService>(
                   builder: (context, zoneService, child) {
                 return FutureBuilder(
-                    future: zoneService.fetchZoneByActeur(acteur.idActeur!),
+                    future: _liste,
+                    // future: zoneService.fetchZoneByActeur(acteur.idActeur!),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(

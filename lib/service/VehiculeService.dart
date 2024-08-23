@@ -234,6 +234,53 @@ class VehiculeService extends ChangeNotifier {
     return vehiculeList;
   }
 
+
+  Future<List<Vehicule>> fetchVehiculeByPays(String nomPays,
+      {bool refresh = false}) async {
+    if (isLoading) return [];
+
+    isLoading = true;
+
+    if (refresh) {
+      vehiculeList.clear();
+      page = 0;
+      hasMore = true;
+    }
+
+    try {
+      final response = await http.get(Uri.parse(
+          '$apiOnlineUrl/vehicule/getAllByPaysWithPagination?nomPays=$nomPays&page=$page&size=$size'));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+          hasMore = false;
+        } else {
+          List<Vehicule> newVehicule =
+              body.map((e) => Vehicule.fromMap(e)).toList();
+          vehiculeList.addAll(newVehicule.where((newVe) => !vehiculeList
+              .any((existeVe) => existeVe.idVehicule == newVe.idVehicule)));
+        }
+
+        debugPrint(
+            "response body all vehicle by pays with pagination dans le service $page par défilement soit ${vehiculeList.length}");
+        return vehiculeList;
+      } else {
+        print(
+            'Échec de la requête v type pag avec le code d\'état: ${response.statusCode} |  ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print(
+          'Une erreur s\'est produite lors de la récupération des vehicules: $e');
+    } finally {
+      isLoading = false;
+    }
+    return vehiculeList;
+  }
+
   Future<List<Vehicule>> fetchVehiculeByActeur(String idActeur,
       {bool refresh = false}) async {
     // if (_stockService.isLoading == true) return [];

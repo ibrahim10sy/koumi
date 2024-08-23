@@ -213,7 +213,7 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
           Column(
             children: [
               SizedBox(
-                height: 30,
+                height: 10,
               ),
               Form(
                   key: formkey,

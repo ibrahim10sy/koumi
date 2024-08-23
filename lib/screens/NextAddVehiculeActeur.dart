@@ -209,10 +209,10 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
       isLoading: _isLoading,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -289,17 +289,17 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                           builder: (_, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
+                              return TextDropdownFormField(
+                                options: [],
                                 decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "Chargement..."),
+                                cursorColor: Colors.green,
                               );
                             }
 
@@ -309,86 +309,90 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                               dynamic responseData = json.decode(jsonString);
 
                               if (responseData is List) {
-                                List<Monnaie> speList = responseData
+                                final reponse = responseData;
+                                final monaieList = reponse
                                     .map((e) => Monnaie.fromMap(e))
+                                    .where((con) => con.statut == true)
                                     .toList();
-
-                                if (speList.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
+                                if (monaieList.isEmpty) {
+                                  return TextDropdownFormField(
+                                    options: [],
                                     decoration: InputDecoration(
-                                      labelText: 'Aucun monnaie trouvé',
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucune monnaie trouvé--"),
+                                    cursorColor: Colors.green,
+                                  );
+                                }
+
+                                return DropdownFormField<Monnaie>(
+                                  onEmptyActionPressed: (String str) async {},
+                                  dropdownHeight: 200,
+                                  decoration: InputDecoration(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               vertical: 10, horizontal: 20),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  items: speList
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idMonnaie,
-                                          child: Text(e.libelle!),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: monnaieValue,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      monnaieValue = newValue;
-                                      if (newValue != null) {
-                                        monnaie = speList.firstWhere(
-                                          (element) =>
-                                              element.idMonnaie == newValue,
-                                        );
-                                      }
-                                    });
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Rechercher une monnaie"),
+                                  onSaved: (dynamic n) {
+                                    monnaie = n;
+                                    print("onSaved : $monnaie");
                                   },
-                                  decoration: InputDecoration(
-                                    labelText: 'Sélectionner la monnaie',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                  onChanged: (dynamic n) {
+                                    monnaie = n;
+                                    print("selected : $monnaie");
+                                  },
+                                  displayItemFn: (dynamic item) => Text(
+                                    item?.libelle ?? '',
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                );
-                              } else {
-                                // Handle case when response data is not a list
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun monnaie trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                  findFn: (String str) async => monaieList,
+                                  selectedFn: (dynamic item1, dynamic item2) {
+                                    if (item1 != null && item2 != null) {
+                                      return item1.idMonnaie == item2.idMonnaie;
+                                    }
+                                    return false;
+                                  },
+                                  filterFn: (dynamic item, String str) => item
+                                      .libelle!
+                                      .toLowerCase()
+                                      .contains(str.toLowerCase()),
+                                  dropdownItemFn: (dynamic item,
+                                          int position,
+                                          bool focused,
+                                          bool selected,
+                                          Function() onTap) =>
+                                      ListTile(
+                                    title: Text(item.libelle!),
+                                    tileColor: focused
+                                        ? Color.fromARGB(20, 0, 0, 0)
+                                        : Colors.transparent,
+                                    onTap: onTap,
                                   ),
                                 );
                               }
-                            } else {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Aucun monnaie trouvé',
+                            }
+                            return TextDropdownFormField(
+                              options: [],
+                              decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                ),
-                              );
-                            }
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Aucune monnaie trouvé--"),
+                              cursorColor: Colors.green,
+                            );
                           },
                         ),
                       ),
@@ -407,12 +411,20 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 18),
                                 ),
-                                IconButton(
+                                TextButton.icon(
                                   onPressed: () {
                                     // Appeler la méthode pour ajouter une destination et un prix
                                     addDestinationAndPrix();
                                   },
-                                  icon: Icon(Icons.add),
+                                  icon: Icon(
+                                    Icons.add,
+                                    color: d_colorOr,
+                                  ),
+                                  label: Text(
+                                    'Ajouter',
+                                    style: TextStyle(
+                                        color: d_colorOr, fontSize: 17),
+                                  ),
                                 ),
                               ],
                             ),
@@ -424,59 +436,33 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
                                     children: [
-                                     
                                       Expanded(
                                         child: FutureBuilder(
                                           future: _niveau3List,
                                           builder: (_, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
-                                              return DropdownButtonFormField(
-                                                items: [],
-                                                onChanged: null,
+                                              return TextDropdownFormField(
+                                                options: [],
                                                 decoration: InputDecoration(
-                                                  labelText: 'Chargement...',
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 20,
-                                                  ),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 10,
+                                                            horizontal: 0),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    suffixIcon:
+                                                        Icon(Icons.search),
+                                                    labelText: "Chargement..."),
+                                                cursorColor: Colors.green,
                                               );
                                             }
-                                            if (snapshot.hasError) {
-                                              return DropdownButtonFormField(
-                                                items: [],
-                                                onChanged: null,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Chargement...',
-                                                  labelStyle: TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 15),
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 20,
-                                                  ),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                              );
-                                            }
+
                                             if (snapshot.hasData) {
-                                              // dynamic responseData = json
-                                              //     .decode(snapshot.data.body);
                                               dynamic jsonString = utf8.decode(
                                                   snapshot.data.bodyBytes);
                                               dynamic responseData =
@@ -490,68 +476,63 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                                     .where((con) =>
                                                         con.statutN3 == true)
                                                     .toList();
-
                                                 if (niveau3List.isEmpty) {
-                                                  return DropdownButtonFormField(
-                                                    items: [],
-                                                    onChanged: null,
+                                                  return TextDropdownFormField(
+                                                    options: [],
                                                     decoration: InputDecoration(
-                                                      labelText: 'Destination',
-                                                      labelStyle: TextStyle(
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          fontSize: 15),
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 10,
+                                                                horizontal: 0),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                        ),
+                                                        suffixIcon:
+                                                            Icon(Icons.search),
+                                                        labelText:
+                                                            " Aucune destination trouvé"),
+                                                    cursorColor: Colors.green,
+                                                  );
+                                                }
+
+                                                return DropdownFormField<
+                                                    Niveau3Pays>(
+                                                  onEmptyActionPressed:
+                                                      (String str) async {},
+                                                  dropdownHeight: 200,
+                                                  decoration: InputDecoration(
                                                       contentPadding:
                                                           const EdgeInsets
                                                               .symmetric(
-                                                        vertical: 10,
-                                                        horizontal: 20,
-                                                      ),
+                                                              vertical: 10,
+                                                              horizontal: 0),
                                                       border:
                                                           OutlineInputBorder(
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(8),
                                                       ),
-                                                    ),
-                                                  );
-                                                }
-
-                                                return DropdownButtonFormField<
-                                                    String>(
-                                                  isExpanded: true,
-                                                  items: niveau3List
-                                                      .map((e) =>
-                                                          DropdownMenuItem(
-                                                            value:
-                                                                e.idNiveau3Pays,
-                                                            child: Text(e.nomN3,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style: TextStyle(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    fontSize:
-                                                                        14)), // réduire la taille du texte
-                                                          ))
-                                                      .toList(),
-                                                  value:
-                                                      selectedDestinationsList[
-                                                          index],
-                                                  onChanged: (newValue) {
+                                                      suffixIcon: Icon(
+                                                          Icons.search,
+                                                          size: 19),
+                                                      labelText: " Destination"),
+                                                  onSaved: (dynamic n) {
+                                                    niveau3 = n?.nomN3;
+                                                    print("onSaved : $niveau3");
+                                                  },
+                                                  onChanged: (dynamic n) {
                                                     setState(() {
-                                                      selectedDestinationsList[
-                                                          index] = newValue;
                                                       String
                                                           selectedDestinationName =
                                                           niveau3List
-                                                              .firstWhere(
-                                                                  (element) =>
-                                                                      element
-                                                                          .idNiveau3Pays ==
-                                                                      newValue)
+                                                              .firstWhere((element) =>
+                                                                  element
+                                                                      .idNiveau3Pays ==
+                                                                  n.idNiveau3Pays)
                                                               .nomN3;
                                                       selectedDestinations.add(
                                                           selectedDestinationName);
@@ -561,65 +542,69 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                                           "niveau 3 nom  : $selectedDestinations");
                                                     });
                                                   },
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Destination',
-                                                    labelStyle: TextStyle(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontSize: 15),
-                                                    contentPadding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal:
-                                                            6), // réduire le padding
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
+                                                  displayItemFn:
+                                                      (dynamic item) => Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 15),
+                                                    child: Text(
+                                                      item?.nomN3 ?? '',
+                                                      style: TextStyle(
+                                                          fontSize: 16),
                                                     ),
                                                   ),
-                                                );
-                                              } else {
-                                                return DropdownButtonFormField(
-                                                  items: [],
-                                                  onChanged: null,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Destination',
-                                                    labelStyle: TextStyle(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontSize: 15),
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .symmetric(
-                                                      horizontal: 20,
-                                                    ),
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                    ),
+                                                  findFn: (String str) async =>
+                                                      niveau3List,
+                                                  selectedFn: (dynamic item1,
+                                                      dynamic item2) {
+                                                    if (item1 != null &&
+                                                        item2 != null) {
+                                                      return item1
+                                                              .idNiveau3Pays ==
+                                                          item2.idNiveau3Pays;
+                                                    }
+                                                    return false;
+                                                  },
+                                                  filterFn: (dynamic item,
+                                                          String str) =>
+                                                      item.nomN3!
+                                                          .toLowerCase()
+                                                          .contains(str
+                                                              .toLowerCase()),
+                                                  dropdownItemFn: (dynamic item,
+                                                          int position,
+                                                          bool focused,
+                                                          bool selected,
+                                                          Function() onTap) =>
+                                                      ListTile(
+                                                    title: Text(item.nomN3!),
+                                                    tileColor: focused
+                                                        ? Color.fromARGB(
+                                                            20, 0, 0, 0)
+                                                        : Colors.transparent,
+                                                    onTap: onTap,
                                                   ),
                                                 );
                                               }
                                             }
-                                            return DropdownButtonFormField(
-                                              items: [],
-                                              onChanged: null,
+                                            return TextDropdownFormField(
+                                              options: [],
                                               decoration: InputDecoration(
-                                                labelText: 'Destination',
-                                                labelStyle: TextStyle(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    fontSize: 15),
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                              ),
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 20),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  suffixIcon:
+                                                      Icon(Icons.search),
+                                                  labelText:
+                                                      "Aucune destination trouvé--"),
+                                              cursorColor: Colors.green,
                                             );
                                           },
                                         ),
@@ -740,7 +725,6 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                               _isLoading = false;
                                             }),
                                             Navigator.pop(context, true),
-                                           
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(
@@ -838,7 +822,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange, // Orange color code
+                            backgroundColor: d_colorOr, // Orange color code
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),

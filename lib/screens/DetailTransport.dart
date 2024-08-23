@@ -559,10 +559,13 @@ class _DetailTransportState extends State<DetailTransport> {
                               ),
                             ),
                     ]
-                  : [Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CodePays().getFlagsApp(vehicules.acteur.niveau3PaysActeur!),
-                  )]),
+                  : [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CodePays()
+                            .getFlagsApp(vehicules.acteur.niveau3PaysActeur!),
+                      )
+                    ]),
           body: SingleChildScrollView(
             padding: EdgeInsets.all(10),
             child: Column(
@@ -1062,7 +1065,7 @@ class _DetailTransportState extends State<DetailTransport> {
             "${vehicules.nbKilometrage.toString()} Km"),
         _buildItem('Statut: : ',
             '${vehicules.statutVehicule ? 'Disponible' : 'Non disponible'}'),
-
+        SizedBox(height: 10),
         _buildPanel(),
         SizedBox(height: 10),
         Padding(

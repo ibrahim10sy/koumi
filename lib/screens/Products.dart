@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:country_flags/country_flags.dart';
 import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -100,9 +99,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     } else if (nomP != null && nomP!.isNotEmpty) {
       stockListe = await StockService().fetchStockByPays(nomP!);
     }
-    // else {
-    //   stockListe = await StockService().fetchAllStock();
-    // }
 
     return stockListe;
   }
@@ -418,12 +414,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
   }
 
-  void _onSearchPressed() {
-    // setState(() {
-    //   isSearchMode = !isSearchMode;
-    // });
-    _showSearchPopup(context); // Display the popup
+  void refresh() {
+    if (selectedCat != null || nomP != null) {
+      setState(() {
+        stockListeFuture = StockService()
+            .fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollableController.addListener(_scrollListener);
+        });
+      });
+    }
   }
+  // void _onSearchPressed() {
+  //   // setState(() {
+  //   //   isSearchMode = !isSearchMode;
+  //   // });
+  //   _showSearchPopup(context); // Display the popup
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -589,345 +596,386 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     )
                                   : Container()
                               : Container(),
-                          TextButton.icon(
-                            onPressed: () {
-                              // setState(() {
-                              //   isSearchMode = true;
-                              //   isFilterMode = true;
-                              // });
-                              _onSearchPressed();
-                              debugPrint(
-                                  "rechercher mode value : ${isSearchMode}");
-                            },
-                            icon: Icon(
-                              Icons.search,
-                              color: d_colorGreen,
+                          if (!isSearchMode)
+                            TextButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isSearchMode = true;
+                                  isFilterMode = true;
+                                });
+                                // _onSearchPressed();
+                                debugPrint(
+                                    "rechercher mode value : ${isSearchMode}");
+                              },
+                              icon: Icon(
+                                Icons.search,
+                                color: d_colorGreen,
+                              ),
+                              label: Text(
+                                'Rechercher...',
+                                style: TextStyle(
+                                    color: d_colorGreen, fontSize: 17),
+                              ),
                             ),
-                            label: Text(
-                              'Rechercher...',
-                              style:
-                                  TextStyle(color: d_colorGreen, fontSize: 17),
-                            ),
-                          ),
+                          if (isSearchMode)
+                            TextButton.icon(
+                              onPressed: () {
+                                if (mounted) {
+                                  setState(() {
+                                    isSearchMode = false;
+                                    isFilterMode = false;
+                                    _searchController.clear();
+                                    _searchController = TextEditingController();
+                                    nomP =
+                                        null; // Réinitialiser le pays sélectionné
+                                    selectedCat =
+                                        null; // Réinitialiser la catégorie sélectionnée
+                                    stockListeFuture =
+                                        getAllStocks(); // Recharger les stocks
+                                  });
+                                  debugPrint(
+                                      "Rechercher mode désactivé : $isSearchMode");
+                                }
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              label: Text(
+                                'Fermer',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 17),
+                              ),
+                            )
                         ]),
                   ),
-                  // Visibility(
-                  //   visible: isSearchMode,
-                  //   child: Row(
-                  //     children: [
-                  //       Expanded(
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.symmetric(
-                  //               vertical: 3, horizontal: 10),
-                  //           child: FutureBuilder(
-                  //             future: _paysList,
-                  //             builder: (_, snapshot) {
-                  //               if (snapshot.connectionState ==
-                  //                   ConnectionState.waiting) {
-                  //                 return TextDropdownFormField(
-                  //                   options: [],
-                  //                   decoration: InputDecoration(
-                  //                       contentPadding:
-                  //                           const EdgeInsets.symmetric(
-                  //                               vertical: 5, horizontal: 20),
-                  //                       border: OutlineInputBorder(
-                  //                         borderRadius:
-                  //                             BorderRadius.circular(22),
-                  //                       ),
-                  //                       suffixIcon: Icon(Icons.search),
-                  //                       labelText: "Chargement..."),
-                  //                   cursorColor: Colors.green,
-                  //                 );
-                  //               }
+                  Visibility(
+                    visible: isSearchMode,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: FutureBuilder(
+                              future: _paysList,
+                              builder: (_, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 0),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                        ),
+                                        suffixIcon:
+                                            Icon(Icons.search, size: 19),
+                                        labelText: "Chargement..."),
+                                    cursorColor: Colors.green,
+                                  );
+                                }
 
-                  //               if (snapshot.hasData) {
-                  //                 dynamic jsonString =
-                  //                     utf8.decode(snapshot.data.bodyBytes);
-                  //                 dynamic responseData =
-                  //                     json.decode(jsonString);
+                                if (snapshot.hasData) {
+                                  dynamic jsonString =
+                                      utf8.decode(snapshot.data.bodyBytes);
+                                  dynamic responseData =
+                                      json.decode(jsonString);
 
-                  //                 if (responseData is List) {
-                  //                   final paysList = responseData
-                  //                       .map((e) => Pays.fromMap(e))
-                  //                       .where((con) => con.statutPays == true)
-                  //                       .toList();
-                  //                   if (paysList.isEmpty) {
-                  //                     return TextDropdownFormField(
-                  //                       options: [],
-                  //                       decoration: InputDecoration(
-                  //                           contentPadding:
-                  //                               const EdgeInsets.symmetric(
-                  //                                   vertical: 5,
-                  //                                   horizontal: 20),
-                  //                           border: OutlineInputBorder(
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(22),
-                  //                           ),
-                  //                           suffixIcon: Icon(Icons.search),
-                  //                           labelText: "--Aucun pays trouvé--"),
-                  //                       cursorColor: Colors.green,
-                  //                     );
-                  //                   }
+                                  if (responseData is List) {
+                                    final paysList = responseData
+                                        .map((e) => Pays.fromMap(e))
+                                        .where((con) => con.statutPays == true)
+                                        .toList();
+                                    if (paysList.isEmpty) {
+                                      return TextDropdownFormField(
+                                        options: [],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 0),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                            suffixIcon:
+                                                Icon(Icons.search, size: 19),
+                                            labelText: "  Aucun pays trouvé"),
+                                        cursorColor: Colors.green,
+                                      );
+                                    }
 
-                  //                   return DropdownFormField<Pays>(
-                  //                     onEmptyActionPressed:
-                  //                         (String str) async {},
-                  //                     dropdownHeight: 200,
-                  //                     decoration: InputDecoration(
-                  //                         contentPadding:
-                  //                             const EdgeInsets.symmetric(
-                  //                                 vertical: 5, horizontal: 20),
-                  //                         border: OutlineInputBorder(
-                  //                           borderRadius:
-                  //                               BorderRadius.circular(22),
-                  //                         ),
-                  //                         suffixIcon: Icon(Icons.search),
-                  //                         labelText: "--Filtrer par pays--"),
-                  //                     onSaved: (dynamic pays) {
-                  //                       print("onSaved : $nomP");
-                  //                     },
-                  //                     onChanged: (dynamic pays) {
-                  //                       nomP = pays?.nomPays;
-                  //                       setState(() {
-                  //                         nomP = pays?.nomPays;
-                  //                         page = 0;
-                  //                         hasMore = true;
-                  //                         fetchStockByPays(refresh: true);
-                  //                         if (page == 0 && isLoading == true) {
-                  //                           SchedulerBinding.instance
-                  //                               .addPostFrameCallback((_) {
-                  //                             scrollableController1.jumpTo(0.0);
-                  //                           });
-                  //                         }
-                  //                       });
-                  //                       print("selected : $nomP");
-                  //                     },
-                  //                     displayItemFn: (dynamic item) => Text(
-                  //                       item?.nomPays ?? '',
-                  //                       style: TextStyle(fontSize: 16),
-                  //                     ),
-                  //                     findFn: (String str) async => paysList,
-                  //                     selectedFn:
-                  //                         (dynamic item1, dynamic item2) {
-                  //                       if (item1 != null && item2 != null) {
-                  //                         return item1.idPays == item2.idPays;
-                  //                       }
-                  //                       return false;
-                  //                     },
-                  //                     filterFn: (dynamic item, String str) =>
-                  //                         item.nomPays!
-                  //                             .toLowerCase()
-                  //                             .contains(str.toLowerCase()),
-                  //                     dropdownItemFn: (dynamic item,
-                  //                             int position,
-                  //                             bool focused,
-                  //                             bool selected,
-                  //                             Function() onTap) =>
-                  //                         ListTile(
-                  //                       title: Text(item.nomPays!),
-                  //                       tileColor: focused
-                  //                           ? Color.fromARGB(20, 0, 0, 0)
-                  //                           : Colors.transparent,
-                  //                       onTap: onTap,
-                  //                     ),
-                  //                   );
-                  //                 }
-                  //               }
-                  //               return TextDropdownFormField(
-                  //                 options: [],
-                  //                 decoration: InputDecoration(
-                  //                     contentPadding:
-                  //                         const EdgeInsets.symmetric(
-                  //                             vertical: 5, horizontal: 20),
-                  //                     border: OutlineInputBorder(
-                  //                       borderRadius: BorderRadius.circular(22),
-                  //                     ),
-                  //                     suffixIcon: Icon(Icons.search),
-                  //                     labelText: "--Aucun pays trouvé--"),
-                  //                 cursorColor: Colors.green,
-                  //               );
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       Expanded(
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.symmetric(
-                  //               vertical: 3, horizontal: 10),
-                  //           child: FutureBuilder(
-                  //             future: _catList,
-                  //             builder: (_, snapshot) {
-                  //               if (snapshot.connectionState ==
-                  //                   ConnectionState.waiting) {
-                  //                 return TextDropdownFormField(
-                  //                   options: [],
-                  //                   decoration: InputDecoration(
-                  //                       contentPadding:
-                  //                           const EdgeInsets.symmetric(
-                  //                               vertical: 5, horizontal: 20),
-                  //                       border: OutlineInputBorder(
-                  //                         borderRadius:
-                  //                             BorderRadius.circular(22),
-                  //                       ),
-                  //                       suffixIcon: Icon(Icons.arrow_drop_down),
-                  //                       labelText: "Chargement..."),
-                  //                   cursorColor: Colors.green,
-                  //                 );
-                  //               }
+                                    return DropdownFormField<Pays>(
+                                      onEmptyActionPressed:
+                                          (String str) async {},
+                                      dropdownHeight: 200,
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 0),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                          ),
+                                          suffixIcon:
+                                              Icon(Icons.search, size: 19),
+                                          labelText: "  Filtrer par pays"),
+                                      onSaved: (dynamic pays) {
+                                        print("onSaved : $nomP");
+                                      },
+                                      onChanged: (dynamic pays) {
+                                        nomP = pays?.nomPays;
+                                        setState(() {
+                                          nomP = pays?.nomPays;
+                                          page = 0;
+                                          hasMore = true;
+                                          fetchStockByPays(refresh: true);
+                                          if (page == 0 && isLoading == true) {
+                                            SchedulerBinding.instance
+                                                .addPostFrameCallback((_) {
+                                              scrollableController1.jumpTo(0.0);
+                                            });
+                                          }
+                                        });
+                                        print("selected : $nomP");
+                                      },
+                                      displayItemFn: (dynamic item) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15),
+                                        child: Text(
+                                          item?.nomPays ?? '',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                      findFn: (String str) async => paysList,
+                                      selectedFn:
+                                          (dynamic item1, dynamic item2) {
+                                        if (item1 != null && item2 != null) {
+                                          return item1.idPays == item2.idPays;
+                                        }
+                                        return false;
+                                      },
+                                      filterFn: (dynamic item, String str) =>
+                                          item.nomPays!
+                                              .toLowerCase()
+                                              .contains(str.toLowerCase()),
+                                      dropdownItemFn: (dynamic item,
+                                              int position,
+                                              bool focused,
+                                              bool selected,
+                                              Function() onTap) =>
+                                          ListTile(
+                                        title: Text(item.nomPays!),
+                                        tileColor: focused
+                                            ? Color.fromARGB(20, 0, 0, 0)
+                                            : Colors.transparent,
+                                        onTap: onTap,
+                                      ),
+                                    );
+                                  }
+                                }
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.search, size: 19),
+                                      labelText: " Aucun pays trouvé"),
+                                  cursorColor: Colors.green,
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: FutureBuilder(
+                              future: _catList,
+                              builder: (_, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 0),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                        ),
+                                        suffixIcon:
+                                            Icon(Icons.search, size: 19),
+                                        labelText: "Chargement..."),
+                                    cursorColor: Colors.green,
+                                  );
+                                }
 
-                  //               if (snapshot.hasData) {
-                  //                 dynamic jsonString =
-                  //                     utf8.decode(snapshot.data.bodyBytes);
-                  //                 dynamic responseData =
-                  //                     json.decode(jsonString);
+                                if (snapshot.hasData) {
+                                  dynamic jsonString =
+                                      utf8.decode(snapshot.data.bodyBytes);
+                                  dynamic responseData =
+                                      json.decode(jsonString);
 
-                  //                 if (responseData is List) {
-                  //                   final paysList = responseData
-                  //                       .map((e) => CategorieProduit.fromMap(e))
-                  //                       .where((con) =>
-                  //                           con.statutCategorie == true)
-                  //                       .toList();
-                  //                   if (paysList.isEmpty) {
-                  //                     return TextDropdownFormField(
-                  //                       options: [],
-                  //                       decoration: InputDecoration(
-                  //                           contentPadding:
-                  //                               const EdgeInsets.symmetric(
-                  //                                   vertical: 5,
-                  //                                   horizontal: 20),
-                  //                           border: OutlineInputBorder(
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(22),
-                  //                           ),
-                  //                           suffixIcon: Icon(Icons.search),
-                  //                           labelText:
-                  //                               "--Aucune catégorie trouvé--"),
-                  //                       cursorColor: Colors.green,
-                  //                     );
-                  //                   }
+                                  if (responseData is List) {
+                                    final paysList = responseData
+                                        .map((e) => CategorieProduit.fromMap(e))
+                                        .where((con) =>
+                                            con.statutCategorie == true)
+                                        .toList();
+                                    if (paysList.isEmpty) {
+                                      return TextDropdownFormField(
+                                        options: [],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 0),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                            suffixIcon:
+                                                Icon(Icons.search, size: 19),
+                                            labelText:
+                                                " Aucune catégorie trouvé"),
+                                        cursorColor: Colors.green,
+                                      );
+                                    }
 
-                  //                   return DropdownFormField<CategorieProduit>(
-                  //                     onEmptyActionPressed:
-                  //                         (String str) async {},
-                  //                     dropdownHeight: 200,
-                  //                     decoration: InputDecoration(
-                  //                         contentPadding:
-                  //                             const EdgeInsets.symmetric(
-                  //                                 vertical: 5, horizontal: 20),
-                  //                         border: OutlineInputBorder(
-                  //                           borderRadius:
-                  //                               BorderRadius.circular(22),
-                  //                         ),
-                  //                         suffixIcon: Icon(Icons.search),
-                  //                         labelText:
-                  //                             "--Filtrer par catégorie--"),
-                  //                     onSaved: (dynamic cat) {
-                  //                       selectedCat = cat;
-                  //                       print("onSaved : $cat");
-                  //                     },
-                  //                     onChanged: (dynamic cat) {
-                  //                       setState(() {
-                  //                         selectedCat = cat;
-                  //                         page = 0;
-                  //                         hasMore = true;
-                  //                         fetchStockByCategorie(
-                  //                             detectedCountry != null
-                  //                                 ? detectedCountry!
-                  //                                 : "Mali",
-                  //                             refresh: true);
-                  //                         if (page == 0 && isLoading == true) {
-                  //                           SchedulerBinding.instance
-                  //                               .addPostFrameCallback((_) {
-                  //                             scrollableController1.jumpTo(0.0);
-                  //                           });
-                  //                         }
-                  //                       });
-                  //                     },
-                  //                     displayItemFn: (dynamic item) => Text(
-                  //                       item?.libelleCategorie ?? '',
-                  //                       style: TextStyle(fontSize: 16),
-                  //                     ),
-                  //                     findFn: (String str) async => paysList,
-                  //                     selectedFn:
-                  //                         (dynamic item1, dynamic item2) {
-                  //                       if (item1 != null && item2 != null) {
-                  //                         return item1.idCategorieProduit ==
-                  //                             item2.idCategorieProduit;
-                  //                       }
-                  //                       return false;
-                  //                     },
-                  //                     filterFn: (dynamic item, String str) =>
-                  //                         item.libelleCategorie!
-                  //                             .toLowerCase()
-                  //                             .contains(str.toLowerCase()),
-                  //                     dropdownItemFn: (dynamic item,
-                  //                             int position,
-                  //                             bool focused,
-                  //                             bool selected,
-                  //                             Function() onTap) =>
-                  //                         ListTile(
-                  //                       title: Text(item.libelleCategorie!),
-                  //                       tileColor: focused
-                  //                           ? Color.fromARGB(20, 0, 0, 0)
-                  //                           : Colors.transparent,
-                  //                       onTap: onTap,
-                  //                     ),
-                  //                   );
-                  //                 }
-                  //               }
-                  //               return TextDropdownFormField(
-                  //                 options: [],
-                  //                 decoration: InputDecoration(
-                  //                     contentPadding:
-                  //                         const EdgeInsets.symmetric(
-                  //                             vertical: 5, horizontal: 20),
-                  //                     border: OutlineInputBorder(
-                  //                       borderRadius: BorderRadius.circular(22),
-                  //                     ),
-                  //                     suffixIcon: Icon(Icons.search),
-                  //                     labelText: "--Aucune catégorie trouvé--"),
-                  //                 cursorColor: Colors.green,
-                  //               );
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Visibility(
-                  //   visible: isSearchMode,
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.symmetric(
-                  //         vertical: 3, horizontal: 10),
-                  //     child: SearchFieldAutoComplete<String>(
-                  //       controller: _searchController,
-                  //       placeholder: 'Rechercher un produit...',
-                  //       placeholderStyle:
-                  //           TextStyle(fontStyle: FontStyle.italic),
-                  //       suggestions: AutoComplet.getAgriculturalProducts,
-                  //       suggestionsDecoration: SuggestionDecoration(
-                  //         marginSuggestions: const EdgeInsets.all(8.0),
-                  //         color: const Color.fromARGB(255, 236, 234, 234),
-                  //         borderRadius: BorderRadius.circular(16.0),
-                  //       ),
-                  //       onSuggestionSelected: (selectedItem) {
-                  //         if (mounted) {
-                  //           _searchController.text = selectedItem.searchKey;
-                  //         }
-                  //       },
-                  //       suggestionItemBuilder: (context, searchFieldItem) {
-                  //         return Padding(
-                  //           padding: const EdgeInsets.all(8.0),
-                  //           child: Text(
-                  //             searchFieldItem.searchKey,
-                  //             style: TextStyle(color: Colors.black),
-                  //           ),
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
+                                    return DropdownFormField<CategorieProduit>(
+                                      onEmptyActionPressed:
+                                          (String str) async {},
+                                      dropdownHeight: 200,
+                                      decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                          ),
+                                          suffixIcon:
+                                              Icon(Icons.search, size: 19),
+                                          labelText: "Filtrer par catégorie"),
+                                      onSaved: (dynamic cat) {
+                                        selectedCat = cat;
+                                        print("onSaved : $cat");
+                                      },
+                                      onChanged: (dynamic cat) {
+                                        setState(() {
+                                          selectedCat = cat;
+                                          page = 0;
+                                          hasMore = true;
+                                          fetchStockByCategorie(
+                                              detectedCountry != null
+                                                  ? detectedCountry!
+                                                  : "Mali",
+                                              refresh: true);
+                                          if (page == 0 && isLoading == true) {
+                                            SchedulerBinding.instance
+                                                .addPostFrameCallback((_) {
+                                              scrollableController1.jumpTo(0.0);
+                                            });
+                                          }
+                                        });
+                                      },
+                                      displayItemFn: (dynamic item) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 0),
+                                        child: Text(
+                                          item?.libelleCategorie ?? '',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                      findFn: (String str) async => paysList,
+                                      selectedFn:
+                                          (dynamic item1, dynamic item2) {
+                                        if (item1 != null && item2 != null) {
+                                          return item1.idCategorieProduit ==
+                                              item2.idCategorieProduit;
+                                        }
+                                        return false;
+                                      },
+                                      filterFn: (dynamic item, String str) =>
+                                          item.libelleCategorie!
+                                              .toLowerCase()
+                                              .contains(str.toLowerCase()),
+                                      dropdownItemFn: (dynamic item,
+                                              int position,
+                                              bool focused,
+                                              bool selected,
+                                              Function() onTap) =>
+                                          ListTile(
+                                        title: Text(item.libelleCategorie!),
+                                        tileColor: focused
+                                            ? Color.fromARGB(20, 0, 0, 0)
+                                            : Colors.transparent,
+                                        onTap: onTap,
+                                      ),
+                                    );
+                                  }
+                                }
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      suffixIcon: Icon(Icons.search, size: 19),
+                                      labelText: "Aucune catégorie trouvé"),
+                                  cursorColor: Colors.green,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: isSearchMode,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
+                      child: SearchFieldAutoComplete<String>(
+                        controller: _searchController,
+                        placeholder: 'Rechercher un produit...',
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
+                        suggestions: AutoComplet.getAgriculturalProducts,
+                        suggestionsDecoration: SuggestionDecoration(
+                          marginSuggestions: const EdgeInsets.all(8.0),
+                          color: const Color.fromARGB(255, 236, 234, 234),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        onSuggestionSelected: (selectedItem) {
+                          if (mounted) {
+                            _searchController.text = selectedItem.searchKey;
+                          }
+                        },
+                        suggestionItemBuilder: (context, searchFieldItem) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              searchFieldItem.searchKey,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 10),
                 ])),
               ];
@@ -2044,7 +2092,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 child: Text(e.libelleCategorie!),
               ))
           .toList(),
-      hint: Text("-- Filtre par catégorie --"),
+      hint: Text(" Filtre par catégorie "),
       value: typeValue,
       onChanged: (newValue) {
         setState(() {
@@ -2080,7 +2128,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       items: [],
       onChanged: null,
       decoration: InputDecoration(
-        labelText: '-- Aucun catégorie trouvé --',
+        labelText: ' Aucun catégorie trouvé ',
         contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 22),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
@@ -2103,324 +2151,331 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  void _showSearchPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton.icon(
-                    onPressed: () {
-                        Navigator.of(context).pop();
-                      // if (mounted) {
-                      //   // setState(() {
-                      //   //   isSearchMode = false;
-                      //   //   isFilterMode = false;
-                      //   //   // _searchController.clear();
-                      //   //   // _searchController = TextEditingController();
-                      //   // });
-                      //   debugPrint("Rechercher mode désactivé : $isSearchMode");
-                      // }
-                    },
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
-                    label: Text(
-                      'Fermer',
-                      style: TextStyle(color: Colors.red, fontSize: 17),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                  child: FutureBuilder(
-                    future: _paysList,
-                    builder: (_, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return TextDropdownFormField(
-                          options: [],
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              suffixIcon: Icon(Icons.search),
-                              labelText: "Chargement..."),
-                          cursorColor: Colors.green,
-                        );
-                      }
+  // void _showSearchPopup(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return Dialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(20),
+  //         ),
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(10.0),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               Align(
+  //                 alignment: Alignment.topRight,
+  //                 child: TextButton.icon(
+  //                   onPressed: () {
+  //                     Navigator.of(context).pop();
+  //                     // if (mounted) {
+  //                     //   // setState(() {
+  //                     //   //   isSearchMode = false;
+  //                     //   //   isFilterMode = false;
+  //                     //   //   // _searchController.clear();
+  //                     //   //   // _searchController = TextEditingController();
+  //                     //   // });
+  //                     //   debugPrint("Rechercher mode désactivé : $isSearchMode");
+  //                     // }
+  //                   },
+  //                   icon: Icon(
+  //                     Icons.close,
+  //                     color: Colors.red,
+  //                   ),
+  //                   label: Text(
+  //                     'Fermer',
+  //                     style: TextStyle(color: Colors.red, fontSize: 17),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Padding(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+  //                 child: FutureBuilder(
+  //                   future: _paysList,
+  //                   builder: (_, snapshot) {
+  //                     if (snapshot.connectionState == ConnectionState.waiting) {
+  //                       return TextDropdownFormField(
+  //                         options: [],
+  //                         decoration: InputDecoration(
+  //                             contentPadding: const EdgeInsets.symmetric(
+  //                                 vertical: 5, horizontal: 20),
+  //                             border: OutlineInputBorder(
+  //                               borderRadius: BorderRadius.circular(22),
+  //                             ),
+  //                             suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                             labelText: "Chargement..."),
+  //                         cursorColor: Colors.green,
+  //                       );
+  //                     }
 
-                      if (snapshot.hasData) {
-                        dynamic jsonString =
-                            utf8.decode(snapshot.data.bodyBytes);
-                        dynamic responseData = json.decode(jsonString);
+  //                     if (snapshot.hasData) {
+  //                       dynamic jsonString =
+  //                           utf8.decode(snapshot.data.bodyBytes);
+  //                       dynamic responseData = json.decode(jsonString);
 
-                        if (responseData is List) {
-                          final paysList = responseData
-                              .map((e) => Pays.fromMap(e))
-                              .where((con) => con.statutPays == true)
-                              .toList();
-                          if (paysList.isEmpty) {
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "--Aucun pays trouvé--"),
-                              cursorColor: Colors.green,
-                            );
-                          }
+  //                       if (responseData is List) {
+  //                         final paysList = responseData
+  //                             .map((e) => Pays.fromMap(e))
+  //                             .where((con) => con.statutPays == true)
+  //                             .toList();
+  //                         if (paysList.isEmpty) {
+  //                           return TextDropdownFormField(
+  //                             options: [],
+  //                             decoration: InputDecoration(
+  //                                 contentPadding: const EdgeInsets.symmetric(
+  //                                     vertical: 5, horizontal: 20),
+  //                                 border: OutlineInputBorder(
+  //                                   borderRadius: BorderRadius.circular(22),
+  //                                 ),
+  //                                 suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                                 labelText: "Aucun pays trouvé"),
+  //                             cursorColor: Colors.green,
+  //                           );
+  //                         }
 
-                          return DropdownFormField<Pays>(
-                            onEmptyActionPressed: (String str) async {},
-                            dropdownHeight: 200,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(22),
-                                ),
-                                suffixIcon: Icon(Icons.search),
-                                labelText: "--Filtrer par pays--"),
-                            onSaved: (dynamic pays) {
-                              print("onSaved : $nomP");
-                            },
-                            onChanged: (dynamic pays) {
-                              nomP = pays?.nomPays;
-                              setState(() {
-                                nomP = pays?.nomPays;
-                                page = 0;
-                                hasMore = true;
-                                fetchStockByPays(refresh: true);
-                                if (page == 0 && isLoading == true) {
-                                  SchedulerBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    scrollableController1.jumpTo(0.0);
-                                  });
-                                }
-                              });
-                              print("selected : $nomP");
-                            },
-                            displayItemFn: (dynamic item) => Text(
-                              item?.nomPays ?? '',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            findFn: (String str) async => paysList,
-                            selectedFn: (dynamic item1, dynamic item2) {
-                              if (item1 != null && item2 != null) {
-                                return item1.idPays == item2.idPays;
-                              }
-                              return false;
-                            },
-                            filterFn: (dynamic item, String str) => item
-                                .nomPays!
-                                .toLowerCase()
-                                .contains(str.toLowerCase()),
-                            dropdownItemFn: (dynamic item,
-                                    int position,
-                                    bool focused,
-                                    bool selected,
-                                    Function() onTap) =>
-                                ListTile(
-                              title: Text(item.nomPays!),
-                              tileColor: focused
-                                  ? Color.fromARGB(20, 0, 0, 0)
-                                  : Colors.transparent,
-                              onTap: onTap,
-                            ),
-                          );
-                        }
-                      }
-                      return TextDropdownFormField(
-                        options: [],
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(22),
-                            ),
-                            suffixIcon: Icon(Icons.search),
-                            labelText: "--Aucun pays trouvé--"),
-                        cursorColor: Colors.green,
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                  child: FutureBuilder(
-                    future: _catList,
-                    builder: (_, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return TextDropdownFormField(
-                          options: [],
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                              labelText: "Chargement..."),
-                          cursorColor: Colors.green,
-                        );
-                      }
+  //                         return DropdownFormField<Pays>(
+  //                           onEmptyActionPressed: (String str) async {},
+  //                           dropdownHeight: 200,
+  //                           decoration: InputDecoration(
+  //                               contentPadding: const EdgeInsets.symmetric(
+  //                                   vertical: 5, horizontal: 20),
+  //                               border: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(22),
+  //                               ),
+  //                               suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                               labelText: "Filtrer par pays"),
+  //                           onSaved: (dynamic pays) {
+  //                             print("onSaved : $nomP");
+  //                           },
+  //                           onChanged: (dynamic pays) {
+  //                             nomP = pays?.nomPays;
+  //                             setState(() {
+  //                               nomP = pays?.nomPays;
+  //                               page = 0;
+  //                               hasMore = true;
+  //                               fetchStockByPays(refresh: true);
+  //                               if (page == 0 && isLoading == true) {
+  //                                 SchedulerBinding.instance
+  //                                     .addPostFrameCallback((_) {
+  //                                   scrollableController1.jumpTo(0.0);
+  //                                 });
+  //                               }
+  //                             });
+  //                             print("selected : $nomP");
+  //                           },
+  //                           displayItemFn: (dynamic item) => Text(
+  //                             item?.nomPays ?? '',
+  //                             style: TextStyle(fontSize: 16),
+  //                           ),
+  //                           findFn: (String str) async => paysList,
+  //                           selectedFn: (dynamic item1, dynamic item2) {
+  //                             if (item1 != null && item2 != null) {
+  //                               return item1.idPays == item2.idPays;
+  //                             }
+  //                             return false;
+  //                           },
+  //                           filterFn: (dynamic item, String str) => item
+  //                               .nomPays!
+  //                               .toLowerCase()
+  //                               .contains(str.toLowerCase()),
+  //                           dropdownItemFn: (dynamic item,
+  //                                   int position,
+  //                                   bool focused,
+  //                                   bool selected,
+  //                                   Function() onTap) =>
+  //                               ListTile(
+  //                             title: Text(item.nomPays!),
+  //                             tileColor: focused
+  //                                 ? Color.fromARGB(20, 0, 0, 0)
+  //                                 : Colors.transparent,
+  //                             onTap: onTap,
+  //                           ),
+  //                         );
+  //                       }
+  //                     }
+  //                     return TextDropdownFormField(
+  //                       options: [],
+  //                       decoration: InputDecoration(
+  //                           contentPadding: const EdgeInsets.symmetric(
+  //                               vertical: 5, horizontal: 20),
+  //                           border: OutlineInputBorder(
+  //                             borderRadius: BorderRadius.circular(22),
+  //                           ),
+  //                           suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                           labelText: "Aucun pays trouvé"),
+  //                       cursorColor: Colors.green,
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //               Padding(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+  //                 child: FutureBuilder(
+  //                   future: _catList,
+  //                   builder: (_, snapshot) {
+  //                     if (snapshot.connectionState == ConnectionState.waiting) {
+  //                       return TextDropdownFormField(
+  //                         options: [],
+  //                         decoration: InputDecoration(
+  //                             contentPadding: const EdgeInsets.symmetric(
+  //                                 vertical: 5, horizontal: 20),
+  //                             border: OutlineInputBorder(
+  //                               borderRadius: BorderRadius.circular(22),
+  //                             ),
+  //                             suffixIcon: Icon(Icons.arrow_drop_down),
+  //                             labelText: "Chargement..."),
+  //                         cursorColor: Colors.green,
+  //                       );
+  //                     }
 
-                      if (snapshot.hasData) {
-                        dynamic jsonString =
-                            utf8.decode(snapshot.data.bodyBytes);
-                        dynamic responseData = json.decode(jsonString);
+  //                     if (snapshot.hasData) {
+  //                       dynamic jsonString =
+  //                           utf8.decode(snapshot.data.bodyBytes);
+  //                       dynamic responseData = json.decode(jsonString);
 
-                        if (responseData is List) {
-                          final paysList = responseData
-                              .map((e) => CategorieProduit.fromMap(e))
-                              .where((con) => con.statutCategorie == true)
-                              .toList();
-                          if (paysList.isEmpty) {
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "--Aucune catégorie trouvé--"),
-                              cursorColor: Colors.green,
-                            );
-                          }
+  //                       if (responseData is List) {
+  //                         final paysList = responseData
+  //                             .map((e) => CategorieProduit.fromMap(e))
+  //                             .where((con) => con.statutCategorie == true)
+  //                             .toList();
+  //                         if (paysList.isEmpty) {
+  //                           return TextDropdownFormField(
+  //                             options: [],
+  //                             decoration: InputDecoration(
+  //                                 contentPadding: const EdgeInsets.symmetric(
+  //                                     vertical: 5, horizontal: 20),
+  //                                 border: OutlineInputBorder(
+  //                                   borderRadius: BorderRadius.circular(22),
+  //                                 ),
+  //                                 suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                                 labelText: "Aucune catégorie trouvé"),
+  //                             cursorColor: Colors.green,
+  //                           );
+  //                         }
 
-                          return DropdownFormField<CategorieProduit>(
-                            onEmptyActionPressed: (String str) async {},
-                            dropdownHeight: 200,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(22),
-                                ),
-                                suffixIcon: Icon(Icons.search),
-                                labelText: "--Filtrer par catégorie--"),
-                            onSaved: (dynamic cat) {
-                              selectedCat = cat;
-                              print("onSaved : $cat");
-                            },
-                            onChanged: (dynamic cat) {
-                              setState(() {
-                                selectedCat = cat;
-                                page = 0;
-                                hasMore = true;
-                                fetchStockByCategorie(
-                                    detectedCountry != null
-                                        ? detectedCountry!
-                                        : "Mali",
-                                    refresh: true);
-                                if (page == 0 && isLoading == true) {
-                                  SchedulerBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    scrollableController1.jumpTo(0.0);
-                                  });
-                                }
-                              });
-                            },
-                            displayItemFn: (dynamic item) => Text(
-                              item?.libelleCategorie ?? '',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            findFn: (String str) async => paysList,
-                            selectedFn: (dynamic item1, dynamic item2) {
-                              if (item1 != null && item2 != null) {
-                                return item1.idCategorieProduit ==
-                                    item2.idCategorieProduit;
-                              }
-                              return false;
-                            },
-                            filterFn: (dynamic item, String str) => item
-                                .libelleCategorie!
-                                .toLowerCase()
-                                .contains(str.toLowerCase()),
-                            dropdownItemFn: (dynamic item,
-                                    int position,
-                                    bool focused,
-                                    bool selected,
-                                    Function() onTap) =>
-                                ListTile(
-                              title: Text(item.libelleCategorie!),
-                              tileColor: focused
-                                  ? Color.fromARGB(20, 0, 0, 0)
-                                  : Colors.transparent,
-                              onTap: onTap,
-                            ),
-                          );
-                        }
-                      }
-                      return TextDropdownFormField(
-                        options: [],
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(22),
-                            ),
-                            suffixIcon: Icon(Icons.search),
-                            labelText: "--Aucune catégorie trouvé--"),
-                        cursorColor: Colors.green,
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                  child: SearchFieldAutoComplete<String>(
-                    controller: _searchController,
-                    placeholder: 'Rechercher un produit...',
-                    placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
-                    suggestions: AutoComplet.getAgriculturalProducts,
-                    suggestionsDecoration: SuggestionDecoration(
-                      marginSuggestions: const EdgeInsets.all(8.0),
-                      color: const Color.fromARGB(255, 236, 234, 234),
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    onSuggestionSelected: (selectedItem) {
-                      if (mounted) {
-                        _searchController.text = selectedItem.searchKey;
-                      }
-                    },
-                    suggestionItemBuilder: (context, searchFieldItem) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          searchFieldItem.searchKey,
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //                         return DropdownFormField<CategorieProduit>(
+  //                           onEmptyActionPressed: (String str) async {},
+  //                           dropdownHeight: 200,
+  //                           decoration: InputDecoration(
+  //                               contentPadding: const EdgeInsets.symmetric(
+  //                                   vertical: 5, horizontal: 20),
+  //                               border: OutlineInputBorder(
+  //                                 borderRadius: BorderRadius.circular(22),
+  //                               ),
+  //                               suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                               labelText: "Filtrer par catégorie"),
+  //                           onSaved: (dynamic cat) {
+  //                             selectedCat = cat;
+  //                             print("onSaved : $cat");
+  //                           },
+  //                           onChanged: (dynamic cat) {
+  //                             setState(() {
+  //                               selectedCat = cat;
+  //                               page = 0;
+  //                               hasMore = true;
+  //                               fetchStockByCategorie(
+  //                                   detectedCountry != null
+  //                                       ? detectedCountry!
+  //                                       : "Mali",
+  //                                   refresh: true);
+  //                               if (page == 0 && isLoading == true) {
+  //                                 SchedulerBinding.instance
+  //                                     .addPostFrameCallback((_) {
+  //                                   scrollableController1.jumpTo(0.0);
+  //                                 });
+  //                               }
+  //                             });
+  //                           },
+  //                           displayItemFn: (dynamic item) => Text(
+  //                             item?.libelleCategorie ?? '',
+  //                             style: TextStyle(fontSize: 16),
+  //                           ),
+  //                           findFn: (String str) async => paysList,
+  //                           selectedFn: (dynamic item1, dynamic item2) {
+  //                             if (item1 != null && item2 != null) {
+  //                               return item1.idCategorieProduit ==
+  //                                   item2.idCategorieProduit;
+  //                             }
+  //                             return false;
+  //                           },
+  //                           filterFn: (dynamic item, String str) => item
+  //                               .libelleCategorie!
+  //                               .toLowerCase()
+  //                               .contains(str.toLowerCase()),
+  //                           dropdownItemFn: (dynamic item,
+  //                                   int position,
+  //                                   bool focused,
+  //                                   bool selected,
+  //                                   Function() onTap) =>
+  //                               ListTile(
+  //                             title: Text(item.libelleCategorie!),
+  //                             tileColor: focused
+  //                                 ? Color.fromARGB(20, 0, 0, 0)
+  //                                 : Colors.transparent,
+  //                             onTap: onTap,
+  //                           ),
+  //                         );
+  //                       }
+  //                     }
+  //                     return TextDropdownFormField(
+  //                       options: [],
+  //                       decoration: InputDecoration(
+  //                           contentPadding: const EdgeInsets.symmetric(
+  //                               vertical: 5, horizontal: 20),
+  //                           border: OutlineInputBorder(
+  //                             borderRadius: BorderRadius.circular(22),
+  //                           ),
+  //                           suffixIcon: Icon(Icons.search,
+  // size: 19),
+  //                           labelText: "Aucune catégorie trouvé"),
+  //                       cursorColor: Colors.green,
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //               Padding(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+  //                 child: SearchFieldAutoComplete<String>(
+  //                   controller: _searchController,
+  //                   placeholder: 'Rechercher un produit...',
+  //                   placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
+  //                   suggestions: AutoComplet.getAgriculturalProducts,
+  //                   suggestionsDecoration: SuggestionDecoration(
+  //                     marginSuggestions: const EdgeInsets.all(8.0),
+  //                     color: const Color.fromARGB(255, 236, 234, 234),
+  //                     borderRadius: BorderRadius.circular(16.0),
+  //                   ),
+  //                   onSuggestionSelected: (selectedItem) {
+  //                     if (mounted) {
+  //                       _searchController.text = selectedItem.searchKey;
+  //                     }
+  //                   },
+  //                   suggestionItemBuilder: (context, searchFieldItem) {
+  //                     return Padding(
+  //                       padding: const EdgeInsets.all(8.0),
+  //                       child: Text(
+  //                         searchFieldItem.searchKey,
+  //                         style: TextStyle(color: Colors.black),
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

@@ -324,6 +324,9 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
+                         SizedBox(
+                height: 10,
+              ),
                         Padding(
                           padding: const EdgeInsets.all(8),
                           child: Align(

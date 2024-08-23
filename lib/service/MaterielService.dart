@@ -221,6 +221,53 @@ class MaterielService extends ChangeNotifier {
     return materielList;
   }
 
+  Future<List<Materiels>> fetchMaterielByPays(String nomPays,
+      {bool refresh = false}) async {
+    if (isLoading == true) return [];
+
+    isLoading = true;
+
+    if (refresh) {
+      materielList.clear();
+      page = 0;
+      hasMore = true;
+    }
+
+    try {
+      final response = await http.get(Uri.parse(
+          '$apiOnlineUrl/Materiel/getAllByPaysWithPagination?nomPays=$nomPays&page=${page}&size=${size}'));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+          hasMore = false;
+        } else {
+          List<Materiels> newMateriels =
+              body.map((e) => Materiels.fromMap(e)).toList();
+
+          materielList.addAll(newMateriels.where((newMateriel) => !materielList.any((existeMate) => existeMate.idMateriel == newMateriel.idMateriel)));
+
+        }
+
+        debugPrint(
+            "response body all materiel by pays with pagination ${page} par défilement soit ${materielList.length}");
+        return materielList;
+      } else {
+        print(
+            'Échec de la requête mat pag avec le code d\'état: ${response.statusCode} |  ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print(
+          'Une erreur s\'est produite lors de la récupération des materiels: $e');
+    } finally {
+      isLoading = false;
+    }
+    return materielList;
+  }
+
   Future<List<Materiels>> fetchMateriele(String pays, String libelleFiliere,
       {bool refresh = false}) async {
     if (isLoading == true) return [];

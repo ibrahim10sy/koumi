@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class _StoreScreenState extends State<StoreScreen> {
   Niveau1Pays? selectedNiveau1Pays;
   late TextEditingController _searchController;
   String? typeValue;
+
   late Future _niveau1PaysList;
   late Future<List<Magasin>> _magasinList;
   bool isExist = false;
@@ -427,87 +429,120 @@ class _StoreScreenState extends State<StoreScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 isExist
-                                    ? TextButton(
-                                        onPressed: () {
-                                          // The PopupMenuButton is used here to display the menu when the button is pressed.
-                                          showMenu<String>(
-                                            context: context,
-                                            position: RelativeRect.fromLTRB(
-                                              0,
-                                              50, // Adjust this value based on the desired position of the menu
-                                              MediaQuery.of(context).size.width,
-                                              0,
-                                            ),
-                                            items: [
-                                              PopupMenuItem<String>(
-                                                value: 'add_store',
-                                                child: ListTile(
-                                                  leading: const Icon(
-                                                    Icons.store,
-                                                    color: d_colorGreen,
-                                                  ),
-                                                  title: const Text(
-                                                    "Ajouter un magasin",
-                                                    style: TextStyle(
-                                                      color: d_colorGreen,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                    ? (typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("commercant") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("commerçant") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("transformateur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("admin") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains("producteur") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains(
+                                                    "partenaires de développement") ||
+                                            typeActeurData
+                                                .map((e) =>
+                                                    e.libelle!.toLowerCase())
+                                                .contains(
+                                                    "partenaire de developpement"))
+                                        ? TextButton(
+                                            onPressed: () {
+                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                              showMenu<String>(
+                                                context: context,
+                                                position: RelativeRect.fromLTRB(
+                                                  0,
+                                                  50, // Adjust this value based on the desired position of the menu
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  0,
+                                                ),
+                                                items: [
+                                                  PopupMenuItem<String>(
+                                                    value: 'add_store',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.store,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Ajouter un magasin",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ),
-                                              PopupMenuItem<String>(
-                                                value: 'store',
-                                                child: ListTile(
-                                                  leading: const Icon(
-                                                    Icons.remove_red_eye,
-                                                    color: d_colorGreen,
-                                                  ),
-                                                  title: const Text(
-                                                    "Mes magasins",
-                                                    style: TextStyle(
-                                                      color: d_colorGreen,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                  PopupMenuItem<String>(
+                                                    value: 'store',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.remove_red_eye,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Mes magasins",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
+                                                ],
+                                                elevation: 8.0,
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  if (value == 'add_store') {
+                                                    _getResultFromNextScreen2(
+                                                        context);
+                                                  }
+                                                } else if (value != null) {
+                                                  if (value == 'store') {
+                                                    _getResultFromNextScreen1(
+                                                        context);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: d_colorGreen,
                                                 ),
-                                              ),
-                                            ],
-                                            elevation: 8.0,
-                                          ).then((value) {
-                                            if (value != null) {
-                                              if (value == 'add_store') {
-                                                _getResultFromNextScreen2(
-                                                    context);
-                                              }
-                                            } else if (value != null) {
-                                              if (value == 'store') {
-                                                _getResultFromNextScreen1(
-                                                    context);
-                                              }
-                                            }
-                                          });
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.add,
-                                              color: d_colorGreen,
+                                                SizedBox(
+                                                    width:
+                                                        8), // Space between icon and text
+                                                Text(
+                                                  'Ajouter',
+                                                  style: TextStyle(
+                                                    color: d_colorGreen,
+                                                    fontSize: 17,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(
-                                                width:
-                                                    8), // Space between icon and text
-                                            Text(
-                                              'Ajouter',
-                                              style: TextStyle(
-                                                color: d_colorGreen,
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
+                                          )
+                                        : Container()
                                     : Container(),
                                 if (!isSearchMode)
                                   TextButton.icon(
@@ -538,6 +573,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                           _searchController.clear();
                                           _searchController =
                                               TextEditingController();
+                                          selectedNiveau1Pays = null;
+                                          magasinListeFuture = MagasinService()
+                                              .fetchAllMagasin();
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -567,21 +605,21 @@ class _StoreScreenState extends State<StoreScreen> {
                                       builder: (_, snapshot) {
                                         if (snapshot.connectionState ==
                                             ConnectionState.waiting) {
-                                          return DropdownButtonFormField(
-                                            items: [],
-                                            isExpanded: true,
-                                            onChanged: null,
+                                          return TextDropdownFormField(
+                                            options: [],
                                             decoration: InputDecoration(
-                                              labelText: 'Chargement...',
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 22),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(22),
-                                              ),
-                                            ),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 0),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                                suffixIcon: Icon(Icons.search,
+                                                    size: 19),
+                                                labelText: "Chargement..."),
+                                            cursorColor: Colors.green,
                                           );
                                         }
 
@@ -591,7 +629,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                           dynamic responseData =
                                               json.decode(jsonString);
 
-                                          // final reponse = json.decode(snapshot.data.body);
                                           if (responseData is List) {
                                             final paysList = responseData
                                                 .map((e) => Pays.fromMap(e))
@@ -599,84 +636,126 @@ class _StoreScreenState extends State<StoreScreen> {
                                                     con.statutPays == true)
                                                 .toList();
                                             if (paysList.isEmpty) {
-                                              return DropdownButtonFormField(
-                                                items: [],
-                                                isExpanded: true,
-                                                onChanged: null,
+                                              return TextDropdownFormField(
+                                                options: [],
                                                 decoration: InputDecoration(
-                                                  labelText:
-                                                      'Aucun pays trouvé',
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 10,
+                                                            horizontal: 0),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              22),
+                                                    ),
+                                                    suffixIcon: Icon(
+                                                        Icons.search,
+                                                        size: 19),
+                                                    labelText:
+                                                        " Aucun pays trouvé"),
+                                                cursorColor: Colors.green,
+                                              );
+                                            }
+
+                                            return DropdownFormField<Pays>(
+                                              onEmptyActionPressed:
+                                                  (String str) async {},
+                                              dropdownHeight: 200,
+                                              decoration: InputDecoration(
                                                   contentPadding:
                                                       const EdgeInsets
                                                           .symmetric(
-                                                          vertical: 5,
-                                                          horizontal: 22),
+                                                          vertical: 10,
+                                                          horizontal: 0),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             22),
                                                   ),
-                                                ),
-                                              );
-                                            }
+                                                  suffixIcon: Icon(Icons.search,
+                                                      size: 19),
+                                                  // label: Text("label"),
 
-                                            return DropdownButtonFormField<
-                                                String>(
-                                              isExpanded: true,
-                                              items: paysList
-                                                  .map(
-                                                    (e) => DropdownMenuItem(
-                                                      value: e.idPays,
-                                                      child: Text(e.nomPays!),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                              value: paysValue,
-                                              onChanged: (newValue) {
+                                                  labelText:
+                                                      "  Filtrer par pays"),
+                                              onSaved: (dynamic pays) {
+                                                print("onSaved : $pays");
+                                              },
+                                              onChanged: (dynamic p) {
                                                 setState(() {
-                                                  typeValue = null;
-                                                  paysValue = newValue;
-                                                  if (newValue != null) {
+                                                  if (p != null) {
                                                     pays = paysList.firstWhere(
                                                         (element) =>
                                                             element.idPays ==
-                                                            newValue);
+                                                            p.idPays);
                                                     _niveau1PaysList = http.get(
                                                         Uri.parse(
-                                                            '$apiOnlineUrl/niveau1Pays/listeNiveau1PaysByIdPays/${newValue}'));
+                                                            '$apiOnlineUrl/niveau1Pays/listeNiveau1PaysByIdPays/${p.idPays}'));
                                                   }
                                                 });
                                               },
-                                              decoration: InputDecoration(
-                                                labelText:
-                                                    '--Filtre par pays--',
-                                                contentPadding:
+                                              displayItemFn: (dynamic item) =>
+                                                  Padding(
+                                                padding:
                                                     const EdgeInsets.symmetric(
-                                                        vertical: 5,
-                                                        horizontal: 22),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(22),
+                                                        horizontal: 15),
+                                                child: Text(
+                                                  item?.nomPays ?? '',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
                                                 ),
+                                              ),
+                                              findFn: (String str) async =>
+                                                  paysList,
+                                              selectedFn: (dynamic item1,
+                                                  dynamic item2) {
+                                                if (item1 != null &&
+                                                    item2 != null) {
+                                                  return item1.idPays ==
+                                                      item2.idPays;
+                                                }
+                                                return false;
+                                              },
+                                              filterFn: (dynamic item,
+                                                      String str) =>
+                                                  item.nomPays!
+                                                      .toLowerCase()
+                                                      .contains(
+                                                          str.toLowerCase()),
+                                              dropdownItemFn: (dynamic item,
+                                                      int position,
+                                                      bool focused,
+                                                      bool selected,
+                                                      Function() onTap) =>
+                                                  ListTile(
+                                                title: Text(
+                                                  item.nomPays!,
+                                                ),
+                                                tileColor: focused
+                                                    ? Color.fromARGB(
+                                                        20, 0, 0, 0)
+                                                    : Colors.transparent,
+                                                onTap: onTap,
                                               ),
                                             );
                                           }
                                         }
-                                        return DropdownButtonFormField(
-                                          items: [],
-                                          isExpanded: true,
-                                          onChanged: null,
+                                        return TextDropdownFormField(
+                                          options: [],
                                           decoration: InputDecoration(
-                                            labelText: 'Aucun pays trouvé',
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                    horizontal: 22),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(22),
-                                            ),
-                                          ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 0),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                              ),
+                                              suffixIcon:
+                                                  Icon(Icons.search, size: 19),
+                                              labelText: " Aucun pays trouvé"),
+                                          cursorColor: Colors.green,
                                         );
                                       },
                                     ),
@@ -690,7 +769,22 @@ class _StoreScreenState extends State<StoreScreen> {
                                       builder: (_, snapshot) {
                                         if (snapshot.connectionState ==
                                             ConnectionState.waiting) {
-                                          return buildLoadingDropdown();
+                                          return TextDropdownFormField(
+                                            options: [],
+                                            decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 0),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                                suffixIcon: Icon(Icons.search,
+                                                    size: 19),
+                                                labelText: "Chargement..."),
+                                            cursorColor: Colors.green,
+                                          );
                                         }
 
                                         if (snapshot.hasData) {
@@ -698,29 +792,153 @@ class _StoreScreenState extends State<StoreScreen> {
                                               .decode(snapshot.data.bodyBytes);
                                           dynamic responseData =
                                               json.decode(jsonString);
-                                          //
-                                          // }
+
                                           if (responseData is List) {
                                             final reponse = responseData;
-                                            final niveau1PaysList = reponse
+                                            final niveau3List = reponse
                                                 .map((e) =>
                                                     Niveau1Pays.fromMap(e))
                                                 .where((con) =>
                                                     con.statutN1 == true)
                                                 .toList();
-
-                                            if (niveau1PaysList.isEmpty) {
-                                              return buildEmptyDropdown();
+                                            if (niveau3List.isEmpty) {
+                                              return TextDropdownFormField(
+                                                options: [],
+                                                decoration: InputDecoration(
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 10,
+                                                            horizontal: 0),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              22),
+                                                    ),
+                                                    suffixIcon: Icon(
+                                                        Icons.search,
+                                                        size: 19),
+                                                    labelText:
+                                                        " Aucune région trouvé"),
+                                                cursorColor: Colors.green,
+                                              );
                                             }
 
-                                            return buildDropdown(
-                                                niveau1PaysList);
-                                          } else {
-                                            return buildEmptyDropdown();
+                                            return DropdownFormField<
+                                                Niveau1Pays>(
+                                              onEmptyActionPressed:
+                                                  (String str) async {},
+                                              dropdownHeight: 200,
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            22),
+                                                  ),
+                                                  suffixIcon: Icon(
+                                                    Icons.search,
+                                                    size: 19,
+                                                  ),
+                                                  // label: Text("label"),
+                                                  labelText:
+                                                      " Filtrer par région"),
+                                              onSaved: (dynamic n) {
+                                                // niveau3 = n?.nomN3;
+                                                print("onSaved : $n");
+                                              },
+                                              onChanged: (dynamic n) {
+                                                setState(() {
+                                                  if (n != null) {
+                                                    selectedNiveau1Pays = n;
+                                                  }
+                                                  page = 0;
+                                                  hasMore = true;
+                                                  fetchMagasinByNiveau1PaysWithPagination(
+                                                      selectedNiveau1Pays!
+                                                          .idNiveau1Pays!,
+                                                      refresh: true);
+                                                  if (page == 0 &&
+                                                      isLoading == true) {
+                                                    SchedulerBinding.instance
+                                                        .addPostFrameCallback(
+                                                            (_) {
+                                                      scrollableController1
+                                                          .jumpTo(0.0);
+                                                    });
+                                                  }
+                                                });
+                                              },
+                                              displayItemFn: (dynamic item) =>
+                                                  Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 15),
+                                                child: Text(
+                                                  item?.nomN1 ?? '',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              findFn: (String str) async =>
+                                                  niveau3List,
+                                              selectedFn: (dynamic item1,
+                                                  dynamic item2) {
+                                                if (item1 != null &&
+                                                    item2 != null) {
+                                                  return item1.idNiveau1Pays ==
+                                                      item2.idNiveau1Pays;
+                                                }
+                                                return false;
+                                              },
+                                              filterFn: (dynamic item,
+                                                      String str) =>
+                                                  item.nomN1!
+                                                      .toLowerCase()
+                                                      .contains(
+                                                          str.toLowerCase()),
+                                              dropdownItemFn: (dynamic item,
+                                                      int position,
+                                                      bool focused,
+                                                      bool selected,
+                                                      Function() onTap) =>
+                                                  ListTile(
+                                                title: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10),
+                                                  child: Text(item.nomN1!),
+                                                ),
+                                                tileColor: focused
+                                                    ? Color.fromARGB(
+                                                        20, 0, 0, 0)
+                                                    : Colors.transparent,
+                                                onTap: onTap,
+                                              ),
+                                            );
                                           }
                                         }
-
-                                        return buildEmptyDropdown();
+                                        return TextDropdownFormField(
+                                          options: [],
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 0),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                              ),
+                                              suffixIcon:
+                                                  Icon(Icons.search, size: 18),
+                                              labelText:
+                                                  "Aucune région trouvé--"),
+                                          cursorColor: Colors.green,
+                                        );
                                       },
                                     ),
                                   ),
@@ -906,7 +1124,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -930,17 +1147,20 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder: (context) => ProductsByStoresScreen(
-                                                                      id: produitsLocaux[
-                                                                              index]
-                                                                          .idMagasin,
-                                                                      nom: produitsLocaux[
-                                                                              index]
-                                                                          .nomMagasin,
-                                                                          ac:produitsLocaux[
-                                                                              index].acteur,
-                                                                          ),
-                                                                          
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ProductsByStoresScreen(
+                                                                    id: produitsLocaux[
+                                                                            index]
+                                                                        .idMagasin,
+                                                                    nom: produitsLocaux[
+                                                                            index]
+                                                                        .nomMagasin,
+                                                                    pays: produitsLocaux[
+                                                                            index]
+                                                                        .acteur!
+                                                                        .niveau3PaysActeur!,
+                                                                  ),
                                                                 ),
                                                               );
                                                             },
@@ -1050,7 +1270,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                   ],
                                                   if (produitsEtrangers
                                                       .isNotEmpty) ...[
-                                                         Padding(
+                                                    Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
@@ -1059,11 +1279,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: d_colorGreen,
                                                             fontSize: 16),
                                                       ),
                                                     ),
-                                                   
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1088,13 +1306,20 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder: (context) => ProductsByStoresScreen(
-                                                                      id: produitsEtrangers[
-                                                                              index]
-                                                                          .idMagasin,
-                                                                      nom: produitsEtrangers[
-                                                                              index]
-                                                                          .nomMagasin),
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ProductsByStoresScreen(
+                                                                    id: produitsEtrangers[
+                                                                            index]
+                                                                        .idMagasin,
+                                                                    nom: produitsEtrangers[
+                                                                            index]
+                                                                        .nomMagasin,
+                                                                    pays: produitsEtrangers[
+                                                                            index]
+                                                                        .acteur!
+                                                                        .niveau3PaysActeur!,
+                                                                  ),
                                                                 ),
                                                               );
                                                             },
@@ -1326,7 +1551,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                                     children: [
                                                       if (produitsLocaux
                                                           .isNotEmpty) ...[
-                                                        
                                                         GridView.builder(
                                                           shrinkWrap: true,
                                                           physics:
@@ -1354,11 +1578,17 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                       .push(
                                                                     context,
                                                                     MaterialPageRoute(
-                                                                      builder: (context) => ProductsByStoresScreen(
-                                                                          id: produitsLocaux[index]
-                                                                              .idMagasin,
-                                                                          nom: produitsLocaux[index]
-                                                                              .nomMagasin),
+                                                                      builder:
+                                                                          (context) =>
+                                                                              ProductsByStoresScreen(
+                                                                        id: produitsLocaux[index]
+                                                                            .idMagasin,
+                                                                        nom: produitsLocaux[index]
+                                                                            .nomMagasin,
+                                                                        pays: produitsLocaux[index]
+                                                                            .acteur!
+                                                                            .niveau3PaysActeur!,
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 },
@@ -1464,20 +1694,21 @@ class _StoreScreenState extends State<StoreScreen> {
                                                       ],
                                                       if (produitsEtrangers
                                                           .isNotEmpty) ...[
-                                                         Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        "Magasins etrangère",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: d_colorGreen,
-                                                            fontSize: 16),
-                                                      ),
-                                                    ),
-                                                   
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                            "Magasins etrangère",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    d_colorGreen,
+                                                                fontSize: 16),
+                                                          ),
+                                                        ),
                                                         GridView.builder(
                                                           shrinkWrap: true,
                                                           physics:
@@ -1505,11 +1736,17 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                       .push(
                                                                     context,
                                                                     MaterialPageRoute(
-                                                                      builder: (context) => ProductsByStoresScreen(
-                                                                          id: produitsEtrangers[index]
-                                                                              .idMagasin,
-                                                                          nom: produitsEtrangers[index]
-                                                                              .nomMagasin),
+                                                                      builder:
+                                                                          (context) =>
+                                                                              ProductsByStoresScreen(
+                                                                        id: produitsEtrangers[index]
+                                                                            .idMagasin,
+                                                                        nom: produitsEtrangers[index]
+                                                                            .nomMagasin,
+                                                                        pays: produitsEtrangers[index]
+                                                                            .acteur!
+                                                                            .niveau3PaysActeur!,
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 },

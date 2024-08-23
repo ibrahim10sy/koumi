@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:koumi/Admin/Zone.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/CategorieProduit.dart';
+import 'package:koumi/models/Pays.dart';
 import 'package:koumi/models/Stock.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/AddAndUpdateProductScreen.dart';
@@ -63,6 +64,8 @@ class _ProduitElevageState extends State<ProduitElevage> {
   late List<TypeActeur> typeActeurData = [];
   bool isSearchMode = false;
   bool isFilterMode = false;
+  String? nomP;
+  late Future _paysList;
 
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -129,6 +132,18 @@ class _ProduitElevageState extends State<ProduitElevage> {
           debugPrint("page inc all ${page}");
         });
       });
+    } else if (nomP != null && nomP!.isNotEmpty) {
+      debugPrint("yes - fetch by country");
+      if (mounted)
+        setState(() {
+          page++;
+        });
+
+      fetchStockByPays().then((value) {
+        setState(() {
+          debugPrint("page pour pays ${nomP} inc all ${page}");
+        });
+      });
     }
     debugPrint("no");
   }
@@ -139,6 +154,9 @@ class _ProduitElevageState extends State<ProduitElevage> {
           selectedCat!.idCategorieProduit!,
           libelle,
           detectedCountry != null ? detectedCountry! : "mali");
+    } else if (nomP != null && nomP!.isNotEmpty) {
+      stockListe =
+          await StockService().fetchStockByPaysAndFiliere(libelle, nomP!);
     }
 
     return stockListe;
@@ -164,6 +182,59 @@ class _ProduitElevageState extends State<ProduitElevage> {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/Stock/getAllStocksByCategorieAndFiliere?idCategorie=${selectedCat!.idCategorieProduit}&libelleFiliere=$libelle&niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
 
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+          setState(() {
+            hasMore = false;
+          });
+        } else {
+          List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+          setState(() {
+            stockListe.addAll(newStocks.where((newStock) => !stockListe
+                .any((existStock) => existStock.idStock == newStock.idStock)));
+          });
+        }
+
+        debugPrint(
+            "response body all stock by categorie and pays with pagination ${page} par défilement soit ${stockListe.length}");
+      } else {
+        print(
+            'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+      }
+    } catch (e) {
+      print(
+          'Une erreur s\'est produite lors de la récupération des stocks: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+    return stockListe;
+  }
+
+  Future<List<Stock>> fetchStockByPays({bool refresh = false}) async {
+    if (isLoading == true) return [];
+
+    setState(() {
+      isLoading = true;
+    });
+
+    if (refresh) {
+      setState(() {
+        stockListe.clear();
+        page = 0;
+        hasMore = true;
+      });
+    }
+
+    try {
+      final response = await http.get(Uri.parse(
+          '$apiOnlineUrl/Stock/getAllByFiliereAndPays?libelle=${libelle}&nomPays=${nomP}&page=$page&size=$size'));
+      print(
+          "page : $apiOnlineUrl/Stock/getAllByFiliereAndPays?libelle=${libelle}&nomPays=${nomP}&page=$page&size=$size");
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
@@ -262,6 +333,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController.addListener(_scrollListener);
     });
@@ -281,37 +353,9 @@ class _ProduitElevageState extends State<ProduitElevage> {
         fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
   }
 
-  void _updateMode(int index) {
-    if (mounted) {
-      setState(() {
-        isSearchMode = index == 0;
-        if (!isSearchMode) {
-          _searchController.clear();
-          _searchController.dispose();
-          _searchController = TextEditingController();
-        }
-      });
-    }
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-  }
-
-  void _selectMode(String mode) {
-    setState(() {
-      if (mode == 'Rechercher') {
-        isSearchMode = true;
-        isFilterMode = false;
-      } else if (mode == 'Filtrer') {
-        isSearchMode = false;
-        isFilterMode = true;
-      } else if (mode == 'Fermer') {
-        isSearchMode = false;
-        isFilterMode = false;
-      }
-    });
   }
 
   @override
@@ -622,6 +666,14 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                           _searchController.clear();
                                           _searchController =
                                               TextEditingController();
+                                          nomP =
+                                              null; // Réinitialiser le pays sélectionné
+                                          selectedCat =
+                                              null; // Réinitialiser la catégorie sélectionnée
+                                          stockListeFuture = fetchStock(
+                                              detectedCountry != null
+                                                  ? detectedCountry!
+                                                  : "Mali"); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -636,150 +688,343 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                       style: TextStyle(
                                           color: Colors.red, fontSize: 17),
                                     ),
-                                  ),
+                                  )
                               ]),
                         ),
                         Visibility(
                           visible: isSearchMode,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 10),
-                            child: FutureBuilder(
-                              future: _catList,
-                              builder: (_, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        icon: Icon(Icons.search),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 5, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(22),
-                                        ),
-                                        suffixIcon: Icon(Icons.arrow_drop_down),
-                                        labelText: "Chargement..."),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: FutureBuilder(
+                                    future: _paysList,
+                                    builder: (_, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return TextDropdownFormField(
+                                          options: [],
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 0),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                              ),
+                                              suffixIcon:
+                                                  Icon(Icons.search, size: 19),
+                                              labelText: "Chargement..."),
+                                          cursorColor: Colors.green,
+                                        );
+                                      }
 
-                                if (snapshot.hasData) {
-                                  dynamic jsonString =
-                                      utf8.decode(snapshot.data.bodyBytes);
-                                  dynamic responseData =
-                                      json.decode(jsonString);
+                                      if (snapshot.hasData) {
+                                        dynamic jsonString = utf8
+                                            .decode(snapshot.data.bodyBytes);
+                                        dynamic responseData =
+                                            json.decode(jsonString);
 
-                                  if (responseData is List) {
-                                    final paysList = responseData
-                                        .map((e) => CategorieProduit.fromMap(e))
-                                        .where((con) =>
-                                            con.statutCategorie == true)
-                                        .toList();
-                                    if (paysList.isEmpty) {
+                                        if (responseData is List) {
+                                          final paysList = responseData
+                                              .map((e) => Pays.fromMap(e))
+                                              .where((con) =>
+                                                  con.statutPays == true)
+                                              .toList();
+                                          if (paysList.isEmpty) {
+                                            return TextDropdownFormField(
+                                              options: [],
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            22),
+                                                  ),
+                                                  suffixIcon: Icon(Icons.search,
+                                                      size: 19),
+                                                  labelText:
+                                                      "  Aucun pays trouvé"),
+                                              cursorColor: Colors.green,
+                                            );
+                                          }
+
+                                          return DropdownFormField<Pays>(
+                                            onEmptyActionPressed:
+                                                (String str) async {},
+                                            dropdownHeight: 200,
+                                            decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 0),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                                suffixIcon: Icon(Icons.search,
+                                                    size: 19),
+                                                labelText:
+                                                    "  Filtrer par pays"),
+                                            onSaved: (dynamic pays) {
+                                              print("onSaved : $nomP");
+                                            },
+                                            onChanged: (dynamic pays) {
+                                              nomP = pays?.nomPays;
+                                              setState(() {
+                                                nomP = pays?.nomPays;
+                                                page = 0;
+                                                hasMore = true;
+                                                fetchStockByPays(refresh: true);
+                                                if (page == 0 &&
+                                                    isLoading == true) {
+                                                  SchedulerBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) {
+                                                    scrollableController1
+                                                        .jumpTo(0.0);
+                                                  });
+                                                }
+                                              });
+                                              print("selected : $nomP");
+                                            },
+                                            displayItemFn: (dynamic item) =>
+                                                Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 15),
+                                              child: Text(
+                                                item?.nomPays ?? '',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                            findFn: (String str) async =>
+                                                paysList,
+                                            selectedFn:
+                                                (dynamic item1, dynamic item2) {
+                                              if (item1 != null &&
+                                                  item2 != null) {
+                                                return item1.idPays ==
+                                                    item2.idPays;
+                                              }
+                                              return false;
+                                            },
+                                            filterFn:
+                                                (dynamic item, String str) =>
+                                                    item.nomPays!
+                                                        .toLowerCase()
+                                                        .contains(
+                                                            str.toLowerCase()),
+                                            dropdownItemFn: (dynamic item,
+                                                    int position,
+                                                    bool focused,
+                                                    bool selected,
+                                                    Function() onTap) =>
+                                                ListTile(
+                                              title: Text(item.nomPays!),
+                                              tileColor: focused
+                                                  ? Color.fromARGB(20, 0, 0, 0)
+                                                  : Colors.transparent,
+                                              onTap: onTap,
+                                            ),
+                                          );
+                                        }
+                                      }
                                       return TextDropdownFormField(
                                         options: [],
                                         decoration: InputDecoration(
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                    horizontal: 20),
+                                                    vertical: 10,
+                                                    horizontal: 0),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(22),
                                             ),
-                                            suffixIcon: Icon(Icons.search),
-                                            labelText:
-                                                "--Aucune catégorie trouvé--"),
+                                            suffixIcon:
+                                                Icon(Icons.search, size: 19),
+                                            labelText: " Aucun pays trouvé"),
                                         cursorColor: Colors.green,
                                       );
-                                    }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: FutureBuilder(
+                                    future: _catList,
+                                    builder: (_, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return TextDropdownFormField(
+                                          options: [],
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 0),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                              ),
+                                              suffixIcon:
+                                                  Icon(Icons.search, size: 19),
+                                              labelText: "Chargement..."),
+                                          cursorColor: Colors.green,
+                                        );
+                                      }
 
-                                    return DropdownFormField<CategorieProduit>(
-                                      onEmptyActionPressed:
-                                          (String str) async {},
-                                      dropdownHeight: 200,
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(22),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText:
-                                              "--Filtrer par catégorie--"),
-                                      onSaved: (dynamic cat) {
-                                        selectedCat = cat;
-                                        print("onSaved : $cat");
-                                      },
-                                      onChanged: (dynamic cat) {
-                                        setState(() {
-                                          selectedCat = cat;
-                                          page = 0;
-                                          hasMore = true;
-                                          fetchStockByCategorie(
-                                              detectedCountry != null
-                                                  ? detectedCountry!
-                                                  : "Mali",
-                                              refresh: true);
-                                          if (page == 0 && isLoading == true) {
-                                            SchedulerBinding.instance
-                                                .addPostFrameCallback((_) {
-                                              scrollableController1.jumpTo(0.0);
-                                            });
+                                      if (snapshot.hasData) {
+                                        dynamic jsonString = utf8
+                                            .decode(snapshot.data.bodyBytes);
+                                        dynamic responseData =
+                                            json.decode(jsonString);
+
+                                        if (responseData is List) {
+                                          final paysList = responseData
+                                              .map((e) =>
+                                                  CategorieProduit.fromMap(e))
+                                              .where((con) =>
+                                                  con.statutCategorie == true)
+                                              .toList();
+                                          if (paysList.isEmpty) {
+                                            return TextDropdownFormField(
+                                              options: [],
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            22),
+                                                  ),
+                                                  suffixIcon: Icon(Icons.search,
+                                                      size: 19),
+                                                  labelText:
+                                                      " Aucune catégorie trouvé"),
+                                              cursorColor: Colors.green,
+                                            );
                                           }
-                                        });
-                                      },
-                                      displayItemFn: (dynamic item) => Text(
-                                        item?.libelleCategorie ?? '',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      findFn: (String str) async => paysList,
-                                      selectedFn:
-                                          (dynamic item1, dynamic item2) {
-                                        if (item1 != null && item2 != null) {
-                                          return item1.idCategorieProduit ==
-                                              item2.idCategorieProduit;
+
+                                          return DropdownFormField<
+                                              CategorieProduit>(
+                                            onEmptyActionPressed:
+                                                (String str) async {},
+                                            dropdownHeight: 200,
+                                            decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 15),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                                suffixIcon: Icon(Icons.search,
+                                                    size: 19),
+                                                labelText:
+                                                    "Filtrer par catégorie"),
+                                            onSaved: (dynamic cat) {
+                                              selectedCat = cat;
+                                              print("onSaved : $cat");
+                                            },
+                                            onChanged: (dynamic cat) {
+                                              setState(() {
+                                                selectedCat = cat;
+                                                page = 0;
+                                                hasMore = true;
+                                                fetchStockByCategorie(
+                                                    detectedCountry != null
+                                                        ? detectedCountry!
+                                                        : "Mali",
+                                                    refresh: true);
+                                                if (page == 0 &&
+                                                    isLoading == true) {
+                                                  SchedulerBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) {
+                                                    scrollableController1
+                                                        .jumpTo(0.0);
+                                                  });
+                                                }
+                                              });
+                                            },
+                                            displayItemFn: (dynamic item) =>
+                                                Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 0),
+                                              child: Text(
+                                                item?.libelleCategorie ?? '',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                            findFn: (String str) async =>
+                                                paysList,
+                                            selectedFn:
+                                                (dynamic item1, dynamic item2) {
+                                              if (item1 != null &&
+                                                  item2 != null) {
+                                                return item1
+                                                        .idCategorieProduit ==
+                                                    item2.idCategorieProduit;
+                                              }
+                                              return false;
+                                            },
+                                            filterFn:
+                                                (dynamic item, String str) =>
+                                                    item.libelleCategorie!
+                                                        .toLowerCase()
+                                                        .contains(
+                                                            str.toLowerCase()),
+                                            dropdownItemFn: (dynamic item,
+                                                    int position,
+                                                    bool focused,
+                                                    bool selected,
+                                                    Function() onTap) =>
+                                                ListTile(
+                                              title:
+                                                  Text(item.libelleCategorie!),
+                                              tileColor: focused
+                                                  ? Color.fromARGB(20, 0, 0, 0)
+                                                  : Colors.transparent,
+                                              onTap: onTap,
+                                            ),
+                                          );
                                         }
-                                        return false;
-                                      },
-                                      filterFn: (dynamic item, String str) =>
-                                          item.libelleCategorie!
-                                              .toLowerCase()
-                                              .contains(str.toLowerCase()),
-                                      dropdownItemFn: (dynamic item,
-                                              int position,
-                                              bool focused,
-                                              bool selected,
-                                              Function() onTap) =>
-                                          ListTile(
-                                        title: Text(item.libelleCategorie!),
-                                        tileColor: focused
-                                            ? Color.fromARGB(20, 0, 0, 0)
-                                            : Colors.transparent,
-                                        onTap: onTap,
-                                      ),
-                                    );
-                                  }
-                                }
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(22),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "--Aucune catégorie trouvé--"),
-                                  cursorColor: Colors.green,
-                                );
-                              },
+                                      }
+                                      return TextDropdownFormField(
+                                        options: [],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 0),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                            suffixIcon:
+                                                Icon(Icons.search, size: 19),
+                                            labelText:
+                                                "Aucune catégorie trouvé"),
+                                        cursorColor: Colors.green,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -830,15 +1075,19 @@ class _ProduitElevageState extends State<ProduitElevage> {
                         });
                         debugPrint("refresh page ${page}");
 
-                        selectedCat != null
+                        selectedCat != null || nomP != null
                             ? setState(() {
-                                stockListeFuture1 = StockService()
-                                    .fetchStockByCategorieAndFiliere(
-                                        selectedCat!.idCategorieProduit!,
-                                        libelle,
-                                        detectedCountry != null
-                                            ? detectedCountry!
-                                            : "Mali");
+                                nomP == null || nomP!.isEmpty
+                                    ? stockListeFuture1 = StockService()
+                                        .fetchStockByCategorieAndFiliere(
+                                            selectedCat!.idCategorieProduit!,
+                                            libelle,
+                                            detectedCountry != null
+                                                ? detectedCountry!
+                                                : "Mali")
+                                    : stockListeFuture1 = StockService()
+                                        .fetchStockByPaysAndFiliere(
+                                            libelle, nomP!);
                               })
                             : setState(() {
                                 stockListeFuture = fetchStock(
@@ -848,7 +1097,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                               });
                         debugPrint("refresh page ${page}");
                       },
-                      child: selectedCat == null
+                      child: selectedCat == null && nomP == null
                           ? SingleChildScrollView(
                               controller: scrollableController,
                               child: Consumer<StockService>(
@@ -1116,7 +1365,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: d_colorGreen,
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1546,7 +1794,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: d_colorGreen,
                                                             fontSize: 16),
                                                       ),
                                                     ),

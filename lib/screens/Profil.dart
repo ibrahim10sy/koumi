@@ -42,9 +42,9 @@ class _ProfilState extends State<Profil> {
   String? email = "";
 
   void verify() async {
-     await Provider.of<ActeurProvider>(context, listen: false)
-      .initializeActeurFromSharedPreferences();
-      
+    await Provider.of<ActeurProvider>(context, listen: false)
+        .initializeActeurFromSharedPreferences();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
 
@@ -75,11 +75,10 @@ class _ProfilState extends State<Profil> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
-        
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           title: const Text(
             "Mon Profil",
             style: TextStyle(
@@ -162,7 +161,6 @@ class _ProfilState extends State<Profil> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
-                     
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 15, horizontal: 10),
@@ -651,7 +649,7 @@ class _ProfilState extends State<Profil> {
                               ),
                             )
                           : Container(),
-                      _buildType(),
+                      // _buildType(),
                       Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -664,7 +662,8 @@ class _ProfilState extends State<Profil> {
                               // Déconnexion avec le provider
                               await acteurProvider.logout();
 
-                              Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
+                              Get.offAll(BottomNavigationPage(),
+                                  transition: Transition.leftToRight);
                               Provider.of<BottomNavigationService>(context,
                                       listen: false)
                                   .changeIndex(0);
@@ -724,105 +723,65 @@ class _ProfilState extends State<Profil> {
     );
   }
 
-  Widget _buildType() {
-    return type.toLowerCase() == 'transporteur'
-        ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    offset: const Offset(0, 2),
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    child: Column(
-                      children: [
-                        Row(children: [
-                          const Icon(Icons.align_horizontal_left_outlined,
-                              color: d_colorGreen, size: 25),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const VehiculeActeur()));
-                              },
-                              child: Text(
-                                "Mes véhicule",
-                                style: TextStyle(
-                                    fontSize: 17, color: d_colorGreen),
-                              ))
-                        ]),
-                        // Consumer<TypeVoitureService>(
-                        //     builder: (context, typeService, child) {
-                        //   return FutureBuilder(
-                        //       future: typeService
-                        //           .fetchTypeVoitureByActeur(acteur.idActeur!),
-                        //       builder: (context, snapshot) {
-                        //         if (snapshot.connectionState ==
-                        //             ConnectionState.waiting) {
-                        //           return const Center(
-                        //             child: CircularProgressIndicator(
-                        //               color: Colors.orange,
-                        //             ),
-                        //           );
-                        //         }
+  // Widget _buildType() {
+  //   return type.toLowerCase() == 'transporteur'
+  //       ? Padding(
+  //           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+  //           child: Container(
+  //             width: MediaQuery.of(context).size.width * 0.9,
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.circular(15),
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: Colors.grey.withOpacity(0.2),
+  //                   offset: const Offset(0, 2),
+  //                   blurRadius: 5,
+  //                   spreadRadius: 2,
+  //                 ),
+  //               ],
+  //             ),
+  //             child: Column(
+  //               children: [
+  //                 Padding(
+  //                   padding:
+  //                       const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+  //                   child: Column(
+  //                     children: [
+  //                       Row(children: [
+  //                         const Icon(Icons.align_horizontal_left_outlined,
+  //                             color: d_colorGreen, size: 25),
+  //                         const SizedBox(
+  //                           width: 15,
+  //                         ),
+  //                         TextButton(
+  //                             onPressed: () {
+  //                               Navigator.push(
+  //                                   context,
+  //                                   MaterialPageRoute(
+  //                                       builder: (context) =>
+  //                                           const VehiculeActeur()));
+  //                             },
+  //                             child: Text(
+  //                               "Mes véhicule",
+  //                               style: TextStyle(
+  //                                   fontSize: 17, color: d_colorGreen),
+  //                             ))
+  //                       ]),
 
-                        //         if (!snapshot.hasData) {
-                        //           return const Padding(
-                        //             padding: EdgeInsets.all(10),
-                        //             child: Center(
-                        //                 child: Text(
-                        //                     "Aucun type de véhicule trouvé")),
-                        //           );
-                        //         } else {
-                        //           typeList = snapshot.data!;
-                        //           return Wrap(
-                        //               spacing: 10,
-                        //               children: typeList
-                        //                   .map(
-                        //                     (e) => Text("${e.nom} ,",
-                        //                         style: const TextStyle(
-                        //                             color: Colors.black87,
-                        //                             fontSize: 16,
-                        //                             fontWeight: FontWeight.w500,
-                        //                             fontStyle: FontStyle.italic,
-                        //                             overflow:
-                        //                                 TextOverflow.ellipsis)),
-                        //                   )
-                        //                   .toList());
-                        //         }
-                        //       });
-                        // })
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Image.asset("assets/images/car.png",
-                        width: 50, height: 50),
-                  )
-                ],
-              ),
-            ),
-          )
-        : Container();
-  }
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                   alignment: Alignment.bottomRight,
+  //                   padding: const EdgeInsets.symmetric(horizontal: 10),
+  //                   child: Image.asset("assets/images/car.png",
+  //                       width: 50, height: 50),
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         )
+  //       : Container();
+  // }
 }

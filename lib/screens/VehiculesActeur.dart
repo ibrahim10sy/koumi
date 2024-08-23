@@ -22,7 +22,8 @@ import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shimmer/shimmer.dart';
 
 class VehiculeActeur extends StatefulWidget {
-  const VehiculeActeur({super.key});
+  bool? isRoute;
+  VehiculeActeur({super.key, this.isRoute});
 
   @override
   State<VehiculeActeur> createState() => _VehiculeActeurState();
@@ -37,7 +38,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
   late TextEditingController _searchController;
   List<Vehicule> vehiculeListe = [];
   Future<List<Vehicule>>? _liste;
-  late Acteur acteur = Acteur();
+  Acteur acteur = Acteur();
   // late Future liste;
 
   Future<List<Vehicule>> getVehicule(String id) async {
@@ -153,15 +154,17 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
 
   @override
   void initState() {
-    verify();
+    // verify();
     // acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     // typeActeurData = acteur.typeActeur!;
     // type = typeActeurData.map((data) => data.libelle).join(', ');
     _searchController = TextEditingController();
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
 
-    isExist
-        ? _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!)
-        : Container();
+    typeActeurData = acteur.typeActeur!;
+    type = typeActeurData.map((data) => data.libelle).join(', ');
+    _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       //write or call your logic
       //code will run when widget rendering complete
@@ -194,9 +197,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      setState(() {
-        _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!);
-      });
+      // setState(() {
+      //   _liste = VehiculeService().fetchVehiculeByActeur(acteur.idActeur!);
+      // });
     }
   }
 
@@ -208,14 +211,15 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
             backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
-            // leading: IconButton(
-            //     onPressed: () {
-            //       Get.offAll(BottomNavigationPage(),
-            //           transition: Transition.leftToRight);
-            //       Provider.of<BottomNavigationService>(context, listen: false)
-            //           .changeIndex(0);
-            //     },
-            //     icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            leading: widget.isRoute!
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        Navigator.pop(context, true);
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_back, color: Colors.white))
+                : Container(),
             title: Text(
               'Mes véhicules',
               style: const TextStyle(
@@ -234,33 +238,6 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                     });
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
-              // PopupMenuButton<String>(
-              //   padding: EdgeInsets.zero,
-              //   itemBuilder: (context) => <PopupMenuEntry<String>>[
-              //     PopupMenuItem<String>(
-              //       child: ListTile(
-              //         leading: const Icon(
-              //           Icons.add,
-              //           color: Colors.green,
-              //         ),
-              //         title: const Text(
-              //           "Ajouter un vehicule",
-              //           style: TextStyle(
-              //               color: Colors.green,
-              //               fontWeight: FontWeight.bold,
-              //               fontSize: 18),
-              //         ),
-              //         onTap: () async {
-              //           Navigator.of(context).pop();
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => AddVehicule()));
-              //         },
-              //       ),
-              //     ),
-              //   ],
-              // )
             ]),
         body: GestureDetector(
           onTap: () {
@@ -425,7 +402,10 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                               child: Consumer<VehiculeService>(
                                   builder: (context, vehiculeService, child) {
                                 return FutureBuilder(
-                                    future: _liste,
+                                    future: !widget.isRoute!
+                                        ? vehiculeService.fetchVehiculeByActeur(
+                                            acteur.idActeur!)
+                                        : _liste,
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {

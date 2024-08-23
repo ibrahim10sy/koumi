@@ -97,6 +97,9 @@ class _AddIntrantState extends State<AddIntrant> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                 SizedBox(
+                height: 10,
+              ),
                 Form(
                   key: formkey,
                   child: Column(children: [

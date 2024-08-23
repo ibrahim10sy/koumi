@@ -323,47 +323,6 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                       ),
                     ),
 
-                  // Padding(
-                  //   padding: const EdgeInsets.all(10.0),
-                  //   child: Container(
-                  //     padding: EdgeInsets.symmetric(horizontal: 10),
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.blueGrey[50], // Couleur d'arrière-plan
-                  //       borderRadius: BorderRadius.circular(25),
-                  //     ),
-                  //     child: Row(
-                  //       children: [
-                  //         Icon(Icons.search,
-                  //             color: Colors.blueGrey[400],
-                  //             size:
-                  //                 28), // Utiliser une icône de recherche plus grande
-                  //         SizedBox(width: 10),
-                  //         Expanded(
-                  //           child: TextField(
-                  //             controller: _searchController,
-                  //             onChanged: (value) {
-                  //               setState(() {});
-                  //             },
-                  //             decoration: InputDecoration(
-                  //               hintText: 'Rechercher...',
-                  //               border: InputBorder.none,
-                  //               hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         // Ajouter un bouton de réinitialisation pour effacer le texte de recherche
-                  //         IconButton(
-                  //           icon: Icon(Icons.clear),
-                  //           onPressed: () {
-                  //             _searchController.clear();
-                  //             setState(() {});
-                  //           },
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
                 ])),
               ];
             },
@@ -381,7 +340,7 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                   child: Consumer<MaterielService>(
                     builder: (context, materielService, child) {
                       return FutureBuilder(
-                          future: futureListe,
+                          future: materielService.fetchMaterielByActeurWithPagination(acteur.idActeur!),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

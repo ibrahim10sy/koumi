@@ -1001,10 +1001,7 @@ class _CategoriPageState extends State<CategoriPage> {
                                                                         .then((value) =>
                                                                             {
                                                                               Provider.of<CategorieService>(context, listen: false).applyChange(),
-                                                                              // setState(() {
-                                                                              //   _categorieList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
-                                                                              // }),
-                                                                              // Navigator.of(context).pop(),
+                                                                             
                                                                             })
                                                                         .catchError((onError) =>
                                                                             {

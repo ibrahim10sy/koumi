@@ -780,7 +780,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                           ),
                                           suffixIcon: Icon(Icons.search),
                                           labelText:
-                                              "--Aucune localité trouvé--"),
+                                              "Aucune localité trouvé--"),
                                       cursorColor: Colors.green,
                                     );
                                   }
@@ -846,7 +846,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     suffixIcon: Icon(Icons.search),
-                                    labelText: "--Aucune localité trouvé--"),
+                                    labelText: "Aucune localité trouvé--"),
                                 cursorColor: Colors.green,
                               );
                             },
@@ -1088,8 +1088,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                                 BorderRadius.circular(8),
                                           ),
                                           suffixIcon: Icon(Icons.search),
-                                          labelText:
-                                              "--Aucune monnaie trouvé--"),
+                                          labelText: "Aucune monnaie trouvé--"),
                                       cursorColor: Colors.green,
                                     );
                                   }
@@ -1155,7 +1154,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     suffixIcon: Icon(Icons.search),
-                                    labelText: "--Aucune monnaie trouvé--"),
+                                    labelText: "Aucune monnaie trouvé--"),
                                 cursorColor: Colors.green,
                               );
                             },

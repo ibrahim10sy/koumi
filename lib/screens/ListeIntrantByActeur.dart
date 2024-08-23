@@ -143,7 +143,9 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     super.initState();
     _searchController = TextEditingController();
     // acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-    verify();
+    // verify();
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+      
      isExist
                                     ?
     futureList = fetchIntrantByActeur(acteur.idActeur!):Container();
@@ -158,10 +160,10 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      setState(() {
-        futureList = IntrantService()
-            .fetchIntrantByActeurWithPagination(acteur.idActeur!);
-      });
+      // setState(() {
+      //   futureList = IntrantService()
+      //       .fetchIntrantByActeurWithPagination(acteur.idActeur!);
+      // });
     }
   }
 
@@ -200,11 +202,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
         backgroundColor: d_colorOr,
         centerTitle: true,
         toolbarHeight: 75,
-        // leading: IconButton(
-        //     onPressed: () {
-        //       Navigator.pop(context, true);
-        //     },
-        //     icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+  
         title: const Text(
           "Mes intrants",
           style: TextStyle(
@@ -341,48 +339,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                       ),
                     ),
 
-                  // const SizedBox(height: 10),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(10.0),
-                  //   child: Container(
-                  //     padding: EdgeInsets.symmetric(horizontal: 10),
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.blueGrey[50], // Couleur d'arrière-plan
-                  //       borderRadius: BorderRadius.circular(25),
-                  //     ),
-                  //     child: Row(
-                  //       children: [
-                  //         Icon(Icons.search,
-                  //             color: Colors.blueGrey[400],
-                  //             size:
-                  //                 28), // Utiliser une icône de recherche plus grande
-                  //         SizedBox(width: 10),
-                  //         Expanded(
-                  //           child: TextField(
-                  //             controller: _searchController,
-                  //             onChanged: (value) {
-                  //               setState(() {});
-                  //             },
-                  //             decoration: InputDecoration(
-                  //               hintText: 'Rechercher...',
-                  //               border: InputBorder.none,
-                  //               hintStyle: TextStyle(color: Colors.blueGrey[400]),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         // Ajouter un bouton de réinitialisation pour effacer le texte de recherche
-                  //         IconButton(
-                  //           icon: Icon(Icons.clear),
-                  //           onPressed: () {
-                  //             _searchController.clear();
-                  //             setState(() {});
-                  //           },
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
+                 
                 ])),
               ];
             },
@@ -403,7 +360,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                   child: Consumer<IntrantService>(
                       builder: (context, intrantService, child) {
                     return FutureBuilder(
-                        future: futureList,
+                        future: intrantService.fetchIntrantByActeurWithPagination(acteur.idActeur!),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {

@@ -19,7 +19,8 @@ class _FormeProduitState extends State<FormeProduit> {
   final formkey = GlobalKey<FormState>();
   late TextEditingController _searchController;
   late List<Forme> formeList = [];
-
+bool isSearchMode = false;
+  late ScrollController _scrollController;
   late Future _liste;
 
   Future<List<Forme>> getListe() async {
@@ -30,14 +31,15 @@ class _FormeProduitState extends State<FormeProduit> {
   @override
   void initState() {
     _searchController = TextEditingController();
+      _scrollController = ScrollController();
     _liste = getListe();
     super.initState();
   }
 
   @override
   void dispose() {
-    _searchController
-        .dispose(); // Disposez le TextEditingController lorsque vous n'en avez plus besoin
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -72,242 +74,356 @@ class _FormeProduitState extends State<FormeProduit> {
               size: 28,
             ),
           ),
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: Icon(
-                    Icons.add,
-                    color: d_colorGreen,
-                  ),
-                  title: Text(
-                    "Ajouter une forme",
-                    style: TextStyle(
-                      color: d_colorGreen,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    _showBottomSheet1();
-                  },
-                ),
-              ),
-            ],
-          )
+          // PopupMenuButton<String>(
+          //   padding: EdgeInsets.zero,
+          //   itemBuilder: (context) => <PopupMenuEntry<String>>[
+          //     PopupMenuItem<String>(
+          //       child: ListTile(
+          //         leading: Icon(
+          //           Icons.add,
+          //           color: d_colorGreen,
+          //         ),
+          //         title: Text(
+          //           "Ajouter une forme",
+          //           style: TextStyle(
+          //             color: d_colorGreen,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         onTap: () async {
+          //           Navigator.of(context).pop();
+          //           _showBottomSheet1();
+          //         },
+          //       ),
+          //     ),
+          //   ],
+          // )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey[50], // Couleur d'arrière-plan
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.search,
-                        color: Colors.blueGrey[400]), // Couleur de l'icône
-                    SizedBox(
-                        width:
-                            10), // Espacement entre l'icône et le champ de recherche
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          setState(() {});
+      body: Container(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                  child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                          showMenu<String>(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              0,
+                              50, // Adjust this value based on the desired position of the menu
+                              MediaQuery.of(context).size.width,
+                              0,
+                            ),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'add_store',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter une forme de produit ",
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            elevation: 8.0,
+                          ).then((value) {
+                            if (value != null) {
+                              if (value == 'add_store') {
+                                _showBottomSheet1();
+                              }
+                            }
+                          });
                         },
-                        decoration: InputDecoration(
-                          hintText: 'Rechercher...',
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              color: Colors
-                                  .blueGrey[400]), // Couleur du texte d'aide
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: d_colorGreen,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Ajouter',
+                              style: TextStyle(
+                                color: d_colorGreen,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
+                        ),
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Consumer<FormeService>(
-              builder: (context, formeService, child) {
-                return FutureBuilder(
-                    future: _liste,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.orange,
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
                           ),
-                        );
-                      }
-
-                      if (!snapshot.hasData) {
-                        return Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Aucune forme trouvé ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                        );
-                      } else {
-                        formeList = snapshot.data!;
-                        String searchText = "";
-                        List<Forme> filteredFiliereSearch =
-                            formeList.where((fil) {
-                          String nomfiliere = fil.libelleForme!.toLowerCase();
-                          searchText = _searchController.text.toLowerCase();
-                          return nomfiliere.contains(searchText);
-                        }).toList();
-                        return filteredFiliereSearch.isEmpty
-                            ? Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text('Aucune forme de produit trouvé ',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                      overflow: TextOverflow.ellipsis,
-                                    )),
-                              )
-                            : Column(
-                                children: filteredFiliereSearch
-                                    .map((e) => Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 15),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.9,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                  offset: const Offset(0, 2),
-                                                  blurRadius: 5,
-                                                  spreadRadius: 2,
+                        ],
+                      ),
+                    ),
+                  ),
+              ])),
+            ];
+          },
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+               
+                Consumer<FormeService>(
+                  builder: (context, formeService, child) {
+                    return FutureBuilder(
+                        future: _liste,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            );
+                          }
+          
+                          if (!snapshot.hasData) {
+                            return Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text('Aucune forme trouvé ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 17,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                            );
+                          } else {
+                            formeList = snapshot.data!;
+                            String searchText = "";
+                            List<Forme> filteredFiliereSearch =
+                                formeList.where((fil) {
+                              String nomfiliere = fil.libelleForme!.toLowerCase();
+                              searchText = _searchController.text.toLowerCase();
+                              return nomfiliere.contains(searchText);
+                            }).toList();
+                            return filteredFiliereSearch.isEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text('Aucune forme de produit trouvé ',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                  )
+                                : Column(
+                                    children: filteredFiliereSearch
+                                        .map((e) => Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 15),
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.9,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                      offset: const Offset(0, 2),
+                                                      blurRadius: 5,
+                                                      spreadRadius: 2,
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                ListTile(
-                                                    leading: _getIconForForme(
-                                                        e.libelleForme!),
-                                                    title: Text(
-                                                        e.libelleForme!
-                                                            .toUpperCase(),
-                                                        style: const TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 20,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        )),
-                                                    subtitle: Text(
-                                                        e.descriptionForme!
-                                                            .trim(),
-                                                        style: const TextStyle(
-                                                          color: Colors.black87,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FontStyle.italic,
-                                                        ))),
-                                                Container(
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 15),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      _buildEtat(
-                                                          e.statutForme!),
-                                                      PopupMenuButton<String>(
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        itemBuilder:
-                                                            (context) =>
-                                                                <PopupMenuEntry<
-                                                                    String>>[
-                                                          PopupMenuItem<String>(
-                                                            child: ListTile(
-                                                              leading: e.statutForme ==
-                                                                      false
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .check,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .disabled_visible,
-                                                                      color: Colors
-                                                                              .orange[
-                                                                          400]),
-                                                              title: Text(
-                                                                e.statutForme ==
-                                                                        false
-                                                                    ? "Activer"
-                                                                    : "Desactiver",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: e.statutForme ==
+                                                child: Column(
+                                                  children: [
+                                                    ListTile(
+                                                        leading: _getIconForForme(
+                                                            e.libelleForme!),
+                                                        title: Text(
+                                                            e.libelleForme!
+                                                                .toUpperCase(),
+                                                            style: const TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 20,
+                                                              overflow: TextOverflow
+                                                                  .ellipsis,
+                                                            )),
+                                                        subtitle: Text(
+                                                            e.descriptionForme!
+                                                                .trim(),
+                                                            style: const TextStyle(
+                                                              color: Colors.black87,
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                                  FontWeight.w500,
+                                                              fontStyle:
+                                                                  FontStyle.italic,
+                                                            ))),
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.bottomRight,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 15),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          _buildEtat(
+                                                              e.statutForme!),
+                                                          PopupMenuButton<String>(
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            itemBuilder:
+                                                                (context) =>
+                                                                    <PopupMenuEntry<
+                                                                        String>>[
+                                                              PopupMenuItem<String>(
+                                                                child: ListTile(
+                                                                  leading: e.statutForme ==
                                                                           false
-                                                                      ? Colors
-                                                                          .green
-                                                                      : Colors.orange[
-                                                                          400],
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              onTap: () async {
-                                                                e.statutForme ==
-                                                                        false
-                                                                    ? await FormeService()
-                                                                        .activerForme(e
-                                                                            .idForme!)
-                                                                        .then((value) =>
-                                                                            {
-                                                                              Provider.of<FormeService>(context, listen: false).applyChange(),
-                                                                              setState(() {
-                                                                                _liste = getListe();
-                                                                              }),
-                                                                              Navigator.of(context).pop(),
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                const SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text("Activer avec succèss "),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: Duration(seconds: 2),
-                                                                                ),
-                                                                              )
-                                                                            })
-                                                                        .catchError(
-                                                                            (onError) =>
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .check,
+                                                                          color: Colors
+                                                                              .green,
+                                                                        )
+                                                                      : Icon(
+                                                                          Icons
+                                                                              .disabled_visible,
+                                                                          color: Colors
+                                                                                  .orange[
+                                                                              400]),
+                                                                  title: Text(
+                                                                    e.statutForme ==
+                                                                            false
+                                                                        ? "Activer"
+                                                                        : "Desactiver",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: e.statutForme ==
+                                                                              false
+                                                                          ? Colors
+                                                                              .green
+                                                                          : Colors.orange[
+                                                                              400],
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  onTap: () async {
+                                                                    e.statutForme ==
+                                                                            false
+                                                                        ? await FormeService()
+                                                                            .activerForme(e
+                                                                                .idForme!)
+                                                                            .then((value) =>
+                                                                                {
+                                                                                  Provider.of<FormeService>(context, listen: false).applyChange(),
+                                                                                  setState(() {
+                                                                                    _liste = getListe();
+                                                                                  }),
+                                                                                  Navigator.of(context).pop(),
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Activer avec succèss "),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: Duration(seconds: 2),
+                                                                                    ),
+                                                                                  )
+                                                                                })
+                                                                            .catchError(
+                                                                                (onError) =>
+                                                                                    {
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                                        const SnackBar(
+                                                                                          content: Row(
+                                                                                            children: [
+                                                                                              Text("Une erreur s'est produit"),
+                                                                                            ],
+                                                                                          ),
+                                                                                          duration: Duration(seconds: 5),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Navigator.of(context).pop(),
+                                                                                    })
+                                                                        : await FormeService()
+                                                                            .desactiverForme(e
+                                                                                .idForme!)
+                                                                            .then((value) =>
+                                                                                {
+                                                                                  Provider.of<FormeService>(context, listen: false).applyChange(),
+                                                                                  setState(() {
+                                                                                    _liste = getListe();
+                                                                                  }),
+                                                                                  Navigator.of(context).pop(),
+                                                                                })
+                                                                            .catchError((onError) =>
                                                                                 {
                                                                                   ScaffoldMessenger.of(context).showSnackBar(
                                                                                     const SnackBar(
@@ -320,161 +436,138 @@ class _FormeProduitState extends State<FormeProduit> {
                                                                                     ),
                                                                                   ),
                                                                                   Navigator.of(context).pop(),
-                                                                                })
-                                                                    : await FormeService()
-                                                                        .desactiverForme(e
-                                                                            .idForme!)
-                                                                        .then((value) =>
-                                                                            {
-                                                                              Provider.of<FormeService>(context, listen: false).applyChange(),
-                                                                              setState(() {
-                                                                                _liste = getListe();
-                                                                              }),
-                                                                              Navigator.of(context).pop(),
-                                                                            })
-                                                                        .catchError((onError) =>
-                                                                            {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                const SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text("Une erreur s'est produit"),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: Duration(seconds: 5),
-                                                                                ),
-                                                                              ),
-                                                                              Navigator.of(context).pop(),
-                                                                            });
-
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  const SnackBar(
-                                                                    content:
-                                                                        Row(
-                                                                      children: [
-                                                                        Text(
-                                                                            "Désactiver avec succèss "),
-                                                                      ],
-                                                                    ),
-                                                                    duration: Duration(
-                                                                        seconds:
-                                                                            2),
+                                                                                });
+          
+                                                                    ScaffoldMessenger.of(
+                                                                            context)
+                                                                        .showSnackBar(
+                                                                      const SnackBar(
+                                                                        content:
+                                                                            Row(
+                                                                          children: [
+                                                                            Text(
+                                                                                "Désactiver avec succèss "),
+                                                                          ],
+                                                                        ),
+                                                                        duration: Duration(
+                                                                            seconds:
+                                                                                2),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              PopupMenuItem<String>(
+                                                                child: ListTile(
+                                                                  leading:
+                                                                      const Icon(
+                                                                    Icons.edit,
+                                                                    color: Colors
+                                                                        .green,
                                                                   ),
-                                                                );
-                                                              },
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem<String>(
-                                                            child: ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons.edit,
-                                                                color: Colors
-                                                                    .green,
-                                                              ),
-                                                              title: const Text(
-                                                                "Modifier",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .green,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  title: const Text(
+                                                                    "Modifier",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  onTap: () async {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                    await afficherBottomSheet(
+                                                                            context,
+                                                                            e)
+                                                                        .then(
+                                                                            (value) {
+                                                                      Provider.of<FormeService>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .applyChange();
+                                                                      setState(() {
+                                                                        _liste =
+                                                                            getListe();
+                                                                      });
+                                                                      // Navigator.of(context).pop();
+                                                                    });
+                                                                  },
                                                                 ),
                                                               ),
-                                                              onTap: () async {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                await afficherBottomSheet(
-                                                                        context,
-                                                                        e)
-                                                                    .then(
-                                                                        (value) {
-                                                                  Provider.of<FormeService>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .applyChange();
-                                                                  setState(() {
-                                                                    _liste =
-                                                                        getListe();
-                                                                  });
-                                                                  // Navigator.of(context).pop();
-                                                                });
-                                                              },
-                                                            ),
-                                                          ),
-                                                          PopupMenuItem<String>(
-                                                            child: ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons.delete,
-                                                                color:
-                                                                    Colors.red,
-                                                              ),
-                                                              title: const Text(
-                                                                "Supprimer",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              onTap: () async {
-                                                                await FormeService()
-                                                                    .deleteForme(e
-                                                                        .idForme!)
-                                                                    .then(
-                                                                        (value) =>
-                                                                            {
-                                                                              Provider.of<FormeService>(context, listen: false).applyChange(),
-                                                                              setState(() {
-                                                                                _liste = getListe();
-                                                                              }),
-                                                                              Navigator.of(context).pop(),
-                                                                            })
-                                                                    .catchError(
-                                                                        (onError) =>
-                                                                            {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                const SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text(
-                                                                                        "Impossible de supprimer car cette filière est déjà associé a une categorie",
-                                                                                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                                                              PopupMenuItem<String>(
+                                                                child: ListTile(
+                                                                  leading:
+                                                                      const Icon(
+                                                                    Icons.delete,
+                                                                    color:
+                                                                        Colors.red,
+                                                                  ),
+                                                                  title: const Text(
+                                                                    "Supprimer",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .red,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  onTap: () async {
+                                                                    await FormeService()
+                                                                        .deleteForme(e
+                                                                            .idForme!)
+                                                                        .then(
+                                                                            (value) =>
+                                                                                {
+                                                                                  Provider.of<FormeService>(context, listen: false).applyChange(),
+                                                                                  setState(() {
+                                                                                    _liste = getListe();
+                                                                                  }),
+                                                                                  Navigator.of(context).pop(),
+                                                                                })
+                                                                        .catchError(
+                                                                            (onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text(
+                                                                                            "Impossible de supprimer car cette filière est déjà associé a une categorie",
+                                                                                            style: TextStyle(overflow: TextOverflow.ellipsis),
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: Duration(seconds: 2),
-                                                                                ),
-                                                                              )
-                                                                            });
-                                                              },
-                                                            ),
+                                                                                      duration: Duration(seconds: 2),
+                                                                                    ),
+                                                                                  )
+                                                                                });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ))
-                                    .toList());
-                      }
-                    });
-              },
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ))
+                                        .toList());
+                          }
+                        });
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

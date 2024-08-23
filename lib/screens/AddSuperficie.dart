@@ -145,6 +145,9 @@ class _AddSuperficieState extends State<AddSuperficie> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+               SizedBox(
+                height: 10,
+              ),
               Form(
                   key: formkey,
                   child: Column(
