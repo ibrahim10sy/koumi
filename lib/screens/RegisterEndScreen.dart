@@ -260,38 +260,74 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         {
                           errorMessage =
                               'Un compte avec le même numéro de téléphone existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else if (exception
                           .toString()
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà 1',
+                              'Un compte avec le même email existe déjà 6',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else
                         {
                           errorMessage =
                               'Un compte avec le même email et numéro de téléphone  existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                     },
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Erreur lors de l'inscription"),
-                        content: Text(errorMessage,
-                            style: TextStyle(
-                              color: Colors.black87,
-                            )),
-                        actions: [
-                          TextButton(
-                            child: Text("OK"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    },
-                  )
                 });
       } else if (widget.image1 != null) {
         await acteurService
@@ -335,38 +371,74 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         {
                           errorMessage =
                               'Un compte avec le même numéro de téléphone existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else if (exception
                           .toString()
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà 2',
+                              'Un compte avec le même email existe déjà 7',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else
                         {
                           errorMessage =
                               'Un compte avec le même email et numéro de téléphone  existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                     },
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Erreur lors de l'inscription"),
-                        content: Text(errorMessage,
-                            style: TextStyle(
-                              color: Colors.black87,
-                            )),
-                        actions: [
-                          TextButton(
-                            child: Text("OK"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    },
-                  )
                 });
       } else if (image2 != null) {
         await acteurService
@@ -410,38 +482,74 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         {
                           errorMessage =
                               'Un compte avec le même numéro de téléphone existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else if (exception
                           .toString()
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà 6',
+                              'Un compte avec le même email existe déjà 8',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else
                         {
                           errorMessage =
                               'Un compte avec le même email et numéro de téléphone  existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                     },
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Erreur lors de l'inscription"),
-                        content: Text(errorMessage,
-                            style: TextStyle(
-                              color: Colors.black87,
-                            )),
-                        actions: [
-                          TextButton(
-                            child: Text("OK"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    },
-                  )
                 });
       } else {
         await acteurService
@@ -489,44 +597,81 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         {
                           errorMessage =
                               'Un compte avec le même numéro de téléphone existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else if (exception
                           .toString()
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà 8',
+                              'Un compte avec le même email existe déjà 9',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                       else
                         {
                           errorMessage =
                               'Un compte avec le même email et numéro de téléphone  existe déjà',
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Erreur lors de l'inscription"),
+                                content: Text(errorMessage,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    )),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
                         }
                     },
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Erreur lors de l'inscription"),
-                        content: Text(errorMessage,
-                            style: TextStyle(
-                              color: Colors.black87,
-                            )),
-                        actions: [
-                          TextButton(
-                            child: Text("OK"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    },
-                  )
                 });
       }
       // print("Demande envoyée avec succès: ${updatedDemande.toString()}");
-      debugPrint("yes ");
+      debugPrint("yes 1 ");
       // Navigate to the next page if necessary
     } catch (error) {
+      print("erreur capture : ${error.toString()}");
       String errorMessage = "";
       if (error is Exception) {
         final exception = error;
@@ -534,34 +679,66 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
             'Un compte avec le même numéro de téléphone existe déjà')) {
           errorMessage =
               'Un compte avec le même numéro de téléphone existe déjà';
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Erreur lors de l'inscription"),
+              content: Text(errorMessage,
+                  style: TextStyle(
+                    color: Colors.black87,
+                  )),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          );
         } else if (exception
             .toString()
             .contains('Un compte avec le même email existe déjà')) {
           errorMessage = 'Un compte avec le même email existe déjà 10';
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Erreur lors de l'inscription"),
+              content: Text(errorMessage,
+                  style: TextStyle(
+                    color: Colors.black87,
+                  )),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          );
         } else {
           errorMessage =
-              'Un compte avec le même email et numéro de téléphone  existe déjà';
+              'Un compte avec le même email et numéro de téléphone  existe déjà ';
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Erreur lors de l'inscription"),
+              content: Text("Une erreur s\'est produite.Réessayer plus tard",
+                  style: TextStyle(
+                    color: Colors.black87,
+                  )),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          );
         }
-        print(errorMessage);
+        print("Unique ${errorMessage}");
       }
 
       debugPrint("no " + errorMessage);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Erreur lors de l'inscription"),
-          content: Text(errorMessage,
-              style: TextStyle(
-                color: Colors.black87,
-              )),
-          actions: [
-            TextButton(
-              child: Text("OK"),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      );
     }
   }
 

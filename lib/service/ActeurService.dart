@@ -80,7 +80,7 @@ class ActeurService extends ChangeNotifier {
         print("et code ${response.statusCode}");
         final errorMessage =
             json.decode(utf8.decode(responsed.bodyBytes))['message'];
-        throw Exception(' ${errorMessage}');
+        throw Exception('Erreur service :  ${errorMessage}');
       }
     } catch (e) {
       String errorMessage =
@@ -94,9 +94,9 @@ class ActeurService extends ChangeNotifier {
         } else {
           errorMessage = 'Un compte avec le même email existe déjà';
         }
-        print(errorMessage);
-        throw Exception(errorMessage);
       }
+      print('service : ${e.toString()}');
+      throw Exception(errorMessage);
     }
   }
 
@@ -157,7 +157,6 @@ class ActeurService extends ChangeNotifier {
     }
   }
 
-  
   static Future<String> sendOtpCodeEmail(
       String emailActeur, BuildContext context) async {
     final url = Uri.parse('$baseUrl/sendOtpCodeEmail?emailActeur=$emailActeur');

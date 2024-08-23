@@ -365,7 +365,11 @@ class _TransportState extends State<Transport> {
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
     final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => VehiculeActeur(isRoute: true,)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => VehiculeActeur(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -995,7 +999,7 @@ class _TransportState extends State<Transport> {
                                                 suffixIcon: Icon(Icons.search,
                                                     size: 19),
                                                 labelText:
-                                                    " Aucune catégorie trouvé--"),
+                                                    " Aucune catégorie trouvé"),
                                             cursorColor: Colors.green,
                                           );
                                         }

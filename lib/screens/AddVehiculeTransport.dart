@@ -97,7 +97,6 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
     _niveau3List = http.get(Uri.parse(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
     fetchLibelleNiveau3Pays();
-   
   }
 
   @override
@@ -107,9 +106,9 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -124,7 +123,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-               SizedBox(
+              SizedBox(
                 height: 10,
               ),
               Form(
@@ -144,7 +143,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                           ),
                         ),
                       ),
-                       Padding(
+                      Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
                         child: TextFormField(
@@ -166,7 +165,6 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                           ),
                         ),
                       ),
-
                       SizedBox(
                         height: 10,
                       ),
@@ -209,7 +207,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                         height: 10,
                       ),
                       Padding(
-                         padding: EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 22,
                         ),
                         child: Align(
@@ -307,7 +305,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                                               BorderRadius.circular(8),
                                         ),
                                         suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune localité trouvé--"),
+                                        labelText: "Aucune localité trouvé"),
                                     cursorColor: Colors.green,
                                   );
                                 }
@@ -372,7 +370,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune localité trouvé--"),
+                                  labelText: "Aucune localité trouvé"),
                               cursorColor: Colors.green,
                             );
                           },

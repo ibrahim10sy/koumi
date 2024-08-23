@@ -211,15 +211,16 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
             backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
-            leading: widget.isRoute!
-                ? IconButton(
-                    onPressed: () {
-                      setState(() {
-                        Navigator.pop(context, true);
-                      });
-                    },
-                    icon: const Icon(Icons.arrow_back, color: Colors.white))
-                : Container(),
+            leading: (widget.isRoute ?? false)
+            ? 
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context, true);
+                  });
+                },
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              ) :Container(),
             title: Text(
               'Mes véhicules',
               style: const TextStyle(
@@ -402,10 +403,10 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                               child: Consumer<VehiculeService>(
                                   builder: (context, vehiculeService, child) {
                                 return FutureBuilder(
-                                    future: !widget.isRoute!
-                                        ? vehiculeService.fetchVehiculeByActeur(
+                                    future: (widget.isRoute ?? false)
+                                        ? _liste : vehiculeService.fetchVehiculeByActeur(
                                             acteur.idActeur!)
-                                        : _liste,
+                                      ,
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {

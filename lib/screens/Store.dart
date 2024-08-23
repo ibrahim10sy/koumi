@@ -936,7 +936,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                               suffixIcon:
                                                   Icon(Icons.search, size: 18),
                                               labelText:
-                                                  "Aucune région trouvé--"),
+                                                  "Aucune région trouvé"),
                                           cursorColor: Colors.green,
                                         );
                                       },
