@@ -266,7 +266,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà',
+                              'Un compte avec le même email existe déjà 1',
                         }
                       else
                         {
@@ -341,7 +341,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà',
+                              'Un compte avec le même email existe déjà 2',
                         }
                       else
                         {
@@ -416,7 +416,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà',
+                              'Un compte avec le même email existe déjà 6',
                         }
                       else
                         {
@@ -495,7 +495,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           .contains('Un compte avec le même email existe déjà'))
                         {
                           errorMessage =
-                              'Un compte avec le même email existe déjà',
+                              'Un compte avec le même email existe déjà 8',
                         }
                       else
                         {
@@ -537,7 +537,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
         } else if (exception
             .toString()
             .contains('Un compte avec le même email existe déjà')) {
-          errorMessage = 'Un compte avec le même email existe déjà';
+          errorMessage = 'Un compte avec le même email existe déjà 10';
         } else {
           errorMessage =
               'Un compte avec le même email et numéro de téléphone  existe déjà';
