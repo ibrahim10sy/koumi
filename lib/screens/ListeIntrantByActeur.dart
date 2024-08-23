@@ -19,7 +19,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListeIntrantByActeur extends StatefulWidget {
-  const ListeIntrantByActeur({super.key});
+   bool? isRoute;
+   ListeIntrantByActeur({super.key,this.isRoute});
 
   @override
   State<ListeIntrantByActeur> createState() => _ListeIntrantByActeurState();
@@ -146,9 +147,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     // verify();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
       
-     isExist
-                                    ?
-    futureList = fetchIntrantByActeur(acteur.idActeur!):Container();
+    
+    futureList = fetchIntrantByActeur(acteur.idActeur!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController.addListener(_scrollListener);
     });
@@ -202,7 +202,16 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
         backgroundColor: d_colorOr,
         centerTitle: true,
         toolbarHeight: 75,
-  
+        leading: (widget.isRoute ?? false)
+            ? 
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context, true);
+                  });
+                },
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              ) :Container(),
         title: const Text(
           "Mes intrants",
           style: TextStyle(
@@ -360,7 +369,10 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                   child: Consumer<IntrantService>(
                       builder: (context, intrantService, child) {
                     return FutureBuilder(
-                        future: intrantService.fetchIntrantByActeurWithPagination(acteur.idActeur!),
+                      future: (widget.isRoute ?? false)
+    ? futureList
+    : intrantService.fetchIntrantByActeurWithPagination(acteur.idActeur!),
+                        // future: intrantService.fetchIntrantByActeurWithPagination(acteur.idActeur!),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {

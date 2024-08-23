@@ -27,16 +27,15 @@ class _PaysPageState extends State<PaysPage> {
   late ParametreGeneraux para;
   List<Niveau1Pays> niveauList = [];
   List<ParametreGeneraux> paraList = [];
-   bool isSearchMode = false;
+  bool isSearchMode = false;
   late ScrollController _scrollController;
-
 
   late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
-  
+
     _searchController = TextEditingController();
     _scrollController = ScrollController();
   }
@@ -52,10 +51,10 @@ class _PaysPageState extends State<PaysPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -96,148 +95,149 @@ class _PaysPageState extends State<PaysPage> {
       ),
       body: Container(
         child: NestedScrollView(
-           headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverToBoxAdapter(
-                    child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            // The PopupMenuButton is used here to display the menu when the button is pressed.
-                            showMenu<String>(
-                              context: context,
-                              position: RelativeRect.fromLTRB(
-                                0,
-                                50, // Adjust this value based on the desired position of the menu
-                                MediaQuery.of(context).size.width,
-                                0,
-                              ),
-                              items: [
-                                PopupMenuItem<String>(
-                                  value: 'add_store',
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.add,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                  child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                          showMenu<String>(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              0,
+                              50, // Adjust this value based on the desired position of the menu
+                              MediaQuery.of(context).size.width,
+                              0,
+                            ),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'add_store',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter un pays ",
+                                    style: TextStyle(
                                       color: d_colorGreen,
-                                    ),
-                                    title: const Text(
-                                      "Ajouter un pays ",
-                                      style: TextStyle(
-                                        color: d_colorGreen,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                              ],
-                              elevation: 8.0,
-                            ).then((value) {
-                              if (value != null) {
-                                if (value == 'add_store') {
-                                  if (mounted) Navigator.of(context).pop();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Addpays()));
-                                }
-                              }
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: d_colorGreen,
-                              ),
-                              SizedBox(width: 8), // Space between icon and text
-                              Text(
-                                'Ajouter',
-                                style: TextStyle(
-                                  color: d_colorGreen,
-                                  fontSize: 17,
-                                ),
                               ),
                             ],
-                          ),
-                        ),
-                        TextButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              isSearchMode = !isSearchMode;
-                              _searchController.clear();
-                            });
-                          },
-                          icon: Icon(
-                            isSearchMode ? Icons.close : Icons.search,
-                            color: isSearchMode ? Colors.red : d_colorGreen,
-                          ),
-                          label: Text(
-                            isSearchMode ? 'Fermer' : 'Rechercher...',
-                            style: TextStyle(
-                                color: isSearchMode ? Colors.red : d_colorGreen,
-                                fontSize: 17),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isSearchMode)
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.blueGrey[50],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
+                            elevation: 8.0,
+                          ).then((value) {
+                            if (value != null) {
+                              if (value == 'add_store') {
+                                // if (mounted) Navigator.of(context).pop();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Addpays()));
+                              }
+                            }
+                          });
+                        },
                         child: Row(
                           children: [
-                            Icon(Icons.search, color: Colors.blueGrey[400]),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: TextField(
-                                controller: _searchController,
-                                onChanged: (value) {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'Rechercher',
-                                  border: InputBorder.none,
-                                  hintStyle:
-                                      TextStyle(color: Colors.blueGrey[400]),
-                                ),
+                            Icon(
+                              Icons.add,
+                              color: d_colorGreen,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Ajouter',
+                              style: TextStyle(
+                                color: d_colorGreen,
+                                fontSize: 17,
                               ),
                             ),
                           ],
                         ),
                       ),
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
+                        ),
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                ])),
-              ];
-            },
+                  ),
+              ])),
+            ];
+          },
           body: SingleChildScrollView(
             controller: _scrollController,
             child: Column(
               children: [
-               
                 Consumer<PaysService>(
                   builder: (context, paysService, child) {
                     return FutureBuilder(
                         future: paysService.fetchPays(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const Center(
                               child: CircularProgressIndicator(
                                 color: Colors.orange,
                               ),
                             );
                           }
-          
+
                           if (!snapshot.hasData) {
                             return const Padding(
                               padding: EdgeInsets.all(10),
@@ -246,7 +246,8 @@ class _PaysPageState extends State<PaysPage> {
                           } else {
                             paysList = snapshot.data!;
                             String searchText = "";
-                            List<Pays> filteredPaysSearch = paysList.where((pays) {
+                            List<Pays> filteredPaysSearch =
+                                paysList.where((pays) {
                               String nomPays = pays.nomPays!.toLowerCase();
                               searchText = _searchController.text.toLowerCase();
                               return nomPays.contains(searchText);
@@ -262,7 +263,8 @@ class _PaysPageState extends State<PaysPage> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          Niveau1List(pays: e)));
+                                                          Niveau1List(
+                                                              pays: e)));
                                             },
                                             child: Container(
                                               width: MediaQuery.of(context)
@@ -286,30 +288,38 @@ class _PaysPageState extends State<PaysPage> {
                                               child: Column(
                                                 children: [
                                                   ListTile(
-                                                      leading: getFlag(e.nomPays!),
+                                                      leading:
+                                                          getFlag(e.nomPays!),
                                                       title: Text(
-                                                          e.nomPays!.toUpperCase(),
-                                                          style: const TextStyle(
+                                                          e.nomPays!
+                                                              .toUpperCase(),
+                                                          style:
+                                                              const TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 20,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           )),
                                                       subtitle: Text(
-                                                          e.descriptionPays!.trim(),
-                                                          style: const TextStyle(
-                                                            color: Colors.black87,
+                                                          e.descriptionPays!
+                                                              .trim(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color:
+                                                                Colors.black87,
                                                             fontSize: 17,
                                                             fontWeight:
                                                                 FontWeight.w500,
-                                                            fontStyle:
-                                                                FontStyle.italic,
+                                                            fontStyle: FontStyle
+                                                                .italic,
                                                           ))),
                                                   FutureBuilder(
                                                       future: Niveau1Service()
                                                           .fetchNiveau1ByPays(
                                                               e.idPays!),
-                                                      builder: (context, snapshot) {
+                                                      builder:
+                                                          (context, snapshot) {
                                                         if (snapshot
                                                                 .connectionState ==
                                                             ConnectionState
@@ -317,16 +327,18 @@ class _PaysPageState extends State<PaysPage> {
                                                           return const Center(
                                                             child:
                                                                 CircularProgressIndicator(
-                                                              color: Colors.orange,
+                                                              color:
+                                                                  Colors.orange,
                                                             ),
                                                           );
                                                         }
-          
+
                                                         if (!snapshot.hasData) {
                                                           return Padding(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                    horizontal: 15),
+                                                                    horizontal:
+                                                                        15),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -338,7 +350,8 @@ class _PaysPageState extends State<PaysPage> {
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 17,
+                                                                      fontSize:
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -351,7 +364,8 @@ class _PaysPageState extends State<PaysPage> {
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 18,
+                                                                      fontSize:
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w800,
@@ -365,7 +379,8 @@ class _PaysPageState extends State<PaysPage> {
                                                           return Padding(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                    horizontal: 15),
+                                                                    horizontal:
+                                                                        15),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -377,7 +392,8 @@ class _PaysPageState extends State<PaysPage> {
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 17,
+                                                                      fontSize:
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -393,7 +409,8 @@ class _PaysPageState extends State<PaysPage> {
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 18,
+                                                                      fontSize:
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w800,
@@ -406,55 +423,59 @@ class _PaysPageState extends State<PaysPage> {
                                                   Container(
                                                     alignment:
                                                         Alignment.bottomRight,
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                            horizontal: 10),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 10),
                                                     child: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        _buildEtat(e.statutPays!),
+                                                        _buildEtat(
+                                                            e.statutPays!),
                                                         PopupMenuButton<String>(
-                                                          padding: EdgeInsets.zero,
-                                                          itemBuilder: (context) =>
-                                                              <PopupMenuEntry<
-                                                                  String>>[
-                                                            PopupMenuItem<String>(
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          itemBuilder:
+                                                              (context) =>
+                                                                  <PopupMenuEntry<
+                                                                      String>>[
+                                                            PopupMenuItem<
+                                                                String>(
                                                               child: ListTile(
                                                                 leading:
                                                                     e.statutPays ==
                                                                             false
                                                                         ? Icon(
-                                                                            Icons
-                                                                                .check,
-                                                                            color: Colors
-                                                                                .green,
+                                                                            Icons.check,
+                                                                            color:
+                                                                                Colors.green,
                                                                           )
                                                                         : Icon(
-                                                                            Icons
-                                                                                .disabled_visible,
-                                                                            color: Colors
-                                                                                .orange[400],
+                                                                            Icons.disabled_visible,
+                                                                            color:
+                                                                                Colors.orange[400],
                                                                           ),
                                                                 title: Text(
                                                                   e.statutPays ==
                                                                           false
                                                                       ? "Activer"
                                                                       : "Desactiver",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: e.statutPays ==
                                                                             false
                                                                         ? Colors
                                                                             .green
-                                                                        : Colors.orange[
-                                                                            400],
+                                                                        : Colors
+                                                                            .orange[400],
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .bold, 
+                                                                            .bold,
                                                                   ),
                                                                 ),
-                                                                onTap: () async {
+                                                                onTap:
+                                                                    () async {
                                                                   // Navigator.of(
                                                                   //         context)
                                                                   //     .pop();
@@ -463,97 +484,97 @@ class _PaysPageState extends State<PaysPage> {
                                                                       ? await PaysService()
                                                                           .activerPays(e
                                                                               .idPays!)
-                                                                          .then(
-                                                                              (value) =>
-                                                                                  {
-                                                                                    Provider.of<PaysService>(context, listen: false).applyChange(),
-                                                                                    setState(() {
-                                                                                      // _liste = PaysService().fetchPaysBySousRegion(sousRegion.idSousRegion!);
-                                                                                    }),
-                                                                                    Navigator.of(context).pop(),
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                                                      const SnackBar(
-                                                                                        content: Row(
-                                                                                          children: [
-                                                                                            Text("Activer avec succèss "),
-                                                                                          ],
-                                                                                        ),
-                                                                                        duration: Duration(seconds: 2),
-                                                                                      ),
-                                                                                    )
-                                                                                  })
-                                                                          .catchError(
-                                                                              (onError) =>
-                                                                                  {
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                                                      const SnackBar(
-                                                                                        content: Row(
-                                                                                          children: [
-                                                                                            Text("Une erreur s'est produit"),
-                                                                                          ],
-                                                                                        ),
-                                                                                        duration: Duration(seconds: 5),
-                                                                                      ),
+                                                                          .then((value) =>
+                                                                              {
+                                                                                Provider.of<PaysService>(context, listen: false).applyChange(),
+                                                                                setState(() {
+                                                                                  // _liste = PaysService().fetchPaysBySousRegion(sousRegion.idSousRegion!);
+                                                                                }),
+                                                                                Navigator.of(context).pop(),
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  const SnackBar(
+                                                                                    content: Row(
+                                                                                      children: [
+                                                                                        Text("Activer avec succèss "),
+                                                                                      ],
                                                                                     ),
-                                                                                    Navigator.of(context).pop(),
-                                                                                  })
+                                                                                    duration: Duration(seconds: 2),
+                                                                                  ),
+                                                                                )
+                                                                              })
+                                                                          .catchError((onError) =>
+                                                                              {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  const SnackBar(
+                                                                                    content: Row(
+                                                                                      children: [
+                                                                                        Text("Une erreur s'est produit"),
+                                                                                      ],
+                                                                                    ),
+                                                                                    duration: Duration(seconds: 5),
+                                                                                  ),
+                                                                                ),
+                                                                                Navigator.of(context).pop(),
+                                                                              })
                                                                       : await PaysService()
                                                                           .desactiverPays(e
                                                                               .idPays!)
-                                                                          .then(
-                                                                              (value) =>
-                                                                                  {
-                                                                                    Provider.of<PaysService>(context, listen: false).applyChange(),
-                                                                                    // setState(() {
-                                                                                    //   _liste = PaysService().fetchPaysBySousRegion(sousRegion.idSousRegion!);
-                                                                                    // }),
-                                                                                    Navigator.of(context).pop(),
-                                                                                  })
-                                                                          .catchError(
-                                                                              (onError) =>
-                                                                                  {
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                                                      const SnackBar(
-                                                                                        content: Row(
-                                                                                          children: [
-                                                                                            Text("Une erreur s'est produit"),
-                                                                                          ],
-                                                                                        ),
-                                                                                        duration: Duration(seconds: 5),
-                                                                                      ),
+                                                                          .then((value) =>
+                                                                              {
+                                                                                Provider.of<PaysService>(context, listen: false).applyChange(),
+                                                                                // setState(() {
+                                                                                //   _liste = PaysService().fetchPaysBySousRegion(sousRegion.idSousRegion!);
+                                                                                // }),
+                                                                                Navigator.of(context).pop(),
+                                                                              })
+                                                                          .catchError((onError) =>
+                                                                              {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  const SnackBar(
+                                                                                    content: Row(
+                                                                                      children: [
+                                                                                        Text("Une erreur s'est produit"),
+                                                                                      ],
                                                                                     ),
-                                                                                    Navigator.of(context).pop(),
-                                                                                  });
-          
-                                                                  ScaffoldMessenger
-                                                                          .of(context)
+                                                                                    duration: Duration(seconds: 5),
+                                                                                  ),
+                                                                                ),
+                                                                                Navigator.of(context).pop(),
+                                                                              });
+
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
                                                                       .showSnackBar(
                                                                     const SnackBar(
-                                                                      content: Row(
+                                                                      content:
+                                                                          Row(
                                                                         children: [
                                                                           Text(
                                                                               "Désactiver avec succèss "),
                                                                         ],
                                                                       ),
-                                                                      duration:
-                                                                          Duration(
-                                                                              seconds:
-                                                                                  2),
+                                                                      duration: Duration(
+                                                                          seconds:
+                                                                              2),
                                                                     ),
                                                                   );
                                                                 },
                                                               ),
                                                             ),
-                                                            PopupMenuItem<String>(
+                                                            PopupMenuItem<
+                                                                String>(
                                                               child: ListTile(
-                                                                leading: const Icon(
+                                                                leading:
+                                                                    const Icon(
                                                                   Icons.edit,
-                                                                  color:
-                                                                      Colors.green,
+                                                                  color: Colors
+                                                                      .green,
                                                                 ),
-                                                                title: const Text(
+                                                                title:
+                                                                    const Text(
                                                                   "Modifier",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .green,
                                                                     fontWeight:
@@ -561,7 +582,8 @@ class _PaysPageState extends State<PaysPage> {
                                                                             .bold,
                                                                   ),
                                                                 ),
-                                                                onTap: () async {
+                                                                onTap:
+                                                                    () async {
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop();
@@ -569,31 +591,36 @@ class _PaysPageState extends State<PaysPage> {
                                                                       context,
                                                                       MaterialPageRoute(
                                                                           builder: (context) =>
-                                                                              UpdatesPays(
-                                                                                  pays: e)));
+                                                                              UpdatesPays(pays: e)));
                                                                 },
                                                               ),
                                                             ),
-                                                            PopupMenuItem<String>(
+                                                            PopupMenuItem<
+                                                                String>(
                                                               child: ListTile(
-                                                                leading: const Icon(
+                                                                leading:
+                                                                    const Icon(
                                                                   Icons.delete,
-                                                                  color: Colors.red,
+                                                                  color: Colors
+                                                                      .red,
                                                                 ),
-                                                                title: const Text(
+                                                                title:
+                                                                    const Text(
                                                                   "Supprimer",
-                                                                  style: TextStyle(
-                                                                    color:
-                                                                        Colors.red,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .red,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
                                                                   ),
                                                                 ),
-                                                                onTap: () async {
+                                                                onTap:
+                                                                    () async {
                                                                   await PaysService()
-                                                                      .deletePays(
-                                                                          e.idPays!)
+                                                                      .deletePays(e
+                                                                          .idPays!)
                                                                       .then(
                                                                           (value) =>
                                                                               {

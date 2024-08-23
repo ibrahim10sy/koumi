@@ -93,10 +93,11 @@ class ActeurService extends ChangeNotifier {
               'Un compte avec le même numéro de téléphone existe déjà';
         } else {
           errorMessage = 'Un compte avec le même email existe déjà';
-        }
-        print(errorMessage);
+        } }
+        print(
+          e.toString());
         throw Exception(errorMessage);
-      }
+     
     }
   }
 

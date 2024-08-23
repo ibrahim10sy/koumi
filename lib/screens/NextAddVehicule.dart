@@ -327,7 +327,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                                               BorderRadius.circular(8),
                                         ),
                                         suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune monnaie trouvé--"),
+                                        labelText: "Aucune monnaie trouvé"),
                                     cursorColor: Colors.green,
                                   );
                                 }
@@ -391,7 +391,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune monnaie trouvé--"),
+                                  labelText: "Aucune monnaie trouvé"),
                               cursorColor: Colors.green,
                             );
                           },
@@ -520,7 +520,8 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                                                       suffixIcon: Icon(
                                                           Icons.search,
                                                           size: 19),
-                                                      labelText: " Destination"),
+                                                      labelText:
+                                                          " Destination"),
                                                   onSaved: (dynamic n) {
                                                     niveau3 = n?.nomN3;
                                                     print("onSaved : $niveau3");
@@ -604,7 +605,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                                                   suffixIcon:
                                                       Icon(Icons.search),
                                                   labelText:
-                                                      "Aucune destination trouvé--"),
+                                                      "Aucune destination trouvé"),
                                               cursorColor: Colors.green,
                                             );
                                           },

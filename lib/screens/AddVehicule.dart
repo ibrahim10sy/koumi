@@ -432,7 +432,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                                               BorderRadius.circular(8),
                                         ),
                                         suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune localité trouvé--"),
+                                        labelText: "Aucune localité trouvé"),
                                     cursorColor: Colors.green,
                                   );
                                 }
@@ -497,7 +497,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune localité trouvé--"),
+                                  labelText: "Aucune localité trouvé"),
                               cursorColor: Colors.green,
                             );
                           },
