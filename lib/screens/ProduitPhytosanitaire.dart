@@ -1346,8 +1346,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1768,8 +1767,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                          
                                                             fontSize: 16),
                                                       ),
                                                     ),

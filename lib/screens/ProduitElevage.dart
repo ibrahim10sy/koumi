@@ -1363,8 +1363,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1792,8 +1791,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            
                                                             fontSize: 16),
                                                       ),
                                                     ),

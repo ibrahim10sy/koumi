@@ -1374,8 +1374,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1790,8 +1789,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),

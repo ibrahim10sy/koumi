@@ -1352,8 +1352,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1761,8 +1760,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),

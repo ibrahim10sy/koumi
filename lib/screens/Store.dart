@@ -1277,8 +1277,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                       child: Text(
                                                         "Magasins etrangère",
                                                         style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                            
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1701,9 +1700,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           child: Text(
                                                             "Magasins etrangère",
                                                             style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                              
                                                                 color:
                                                                     d_colorGreen,
                                                                 fontSize: 16),
