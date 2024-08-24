@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
@@ -26,170 +25,170 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 class _AddAlerteState extends State<AddAlerte> {
   TextEditingController _titreController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
-  final recorder = FlutterSoundRecorder();
-  final formkey = GlobalKey<FormState>();
-  bool isRecorderReady = false;
-  late Acteur acteur = Acteur();
-  bool _isLoading = false;
-  String? imageSrc;
-  File? photoUploaded;
-  File? _videoUploaded;
-  late String videoSrc;
-  File? audiosUploaded;
-  final _tokenTextController = TextEditingController();
-  final _tokenAudioController = TextEditingController();
-  final _tokenImageController = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
-  double _progressValue = 0;
-  bool _hasUploadStarted = false;
+  // final recorder = FlutterSoundRecorder();
+  // final formkey = GlobalKey<FormState>();
+  // bool isRecorderReady = false;
+  // late Acteur acteur = Acteur();
+  // bool _isLoading = false;
+  // String? imageSrc;
+  // File? photoUploaded;
+  // File? _videoUploaded;
+  // late String videoSrc;
+  // File? audiosUploaded;
+  // final _tokenTextController = TextEditingController();
+  // final _tokenAudioController = TextEditingController();
+  // final _tokenImageController = TextEditingController();
+  // final ImagePicker _picker = ImagePicker();
+  // double _progressValue = 0;
+  // bool _hasUploadStarted = false;
 
-  void setProgress(double value) async {
-    setState(() {
-      _progressValue = value;
-    });
-  }
+  // void setProgress(double value) async {
+  //   setState(() {
+  //     _progressValue = value;
+  //   });
+  // }
 
-  String? selectedCountry;
-  String? selectedCountryCode;
+  // String? selectedCountry;
+  // String? selectedCountryCode;
 
-  Future<File> saveImagePermanently(String imagePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final name = path.basename(imagePath);
-    final images = File('${directory.path}/$name');
-    return images;
-  }
+  // Future<File> saveImagePermanently(String imagePath) async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   final name = path.basename(imagePath);
+  //   final images = File('${directory.path}/$name');
+  //   return images;
+  // }
 
-  Future<void> _pickVideo(ImageSource source) async {
-    final video = await ImagePicker().pickVideo(source: source);
-    if (video == null) return;
+  // Future<void> _pickVideo(ImageSource source) async {
+  //   final video = await ImagePicker().pickVideo(source: source);
+  //   if (video == null) return;
 
-    final videoFile = File(video.path);
-    print(videoFile.absolute);
-    setState(() {
-      _videoUploaded = videoFile;
-      _tokenTextController.text = _videoUploaded!.path.toString();
-      videoSrc = videoFile.path;
-      _hasUploadStarted = true;
-    });
+  //   final videoFile = File(video.path);
+  //   print(videoFile.absolute);
+  //   setState(() {
+  //     _videoUploaded = videoFile;
+  //     _tokenTextController.text = _videoUploaded!.path.toString();
+  //     videoSrc = videoFile.path;
+  //     _hasUploadStarted = true;
+  //   });
 
-    // Mocking upload progress
-    for (int i = 0; i <= 100; i++) {
-      await Future.delayed(Duration(milliseconds: 40));
-      setProgress(i / 100);
-    }
+  //   // Mocking upload progress
+  //   for (int i = 0; i <= 100; i++) {
+  //     await Future.delayed(Duration(milliseconds: 40));
+  //     setProgress(i / 100);
+  //   }
 
-    setState(() {
-      _hasUploadStarted = false;
-    });
-  }
+  //   setState(() {
+  //     _hasUploadStarted = false;
+  //   });
+  // }
 
-  Future<void> _showVideoSourceDialog() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 150,
-          child: AlertDialog(
-            title: const Text('Choisir une source'),
-            content: Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Close dialog
-                    _pickVideo(ImageSource.camera);
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(Icons.videocam, size: 40),
-                      Text('Camera'),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 40),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Close dialog
-                    _pickVideo(ImageSource.gallery);
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(Icons.video_library, size: 40),
-                      Text('Gallery'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Future<void> _showVideoSourceDialog() async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return SizedBox(
+  //         height: 150,
+  //         child: AlertDialog(
+  //           title: const Text('Choisir une source'),
+  //           content: Wrap(
+  //             alignment: WrapAlignment.center,
+  //             children: [
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   Navigator.pop(context); // Close dialog
+  //                   _pickVideo(ImageSource.camera);
+  //                 },
+  //                 child: const Column(
+  //                   children: [
+  //                     Icon(Icons.videocam, size: 40),
+  //                     Text('Camera'),
+  //                   ],
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 40),
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   Navigator.pop(context); // Close dialog
+  //                   _pickVideo(ImageSource.gallery);
+  //                 },
+  //                 child: const Column(
+  //                   children: [
+  //                     Icon(Icons.video_library, size: 40),
+  //                     Text('Gallery'),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final images = await getImage(source);
-    if (images != null) {
-      setState(() {
-        photoUploaded = images;
-        _tokenImageController.text = photoUploaded!.path.toString();
+  // Future<void> _pickImage(ImageSource source) async {
+  //   final images = await getImage(source);
+  //   if (images != null) {
+  //     setState(() {
+  //       photoUploaded = images;
+  //       _tokenImageController.text = photoUploaded!.path.toString();
 
-        imageSrc = images.path;
-      });
-    }
-  }
+  //       imageSrc = images.path;
+  //     });
+  //   }
+  // }
 
-  Future<File?> getImage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image == null) return null;
+  // Future<File?> getImage(ImageSource source) async {
+  //   final image = await ImagePicker().pickImage(source: source);
+  //   if (image == null) return null;
 
-    return File(image.path);
-  }
+  //   return File(image.path);
+  // }
 
-  Future<void> _showImageSourceDialog() async {
-    final BuildContext context = this.context;
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 150,
-          child: AlertDialog(
-            title: const Text('Choisir une source'),
-            content: Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Fermer le dialogue
-                    _pickImage(ImageSource.camera);
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(Icons.camera_alt, size: 40),
-                      Text('Camera'),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 40),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Fermer le dialogue
-                    _pickImage(ImageSource.gallery);
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(Icons.image, size: 40),
-                      Text('Galerie photo'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Future<void> _showImageSourceDialog() async {
+  //   final BuildContext context = this.context;
+  //   return showDialog<void>(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return SizedBox(
+  //         height: 150,
+  //         child: AlertDialog(
+  //           title: const Text('Choisir une source'),
+  //           content: Wrap(
+  //             alignment: WrapAlignment.center,
+  //             children: [
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   Navigator.pop(context); // Fermer le dialogue
+  //                   _pickImage(ImageSource.camera);
+  //                 },
+  //                 child: const Column(
+  //                   children: [
+  //                     Icon(Icons.camera_alt, size: 40),
+  //                     Text('Camera'),
+  //                   ],
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 40),
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   Navigator.pop(context); // Fermer le dialogue
+  //                   _pickImage(ImageSource.gallery);
+  //                 },
+  //                 child: const Column(
+  //                   children: [
+  //                     Icon(Icons.image, size: 40),
+  //                     Text('Galerie photo'),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Map<String, String> countryTranslations = {
     'Afghanistan': 'Afghanistan',
@@ -396,12 +395,12 @@ class _AddAlerteState extends State<AddAlerte> {
     initRecoder();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
 
-    final paysProvider = Provider.of<DetectorPays>(context, listen: false);
-    paysProvider.hasLocation
-        ? selectedCountryCode =
-            Provider.of<DetectorPays>(context, listen: false)
-                .detectedCountryCode!
-        : selectedCountryCode = "ML";
+    // final paysProvider = Provider.of<DetectorPays>(context, listen: false);
+    // paysProvider.hasLocation
+    //     ? selectedCountryCode =
+    //         Provider.of<DetectorPays>(context, listen: false)
+    //             .detectedCountryCode!
+    //     : selectedCountryCode = "ML";
     paysProvider.hasLocation
         ? selectedCountry =
             Provider.of<DetectorPays>(context, listen: false).detectedCountry!
@@ -417,34 +416,34 @@ class _AddAlerteState extends State<AddAlerte> {
     _tokenImageController.dispose();
   }
 
-  Future initRecoder() async {
-    final status = await Permission.microphone.request();
+  // Future initRecoder() async {
+  //   final status = await Permission.microphone.request();
 
-    if (status != PermissionStatus.granted) {
-      throw 'Microphone permission not granted';
-    }
+  //   if (status != PermissionStatus.granted) {
+  //     throw 'Microphone permission not granted';
+  //   }
 
-    await recorder.openRecorder();
-    isRecorderReady = true;
-    recorder.setSubscriptionDuration(Duration(milliseconds: 500));
-  }
+  //   await recorder.openRecorder();
+  //   isRecorderReady = true;
+  //   recorder.setSubscriptionDuration(Duration(milliseconds: 500));
+  // }
 
-  Future record() async {
-    if (!isRecorderReady) return;
-    await recorder.startRecorder(toFile: 'audio');
-  }
+  // Future record() async {
+  //   if (!isRecorderReady) return;
+  //   await recorder.startRecorder(toFile: 'audio');
+  // }
 
-  Future stop() async {
-    if (!isRecorderReady) return;
+  // Future stop() async {
+  //   if (!isRecorderReady) return;
 
-    final path = await recorder.stopRecorder();
-    print("Path audio : $path");
-    final audioFile = File(path!);
-    audiosUploaded = audioFile;
-    _tokenAudioController.text = audiosUploaded!.path.toString();
-    print('Recorded audio : $audioFile');
-    print('audiosUploaded : $audiosUploaded');
-  }
+  //   final path = await recorder.stopRecorder();
+  //   print("Path audio : $path");
+  //   final audioFile = File(path!);
+  //   audiosUploaded = audioFile;
+  //   _tokenAudioController.text = audiosUploaded!.path.toString();
+  //   print('Recorded audio : $audioFile');
+  //   print('audiosUploaded : $audiosUploaded');
+  // }
 
   @override
   Widget build(BuildContext context) {

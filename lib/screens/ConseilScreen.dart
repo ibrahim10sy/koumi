@@ -3,10 +3,10 @@ import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Conseil.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
-import 'package:koumi/screens/AddConseil.dart';
+// import 'package:koumi/screens/AddConseil.dart';
 import 'package:koumi/screens/ConseilDisable.dart';
 import 'package:koumi/screens/DetailConseil.dart';
-import 'package:koumi/screens/UpdateConseil.dart';
+// import 'package:koumi/screens/UpdateConseil.dart';
 import 'package:koumi/service/ConseilService.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -128,11 +128,11 @@ class _ConseilScreenState extends State<ConseilScreen> {
                                       ),
                                       onTap: () async {
                                         Navigator.of(context).pop();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AddConseil()));
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             AddConseil()));
                                       },
                                     ),
                                   ),
@@ -178,11 +178,11 @@ class _ConseilScreenState extends State<ConseilScreen> {
                                       ),
                                       onTap: () async {
                                         Navigator.of(context).pop();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AddConseil()));
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             AddConseil()));
                                       },
                                     ),
                                   ),
@@ -522,9 +522,9 @@ class _ConseilScreenState extends State<ConseilScreen> {
                                                                       ),
                                                                       onTap:
                                                                           () async {
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => UpdateConseil(conseils: e)));
+                                                                        // Navigator.push(
+                                                                        //     context,
+                                                                        //     MaterialPageRoute(builder: (context) => UpdateConseil(conseils: e)));
                                                                       },
                                                                     ),
                                                                   ),

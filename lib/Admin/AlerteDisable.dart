@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:koumi/Admin/DetailAlerte.dart';
-import 'package:koumi/Admin/UpdateAlerte.dart';
+// import 'package:koumi/Admin/UpdateAlerte.dart';
 import 'package:koumi/models/Alertes.dart';
 import 'package:koumi/service/AlerteService.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +73,10 @@ class _AlerteDisableState extends State<AlerteDisable> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            )),
         title: const Text(
           "Alerte Désactiver",
           style: TextStyle(
@@ -408,11 +411,11 @@ class _AlerteDisableState extends State<AlerteDisable> {
                                                                 ),
                                                                 onTap:
                                                                     () async {
-                                                                  Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              UpdateAlerted(alertes: e)));
+                                                                  // Navigator.push(
+                                                                  //     context,
+                                                                  //     MaterialPageRoute(
+                                                                  //         builder: (context) =>
+                                                                  //             UpdateAlerted(alertes: e)));
                                                                 },
                                                               ),
                                                             ),

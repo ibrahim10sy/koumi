@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:koumi/Admin/AddAlertesOffLine.dart';
+// import 'package:koumi/Admin/AddAlertesOffLine.dart';
 import 'package:koumi/Admin/AlerteDisable.dart';
 import 'package:koumi/Admin/DetailAlertesOffLine.dart';
-import 'package:koumi/Admin/UpdateAlertesOffLine.dart';
+// import 'package:koumi/Admin/UpdateAlertesOffLine.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/AlertesOffLine.dart';
 import 'package:koumi/models/TypeActeur.dart';
@@ -107,11 +107,11 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                             ),
                             onTap: () async {
                               Navigator.of(context).pop();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddAlertesOffLineScreen()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             AddAlertesOffLineScreen()));
                             },
                           ),
                         ),
@@ -450,11 +450,11 @@ class _AlertesOffLineScreenState extends State<AlertesOffLineScreen> {
                                                                   ),
                                                                   onTap:
                                                                       () async {
-                                                                    Navigator.push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                UpdateAlertesOffLine(alertes: e)));
+                                                                    // Navigator.push(
+                                                                    //     context,
+                                                                    //     MaterialPageRoute(
+                                                                    //         builder: (context) =>
+                                                                    //             UpdateAlertesOffLine(alertes: e)));
                                                                   },
                                                                 ),
                                                               ),

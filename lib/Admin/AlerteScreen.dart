@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:koumi/Admin/AddAlerte.dart';
+// import 'package:koumi/Admin/AddAlerte.dart';
 import 'package:koumi/Admin/AlerteDisable.dart';
 import 'package:koumi/Admin/DetailAlerte.dart';
-import 'package:koumi/Admin/UpdateAlerte.dart';
+// import 'package:koumi/Admin/UpdateAlerte.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Alertes.dart';
 import 'package:koumi/models/TypeActeur.dart';
@@ -70,7 +70,10 @@ class _AlerteScreenState extends State<AlerteScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              )),
           title: const Text(
             "Alertes ",
             style: TextStyle(
@@ -103,10 +106,10 @@ class _AlerteScreenState extends State<AlerteScreen> {
                             ),
                             onTap: () async {
                               Navigator.of(context).pop();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddAlerte()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => AddAlerte()));
                             },
                           ),
                         ),
@@ -466,9 +469,9 @@ class _AlerteScreenState extends State<AlerteScreen> {
                                                                       ),
                                                                       onTap:
                                                                           () async {
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => UpdateAlerted(alertes: e)));
+                                                                        // Navigator.push(
+                                                                        //     context,
+                                                                        //     MaterialPageRoute(builder: (context) => UpdateAlerted(alertes: e)));
                                                                       },
                                                                     ),
                                                                   ),
