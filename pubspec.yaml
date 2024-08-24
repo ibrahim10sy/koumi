@@ -81,7 +81,7 @@ dev_dependencies:
   readmore: ^3.0.0
   url_launcher: ^6.2.5
   font_awesome_flutter: ^10.7.0
-  flutter_sound: ^9.2.13
+  flutter_sound: ^9.6.0
   audioplayers: ^6.0.0
   carousel_slider: ^5.0.0
   video_player: ^2.8.3

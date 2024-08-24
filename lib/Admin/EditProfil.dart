@@ -834,7 +834,7 @@ class _EditProfilState extends State<EditProfil> {
                           _isLoading = false;
                         });
                         print("Erreur HTTP: ${response.statusCode}  ");
-                        throw Exception("Erreur HTTP: ${response.statusCode}");
+                        // throw Exception("Erreur HTTP: ${response.statusCode}");
                       }
                     }
                   },
