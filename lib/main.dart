@@ -86,7 +86,7 @@ void main() async {
   // DependencyInjection.init();
   // Get.put(ConnectionVerify(), permanent: true);
 }
-
+ 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 

@@ -1,194 +1,276 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:koumi/models/Acteur.dart';
+import 'package:koumi/models/Alertes.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/service/AlerteService.dart';
-import 'package:koumi/widgets/DetectorPays.dart';
 import 'package:koumi/widgets/LoadingOverlay.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:record/record.dart';
 
-class AddAlerte extends StatefulWidget {
-  const AddAlerte({super.key});
+class UpdateAlerted extends StatefulWidget {
+  final Alertes alertes;
+  const UpdateAlerted({super.key, required this.alertes});
+
   @override
-  State<AddAlerte> createState() => _AddAlerteState();
+  State<UpdateAlerted> createState() => _UpdateAlertedState();
 }
 
 const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
-class _AddAlerteState extends State<AddAlerte> {
+class _UpdateAlertedState extends State<UpdateAlerted> {
   TextEditingController _titreController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
-  // final recorder = FlutterSoundRecorder();
-  // final formkey = GlobalKey<FormState>();
-  // bool isRecorderReady = false;
-  // late Acteur acteur = Acteur();
-  // bool _isLoading = false;
-  // String? imageSrc;
-  // File? photoUploaded;
-  // File? _videoUploaded;
-  // late String videoSrc;
-  // File? audiosUploaded;
-  // final _tokenTextController = TextEditingController();
-  // final _tokenAudioController = TextEditingController();
-  // final _tokenImageController = TextEditingController();
-  // final ImagePicker _picker = ImagePicker();
-  // double _progressValue = 0;
-  // bool _hasUploadStarted = false;
+  final formkey = GlobalKey<FormState>();
+  bool isRecorderReady = false;
+  late Acteur acteur = Acteur();
+  bool _isLoading = false;
+  String? imageSrc;
+  File? photoUploaded;
+  File? _videoUploaded;
+  late String videoSrc;
+  File? audiosUploaded;
+  final _tokenTextController = TextEditingController();
+  final _tokenAudioController = TextEditingController();
+  final _tokenImageController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  double _progressValue = 0;
+  bool _hasUploadStarted = false;
+  late Alertes alerte;
+  String selectedCountry = "";
+  String selectedCountryCode = "";
+  final AudioRecorder audioRecorder = AudioRecorder();
+  final AudioPlayer audioPlayer = AudioPlayer();
+  bool isRecording = false, isPlaying = false;
+  String? recordingPath;
+  Timer? _timer;
+  int _elapsedSeconds = 0;
 
-  // void setProgress(double value) async {
-  //   setState(() {
-  //     _progressValue = value;
-  //   });
-  // }
+  void setProgress(double value) async {
+    setState(() {
+      _progressValue = value;
+    });
+  }
 
-  // String? selectedCountry;
-  // String? selectedCountryCode;
+  Future<void> _showAudioSourceDialog() async {
+    final BuildContext context = this.context;
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 150,
+          child: AlertDialog(
+            title: const Text('Choisir une source'),
+            content: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Fermer le dialogue
+                    _recordingButton();
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(Icons.mic, size: 40),
+                      Text('Enregistrer'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 40),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Fermer le dialogue
+                    // _pickAudio(); // Appel à la fonction pour sélectionner un fichier audio
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(Icons.audiotrack, size: 40),
+                      Text('Sélectionner un fichier'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-  // Future<File> saveImagePermanently(String imagePath) async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final name = path.basename(imagePath);
-  //   final images = File('${directory.path}/$name');
-  //   return images;
-  // }
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = path.basename(imagePath);
+    final images = File('${directory.path}/$name');
+    return images;
+  }
 
-  // Future<void> _pickVideo(ImageSource source) async {
-  //   final video = await ImagePicker().pickVideo(source: source);
-  //   if (video == null) return;
+  Future<void> _pickVideo(ImageSource source) async {
+    final video = await ImagePicker().pickVideo(source: source);
+    if (video == null) return;
 
-  //   final videoFile = File(video.path);
-  //   print(videoFile.absolute);
-  //   setState(() {
-  //     _videoUploaded = videoFile;
-  //     _tokenTextController.text = _videoUploaded!.path.toString();
-  //     videoSrc = videoFile.path;
-  //     _hasUploadStarted = true;
-  //   });
+    final videoFile = File(video.path);
+    setState(() {
+      _videoUploaded = videoFile;
+      _tokenTextController.text = _videoUploaded!.path.toString();
+      videoSrc = videoFile.path;
+      _hasUploadStarted = true;
+    });
 
-  //   // Mocking upload progress
-  //   for (int i = 0; i <= 100; i++) {
-  //     await Future.delayed(Duration(milliseconds: 40));
-  //     setProgress(i / 100);
-  //   }
+    // Mocking upload progress
+    for (int i = 0; i <= 100; i++) {
+      await Future.delayed(Duration(milliseconds: 40));
+      setProgress(i / 100);
+    }
 
-  //   setState(() {
-  //     _hasUploadStarted = false;
-  //   });
-  // }
+    setState(() {
+      _hasUploadStarted = false;
+    });
+  }
 
-  // Future<void> _showVideoSourceDialog() async {
-  //   return showDialog<void>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return SizedBox(
-  //         height: 150,
-  //         child: AlertDialog(
-  //           title: const Text('Choisir une source'),
-  //           content: Wrap(
-  //             alignment: WrapAlignment.center,
-  //             children: [
-  //               GestureDetector(
-  //                 onTap: () {
-  //                   Navigator.pop(context); // Close dialog
-  //                   _pickVideo(ImageSource.camera);
-  //                 },
-  //                 child: const Column(
-  //                   children: [
-  //                     Icon(Icons.videocam, size: 40),
-  //                     Text('Camera'),
-  //                   ],
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 40),
-  //               GestureDetector(
-  //                 onTap: () {
-  //                   Navigator.pop(context); // Close dialog
-  //                   _pickVideo(ImageSource.gallery);
-  //                 },
-  //                 child: const Column(
-  //                   children: [
-  //                     Icon(Icons.video_library, size: 40),
-  //                     Text('Gallery'),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> _showVideoSourceDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 150,
+          child: AlertDialog(
+            title: const Text('Choisir une source'),
+            content: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Close dialog
+                    _pickVideo(ImageSource.camera);
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(Icons.videocam, size: 40),
+                      Text('Camera'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 40),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Close dialog
+                    _pickVideo(ImageSource.gallery);
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(Icons.video_library, size: 40),
+                      Text('Gallery'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-  // Future<void> _pickImage(ImageSource source) async {
-  //   final images = await getImage(source);
-  //   if (images != null) {
-  //     setState(() {
-  //       photoUploaded = images;
-  //       _tokenImageController.text = photoUploaded!.path.toString();
+  Future<void> _pickImage(ImageSource source) async {
+    final images = await getImage(source);
+    if (images != null) {
+      setState(() {
+        photoUploaded = images;
+        _tokenImageController.text = photoUploaded!.path.toString();
 
-  //       imageSrc = images.path;
-  //     });
-  //   }
-  // }
+        imageSrc = images.path;
+      });
+    }
+  }
 
-  // Future<File?> getImage(ImageSource source) async {
-  //   final image = await ImagePicker().pickImage(source: source);
-  //   if (image == null) return null;
+  Future<File?> getImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image == null) return null;
 
-  //   return File(image.path);
-  // }
+    return File(image.path);
+  }
 
-  // Future<void> _showImageSourceDialog() async {
-  //   final BuildContext context = this.context;
-  //   return showDialog<void>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return SizedBox(
-  //         height: 150,
-  //         child: AlertDialog(
-  //           title: const Text('Choisir une source'),
-  //           content: Wrap(
-  //             alignment: WrapAlignment.center,
-  //             children: [
-  //               GestureDetector(
-  //                 onTap: () {
-  //                   Navigator.pop(context); // Fermer le dialogue
-  //                   _pickImage(ImageSource.camera);
-  //                 },
-  //                 child: const Column(
-  //                   children: [
-  //                     Icon(Icons.camera_alt, size: 40),
-  //                     Text('Camera'),
-  //                   ],
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 40),
-  //               GestureDetector(
-  //                 onTap: () {
-  //                   Navigator.pop(context); // Fermer le dialogue
-  //                   _pickImage(ImageSource.gallery);
-  //                 },
-  //                 child: const Column(
-  //                   children: [
-  //                     Icon(Icons.image, size: 40),
-  //                     Text('Galerie photo'),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> _showImageSourceDialog() async {
+    final BuildContext context = this.context;
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 150,
+          child: AlertDialog(
+            title: const Text('Choisir une source'),
+            content: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Fermer le dialogue
+                    _pickImage(ImageSource.camera);
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(Icons.camera_alt, size: 40),
+                      Text('Camera'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 40),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Fermer le dialogue
+                    _pickImage(ImageSource.gallery);
+                  },
+                  child: const Column(
+                    children: [
+                      Icon(Icons.image, size: 40),
+                      Text('Galerie photo'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _startTimer() {
+    _elapsedSeconds = 0;
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      if (!isRecording) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _elapsedSeconds++;
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    alerte = widget.alertes;
+    _titreController.text = alerte.titreAlerte!;
+    _descriptionController.text = alerte.descriptionAlerte!;
+    _tokenAudioController.text = alerte.audioAlerte!;
+    _tokenImageController.text = alerte.photoAlerte!;
+    _tokenTextController.text = alerte.videoAlerte!;
+    selectedCountry = alerte.pays != null ? alerte.pays! : "";
+    selectedCountryCode = alerte.codePays != null ? alerte.codePays! : "";
+  }
 
   Map<String, String> countryTranslations = {
     'Afghanistan': 'Afghanistan',
@@ -390,60 +472,12 @@ class _AddAlerteState extends State<AddAlerte> {
   };
 
   @override
-  void initState() {
-    super.initState();
-    initRecoder();
-    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-
-    // final paysProvider = Provider.of<DetectorPays>(context, listen: false);
-    // paysProvider.hasLocation
-    //     ? selectedCountryCode =
-    //         Provider.of<DetectorPays>(context, listen: false)
-    //             .detectedCountryCode!
-    //     : selectedCountryCode = "ML";
-    paysProvider.hasLocation
-        ? selectedCountry =
-            Provider.of<DetectorPays>(context, listen: false).detectedCountry!
-        : selectedCountry = "Mali";
-  }
-
-  @override
   void dispose() {
     super.dispose();
-    recorder.closeRecorder();
     _tokenTextController.dispose();
     _tokenAudioController.dispose();
     _tokenImageController.dispose();
   }
-
-  // Future initRecoder() async {
-  //   final status = await Permission.microphone.request();
-
-  //   if (status != PermissionStatus.granted) {
-  //     throw 'Microphone permission not granted';
-  //   }
-
-  //   await recorder.openRecorder();
-  //   isRecorderReady = true;
-  //   recorder.setSubscriptionDuration(Duration(milliseconds: 500));
-  // }
-
-  // Future record() async {
-  //   if (!isRecorderReady) return;
-  //   await recorder.startRecorder(toFile: 'audio');
-  // }
-
-  // Future stop() async {
-  //   if (!isRecorderReady) return;
-
-  //   final path = await recorder.stopRecorder();
-  //   print("Path audio : $path");
-  //   final audioFile = File(path!);
-  //   audiosUploaded = audioFile;
-  //   _tokenAudioController.text = audiosUploaded!.path.toString();
-  //   print('Recorded audio : $audioFile');
-  //   print('audiosUploaded : $audiosUploaded');
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -459,9 +493,12 @@ class _AddAlerteState extends State<AddAlerte> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                    )),
                 title: const Text(
-                  "Ajout Alerte ",
+                  "Modification",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -472,6 +509,9 @@ class _AddAlerteState extends State<AddAlerte> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                     SizedBox(
+                      height: 10,
+                    ),
                     Form(
                         key: formkey,
                         child: Column(children: [
@@ -664,37 +704,12 @@ class _AddAlerteState extends State<AddAlerte> {
                           SizedBox(
                             height: 10,
                           ),
-                          !recorder.isRecording
-                              ? Container()
-                              : StreamBuilder<RecordingDisposition>(
-                                  stream: recorder.onProgress,
-                                  builder: (context, snapshot) {
-                                    final duration = snapshot.hasData
-                                        ? snapshot.data!.duration
-                                        : Duration.zero;
-
-                                    String twoDigits(int n) =>
-                                        n.toString().padLeft(2,
-                                            '0'); // Correction de la taille du pad
-
-                                    final twoDigitMinutes = twoDigits(
-                                        duration.inMinutes.remainder(60));
-                                    final twoDigitSeconds = twoDigits(
-                                        duration.inSeconds.remainder(60));
-
-                                    return Center(
-                                      child: Text(
-                                        '$twoDigitMinutes:$twoDigitSeconds',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        overflow: TextOverflow
-                                            .ellipsis, // Gestion du dépassement de texte
-                                      ),
-                                    );
-                                  },
-                                ),
+                          isRecording
+                              ? Text(
+                                  'Durée: ${_elapsedSeconds}s',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              : Container(),
                           _hasUploadStarted
                               ? LinearProgressIndicator(
                                   color: d_colorGreen,
@@ -718,19 +733,7 @@ class _AddAlerteState extends State<AddAlerte> {
                                     Icons.video_camera_front_rounded,
                                     size: 30,
                                   )),
-                              IconButton(
-                                icon: Icon(
-                                  recorder.isRecording ? Icons.stop : Icons.mic,
-                                  size: 30,
-                                ),
-                                onPressed: () async {
-                                  if (recorder.isRecording) {
-                                    await stop();
-                                  } else {
-                                    await record();
-                                  }
-                                },
-                              ),
+                              _recordingButton()
                             ],
                           ),
                           ElevatedButton(
@@ -749,24 +752,19 @@ class _AddAlerteState extends State<AddAlerte> {
                                         photoUploaded != null ||
                                         audiosUploaded != null) {
                                       await AlertesService()
-                                          .creerAlertes(
+                                          .updateAlertes(
+                                              idAlerte: alerte.idAlerte!,
                                               titreAlerte: titre,
                                               descriptionAlerte: description,
-                                              pays: selectedCountry != null
-                                                  ? selectedCountry!
-                                                  : "Mali",
+                                              pays: selectedCountry,
                                               codePays:
-                                                  selectedCountryCode != null
-                                                      ? selectedCountryCode!
+                                                  selectedCountryCode.isNotEmpty
+                                                      ? selectedCountryCode
                                                       : "ML",
                                               videoAlerte: _videoUploaded,
-                                              audioAlerte: audiosUploaded,
-                                              photoAlerte: photoUploaded)
+                                              photoAlerte: photoUploaded,
+                                              audioAlerte: audiosUploaded)
                                           .then((value) => {
-                                                // FirebaseApi()
-                                                //     .sendPushNotificationToTopic(
-                                                //         'Nouvelle alerte',
-                                                //         titre),
                                                 _titreController.clear(),
                                                 _descriptionController.clear(),
                                                 _tokenTextController.clear(),
@@ -796,7 +794,7 @@ class _AddAlerteState extends State<AddAlerte> {
                                                     content: Row(
                                                       children: [
                                                         Text(
-                                                          "Une erreur est survenu lors de l'ajout",
+                                                          "Une erreur est survenu lors de la modification",
                                                           style: TextStyle(
                                                               overflow:
                                                                   TextOverflow
@@ -811,22 +809,16 @@ class _AddAlerteState extends State<AddAlerte> {
                                               });
                                     } else {
                                       await AlertesService()
-                                          .creerAlertes(
-                                            titreAlerte: titre,
-                                            descriptionAlerte: description,
-                                            pays: selectedCountry != null
-                                                ? selectedCountry!
-                                                : "Mali",
-                                            codePays:
-                                                selectedCountryCode != null
-                                                    ? selectedCountryCode!
-                                                    : "ML",
-                                          )
+                                          .updateAlertes(
+                                              idAlerte: alerte.idAlerte!,
+                                              titreAlerte: titre,
+                                              pays: selectedCountry,
+                                              codePays:
+                                                  selectedCountryCode.isNotEmpty
+                                                      ? selectedCountryCode
+                                                      : "ML",
+                                              descriptionAlerte: description)
                                           .then((value) => {
-                                                // FirebaseApi()
-                                                //     .sendPushNotificationToTopic(
-                                                //         'Nouvelle alerte',
-                                                //         titre),
                                                 _titreController.clear(),
                                                 _descriptionController.clear(),
                                                 _tokenTextController.clear(),
@@ -840,11 +832,11 @@ class _AddAlerteState extends State<AddAlerte> {
                                                 Navigator.of(context).pop()
                                               })
                                           .catchError((onError) => {
-                                                print("Error: " +
-                                                    onError.toString()),
                                                 setState(() {
                                                   _isLoading = false;
                                                 }),
+                                                print("Error: " +
+                                                    onError.toString()),
                                               });
                                     }
                                   } catch (e) {
@@ -857,7 +849,7 @@ class _AddAlerteState extends State<AddAlerte> {
                                         content: Row(
                                           children: [
                                             Text(
-                                              "Une erreur est survenu lors de l'ajout",
+                                              "Une erreur est survenu lors de la modification",
                                               style: TextStyle(
                                                   overflow:
                                                       TextOverflow.ellipsis),
@@ -879,7 +871,7 @@ class _AddAlerteState extends State<AddAlerte> {
                                 minimumSize: const Size(290, 45),
                               ),
                               child: Text(
-                                "Ajouter",
+                                "Modifier",
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
@@ -889,6 +881,42 @@ class _AddAlerteState extends State<AddAlerte> {
                         ]))
                   ]),
             )));
+  }
+
+  Widget _recordingButton() {
+    return IconButton(
+      icon: Icon(
+        isRecording ? Icons.stop : Icons.mic,
+        size: 30,
+      ),
+      onPressed: () async {
+        if (isRecording) {
+          String? filePath = await audioRecorder.stop();
+          if (filePath != null) {
+            setState(() {
+              isRecording = false;
+              recordingPath = filePath;
+              audiosUploaded = File(filePath);
+              print("My Audio path : ${audiosUploaded}");
+              _tokenAudioController.text = filePath;
+            });
+          }
+        } else {
+          if (await audioRecorder.hasPermission()) {
+            final Directory appDocumentsDir =
+                await getApplicationDocumentsDirectory();
+            final String filePath =
+                path.join(appDocumentsDir.path, "recording.wav");
+            await audioRecorder.start(const RecordConfig(), path: filePath);
+            setState(() {
+              isRecording = true;
+              recordingPath = null;
+            });
+            _startTimer();
+          }
+        }
+      },
+    );
   }
 
   Widget _videoUploade() {

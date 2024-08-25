@@ -337,9 +337,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         prefs.setString('localiteActeur', localiteActeur);
         prefs.setString('codeActeur', codeActeur!);
         prefs.setString('password', enteredPin);
-        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
-
-        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
 
         List<dynamic> typeActeurData = responseBody['typeActeur'];
         List<dynamic> speculationData = responseBody['speculation'];

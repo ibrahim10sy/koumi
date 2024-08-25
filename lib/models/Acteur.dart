@@ -2,7 +2,7 @@
 import 'package:koumi/models/Pays.dart';
 import 'package:koumi/models/Speculation.dart';
 import 'package:koumi/models/TypeActeur.dart';
-
+ 
 class Acteur {
    String? idActeur;
     String? resetToken;
@@ -146,6 +146,41 @@ class Acteur {
         niveau3PaysActeur: niveau3PaysActeur,
         localiteActeur: localiteActeur);
   }
+  // factory Acteur.fromSharedPreferencesData(
+  //     String emailActeur,
+  //     String password,
+  //     List<String> userTypeList,
+  //     List<String> specList,
+  //     String codeActeur,
+  //     String idActeur,
+  //     String nomActeur,
+  //     String telephoneActeur,
+  //     String adressActeur,
+  //     String whatsAppActeur,
+  //     String niveau3PaysActeur,
+  //     String localiteActeur) {
+  //   // Créez une liste de TypeActeur à partir de la liste de chaînes userTypeList
+  //   List<TypeActeur> typeActeurList =
+  //       userTypeList.map((libelle) => TypeActeur(libelle: libelle)).toList();
+  //   List<Speculation> specuList =
+  //       specList.map((nom) => Speculation(nomSpeculation: nom)).toList();
+
+  //   // Retournez une nouvelle instance d'Acteur avec les données fournies
+  //   return Acteur(
+  //       // Initialiser les autres propriétés de l'acteur selon vos besoins
+  //       emailActeur: emailActeur,
+  //       password: password,
+  //       typeActeur: typeActeurList,
+  //       speculation: specuList,
+  //       codeActeur: codeActeur,
+  //       idActeur: idActeur,
+  //       nomActeur: nomActeur,
+  //       adresseActeur: adressActeur,
+  //       telephoneActeur: telephoneActeur,
+  //       whatsAppActeur: whatsAppActeur,
+  //       niveau3PaysActeur: niveau3PaysActeur,
+  //       localiteActeur: localiteActeur);
+  // }
 
  
   Map<String, dynamic> toMap() {

@@ -3,10 +3,10 @@ import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Conseil.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
-// import 'package:koumi/screens/AddConseil.dart';
+import 'package:koumi/screens/AddConseil.dart';
 import 'package:koumi/screens/ConseilDisable.dart';
 import 'package:koumi/screens/DetailConseil.dart';
-// import 'package:koumi/screens/UpdateConseil.dart';
+import 'package:koumi/screens/UpdateConseil.dart';
 import 'package:koumi/service/ConseilService.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -99,123 +99,188 @@ class _ConseilScreenState extends State<ConseilScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          actions: !isExist
-              ? null
-              : (typeActeurData
-                      .map((e) => e.libelle!.toLowerCase())
-                      .contains("admin"))
-                  ? [
-                      PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context) {
-                          return (typeActeurData
-                                  .map((e) => e.libelle!.toLowerCase())
-                                  .contains("admin"))
-                              ? <PopupMenuEntry<String>>[
-                                  PopupMenuItem<String>(
-                                    child: ListTile(
-                                      leading: const Icon(
-                                        Icons.add,
-                                        color: d_colorGreen,
-                                      ),
-                                      title: const Text(
-                                        "Ajouter conseils ",
-                                        style: TextStyle(
-                                          color: d_colorGreen,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      onTap: () async {
-                                        Navigator.of(context).pop();
-                                        // Navigator.push(
-                                        //     context,
-                                        //     MaterialPageRoute(
-                                        //         builder: (context) =>
-                                        //             AddConseil()));
-                                      },
-                                    ),
-                                  ),
-                                  PopupMenuItem<String>(
-                                    child: ListTile(
-                                      leading: const Icon(
-                                        Icons.remove_red_eye,
-                                        color: d_colorGreen,
-                                      ),
-                                      title: const Text(
-                                        "Voir conseil désactiver ",
-                                        style: TextStyle(
-                                          color: d_colorGreen,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      onTap: () async {
-                                        Navigator.of(context).pop();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ConseilDisable()));
-                                      },
-                                    ),
-                                  ),
-                                ]
-                              : <PopupMenuEntry<String>>[
-                                  PopupMenuItem<String>(
-                                    child: ListTile(
-                                      leading: const Icon(
-                                        Icons.add,
-                                        color: d_colorGreen,
-                                      ),
-                                      title: const Text(
-                                        "Ajouter conseil ",
-                                        style: TextStyle(
-                                          color: d_colorGreen,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      onTap: () async {
-                                        Navigator.of(context).pop();
-                                        // Navigator.push(
-                                        //     context,
-                                        //     MaterialPageRoute(
-                                        //         builder: (context) =>
-                                        //             AddConseil()));
-                                      },
-                                    ),
-                                  ),
-                                ];
-                        },
-                      )
-                    ]
-                  : null),
+         ),
       body: Container(
         child: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        isSearchMode = !isSearchMode;
-                        _searchController.clear();
-                      });
-                    },
-                    icon: Icon(
-                      isSearchMode ? Icons.close : Icons.search,
-                      color: isSearchMode ? Colors.red : Colors.green,
-                    ),
-                    label: Text(
-                      isSearchMode ? 'Fermer' : 'Rechercher...',
-                      style: TextStyle(
-                          color: isSearchMode ? Colors.red : Colors.green,
-                          fontSize: 17),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                     !isExist
+              ? Container()
+              : (typeActeurData
+                      .map((e) => e.libelle!.toLowerCase())
+                      .contains("admin"))
+                          ? TextButton(
+                              onPressed: () {
+                                showMenu<String>(
+                                  context: context,
+                                  position: RelativeRect.fromLTRB(
+                                    0,
+                                    50, // Adjust this value based on the desired position of the menu
+                                    MediaQuery.of(context).size.width,
+                                    0,
+                                  ),
+                                  items: [
+                                    PopupMenuItem<String>(
+                                      value: 'add',
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.add,
+                                          color: d_colorGreen,
+                                        ),
+                                        title: const Text(
+                                          "Ajouter conseil",
+                                          style: TextStyle(
+                                            color: d_colorGreen,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      value: 'disable',
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.remove_red_eye,
+                                          color: d_colorGreen,
+                                        ),
+                                        title: const Text(
+                                          "Conseil désactiver",
+                                          style: TextStyle(
+                                            color: d_colorGreen,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  elevation: 8.0,
+                                ).then((value) {
+                                  if (value != null) {
+                                    if (value == 'add') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddConseil()));
+                                    }
+                                    if (value == 'disable') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ConseilDisable()));
+                                    }
+                                  }
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  SizedBox(
+                                      width: 8), // Space between icon and text
+                                  Text(
+                                    'Ajouter',
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            
+                          : (typeActeurData
+                      .map((e) => e.libelle!.toLowerCase())
+                      .contains("producteur")) ?TextButton(
+                              onPressed: () {
+                                showMenu<String>(
+                                  context: context,
+                                  position: RelativeRect.fromLTRB(
+                                    0,
+                                    50, // Adjust this value based on the desired position of the menu
+                                    MediaQuery.of(context).size.width,
+                                    0,
+                                  ),
+                                  items: [
+                                    PopupMenuItem<String>(
+                                      value: 'add',
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.add,
+                                          color: d_colorGreen,
+                                        ),
+                                        title: const Text(
+                                          "Ajouter conseil",
+                                          style: TextStyle(
+                                            color: d_colorGreen,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                   
+                                  ],
+                                  elevation: 8.0,
+                                ).then((value) {
+                                  if (value != null) {
+                                    if (value == 'add') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddConseil()));
+                                    }
+                                    
+                                  }
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  SizedBox(
+                                      width: 8), // Space between icon and text
+                                  Text(
+                                    'Ajouter',
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ) : Container(),
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
+                        ),
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 if (isSearchMode)
@@ -522,9 +587,9 @@ class _ConseilScreenState extends State<ConseilScreen> {
                                                                       ),
                                                                       onTap:
                                                                           () async {
-                                                                        // Navigator.push(
-                                                                        //     context,
-                                                                        //     MaterialPageRoute(builder: (context) => UpdateConseil(conseils: e)));
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => UpdateConseil(conseils: e)));
                                                                       },
                                                                     ),
                                                                   ),

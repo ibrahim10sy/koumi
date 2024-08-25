@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
@@ -12,6 +12,9 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:record/record.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AddConseil extends StatefulWidget {
   const AddConseil({super.key});
@@ -26,7 +29,6 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 class _AddConseilState extends State<AddConseil> {
   TextEditingController _titreController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
-  final recorder = FlutterSoundRecorder();
   final formkey = GlobalKey<FormState>();
   bool isRecorderReady = false;
   late Acteur acteur = Acteur();
@@ -42,10 +44,29 @@ class _AddConseilState extends State<AddConseil> {
   final ImagePicker _picker = ImagePicker();
   double _progressValue = 0;
   bool _hasUploadStarted = false;
+  final AudioRecorder audioRecorder = AudioRecorder();
+  final AudioPlayer audioPlayer = AudioPlayer();
+  bool isRecording = false, isPlaying = false;
+  String? recordingPath;
+  Timer? _timer;
+  int _elapsedSeconds = 0;
 
   void setProgress(double value) async {
     setState(() {
       _progressValue = value;
+    });
+  }
+
+  void _startTimer() {
+    _elapsedSeconds = 0;
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      if (!isRecording) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _elapsedSeconds++;
+        });
+      }
     });
   }
 
@@ -190,49 +211,19 @@ class _AddConseilState extends State<AddConseil> {
   @override
   void initState() {
     super.initState();
-    initRecoder();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
   }
 
   @override
   void dispose() {
     super.dispose();
-    recorder.closeRecorder();
+     _timer?.cancel();
     _tokenTextController.dispose();
     _tokenAudioController.dispose();
     _tokenImageController.dispose();
   }
 
-  Future initRecoder() async {
-    final status = await Permission.microphone.request();
-
-    if (status != PermissionStatus.granted) {
-      print('Microphone permission not granted');
-      // throw 'Microphone permission not granted';
-    }
-
-    await recorder.openRecorder();
-    isRecorderReady = true;
-    recorder.setSubscriptionDuration(Duration(milliseconds: 500));
-  }
-
-  Future record() async {
-    if (!isRecorderReady) return;
-    await recorder.startRecorder(toFile: 'audio');
-  }
-
-  Future stop() async {
-    if (!isRecorderReady) return;
-
-    final path = await recorder.stopRecorder();
-    print("Path audio : $path");
-    final audioFile = File(path!);
-    audiosUploaded = audioFile;
-    _tokenAudioController.text = audiosUploaded!.path.toString();
-    print('Recorded audio : $audioFile');
-    print('AudiosUploaded : $audiosUploaded');
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
@@ -397,72 +388,37 @@ class _AddConseilState extends State<AddConseil> {
                     SizedBox(
                       height: 10,
                     ),
-                    !recorder.isRecording
-                        ? Container()
-                        : StreamBuilder<RecordingDisposition>(
-                            stream: recorder.onProgress,
-                            builder: (context, snapshot) {
-                              final duration = snapshot.hasData
-                                  ? snapshot.data!.duration
-                                  : Duration.zero;
-
-                              String twoDigits(int n) => n.toString().padLeft(
-                                  2, '0'); // Correction de la taille du pad
-
-                              final twoDigitMinutes =
-                                  twoDigits(duration.inMinutes.remainder(60));
-                              final twoDigitSeconds =
-                                  twoDigits(duration.inSeconds.remainder(60));
-
-                              return Center(
-                                child: Text(
-                                  '$twoDigitMinutes:$twoDigitSeconds',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow
-                                      .ellipsis, // Gestion du dépassement de texte
+                      // _buildUi(),
+                          isRecording
+                              ? Text(
+                                  'Durée: ${_elapsedSeconds}s',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              : Container(),
+                          _hasUploadStarted
+                              ? LinearProgressIndicator(
+                                  color: d_colorGreen,
+                                  backgroundColor: d_colorOr,
+                                  value: _progressValue,
+                                )
+                              : Container(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.camera,
+                                  size: 30,
                                 ),
-                              );
-                            },
-                          ),
-                    _hasUploadStarted
-                        ? LinearProgressIndicator(
-                            color: d_colorGreen,
-                            backgroundColor: d_colorOr,
-                            value: _progressValue,
-                          )
-                        : Container(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.camera,
-                            size: 30,
-                          ),
-                          onPressed: _showImageSourceDialog,
-                        ),
-                        IconButton(
-                            onPressed: _showVideoSourceDialog,
-                            icon: Icon(
-                              Icons.video_camera_front_rounded,
-                              size: 30,
-                            )),
-                        IconButton(
-                          icon: Icon(
-                            recorder.isRecording ? Icons.stop : Icons.mic,
-                            size: 30,
-                          ),
-                          onPressed: () async {
-                            if (recorder.isRecording) {
-                              await stop();
-                            } else {
-                              await record();
-                            }
-                          },
-                        ),
+                                onPressed: _showImageSourceDialog,
+                              ),
+                              IconButton(
+                                  onPressed: _showVideoSourceDialog,
+                                  icon: Icon(
+                                    Icons.video_camera_front_rounded,
+                                    size: 30,
+                                  )),
+                                   _recordingButton()
                       ],
                     ),
                     ElevatedButton(
@@ -616,6 +572,43 @@ class _AddConseilState extends State<AddConseil> {
           ),
         ),
       ),
+    );
+  }
+
+
+  Widget _recordingButton() {
+    return IconButton(
+      icon: Icon(
+        isRecording ? Icons.stop : Icons.mic,
+        size: 30,
+      ),
+      onPressed: () async {
+        if (isRecording) {
+          String? filePath = await audioRecorder.stop();
+          if (filePath != null) {
+            setState(() {
+              isRecording = false;
+              recordingPath = filePath;
+              audiosUploaded = File(filePath);
+              print("My Audio path : ${audiosUploaded}");
+              _tokenAudioController.text = filePath;
+            });
+          }
+        } else {
+          if (await audioRecorder.hasPermission()) {
+            final Directory appDocumentsDir =
+                await getApplicationDocumentsDirectory();
+            final String filePath =
+                path.join(appDocumentsDir.path, "recording.wav");
+            await audioRecorder.start(const RecordConfig(), path: filePath);
+            setState(() {
+              isRecording = true;
+              recordingPath = null;
+            });
+            _startTimer();
+          }
+        }
+      },
     );
   }
 

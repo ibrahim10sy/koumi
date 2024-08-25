@@ -1,13 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Conseil.dart';
-import 'package:koumi/models/TypeActeur.dart';
-import 'package:koumi/providers/ActeurProvider.dart';
-// import 'package:koumi/screens/AddConseil.dart';
 import 'package:koumi/screens/DetailConseil.dart';
-// import 'package:koumi/screens/UpdateConseil.dart';
+import 'package:koumi/screens/UpdateConseil.dart';
 import 'package:koumi/service/ConseilService.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +35,7 @@ class _ConseilDisableState extends State<ConseilDisable> {
       }
     });
   }
+
   late ScrollController _scrollController;
   @override
   void initState() {
@@ -52,8 +47,8 @@ class _ConseilDisableState extends State<ConseilDisable> {
 
   @override
   void dispose() {
-     _scrollController.dispose();
-      _searchController.dispose();
+    _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -62,14 +57,17 @@ class _ConseilDisableState extends State<ConseilDisable> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            )),
         title: const Text(
           "Conseil désactiver",
           style: TextStyle(
@@ -85,65 +83,65 @@ class _ConseilDisableState extends State<ConseilDisable> {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
-                                   Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            isSearchMode = !isSearchMode;
-                            _searchController.clear();
-                          });
-                        },
-                        icon: Icon(
-                          isSearchMode ? Icons.close : Icons.search,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        isSearchMode = !isSearchMode;
+                        _searchController.clear();
+                      });
+                    },
+                    icon: Icon(
+                      isSearchMode ? Icons.close : Icons.search,
+                      color: isSearchMode ? Colors.red : Colors.green,
+                    ),
+                    label: Text(
+                      isSearchMode ? 'Fermer' : 'Rechercher...',
+                      style: TextStyle(
                           color: isSearchMode ? Colors.red : Colors.green,
-                        ),
-                        label: Text(
-                          isSearchMode ? 'Fermer' : 'Rechercher...',
-                          style: TextStyle(
-                              color: isSearchMode ? Colors.red : Colors.green,
-                              fontSize: 17),
-                        ),
+                          fontSize: 17),
+                    ),
+                  ),
+                ),
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    if (isSearchMode)
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey[50],
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search, color: Colors.blueGrey[400]),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  controller: _searchController,
-                                  onChanged: (value) {
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: 'Rechercher',
-                                    border: InputBorder.none,
-                                    hintStyle:
-                                        TextStyle(color: Colors.blueGrey[400]),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                  ),
               ])),
             ];
           },
           body: SingleChildScrollView(
-              controller: _scrollController,
+            controller: _scrollController,
             child: Column(
               children: [
                 Consumer<ConseilService>(
@@ -174,7 +172,8 @@ class _ConseilDisableState extends State<ConseilDisable> {
                             searchText = _searchController.text.toLowerCase();
                             return libelle.contains(searchText);
                           }).toList();
-                          return filtereSearch.where((element) =>
+                          return filtereSearch
+                                  .where((element) =>
                                       element.statutConseil == false)
                                   .isEmpty
                               ? Padding(
@@ -283,10 +282,10 @@ class _ConseilDisableState extends State<ConseilDisable> {
                                                                         : Icon(
                                                                             Icons.disabled_visible,
                                                                             color:
-                                                                                Colors.orange[400],
+                                                                                d_colorOr,
                                                                           ),
                                                                 title: Text(
-                                                                "Activer",
+                                                                  "Activer",
                                                                   style:
                                                                       TextStyle(
                                                                     color: e.statutConseil ==
@@ -302,10 +301,13 @@ class _ConseilDisableState extends State<ConseilDisable> {
                                                                 ),
                                                                 onTap:
                                                                     () async {
-                                                                 await ConseilService()
-                                                                          .activerConseil(e
-                                                                              .idConseil!)
-                                                                          .then((value) =>
+                                                                      Navigator.of(context)
+                                                                            .pop();
+                                                                  await ConseilService()
+                                                                      .activerConseil(e
+                                                                          .idConseil!)
+                                                                      .then(
+                                                                          (value) =>
                                                                               {
                                                                                 Provider.of<ConseilService>(context, listen: false).applyChange(),
                                                                                 Navigator.of(context).pop(),
@@ -323,7 +325,8 @@ class _ConseilDisableState extends State<ConseilDisable> {
                                                                                   ),
                                                                                 )
                                                                               })
-                                                                          .catchError((onError) =>
+                                                                      .catchError(
+                                                                          (onError) =>
                                                                               {
                                                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                                                   const SnackBar(
@@ -336,10 +339,7 @@ class _ConseilDisableState extends State<ConseilDisable> {
                                                                                   ),
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
-                                                                              })
-                                                                      ;
-
-                                                                
+                                                                              });
                                                                 },
                                                               ),
                                                             ),
@@ -366,11 +366,13 @@ class _ConseilDisableState extends State<ConseilDisable> {
                                                                 ),
                                                                 onTap:
                                                                     () async {
-                                                                  // Navigator.push(
-                                                                  //     context,
-                                                                  //     MaterialPageRoute(
-                                                                  //         builder: (context) =>
-                                                                  //             UpdateConseil(conseils: e)));
+                                                                      Navigator.of(context)
+                                                                            .pop();
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              UpdateConseil(conseils: e)));
                                                                 },
                                                               ),
                                                             ),
@@ -397,6 +399,8 @@ class _ConseilDisableState extends State<ConseilDisable> {
                                                                 ),
                                                                 onTap:
                                                                     () async {
+                                                                      Navigator.of(context)
+                                                                            .pop();
                                                                   await ConseilService()
                                                                       .deleteConseil(e
                                                                           .idConseil!)

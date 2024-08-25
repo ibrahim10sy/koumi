@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:koumi/Admin/AddAlerte.dart';
 // import 'package:koumi/Admin/AddAlerte.dart';
 import 'package:koumi/Admin/AlerteDisable.dart';
 import 'package:koumi/Admin/DetailAlerte.dart';
+import 'package:koumi/Admin/UpdateAlerte.dart';
 // import 'package:koumi/Admin/UpdateAlerte.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Alertes.dart';
@@ -63,109 +65,142 @@ class _AlerteScreenState extends State<AlerteScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-          backgroundColor: d_colorOr,
-          centerTitle: true,
-          toolbarHeight: 75,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              )),
-          title: const Text(
-            "Alertes ",
-            style: TextStyle(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
               color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            )),
+        title: const Text(
+          "Alertes ",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          actions: typeActeurData
-                  .map((e) => e.libelle!.toLowerCase())
-                  .contains("admin")
-              ? [
-                  PopupMenuButton<String>(
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context) {
-                      return <PopupMenuEntry<String>>[
-                        PopupMenuItem<String>(
-                          child: ListTile(
-                            leading: const Icon(
-                              Icons.add,
-                              color: d_colorGreen,
-                            ),
-                            title: const Text(
-                              "Ajouter Alerte ",
-                              style: TextStyle(
-                                color: d_colorGreen,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            onTap: () async {
-                              Navigator.of(context).pop();
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => AddAlerte()));
-                            },
-                          ),
-                        ),
-                        PopupMenuItem<String>(
-                          child: ListTile(
-                            leading: const Icon(
-                              Icons.remove_red_eye,
-                              color: d_colorGreen,
-                            ),
-                            title: const Text(
-                              "Alerte Désactiver ",
-                              style: TextStyle(
-                                color: d_colorGreen,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            onTap: () async {
-                              Navigator.of(context).pop();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AlerteDisable()));
-                            },
-                          ),
-                        ),
-                      ];
-                    },
-                  )
-                ]
-              : null),
+        ),
+      ),
       body: Container(
         child: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        isSearchMode = !isSearchMode;
-                        _searchController.clear();
-                      });
-                    },
-                    icon: Icon(
-                      isSearchMode ? Icons.close : Icons.search,
-                      color: isSearchMode ? Colors.red : Colors.green,
-                    ),
-                    label: Text(
-                      isSearchMode ? 'Fermer' : 'Rechercher...',
-                      style: TextStyle(
-                          color: isSearchMode ? Colors.red : Colors.green,
-                          fontSize: 17),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      typeActeurData
+                              .map((e) => e.libelle!.toLowerCase())
+                              .contains("admin")
+                          ? TextButton(
+                              onPressed: () {
+                                showMenu<String>(
+                                  context: context,
+                                  position: RelativeRect.fromLTRB(
+                                    0,
+                                    50, // Adjust this value based on the desired position of the menu
+                                    MediaQuery.of(context).size.width,
+                                    0,
+                                  ),
+                                  items: [
+                                    PopupMenuItem<String>(
+                                      value: 'add',
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.add,
+                                          color: d_colorGreen,
+                                        ),
+                                        title: const Text(
+                                          "Ajouter une alerte",
+                                          style: TextStyle(
+                                            color: d_colorGreen,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      value: 'disable',
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.remove_red_eye,
+                                          color: d_colorGreen,
+                                        ),
+                                        title: const Text(
+                                          "Alerte désactiver",
+                                          style: TextStyle(
+                                            color: d_colorGreen,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  elevation: 8.0,
+                                ).then((value) {
+                                  if (value != null) {
+                                    if (value == 'add') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddAlerte()));
+                                    }
+                                    if (value == 'disable') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AlerteDisable()));
+                                    }
+                                  }
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  SizedBox(
+                                      width: 8), // Space between icon and text
+                                  Text(
+                                    'Ajouter',
+                                    style: TextStyle(
+                                      color: d_colorGreen,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container(),
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
+                        ),
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 if (isSearchMode)
@@ -360,7 +395,7 @@ class _AlerteScreenState extends State<AlerteScreen> {
                                                                             )
                                                                           : Icon(
                                                                               Icons.disabled_visible,
-                                                                              color: Colors.orange[400]),
+                                                                              color: d_colorOr),
                                                                       title:
                                                                           Text(
                                                                         e.statutAlerte ==
@@ -371,13 +406,15 @@ class _AlerteScreenState extends State<AlerteScreen> {
                                                                             TextStyle(
                                                                           color: e.statutAlerte == false
                                                                               ? Colors.green
-                                                                              : Colors.orange[400],
+                                                                              : d_colorOr,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                         ),
                                                                       ),
                                                                       onTap:
                                                                           () async {
+                                                                        Navigator.of(context)
+                                                                            .pop();
                                                                         e.statutAlerte ==
                                                                                 false
                                                                             ? await AlertesService()
@@ -469,9 +506,11 @@ class _AlerteScreenState extends State<AlerteScreen> {
                                                                       ),
                                                                       onTap:
                                                                           () async {
-                                                                        // Navigator.push(
-                                                                        //     context,
-                                                                        //     MaterialPageRoute(builder: (context) => UpdateAlerted(alertes: e)));
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => UpdateAlerted(alertes: e)));
                                                                       },
                                                                     ),
                                                                   ),
@@ -499,6 +538,8 @@ class _AlerteScreenState extends State<AlerteScreen> {
                                                                       ),
                                                                       onTap:
                                                                           () async {
+                                                                        Navigator.of(context)
+                                                                            .pop();
                                                                         await AlertesService()
                                                                             .deleteAlertes(e
                                                                                 .idAlerte!)

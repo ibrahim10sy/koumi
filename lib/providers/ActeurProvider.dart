@@ -46,7 +46,7 @@ class ActeurProvider with ChangeNotifier {
         whatsAppActeur != null &&
         niveau3PaysActeur != null &&
         localiteActeur != null) {
-      // Créer l'objet Acteur à partir des données de SharedPreferences
+
       _acteur = Acteur.fromSharedPreferencesData(
           emailActeur,
           password,
