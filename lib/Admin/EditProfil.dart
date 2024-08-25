@@ -603,116 +603,150 @@ class _EditProfilState extends State<EditProfil> {
                         setState(() {
                           _isLoading = true;
                         });
-                        if(emailActeur != null){
+                        if (emailActeur != null) {
                           if (photo != null) {
-                          response = await ActeurService()
-                              .updateActeur(
-                            idActeur: idActeur,
-                            nomActeur: nomActeur,
-                            adresseActeur: adresse,
-                            telephoneActeur: tel,
-                            whatsAppActeur: whatsApp,
-                            localiteActeur: localisation,
-                            emailActeur: emailActeur,
-                            niveau3PaysActeur: niveau3PaysActeur,
-                            typeActeur: typeActeur,
-                            speculation: speculation,
-                            logoActeur: photo,
-                          )
-                              .then((onValue) {
-                            setState(() {
-                              _isLoading = false;
+                            response = await ActeurService()
+                                .updateActeur(
+                                context : context,
+                              idActeur: idActeur,
+                              nomActeur: nomActeur,
+                              adresseActeur: adresse,
+                              telephoneActeur: tel,
+                              whatsAppActeur: whatsApp,
+                              localiteActeur: localisation,
+                              emailActeur: emailActeur,
+                              niveau3PaysActeur: niveau3PaysActeur,
+                              typeActeur: typeActeur,
+                              speculation: speculation,
+                              logoActeur: photo,
+                            )
+                                .then((onValue) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Profil modifié avec succès"),
+                              duration: Duration(seconds: 5),
+                            ),
+                          );
+                              print("acteur :${response.toString()}");
+                            }).catchError((onError) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              print("acteur catch 1 :${onError.toString()}");
                             });
-                            print("acteur :${response.toString()}");
-                          }).catchError((onError) {
-                             setState(() {
-                          _isLoading = false;
-                        });
-                            print("catch 1 :${onError.toString()}");
-                          });
+                          } else {
+                            response = await ActeurService()
+                                .updateActeur(
+                                   context : context,
+                              idActeur: idActeur,
+                              nomActeur: nomActeur,
+                              adresseActeur: adresse,
+                              telephoneActeur: tel,
+                              whatsAppActeur: whatsApp,
+                              localiteActeur: localisation,
+                              emailActeur: emailActeur,
+                              niveau3PaysActeur: niveau3PaysActeur,
+                              typeActeur: typeActeur,
+                              speculation: speculation,
+                            )
+                                .then((onValue) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Profil modifié avec succès"),
+                              duration: Duration(seconds: 5),
+                            ),
+                          );
+                              print("acteur :${response.toString()}");
+                            }).catchError((onError) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              print("acteur catch 2 :${onError.toString()}");
+                            });
+                          }
                         } else {
-                          response = await ActeurService()
-                              .updateActeur(
-                            idActeur: idActeur,
-                            nomActeur: nomActeur,
-                            adresseActeur: adresse,
-                            telephoneActeur: tel,
-                            whatsAppActeur: whatsApp,
-                            localiteActeur: localisation,
-                            emailActeur: emailActeur,
-                            niveau3PaysActeur: niveau3PaysActeur,
-                            typeActeur: typeActeur,
-                            speculation: speculation,
-                          )
-                              .then((onValue) {
-                                 setState(() {
-                          _isLoading = false;
-                        });
-                            print("acteur :${response.toString()}");
-                          }).catchError((onError) {
-                             setState(() {
-                              _isLoading = false;
-                            });
-                            print("catch 2 :${onError.toString()}");
-                          });
-                        }
-                        }else {
                           if (photo != null) {
-                          response = await ActeurService()
-                              .updateActeur(
-                            idActeur: idActeur,
-                            nomActeur: nomActeur,
-                            adresseActeur: adresse,
-                            telephoneActeur: tel,
-                            whatsAppActeur: whatsApp,
-                            localiteActeur: localisation,
-                            niveau3PaysActeur: niveau3PaysActeur,
-                            typeActeur: typeActeur,
-                            speculation: speculation,
-                            logoActeur: photo,
-                          )
-                              .then((onValue) {
-                            setState(() {
-                              _isLoading = false;
+                            response = await ActeurService()
+                                .updateActeur(
+                                   context : context,
+                              idActeur: idActeur,
+                              nomActeur: nomActeur,
+                              adresseActeur: adresse,
+                              telephoneActeur: tel,
+                              whatsAppActeur: whatsApp,
+                              localiteActeur: localisation,
+                              niveau3PaysActeur: niveau3PaysActeur,
+                              typeActeur: typeActeur,
+                              speculation: speculation,
+                              logoActeur: photo,
+                            )
+                                .then((onValue) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Profil modifié avec succès"),
+                              duration: Duration(seconds: 5),
+                            ),
+                          );
+                              print("acteur :${response.toString()}");
+                            }).catchError((onError) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              print("acteur catch 1 :${onError.toString()}");
                             });
-                            print("acteur :${response.toString()}");
-                          }).catchError((onError) {
-                             setState(() {
-                          _isLoading = false;
-                        });
-                            print("catch 1 :${onError.toString()}");
-                          });
-                        } else {
-                          response = await ActeurService()
-                              .updateActeur(
-                            idActeur: idActeur,
-                            nomActeur: nomActeur,
-                            adresseActeur: adresse,
-                            telephoneActeur: tel,
-                            whatsAppActeur: whatsApp,
-                            localiteActeur: localisation,
-                            niveau3PaysActeur: niveau3PaysActeur,
-                            typeActeur: typeActeur,
-                            speculation: speculation,
-                          )
-                              .then((onValue) {
-                                 setState(() {
-                          _isLoading = false;
-                        });
-                            print("acteur :${response.toString()}");
-                          }).catchError((onError) {
-                             setState(() {
-                              _isLoading = false;
+                          } else {
+                            response = await ActeurService()
+                                .updateActeur(
+                                   context : context,
+                              idActeur: idActeur,
+                              nomActeur: nomActeur,
+                              adresseActeur: adresse,
+                              telephoneActeur: tel,
+                              whatsAppActeur: whatsApp,
+                              localiteActeur: localisation,
+                              niveau3PaysActeur: niveau3PaysActeur,
+                              typeActeur: typeActeur,
+                              speculation: speculation,
+                            )
+                                .then((onValue) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                                   ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Profil modifié avec succès"),
+                              duration: Duration(seconds: 5),
+                            ),
+                          );            
+                              print("acteur :${response.toString()}");
+                            }).catchError((onError) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              print(" acteur catch 2 :${onError.toString()}");
                             });
-                            print("catch 2 :${onError.toString()}");
-                          });
-                        }
+                          }
                         }
                       } catch (e) {
-                         setState(() {
-                              _isLoading = false;
-                            });
-                        print("catch error ${e.toString()}");
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Une erreur s\'est produite"),
+                              duration: Duration(seconds: 5),
+                            ),
+                          );
+                        print("acteur catch error ${e.toString()}");
                       }
                     } else {
                       print("id est null");
@@ -914,12 +948,12 @@ class _EditProfilState extends State<EditProfil> {
               //               print("new acteur : ${acteurs}");
               //               acteurProvider.setActeur(acteurs);
               //             });
-              //             ScaffoldMessenger.of(context).showSnackBar(
-              //               const SnackBar(
-              //                 content: Text("Profil modifié avec succès"),
-              //                 duration: Duration(seconds: 5),
-              //               ),
-              //             );
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   const SnackBar(
+                          //     content: Text("Profil modifié avec succès"),
+                          //     duration: Duration(seconds: 5),
+                          //   ),
+                          // );
               //           } else {
               //             setState(() {
               //               _isLoading = false;
