@@ -16,6 +16,7 @@ import 'package:koumi/screens/ComplementAlimentaire.dart';
 import 'package:koumi/screens/ConseilScreen.dart';
 import 'package:koumi/screens/EngraisAndApport.dart';
 import 'package:koumi/screens/FruitsAndLegumes.dart';
+import 'package:koumi/screens/IntrantPage.dart';
 import 'package:koumi/screens/IntrantScreen.dart';
 import 'package:koumi/screens/MatereilAndEquipement.dart';
 import 'package:koumi/screens/MesCommande.dart';
@@ -361,11 +362,8 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
                   MaterialPageRoute(
                       builder: (context) => const ConseilScreen()));
             } else if (index == 1) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          IntrantScreen(detectedCountry: detectedCountry)));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => IntrantPage()));
             }
           },
           borderRadius: BorderRadius.circular(10),

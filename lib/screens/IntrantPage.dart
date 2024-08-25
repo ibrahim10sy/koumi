@@ -24,44 +24,42 @@ import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ProduitPhytosanitaire extends StatefulWidget {
-  ProduitPhytosanitaire({super.key});
+class IntrantPage extends StatefulWidget {
+  IntrantPage({super.key});
 
   @override
-  State<ProduitPhytosanitaire> createState() => _ProduitPhytosanitaireState();
+  State<IntrantPage> createState() => _IntrantPageState();
 }
 
 const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
-class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
+class _IntrantPageState extends State<IntrantPage> {
   int page = 0;
   bool isLoading = false;
   late TextEditingController _searchController;
   ScrollController scrollableController = ScrollController();
   int size = sized;
+  bool hasMore = true;
   bool isExist = false;
   late Acteur acteur = Acteur();
   String? email = "";
+  String? detectedCountry;
   late List<TypeActeur> typeActeurData = [];
   late String type;
-  bool hasMore = true;
   late Future<List<Intrant>> intrantListeFuture;
   late Future<List<Intrant>> intrantListeFuture1;
   List<Intrant> intrantListe = [];
   List<Intrant> intrantList = [];
-  String? catValue;
   String? nomP;
   late Future _paysList;
+  ScrollController scrollableController1 = ScrollController();
+
+  String? catValue;
   late Future _typeList;
   bool isSearchMode = false;
   bool isFilterMode = false;
   CategorieProduit? selectedCat;
-  // CategorieProduit? selectedType;
-  ScrollController scrollableController1 = ScrollController();
-  String? detectedCountry;
-
-  String libelle = "Produits phytosanitaire";
 
   void _scrollListener() {
     debugPrint("Scroll position: ${scrollableController.position.pixels}");
@@ -73,8 +71,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
         page++;
       });
 
-      fetchIntrantByCategorie(
-              detectedCountry != null ? detectedCountry! : "Mali")
+      fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali")
           .then((value) {
         setState(() {
           debugPrint("page inc all $page");
@@ -84,7 +81,48 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     debugPrint("no");
   }
 
-  Future<List<Intrant>> fetchIntrantByCategorie(String pays,
+  void _scrollListener1() {
+    if (scrollableController1.position.pixels >=
+            scrollableController1.position.maxScrollExtent - 200 &&
+        hasMore &&
+        !isLoading &&
+        selectedCat != null) {
+      // if (selectedCat != null) {
+      // Incrementez la page et récupérez les stocks par catégorie
+      debugPrint("yes - fetch by category and pays");
+      if (mounted)
+        setState(() {
+          // Rafraîchir les données ici
+          page++;
+        });
+
+      fetchIntrantByCategorie(
+              detectedCountry != null ? detectedCountry! : "Mali",
+              selectedCat!.idCategorieProduit!)
+          .then((value) {
+        setState(() {
+          // Rafraîchir les données ici
+          debugPrint("page inc all ${page}");
+        });
+      });
+    } else if (nomP != null && nomP!.isNotEmpty) {
+      debugPrint("yes - fetch by country");
+      if (mounted)
+        setState(() {
+          page++;
+        });
+
+      fetchAllIntrantByPays().then((value) {
+        setState(() {
+          debugPrint("page pour pays ${nomP} inc all ${page}");
+        });
+      });
+    }
+    debugPrint("no");
+  }
+
+  Future<List<Intrant>> fetchIntrantByCategorie(
+      String niveau3PaysActeur, String idCategorieProduit,
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -101,13 +139,12 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     }
 
     try {
+      // for (String libelle in libelles) {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size'));
+          '$apiOnlineUrl/intrant/getIntrantsByPaysAndCategorieWithPagination?idCategorieProduit=${selectedCat!.idCategorieProduit}&niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
       debugPrint(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
-      if (response.statusCode == 200 ||
-          response.statusCode == 201 ||
-          response.statusCode == 202) {
+          '$apiOnlineUrl/intrant/getIntrantsByPaysAndCategorieWithPagination?idCategorieProduit=${selectedCat!.idCategorieProduit}&niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size');
+      if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
 
@@ -128,7 +165,66 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
         }
 
         debugPrint(
-            "response body all intrants by categorie with pagination ${page} par défilement soit ${intrantListe.length} et code ${response.statusCode}");
+            "response body all intrants by categorie with pagination ${page} par défilement soit ${intrantListe.length}");
+      } else {
+        print(
+            'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+      }
+    } catch (e) {
+      print(
+          'Une erreur s\'est produite lors de la récupération des intrants: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+    return intrantListe;
+  }
+
+  Future<List<Intrant>> fetchIntrant(String niveau3PaysActeur,
+      {bool refresh = false}) async {
+    if (isLoading == true) return [];
+
+    setState(() {
+      isLoading = true;
+    });
+
+    if (refresh) {
+      setState(() {
+        intrantListe.clear();
+        page = 0;
+        hasMore = true;
+      });
+    }
+
+    try {
+      // for (String libelle in libelles) {
+      final response = await http.get(Uri.parse(
+          '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
+      debugPrint(
+          '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size');
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> body = jsonData['content'];
+
+        if (body.isEmpty) {
+          setState(() {
+            hasMore = false;
+          });
+        } else {
+          List<Intrant> newIntrants =
+              body.map((e) => Intrant.fromMap(e)).toList();
+
+          setState(() {
+            // Ajouter uniquement les nouveaux intrants qui ne sont pas déjà dans la liste
+            intrantListe.addAll(newIntrants.where((newIntrant) =>
+                !intrantListe.any((existingIntrant) =>
+                    existingIntrant.idIntrant == newIntrant.idIntrant)));
+          });
+        }
+
+        debugPrint(
+            "response body all intrants by categorie with pagination ${page} par défilement soit ${intrantListe.length}");
       } else {
         print(
             'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
@@ -161,9 +257,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
 
     try {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleAndPays?libelle=${libelle}&nomPays=$nomP&page=$page&size=$size'));
+          '$apiOnlineUrl/intrant/getAllIntrantByPaysWithPagination?nomPays=$nomP&page=$page&size=$size'));
       debugPrint(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleAndPays?libelle=${libelle}&nomPays=$nomP&page=$page&size=$size');
+          '$apiOnlineUrl/intrant/getAllIntrantByPaysWithPagination?nomPays=$nomP&page=$page&size=$size');
       if (response.statusCode == 200) {
         print("pays end point $nomP");
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -204,6 +300,18 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     return intrantListe;
   }
 
+  Future<List<Intrant>> getAllIntrant() async {
+    if (selectedCat != null) {
+      intrantListe = await IntrantService().fetchIntrantByCategorie(
+        detectedCountry != null ? detectedCountry! : "Mali",
+        selectedCat!.idCategorieProduit!,
+      );
+    } else if (nomP != null && nomP!.isNotEmpty) {
+      intrantListe = await IntrantService().fetchAllByPays(nomP!);
+    }
+    return intrantListe;
+  }
+
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
@@ -222,117 +330,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     }
   }
 
-  Future<List<Intrant>> getAllIntrant() async {
-    if (selectedCat != null) {
-      intrantListe = await IntrantService().fetchIntrantByCategorieAndFilieres(
-          selectedCat!.idCategorieProduit!,
-          libelle,
-          detectedCountry != null ? detectedCountry! : "mali");
-    } else if (nomP != null && nomP!.isNotEmpty) {
-      intrantListe = await IntrantService().fetchAllByPays(nomP!);
-    }
-
-    return intrantListe;
-  }
-
-  void _scrollListener1() {
-    if (scrollableController1.position.pixels >=
-            scrollableController1.position.maxScrollExtent - 200 &&
-        hasMore &&
-        !isLoading &&
-        selectedCat != null) {
-      // if (selectedCat != null) {
-      // Incrementez la page et récupérez les stocks par catégorie
-      debugPrint("yes - fetch by category and pays");
-      if (mounted)
-        setState(() {
-          // Rafraîchir les données ici
-          page++;
-        });
-
-      fetchIntrantByCategorieAndFiliere(
-              detectedCountry != null ? detectedCountry! : "Mali")
-          .then((value) {
-        setState(() {
-          // Rafraîchir les données ici
-          debugPrint("page inc all ${page}");
-        });
-      });
-    } else if (nomP != null && nomP!.isNotEmpty) {
-      debugPrint("yes - fetch by country");
-      if (mounted)
-        setState(() {
-          page++;
-        });
-
-      fetchAllIntrantByPays().then((value) {
-        setState(() {
-          debugPrint("page pour pays ${nomP} inc all ${page}");
-        });
-      });
-    }
-    debugPrint("no");
-  }
-
-  Future<List<Intrant>> fetchIntrantByCategorieAndFiliere(String pays,
-      {bool refresh = false}) async {
-    if (isLoading == true) return [];
-
-    setState(() {
-      isLoading = true;
-    });
-
-    if (refresh) {
-      setState(() {
-        intrantListe.clear();
-        page = 0;
-        hasMore = true;
-      });
-    }
-
-    try {
-      // for (String libelle in libelles) {
-      final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleFiliereAndIcategorie?idCategorie=${selectedCat!.idCategorieProduit}&libelle=$libelle&pays=$pays&page=$page&size=$size'));
-      debugPrint(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleFiliereAndIcategorie?idCategorie=${selectedCat!.idCategorieProduit}&libelle=$libelle&pays=$pays&page=$page&size=$size');
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        final List<dynamic> body = jsonData['content'];
-
-        if (body.isEmpty) {
-          setState(() {
-            hasMore = false;
-          });
-        } else {
-          List<Intrant> newIntrants =
-              body.map((e) => Intrant.fromMap(e)).toList();
-
-          setState(() {
-            // Ajouter uniquement les nouveaux intrants qui ne sont pas déjà dans la liste
-            intrantListe.addAll(newIntrants.where((newIntrant) =>
-                !intrantListe.any((existingIntrant) =>
-                    existingIntrant.idIntrant == newIntrant.idIntrant)));
-          });
-        }
-
-        debugPrint(
-            "response body all intrants by categorie with pagination ${page} par défilement soit ${intrantListe.length}");
-      } else {
-        print(
-            'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
-      }
-    } catch (e) {
-      print(
-          'Une erreur s\'est produite lors de la récupération des intrants: $e');
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-    return intrantListe;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -341,21 +338,20 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
         ? detectedCountry =
             Provider.of<DetectorPays>(context, listen: false).detectedCountry!
         : detectedCountry = "Mali";
+
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController.addListener(_scrollListener);
     });
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController1.addListener(_scrollListener1);
     });
     _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
-    _typeList = http.get(Uri.parse(
-        '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
+    _typeList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
     intrantListeFuture1 = getAllIntrant();
-    intrantListeFuture = fetchIntrantByCategorie(
-        detectedCountry != null ? detectedCountry! : "Mali");
     verify();
+    intrantListeFuture =
+        fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali");
   }
 
   Future<void> _getResultFromNextScreen1(BuildContext context) async {
@@ -372,8 +368,12 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
   }
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeIntrantByActeur(isRoute: true,)));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListeIntrantByActeur(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -385,16 +385,29 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     _searchController.dispose();
     scrollableController.dispose();
     scrollableController1.dispose();
     super.dispose();
+  }
+
+  void _updateMode(int index) {
+    if (mounted) {
+      setState(() {
+        isSearchMode = index == 0;
+        if (!isSearchMode) {
+          _searchController.clear();
+          _searchController.dispose();
+          _searchController = TextEditingController();
+        }
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -409,105 +422,29 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                )),
             title: const Text(
-              "Produits phytosanitaires",
+              "Intrants agricoles",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            actions:
-                // !isExist
-                //     ?
-                [
+            actions: [
               IconButton(
                   onPressed: () {
-                    intrantListeFuture = fetchIntrantByCategorie(
+                    intrantListeFuture = fetchIntrant(
                         detectedCountry != null ? detectedCountry! : "Mali");
                   },
-                  icon: const Icon(Icons.refresh, color: Colors.white)),
-            ]
-            // : (typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("fournisseur") ||
-            //         typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("admin") ||
-            //         typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("fournisseurs"))
-            //     ? [
-            //         IconButton(
-            //             onPressed: () {
-            //               intrantListeFuture = fetchIntrantByCategorie(
-            //                   detectedCountry != null
-            //                       ? detectedCountry!
-            //                       : "Mali");
-            //             },
-            //             icon:
-            //                 const Icon(Icons.refresh, color: Colors.white)),
-            //         PopupMenuButton<String>(
-            //           padding: EdgeInsets.zero,
-            //           itemBuilder: (context) {
-            //             return <PopupMenuEntry<String>>[
-            //               PopupMenuItem<String>(
-            //                 child: ListTile(
-            //                   leading: const Icon(
-            //                     Icons.add,
-            //                     color: d_colorGreen,
-            //                   ),
-            //                   title: const Text(
-            //                     "Ajouter intrant ",
-            //                     style: TextStyle(
-            //                       color: d_colorGreen,
-            //                       fontSize: 18,
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                   onTap: () async {
-            //                     Navigator.of(context).pop();
-            //                     _getResultFromNextScreen1(context);
-            //                   },
-            //                 ),
-            //               ),
-            //              PopupMenuItem<String>(
-            //                 child: ListTile(
-            //                   leading: const Icon(
-            //                     Icons.remove_red_eye,
-            //                     color: d_colorGreen,
-            //                   ),
-            //                   title: const Text(
-            //                     "Mes intrants ",
-            //                     style: TextStyle(
-            //                       color: d_colorGreen,
-            //                       fontSize: 18,
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                   onTap: () async {
-            //                     Navigator.of(context).pop();
-            //                     _getResultFromNextScreen2(context);
-            //                   },
-            //                 ),
-            //               )
-            //             ];
-            //           },
-            //         )
-            //       ]
-            //     : [
-            //         IconButton(
-            //             onPressed: () {
-            //               intrantListeFuture = fetchIntrantByCategorie(
-            //                   detectedCountry != null
-            //                       ? detectedCountry!
-            //                       : "Mali");
-            //             },
-            //             icon:
-            //                 const Icon(Icons.refresh, color: Colors.white)),
-            //       ]
-            ),
+                  icon: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  )),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -928,10 +865,12 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                 selectedCat = cat;
                                                 page = 0;
                                                 hasMore = true;
-                                                fetchIntrantByCategorieAndFiliere(
+                                                fetchIntrantByCategorie(
                                                     detectedCountry != null
                                                         ? detectedCountry!
                                                         : "Mali",
+                                                    selectedCat!
+                                                        .idCategorieProduit!,
                                                     refresh: true);
                                                 if (page == 0 &&
                                                     isLoading == true) {
@@ -1059,26 +998,26 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                           // Rafraîchir les données ici
                         });
                         debugPrint("refresh page ${page}");
-                        selectedCat != null || nomP != null
+                        selectedCat == null || nomP == null
                             ? setState(() {
-                                nomP == null || nomP!.isEmpty
-                                    ? intrantListeFuture = IntrantService()
-                                        .fetchIntrantByCategorieAndFilieres(
-                                            selectedCat!.idCategorieProduit!,
-                                            libelle,
-                                            detectedCountry != null
-                                                ? detectedCountry!
-                                                : "Mali")
-                                    : intrantListeFuture = IntrantService()
-                                        .fetchAllByPaysAndFiliere(
-                                            libelle, nomP!);
-                              })
-                            : setState(() {
-                                intrantListeFuture = fetchIntrantByCategorie(
-                                    detectedCountry != null
+                                intrantListeFuture = IntrantService()
+                                    .fetchIntrantByPays(detectedCountry != null
                                         ? detectedCountry!
                                         : "Mali");
+                              })
+                            : setState(() {
+                                selectedCat != null
+                                    ? intrantListeFuture1 =
+                                        fetchIntrantByCategorie(
+                                        detectedCountry != null
+                                            ? detectedCountry!
+                                            : "Mali",
+                                        selectedCat!.idCategorieProduit!,
+                                      )
+                                    : intrantListeFuture1 =
+                                        fetchAllIntrantByPays();
                               });
+                        debugPrint("refresh page ${page}");
                       },
                       child: selectedCat == null && nomP == null
                           ? SingleChildScrollView(
@@ -1144,9 +1083,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
-                                        return filteredSearch
-                                                    // .where((element) => element.statutIntrant == true)
-                                                    .isEmpty &&
+                                        return filteredSearch.isEmpty &&
                                                 isLoading == false
                                             ? SingleChildScrollView(
                                                 child: Padding(
@@ -1178,19 +1115,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Produits locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         color: d_colorGreen,
-                                                    //         fontSize: 16),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1346,7 +1270,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1767,7 +1690,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                          
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1994,6 +1916,34 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     );
   }
 
+  Widget _buildItem(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.italic,
+                // overflow: TextOverflow.ellipsis,
+                fontSize: 16),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+                overflow: TextOverflow.ellipsis,
+                fontSize: 16),
+          )
+        ],
+      ),
+    );
+  }
+
   DropdownButtonFormField<String> buildDropdown(
       List<CategorieProduit> typeList) {
     return DropdownButtonFormField<String>(
@@ -2017,8 +1967,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
 
           page = 0;
           hasMore = true;
-          fetchIntrantByCategorieAndFiliere(
+          fetchIntrantByCategorie(
               detectedCountry != null ? detectedCountry! : "Mali",
+              selectedCat!.idCategorieProduit!,
               refresh: true);
           if (page == 0 && isLoading == true) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -2028,7 +1979,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
         });
       },
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 22),
+        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
         ),
@@ -2042,7 +1993,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
       onChanged: null,
       decoration: InputDecoration(
         labelText: '-- Aucune catégorie trouvé --',
-        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 22),
+        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
         ),
@@ -2056,7 +2007,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
       onChanged: null,
       decoration: InputDecoration(
         labelText: 'Chargement...',
-        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 22),
+        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
         ),

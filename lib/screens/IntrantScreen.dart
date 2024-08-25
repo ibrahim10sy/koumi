@@ -19,14 +19,14 @@ import 'package:koumi/screens/DetailIntrant.dart';
 import 'package:koumi/screens/ListeIntrantByActeur.dart';
 import 'package:koumi/service/IntrantService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
+import 'package:koumi/widgets/DetectorPays.dart';
 import 'package:provider/provider.dart';
 import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class IntrantScreen extends StatefulWidget {
-  String? detectedCountry;
-  IntrantScreen({super.key, this.detectedCountry});
+  IntrantScreen({super.key});
 
   @override
   State<IntrantScreen> createState() => _IntrantScreenState();
@@ -62,6 +62,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
   String? detectPays;
   late Future _paysList;
   bool isLoadingLibelle = true;
+  String? detectedCountry;
 
   void _scrollListener() {
     if (scrollableController.position.pixels >=
@@ -76,8 +77,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
         });
       debugPrint("yes - fetch all by pays intrants");
       isExist
-          ? fetchIntrantByPays(
-             detectPays!)
+          ? fetchIntrantByPays(detectPays!)
           : fetchIntrantByPays(acteur.niveau3PaysActeur!);
     }
     debugPrint("no");
@@ -96,9 +96,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
           page++;
         });
 
-      fetchIntrantByCategorie(
-         detectPays!,
-          selectedType!.idCategorieProduit!);
+      fetchIntrantByCategorie(detectPays!, selectedType!.idCategorieProduit!);
     } else if (nomP != null && nomP!.isNotEmpty) {
       debugPrint("yes - fetch by country");
       if (mounted)
@@ -309,8 +307,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
     } else {
       setState(() {
         isExist = false;
-        intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectPays!);
+        intrantListeFuture = IntrantService().fetchIntrantByPays(detectPays!);
       });
     }
   }
@@ -318,8 +315,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
   Future<List<Intrant>> getAllIntrant() async {
     if (selectedType != null) {
       intrantListe = await IntrantService().fetchIntrantByCategorie(
-          selectedType!.idCategorieProduit!,
-          detectPays!);
+          selectedType!.idCategorieProduit!, detectPays!);
     } else if (nomP != null && nomP!.isNotEmpty) {
       intrantListe = await IntrantService().fetchAllByPays(nomP!);
     }
@@ -343,14 +339,16 @@ class _IntrantScreenState extends State<IntrantScreen> {
       //code will run when widget rendering complete
       scrollableController1.addListener(_scrollListener1);
     });
-    detectPays = widget.detectedCountry != null
-        ? widget.detectedCountry!
-        : "Mali";
+    final paysProvider = Provider.of<DetectorPays>(context, listen: false);
+    paysProvider.hasLocation
+        ? detectedCountry =
+            Provider.of<DetectorPays>(context, listen: false).detectedCountry!
+        : detectedCountry = "Mali";
+
     isExist == true
         ? intrantListeFuture =
             IntrantService().fetchIntrantByPays(acteur.niveau3PaysActeur!)
-        : intrantListeFuture = IntrantService().fetchIntrantByPays(
-          detectPays!);
+        : intrantListeFuture = IntrantService().fetchIntrantByPays(detectPays!);
 
     intrantListeFuture1 = getAllIntrant();
     // final countryProvider = Provider.of<CountryProvider>(context , listen: false);
@@ -370,13 +368,12 @@ class _IntrantScreenState extends State<IntrantScreen> {
       //code will run when widget rendering complete
       scrollableController1.addListener(_scrollListener1);
     });
-    intrantListeFuture = IntrantService().fetchIntrantByPays(
-      detectPays!);
+    intrantListeFuture = IntrantService().fetchIntrantByPays(detectPays!);
     intrantListeFuture1 = getAllIntrant();
     // final countryProvider = Provider.of<CountryProvider>(context , listen: false);
 
     debugPrint(
-        "pays detecter dans intrant  ${widget.detectedCountry != null ? widget.detectedCountry : "mali"}");
+        "pays detecter dans intrant  ${detectedCountry != null ? detectedCountry : "mali"}");
   }
 
   Future<void> _getResultFromNextScreen1(BuildContext context) async {
@@ -386,8 +383,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        intrantListeFuture = IntrantService().fetchIntrantByPays(
-           detectPays!);
+        intrantListeFuture = IntrantService().fetchIntrantByPays(detectPays!);
       });
     }
   }
@@ -401,8 +397,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        intrantListeFuture = IntrantService().fetchIntrantByPays(
-           detectPays!);
+        intrantListeFuture = IntrantService().fetchIntrantByPays(detectPays!);
       });
     }
   }
@@ -419,8 +414,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        intrantListeFuture = IntrantService().fetchIntrantByPays(
-           detectPays!);
+        intrantListeFuture = IntrantService().fetchIntrantByPays(detectPays!);
       });
     }
   }
@@ -493,8 +487,8 @@ class _IntrantScreenState extends State<IntrantScreen> {
             actions: [
               IconButton(
                   onPressed: () {
-                    intrantListeFuture = IntrantService().fetchIntrantByPays(
-                        detectPays!);
+                    intrantListeFuture =
+                        IntrantService().fetchIntrantByPays(detectPays!);
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
             ]),
@@ -646,8 +640,8 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                           selectedType =
                                               null; // Réinitialiser la catégorie sélectionnée
                                           intrantListeFuture = IntrantService()
-                                              .fetchIntrantByPays(widget
-                                                  .detectedCountry!); // Recharger les stocks
+                                              .fetchIntrantByPays(
+                                                  detectedCountry!); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1051,14 +1045,10 @@ class _IntrantScreenState extends State<IntrantScreen> {
                           //-+s ici
                         });
                         debugPrint("refresh page ${page}");
-                        selectedType == null || nomP != null
+                        selectedType == null || nomP == null
                             ? setState(() {
-                                nomP == null || nomP!.isEmpty
-                                    ? intrantListeFuture = IntrantService()
-                                        .fetchIntrantByPays(
-                                           detectPays!)
-                                    : intrantListeFuture =
-                                        IntrantService().fetchAllByPays(nomP!);
+                                intrantListeFuture = IntrantService()
+                                    .fetchIntrantByPays(detectPays!);
                               })
                             : setState(() {
                                 intrantListeFuture1 = IntrantService()
@@ -1113,7 +1103,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                           (element) =>
                                               element
                                                   .acteur!.niveau3PaysActeur! !=
-                                             detectPays,
+                                              detectPays,
                                         )
                                                 .where((cate) {
                                           String nomCat =
@@ -1508,7 +1498,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                           (element) =>
                                               element
                                                   .acteur!.niveau3PaysActeur! ==
-                                             detectPays!,
+                                              detectPays!,
                                         )
                                                 .where((cate) {
                                           String nomCat =
@@ -1524,7 +1514,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                           (element) =>
                                               element
                                                   .acteur!.niveau3PaysActeur! !=
-                                             detectPays,
+                                              detectPays,
                                         )
                                                 .where((cate) {
                                           String nomCat =
@@ -1968,8 +1958,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
           hasMore = true;
           isExist
               ? fetchIntrantByCategorie(
-                  selectedType!.idCategorieProduit!, detectPays!,
-                  refresh: true)
+                  selectedType!.idCategorieProduit!, detectPays!, refresh: true)
               : fetchIntrantByCategorie(
                   selectedType!.idCategorieProduit!, acteur.niveau3PaysActeur!,
                   refresh: true);

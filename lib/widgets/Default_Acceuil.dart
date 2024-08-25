@@ -11,6 +11,7 @@ import 'package:koumi/screens/ConseilScreen.dart';
 import 'package:koumi/screens/EngraisAndApport.dart';
 import 'package:koumi/screens/FruitsAndLegumes.dart';
 import 'package:koumi/screens/IntrantScreen.dart';
+import 'package:koumi/screens/IntrantPage.dart';
 import 'package:koumi/screens/Location.dart' as l;
 import 'package:koumi/screens/MatereilAndEquipement.dart';
 import 'package:koumi/screens/MesCommande.dart';
@@ -320,7 +321,7 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        IntrantScreen(detectedCountry: detectedCountry)));
+                        IntrantPage()));
           } else if (index == 14) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const MesCommande()));

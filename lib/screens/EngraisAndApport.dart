@@ -247,7 +247,8 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
           libelle,
           detectedCountry != null ? detectedCountry! : "Mali");
     } else if (nomP != null && nomP!.isNotEmpty) {
-      intrantListe = await IntrantService().fetchAllByPays(nomP!);
+      intrantListe =
+          await IntrantService().fetchAllByPaysAndFiliere(libelle, nomP!);
     }
     return intrantListe;
   }
@@ -368,8 +369,12 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
   }
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeIntrantByActeur()));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListeIntrantByActeur(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -672,9 +677,11 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                               null; // Réinitialiser le pays sélectionné
                                           selectedCat =
                                               null; // Réinitialiser la catégorie sélectionnée
-                                          intrantListeFuture = IntrantService()
-                                              .fetchIntrantByPays(
-                                                  detectedCountry!); // Recharger les stocks
+                                          intrantListeFuture =
+                                              fetchIntrantByCategorie(
+                                                  detectedCountry != null
+                                                      ? detectedCountry!
+                                                      : "Mali"); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1078,15 +1085,15 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                         debugPrint("refresh page ${page}");
                         selectedCat != null || nomP != null
                             ? setState(() {
-                                nomP != null || nomP!.isNotEmpty
-                                    ? intrantListeFuture = IntrantService()
+                                nomP == null 
+                                    ? intrantListeFuture1 = IntrantService()
                                         .fetchIntrantByCategorieAndFilieres(
                                             selectedCat!.idCategorieProduit!,
                                             libelle,
                                             detectedCountry != null
                                                 ? detectedCountry!
                                                 : "Mali")
-                                    : intrantListeFuture = IntrantService()
+                                    : intrantListeFuture1 = IntrantService()
                                         .fetchAllByPaysAndFiliere(
                                             libelle, nomP!);
                               })

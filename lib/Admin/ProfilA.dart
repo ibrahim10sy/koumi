@@ -152,7 +152,7 @@ class _ProfilAState extends State<ProfilA> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     EditProfil(
-                                                      acteurs: acteur,
+                                                      acteurs: ac,
                                                     )),
                                           );
                                         },

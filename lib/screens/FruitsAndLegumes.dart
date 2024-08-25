@@ -1087,7 +1087,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                         debugPrint("refresh page ${page}");
                         selectedCat != null || nomP != null
                             ? setState(() {
-                                nomP == null || nomP!.isEmpty
+                                nomP == null
                                     ? stockListeFuture1 = StockService()
                                         .fetchStockByCategorieAndFiliere(
                                             selectedCat!.idCategorieProduit!,

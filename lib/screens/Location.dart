@@ -1063,7 +1063,7 @@ class _LocationState extends State<Location> {
                                         refresh: true);
                               })
                             : setState(() {
-                               selectedType == null ? 
+                               selectedType != null ? 
                                 materielListeFuture1 = MaterielService()
                                     .fetchMaterielByTypeAndPaysWithPagination(
                                         selectedType!.idTypeMateriel!,

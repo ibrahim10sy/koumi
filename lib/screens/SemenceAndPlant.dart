@@ -369,7 +369,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
     final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeIntrantByActeur()));
+        MaterialPageRoute(builder: (context) => ListeIntrantByActeur(isRoute: true,)));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -593,23 +593,23 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       ),
                                                     ),
                                                   ),
-                                                  // PopupMenuItem<String>(
-                                                  //   value: 'mesIntrant',
-                                                  //   child: ListTile(
-                                                  //     leading: const Icon(
-                                                  //       Icons.remove_red_eye,
-                                                  //       color: d_colorGreen,
-                                                  //     ),
-                                                  //     title: const Text(
-                                                  //       "Mes intrants",
-                                                  //       style: TextStyle(
-                                                  //         color: d_colorGreen,
-                                                  //         fontWeight:
-                                                  //             FontWeight.bold,
-                                                  //       ),
-                                                  //     ),
-                                                  //   ),
-                                                  // ),
+                                                  PopupMenuItem<String>(
+                                                    value: 'mesIntrant',
+                                                    child: ListTile(
+                                                      leading: const Icon(
+                                                        Icons.remove_red_eye,
+                                                        color: d_colorGreen,
+                                                      ),
+                                                      title: const Text(
+                                                        "Mes intrants",
+                                                        style: TextStyle(
+                                                          color: d_colorGreen,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                                 elevation: 8.0,
                                               ).then((value) {

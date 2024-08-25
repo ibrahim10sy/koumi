@@ -1055,7 +1055,7 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
 
                         selectedCat != null || nomP != null
                             ? setState(() {
-                                nomP == null || nomP!.isEmpty
+                                nomP == null 
                                     ? stockListeFuture1 = StockService()
                                         .fetchStockByCategorieAndFiliere(
                                             selectedCat!.idCategorieProduit!,
