@@ -152,24 +152,33 @@ class _LoginScreenState extends State<LoginScreen> {
         // prefs.setStringList('speculations', speculationLabels);
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
+          resetToken: responseBody['resetToken'],
+          tokenCreationDate: responseBody['tokenCreationDate'],
+          codeActeur: emailActeur,
           nomActeur: responseBody['nomActeur'],
           adresseActeur: responseBody['adresseActeur'],
-          codeActeur: responseBody['codeActeur'],
           telephoneActeur: responseBody['telephoneActeur'],
           whatsAppActeur: responseBody['whatsAppActeur'],
+          latitude: responseBody['latitude'],
+          longitude: responseBody['longitude'],
+          photoSiegeActeur: responseBody['photoSiegeActeur'],
+          logoActeur: responseBody['logoActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
+          password: password,
           dateAjout: responseBody['dateAjout'],
+          dateModif: responseBody['dateModif'],
+          personneModif: responseBody['personneModif'],
           localiteActeur: responseBody['localiteActeur'],
-          emailActeur: emailActeur,
+          emailActeur: responseBody['emailActeur'],
           statutActeur: responseBody['statutActeur'],
+          isConnected: responseBody['isConnected'],
+          pays: null,
           typeActeur: typeActeurList,
           speculation: speculationsList,
-          password: password,
         );
-
+        print('Pays acteur : ${responseBody['pays']}');
         acteurProvider.setActeur(acteurs);
-        print("login acteur :${acteurs.toString()}");
-       
+
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
@@ -184,29 +193,28 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
           Timer(const Duration(seconds: 2), () {
-             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(1);
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-         
           Timer(const Duration(seconds: 2), () {
-             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(1);
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Index pour les véhicules
           // Mise à jour de l'index de navigation
           Timer(const Duration(seconds: 2), () {
-             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(1);
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else {
           Get.offAll(BottomNavigationPage(),
@@ -356,48 +364,40 @@ class _LoginScreenState extends State<LoginScreen> {
         List<dynamic> typeActeurData = responseBody['typeActeur'];
         List<TypeActeur> typeActeurList =
             typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
-// Extraire les libellés des types d'utilisateur et les ajouter à une nouvelle liste de chaînes
-        List<String> userTypeLabels =
-            typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
 
         List<dynamic> speculationData = responseBody['speculation'];
         List<Speculation> speculationsList =
             speculationData.map((data) => Speculation.fromMap(data)).toList();
 
-        List<String> speculationLabels =
-            speculationsList.map((spec) => spec.nomSpeculation!).toList();
-
-        // prefs.setStringList('specType', speculationLabels);
-// // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
-//         prefs.setStringList('userType', userTypeLabels);
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
           resetToken: responseBody['resetToken'],
           tokenCreationDate: responseBody['tokenCreationDate'],
-          codeActeur: responseBody['codeActeur'],
+          codeActeur: emailActeur,
           nomActeur: responseBody['nomActeur'],
           adresseActeur: responseBody['adresseActeur'],
           telephoneActeur: responseBody['telephoneActeur'],
+          whatsAppActeur: responseBody['whatsAppActeur'],
           latitude: responseBody['latitude'],
           longitude: responseBody['longitude'],
           photoSiegeActeur: responseBody['photoSiegeActeur'],
           logoActeur: responseBody['logoActeur'],
-          whatsAppActeur: responseBody['whatsAppActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
+          password: password,
           dateAjout: responseBody['dateAjout'],
           dateModif: responseBody['dateModif'],
           personneModif: responseBody['personneModif'],
           localiteActeur: responseBody['localiteActeur'],
-          emailActeur: emailActeur,
+          emailActeur: responseBody['emailActeur'],
           statutActeur: responseBody['statutActeur'],
+          isConnected: responseBody['isConnected'],
+          pays: null,
           typeActeur: typeActeurList,
           speculation: speculationsList,
-          password: password,
         );
-
+        print('Pays acteur : ${responseBody['pays']}');
         acteurProvider.setActeur(acteurs);
-        print('loginUserWithoutSavedData ${acteurs.toString()}');
-       
+
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
@@ -412,29 +412,28 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
           Timer(const Duration(seconds: 2), () {
-             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(1);
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-         
           Timer(const Duration(seconds: 2), () {
-             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(1);
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Index pour les véhicules
           // Mise à jour de l'index de navigation
           Timer(const Duration(seconds: 2), () {
-             Get.offAll(BottomNavigationPage(),transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(1);
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
           });
         } else {
           Get.offAll(BottomNavigationPage(),

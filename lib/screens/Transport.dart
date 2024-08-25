@@ -728,7 +728,71 @@ class _TransportState extends State<Transport> {
                                             ],
                                           ),
                                         )
-                                      : Container()
+                                      : TextButton(
+                                          onPressed: () {
+                                            // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                            showMenu<String>(
+                                              context: context,
+                                              position: RelativeRect.fromLTRB(
+                                                0,
+                                                50, // Adjust this value based on the desired position of the menu
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                0,
+                                              ),
+                                              items: [
+                                               
+                                                PopupMenuItem<String>(
+                                                  value: 'add',
+                                                  child: ListTile(
+                                                    leading: const Icon(
+                                                      Icons.remove_red_eye,
+                                                      color: d_colorGreen,
+                                                    ),
+                                                    title: const Text(
+                                                      "Voir Transporteur",
+                                                      style: TextStyle(
+                                                        color: d_colorGreen,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                              elevation: 8.0,
+                                            ).then((value) {
+                                              if (value != null) {
+                                                if (value == 'add') {
+                                                 Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PageTransporteur()));
+                                                } 
+                                              }
+                                            });
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.remove_red_eye,
+                                                color: d_colorGreen,
+                                              ),
+                                              SizedBox(
+                                                  width:
+                                                      8), // Space between icon and text
+                                              Text(
+                                                'Voir transporteur',
+                                                style: TextStyle(
+                                                  color: d_colorGreen,
+                                                  fontSize: 17,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
                                   : Container(),
                               if (!isSearchMode)
                                 TextButton.icon(

@@ -100,62 +100,116 @@ class ActeurService extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> updateActeur({
-    required String idActeur,
-    required String nomActeur,
-    required String adresseActeur,
-    required String telephoneActeur,
-    required String whatsAppActeur,
-    required String localiteActeur,
-    required String emailActeur,
-    required String niveau3PaysActeur,
-    required List<TypeActeur> typeActeur,
-    required List<Speculation> speculation,
-    File? photo,
-  }) async {
-    var request =
-        http.MultipartRequest('PUT', Uri.parse('$baseUrl/update/$idActeur'));
+  Future<void> updateActeur({
+  required String idActeur,
+  required String adresseActeur,
+  required String nomActeur,
+  required String telephoneActeur,
+  required String whatsAppActeur,
+  required String localiteActeur,
+  String? niveau3PaysActeur,
+  String? emailActeur,
+  List<TypeActeur>? typeActeur,
+  List<Speculation>? speculation,
+  File? logoActeur,
+}) async {
+  try {
+    var requete = http.MultipartRequest('PUT', Uri.parse('$baseUrl/update/$idActeur')); // Assurez-vous de mettre à jour l'endpoint
 
-    if (photo != null) {
-      request.files.add(
-        http.MultipartFile(
-          'image2',
-          photo.readAsBytes().asStream(),
-          photo.lengthSync(),
-          filename: photo.path.split('/').last,
-        ),
-      );
-    }
+     if (logoActeur != null) {
+        requete.files.add(http.MultipartFile('image2',
+            logoActeur.readAsBytes().asStream(), logoActeur.lengthSync(),
+            filename: basename(logoActeur.path)));
+      }
 
-    Map<String, dynamic> acteurData = {
+    // Préparez les données de l'acteur sous forme de chaîne JSON
+    requete.fields['acteur'] = jsonEncode({
       'idActeur': idActeur,
-      'nomActeur': nomActeur,
       'adresseActeur': adresseActeur,
+      'nomActeur': nomActeur,
       'telephoneActeur': telephoneActeur,
       'whatsAppActeur': whatsAppActeur,
       'localiteActeur': localiteActeur,
-      'emailActeur': emailActeur,
       'niveau3PaysActeur': niveau3PaysActeur,
-      'typeActeur': typeActeur.map((type) => type.toMap()).toList(),
-      'speculation': speculation.map((spec) => spec.toMap()).toList(),
-    };
+      'emailActeur': emailActeur,
+      'speculation': speculation?.map((e) => e.toMap()).toList(),
+      'typeActeur': typeActeur?.map((e) => e.toMap()).toList(), 
+      'logoActeur': ""
+    });
 
-    request.fields['acteur'] = jsonEncode(acteurData);
-    print('Acteur Data: ${jsonEncode(acteurData)}');
-    try {
-      var response = await request.send();
-      var responseBody = await http.Response.fromStream(response);
+    var response = await requete.send();
+    var responsed = await http.Response.fromStream(response);
 
-      print('Response body: ${responseBody.body}');
-      print('Response status code: ${responseBody.statusCode}');
-
-      return responseBody;
-    } catch (e) {
-      print(
-          'Erreur lors de la requête HTTP : $e acteurData : ${acteurData.toString()}');
-      rethrow;
+    if (response.statusCode == 200 || responsed.statusCode == 201) {
+      final donneesResponse = json.decode(utf8.decode(responsed.bodyBytes));
+      debugPrint('Service acteur: ${donneesResponse.toString()}');
+    } else {
+      print("Erreur : Code ${response.statusCode}");
+      final errorMessage = json.decode(utf8.decode(responsed.bodyBytes))['message'];
+      throw Exception('Erreur du service : ${errorMessage}');
     }
+  } catch (e) {
+    print('Service : ${e.toString()}');
+    throw Exception(e.toString());
   }
+}
+
+  // Future<http.Response> updateActeur({
+  //   required String idActeur,
+  //   required String nomActeur,
+  //   required String adresseActeur,
+  //   required String telephoneActeur,
+  //   required String whatsAppActeur,
+  //   required String localiteActeur,
+  //   required String emailActeur,
+  //   required String niveau3PaysActeur,
+  //   required List<TypeActeur> typeActeur,
+  //   required List<Speculation> speculation,
+  //   File? photo,
+  // }) async {
+  //   var request =
+  //       http.MultipartRequest('PUT', Uri.parse('$baseUrl/update/$idActeur'));
+
+  //   if (photo != null) {
+  //     request.files.add(
+  //       http.MultipartFile(
+  //         'image2',
+  //         photo.readAsBytes().asStream(),
+  //         photo.lengthSync(),
+  //         filename: photo.path.split('/').last,
+  //       ),
+  //     );
+  //   }
+
+  //   Map<String, dynamic> acteur = {
+  //     'idActeur': idActeur,
+  //     'nomActeur': nomActeur,
+  //     'adresseActeur': adresseActeur,
+  //     'telephoneActeur': telephoneActeur,
+  //     'whatsAppActeur': whatsAppActeur,
+  //     'localiteActeur': localiteActeur,
+  //     'emailActeur': emailActeur,
+  //     'niveau3PaysActeur': niveau3PaysActeur,
+  //     'typeActeur': typeActeur.map((type) => type.toMap()).toList(),
+  //     'speculation': speculation.map((spec) => spec.toMap()).toList(),
+  //   };
+
+  //   request.fields['acteur'] = jsonEncode(acteur);
+  //   print('Acteur Data: ${jsonEncode(acteur)}');
+  //   try {
+  //     var response = await request.send();
+  //     var responseBody = await http.Response.fromStream(response);
+
+  //     print('Response body: ${responseBody.body}');
+  //     print('Response status code: ${responseBody.statusCode}');
+
+  //     return responseBody;
+  //   } catch (e) {
+  //     print(
+  //         'Erreur lors de la requête HTTP : $e acteurData : ${acteur.toString()}');
+  //     rethrow;
+  //   }
+  // }
 
   static Future<String> sendOtpCodeEmail(
       String emailActeur, BuildContext context) async {

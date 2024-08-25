@@ -353,27 +353,37 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
 
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
-
-        // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
         prefs.setStringList('userType', userTypeLabels);
         prefs.setStringList('specType', speculationLabels);
+        // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
+
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
+          resetToken: responseBody['resetToken'],
+          tokenCreationDate: responseBody['tokenCreationDate'],
+          codeActeur: codeActeur,
           nomActeur: responseBody['nomActeur'],
           adresseActeur: responseBody['adresseActeur'],
-          codeActeur: codeActeur,
           telephoneActeur: responseBody['telephoneActeur'],
           whatsAppActeur: responseBody['whatsAppActeur'],
+          latitude: responseBody['latitude'],
+          longitude: responseBody['longitude'],
+          photoSiegeActeur: responseBody['photoSiegeActeur'],
+          logoActeur: responseBody['logoActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
+          password: enteredPin,
           dateAjout: responseBody['dateAjout'],
+          dateModif: responseBody['dateModif'],
+          personneModif: responseBody['personneModif'],
           localiteActeur: responseBody['localiteActeur'],
           emailActeur: responseBody['emailActeur'],
           statutActeur: responseBody['statutActeur'],
+          isConnected: responseBody['isConnected'],
+          pays: null,
           typeActeur: typeActeurList,
           speculation: speculationsList,
-          password: enteredPin,
         );
-
+        print('Pays acteur : ${responseBody['pays']}');
         acteurProvider.setActeur(acteurs);
         print("login acteur :${acteurs.toString()}");
 

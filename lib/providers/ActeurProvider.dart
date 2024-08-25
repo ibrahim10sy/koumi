@@ -66,7 +66,7 @@ class ActeurProvider with ChangeNotifier {
 
   void setActeur(Acteur newActeur) {
     _acteur = newActeur;
-    print("new acteur ${newActeur.toString()}");
+    print("new acteur ${newActeur}");
     notifyListeners();
   }
 

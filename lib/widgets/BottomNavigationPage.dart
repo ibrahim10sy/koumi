@@ -201,7 +201,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     } else {
       pages = [
         const Accueil(),
-        MyProductScreen(),
+        // MyProductScreen(),
         Panier(),
         const Profil(),
       ];
@@ -212,11 +212,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           icon: Icon(Icons.home_filled),
           label: "Accueil",
         ),
-        BottomNavigationBarItem(
-          backgroundColor: Color.fromARGB(255, 250, 250, 250),
-          icon: Icon(Icons.list_alt_sharp),
-          label: "Mes Produits",
-        ),
+        // BottomNavigationBarItem(
+        //   backgroundColor: Color.fromARGB(255, 250, 250, 250),
+        //   icon: Icon(Icons.list_alt_sharp),
+        //   label: "Mes Produits",
+        // ),
         BottomNavigationBarItem(
           backgroundColor: Color.fromARGB(255, 250, 250, 250),
           icon: Icon(Icons.shopping_cart),

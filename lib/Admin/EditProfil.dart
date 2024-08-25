@@ -38,8 +38,7 @@ class _EditProfilState extends State<EditProfil> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   MultiSelectController _controllerTypeActeur = MultiSelectController();
-  // MultiSelectController mdpController = MultiSelectController();
-  // MultiSelectController confirmerController = MultiSelectController();
+
   MultiSelectController _controllerSpeculation = MultiSelectController();
   List<TypeActeur> typeActeur = [];
   final _tokenTextController = TextEditingController();
@@ -47,8 +46,9 @@ class _EditProfilState extends State<EditProfil> {
   bool isEditing = false;
   bool _isLoading = false;
   bool _obscureText = true;
-  late Acteur acteur;
+  Acteur? acteur;
   String? imageSrc;
+  String? id;
   File? photo;
   late List<TypeActeur> typeActeurData = [];
   late String type;
@@ -147,25 +147,27 @@ class _EditProfilState extends State<EditProfil> {
   void initState() {
     super.initState();
     acteur = widget.acteurs!;
-    nomActeurController.text = acteur.nomActeur!;
-    whatsAppController.text = acteur.whatsAppActeur!;
-    telephoneActeurController.text = acteur.telephoneActeur!;
-    localisationController.text = acteur.localiteActeur!;
-    adresseController.text = acteur.adresseActeur!;
+    id = acteur!.idActeur!;
+    debugPrint("init  id $id ${acteur.toString()}");
+    nomActeurController.text = acteur!.nomActeur!;
+    whatsAppController.text = acteur!.whatsAppActeur!;
+    telephoneActeurController.text = acteur!.telephoneActeur!;
+    localisationController.text = acteur!.localiteActeur!;
+    adresseController.text = acteur!.adresseActeur!;
 
-    if (acteur.emailActeur != null) {
-      emailController.text = acteur.emailActeur!;
-      print("email : ${acteur.emailActeur}");
+    if (acteur!.emailActeur != null) {
+      emailController.text = acteur!.emailActeur!;
+      print("email : ${acteur!.emailActeur}");
     }
 
-    if (acteur.speculation != null) {
-      selectedSpec = acteur.speculation!;
+    if (acteur!.speculation != null) {
+      selectedSpec = acteur!.speculation!;
       libelleSpeculation = selectedSpec.map((e) => e.nomSpeculation!).toList();
 
       print("speculation acteur: ${selectedSpec.toString()}");
     }
-    print("niveau 3 : ${acteur.niveau3PaysActeur!}");
-    typeActeur = acteur.typeActeur!;
+    print("niveau 3 : ${acteur!.niveau3PaysActeur!}");
+    typeActeur = acteur!.typeActeur!;
     typeLibelle = typeActeur.map((e) => e.libelle!).toList();
     selectedTypes = typeActeur;
     // print("speculation acteur: ${acteur.speculations!}");
@@ -224,8 +226,8 @@ class _EditProfilState extends State<EditProfil> {
                           ))
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: acteur.logoActeur == null ||
-                                  acteur.logoActeur!.isEmpty
+                          child: acteur!.logoActeur == null ||
+                                  acteur!.logoActeur!.isEmpty
                               ? ProfilePhoto(
                                   totalWidth: 100,
                                   cornerRadius: 100,
@@ -238,7 +240,7 @@ class _EditProfilState extends State<EditProfil> {
                                   cornerRadius: 100,
                                   color: Colors.black,
                                   image: NetworkImage(
-                                      "https://koumi.ml/api-koumi/acteur/${acteur.idActeur}/image"),
+                                      "https://koumi.ml/api-koumi/acteur/${acteur!.idActeur}/image"),
                                 ),
                         ),
                   TextButton(
@@ -578,264 +580,142 @@ class _EditProfilState extends State<EditProfil> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: () async {
+                    final idActeur = acteur!.idActeur;
                     final nomActeur = nomActeurController.text;
                     final emailActeur = emailController.text;
-                    final String? adresse = adresseController.text;
+                    final adresse = adresseController.text;
                     final localisation = localisationController.text;
                     final typeActeur = selectedTypes;
-                    final spec = selectedSpec;
+                    final speculation = selectedSpec;
                     final whatsApp = whatsAppController.text;
                     final tel = telephoneActeurController.text;
+                    final niveau3PaysActeur = acteur!.niveau3PaysActeur;
+
                     print(
-                        "acteur edit  nom : ${nomActeur} ,email ${emailActeur},adresse: ${adresse},loc: $localisation, type : ${selectedTypes.toList()} , speculation ${spec.toList()} , wa : ${whatsApp}, tel : ${tel}");
+                        "acteur edit  nom : ${nomActeur} ,email ${emailActeur},adresse: ${adresse},loc: $localisation, type : ${selectedTypes.toList()} , speculation ${speculation.toList()} , wa : ${whatsApp}, tel : ${tel}");
 
                     ActeurProvider acteurProvider =
                         Provider.of<ActeurProvider>(context, listen: false);
-                    try {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      if (photo != null) {
-                        var response = await ActeurService().updateActeur(
-                          idActeur: acteur.idActeur!,
-                          nomActeur: nomActeur,
-                          adresseActeur: adresse!,
-                          telephoneActeur: tel,
-                          whatsAppActeur: whatsApp,
-                          localiteActeur: localisation,
-                          emailActeur: emailActeur,
-                          niveau3PaysActeur: acteur.niveau3PaysActeur!,
-                          typeActeur:
-                              typeActeur, // Passez les objets TypeActeur ici
-                          speculation:
-                              spec, // Passez les objets Speculation ici
-                          // password: password,
-                          photo:
-                              photo, // Assurez-vous que cette variable est définie si nécessaire
-                        );
 
-                        if (response.statusCode == 200 ||
-                            response.statusCode == 201) {
-                          setState(() {
-                            _isLoading = false;
-                            final responseBody =
-                                json.decode(utf8.decode(response.bodyBytes));
-                            print("response body ${responseBody.toString()}");
-
-                            List<dynamic> typeActeurData =
-                                responseBody['typeActeur'];
-                            List<TypeActeur> typeActeurList = typeActeurData
-                                .map((data) => TypeActeur.fromMap(data))
-                                .toList();
-                            List<dynamic> speculationData =
-                                responseBody['speculation'];
-                            List<Speculation> speculationsList = speculationData
-                                .map((data) => Speculation.fromMap(data))
-                                .toList();
-
-                            Acteur acteurs = Acteur(
-                              idActeur: responseBody['idActeur'],
-                              resetToken: responseBody['resetToken'],
-                              tokenCreationDate:
-                                  responseBody['tokenCreationDate'],
-                              codeActeur: responseBody['codeActeur'],
-                              nomActeur: responseBody['nomActeur'],
-                              adresseActeur: responseBody['adresseActeur'],
-                              telephoneActeur: responseBody['telephoneActeur'],
-                              latitude: responseBody['latitude'],
-                              longitude: responseBody['longitude'],
-                              photoSiegeActeur:
-                                  responseBody['photoSiegeActeur'],
-                              logoActeur: responseBody['logoActeur'],
-                              whatsAppActeur: responseBody['whatsAppActeur'],
-                              niveau3PaysActeur:
-                                  responseBody['niveau3PaysActeur'],
-                              dateAjout: responseBody['dateAjout'],
-                              dateModif: responseBody['dateModif'],
-                              personneModif: responseBody['personneModif'],
-                              localiteActeur: responseBody['localiteActeur'],
-                              emailActeur: emailActeur,
-                              statutActeur: responseBody['statutActeur'],
-                              typeActeur: typeActeurList,
-                              speculation: speculationsList,
-                              password: responseBody['password'],
-                            );
-
-                            acteurProvider.setActeur(acteurs);
-                          });
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Profil modifié avec succès"),
-                              duration: Duration(seconds: 5),
-                            ),
-                          );
-                        } else {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                          print("Erreur HTTP: ${response.statusCode}  ");
-                          throw Exception(
-                              "Erreur HTTP: ${response.statusCode}");
-                        }
-                      } else {
-                        var response = await ActeurService().updateActeur(
-                          idActeur: acteur.idActeur!,
-                          nomActeur: nomActeur,
-                          adresseActeur: adresse!,
-                          telephoneActeur: tel,
-                          whatsAppActeur: whatsApp,
-                          localiteActeur: localisation,
-                          emailActeur: emailActeur,
-                          niveau3PaysActeur: acteur.niveau3PaysActeur!,
-                          typeActeur:
-                              typeActeur, // Passez les objets TypeActeur ici
-                          speculation:
-                              spec, // Passez les objets Speculation ici
-                          // password: password,
-                        );
-
-                        if (response.statusCode == 200 ||
-                            response.statusCode == 201) {
-                          setState(() {
-                            _isLoading = false;
-                            final responseBody =
-                                json.decode(utf8.decode(response.bodyBytes));
-                            print("response body ${responseBody.toString()}");
-
-                            List<dynamic> typeActeurData =
-                                responseBody['typeActeur'];
-                            List<TypeActeur> typeActeurList = typeActeurData
-                                .map((data) => TypeActeur.fromMap(data))
-                                .toList();
-                            List<dynamic> speculationData =
-                                responseBody['speculation'];
-                            List<Speculation> speculationsList = speculationData
-                                .map((data) => Speculation.fromMap(data))
-                                .toList();
-
-                            Acteur acteurs = Acteur(
-                              idActeur: responseBody['idActeur'],
-                              resetToken: responseBody['resetToken'],
-                              tokenCreationDate:
-                                  responseBody['tokenCreationDate'],
-                              codeActeur: responseBody['codeActeur'],
-                              nomActeur: responseBody['nomActeur'],
-                              adresseActeur: responseBody['adresseActeur'],
-                              telephoneActeur: responseBody['telephoneActeur'],
-                              latitude: responseBody['latitude'],
-                              longitude: responseBody['longitude'],
-                              photoSiegeActeur:
-                                  responseBody['photoSiegeActeur'],
-                              logoActeur: responseBody['logoActeur'],
-                              whatsAppActeur: responseBody['whatsAppActeur'],
-                              niveau3PaysActeur:
-                                  responseBody['niveau3PaysActeur'],
-                              dateAjout: responseBody['dateAjout'],
-                              dateModif: responseBody['dateModif'],
-                              personneModif: responseBody['personneModif'],
-                              localiteActeur: responseBody['localiteActeur'],
-                              emailActeur: emailActeur,
-                              statutActeur: responseBody['statutActeur'],
-                              typeActeur: typeActeurList,
-                              speculation: speculationsList,
-                              password: responseBody['password'],
-                            );
-
-                            acteurProvider.setActeur(acteurs);
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Profil modifié avec succès"),
-                              duration: Duration(seconds: 5),
-                            ),
-                          );
-                        } else {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                          print("Erreur 2 HTTP: ${response.statusCode}");
-                          throw Exception(
-                              "Erreur HTTP: ${response.statusCode}");
-                        }
-                      }
-                    } catch (e) {
-                      var response = await ActeurService().updateActeur(
-                        idActeur: acteur.idActeur!,
-                        nomActeur: nomActeur,
-                        adresseActeur: adresse!,
-                        telephoneActeur: tel,
-                        whatsAppActeur: whatsApp,
-                        localiteActeur: localisation,
-                        emailActeur: emailActeur,
-                        niveau3PaysActeur: acteur.niveau3PaysActeur!,
-                        typeActeur:
-                            typeActeur, // Passez les objets TypeActeur ici
-                        speculation: spec, // Passez les objets Speculation ici
-                      );
-
-                      if (response.statusCode == 200 ||
-                          response.statusCode == 201) {
+                    var response;
+                    if (idActeur!.isNotEmpty) {
+                      try {
                         setState(() {
-                          _isLoading = false;
-                          final responseBody =
-                              json.decode(utf8.decode(response.bodyBytes));
-                          print("response body ${responseBody.toString()}");
-
-                          List<dynamic> typeActeurData =
-                              responseBody['typeActeur'];
-                          List<TypeActeur> typeActeurList = typeActeurData
-                              .map((data) => TypeActeur.fromMap(data))
-                              .toList();
-                          List<dynamic> speculationData =
-                              responseBody['speculation'];
-                          List<Speculation> speculationsList = speculationData
-                              .map((data) => Speculation.fromMap(data))
-                              .toList();
-
-                          Acteur acteurs = Acteur(
-                            idActeur: responseBody['idActeur'],
-                            resetToken: responseBody['resetToken'],
-                            tokenCreationDate:
-                                responseBody['tokenCreationDate'],
-                            codeActeur: responseBody['codeActeur'],
-                            nomActeur: responseBody['nomActeur'],
-                            adresseActeur: responseBody['adresseActeur'],
-                            telephoneActeur: responseBody['telephoneActeur'],
-                            latitude: responseBody['latitude'],
-                            longitude: responseBody['longitude'],
-                            photoSiegeActeur: responseBody['photoSiegeActeur'],
-                            logoActeur: responseBody['logoActeur'],
-                            whatsAppActeur: responseBody['whatsAppActeur'],
-                            niveau3PaysActeur:
-                                responseBody['niveau3PaysActeur'],
-                            dateAjout: responseBody['dateAjout'],
-                            dateModif: responseBody['dateModif'],
-                            personneModif: responseBody['personneModif'],
-                            localiteActeur: responseBody['localiteActeur'],
+                          _isLoading = true;
+                        });
+                        if(emailActeur != null){
+                          if (photo != null) {
+                          response = await ActeurService()
+                              .updateActeur(
+                            idActeur: idActeur,
+                            nomActeur: nomActeur,
+                            adresseActeur: adresse,
+                            telephoneActeur: tel,
+                            whatsAppActeur: whatsApp,
+                            localiteActeur: localisation,
                             emailActeur: emailActeur,
-                            statutActeur: responseBody['statutActeur'],
-                            typeActeur: typeActeurList,
-                            speculation: speculationsList,
-                            password: responseBody['password'],
-                          );
-
-                          acteurProvider.setActeur(acteurs);
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Profil  modifié avec succès"),
-                            duration: Duration(seconds: 5),
-                          ),
-                        );
-                      } else {
-                        setState(() {
+                            niveau3PaysActeur: niveau3PaysActeur,
+                            typeActeur: typeActeur,
+                            speculation: speculation,
+                            logoActeur: photo,
+                          )
+                              .then((onValue) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            print("acteur :${response.toString()}");
+                          }).catchError((onError) {
+                             setState(() {
                           _isLoading = false;
                         });
-                        print("Erreur HTTP: ${response.statusCode}  ");
-                        // throw Exception("Erreur HTTP: ${response.statusCode}");
+                            print("catch 1 :${onError.toString()}");
+                          });
+                        } else {
+                          response = await ActeurService()
+                              .updateActeur(
+                            idActeur: idActeur,
+                            nomActeur: nomActeur,
+                            adresseActeur: adresse,
+                            telephoneActeur: tel,
+                            whatsAppActeur: whatsApp,
+                            localiteActeur: localisation,
+                            emailActeur: emailActeur,
+                            niveau3PaysActeur: niveau3PaysActeur,
+                            typeActeur: typeActeur,
+                            speculation: speculation,
+                          )
+                              .then((onValue) {
+                                 setState(() {
+                          _isLoading = false;
+                        });
+                            print("acteur :${response.toString()}");
+                          }).catchError((onError) {
+                             setState(() {
+                              _isLoading = false;
+                            });
+                            print("catch 2 :${onError.toString()}");
+                          });
+                        }
+                        }else {
+                          if (photo != null) {
+                          response = await ActeurService()
+                              .updateActeur(
+                            idActeur: idActeur,
+                            nomActeur: nomActeur,
+                            adresseActeur: adresse,
+                            telephoneActeur: tel,
+                            whatsAppActeur: whatsApp,
+                            localiteActeur: localisation,
+                            niveau3PaysActeur: niveau3PaysActeur,
+                            typeActeur: typeActeur,
+                            speculation: speculation,
+                            logoActeur: photo,
+                          )
+                              .then((onValue) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            print("acteur :${response.toString()}");
+                          }).catchError((onError) {
+                             setState(() {
+                          _isLoading = false;
+                        });
+                            print("catch 1 :${onError.toString()}");
+                          });
+                        } else {
+                          response = await ActeurService()
+                              .updateActeur(
+                            idActeur: idActeur,
+                            nomActeur: nomActeur,
+                            adresseActeur: adresse,
+                            telephoneActeur: tel,
+                            whatsAppActeur: whatsApp,
+                            localiteActeur: localisation,
+                            niveau3PaysActeur: niveau3PaysActeur,
+                            typeActeur: typeActeur,
+                            speculation: speculation,
+                          )
+                              .then((onValue) {
+                                 setState(() {
+                          _isLoading = false;
+                        });
+                            print("acteur :${response.toString()}");
+                          }).catchError((onError) {
+                             setState(() {
+                              _isLoading = false;
+                            });
+                            print("catch 2 :${onError.toString()}");
+                          });
+                        }
+                        }
+                      } catch (e) {
+                         setState(() {
+                              _isLoading = false;
+                            });
+                        print("catch error ${e.toString()}");
                       }
+                    } else {
+                      print("id est null");
                     }
                   },
                   child: Text(
@@ -856,6 +736,299 @@ class _EditProfilState extends State<EditProfil> {
                   ),
                 ),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: ElevatedButton(
+              //     onPressed: () async {
+              //       final idActeur = acteur!.idActeur;
+              //       final nomActeur = nomActeurController.text;
+              //       final emailActeur = emailController.text;
+              //       final adresse = adresseController.text;
+              //       final localisation = localisationController.text;
+              //       final typeActeur = selectedTypes;
+              //       final speculation = selectedSpec;
+              //       final whatsApp = whatsAppController.text;
+              //       final tel = telephoneActeurController.text;
+              //       final niveau3PaysActeur = acteur!.niveau3PaysActeur;
+
+              //       print(
+              //           "acteur edit  nom : ${nomActeur} ,email ${emailActeur},adresse: ${adresse},loc: $localisation, type : ${selectedTypes.toList()} , speculation ${speculation.toList()} , wa : ${whatsApp}, tel : ${tel}");
+
+              //       ActeurProvider acteurProvider =
+              //           Provider.of<ActeurProvider>(context, listen: false);
+              //       try {
+              //         setState(() {
+              //           _isLoading = true;
+              //         });
+              //         if (photo != null) {
+              //           var response = await ActeurService().updateActeur(
+              //             idActeur: acteur.idActeur!,
+              //             nomActeur: nomActeur,
+              //             adresseActeur: adresse,
+              //             telephoneActeur: tel,
+              //             whatsAppActeur: whatsApp,
+              //             localiteActeur: localisation,
+              //             emailActeur: emailActeur,
+              //             niveau3PaysActeur: acteur.niveau3PaysActeur!,
+              //             typeActeur:
+              //                 typeActeur, // Passez les objets TypeActeur ici
+              //             speculation:
+              //                 speculation, // Passez les objets Speculation ici
+              //             // password: password,
+              //             photo:
+              //                 photo, // Assurez-vous que cette variable est définie si nécessaire
+              //           );
+
+              //           if (response.statusCode == 200 ||
+              //               response.statusCode == 201) {
+              //             setState(() {
+              //               _isLoading = false;
+              //               final responseBody =
+              //                   json.decode(utf8.decode(response.bodyBytes));
+              //               print("response body ${responseBody.toString()}");
+
+              //               List<dynamic> typeActeurData =
+              //                   responseBody['typeActeur'];
+              //               List<TypeActeur> typeActeurList = typeActeurData
+              //                   .map((data) => TypeActeur.fromMap(data))
+              //                   .toList();
+              //               List<dynamic> speculationData =
+              //                   responseBody['speculation'];
+              //               List<Speculation> speculationsList = speculationData
+              //                   .map((data) => Speculation.fromMap(data))
+              //                   .toList();
+
+              //               Acteur acteurs = Acteur(
+              //                 idActeur: responseBody['idActeur'],
+              //                 resetToken: responseBody['resetToken'],
+              //                 tokenCreationDate:
+              //                     responseBody['tokenCreationDate'],
+              //                 codeActeur: responseBody['emailActeur'],
+              //                 nomActeur: responseBody['nomActeur'],
+              //                 adresseActeur: responseBody['adresseActeur'],
+              //                 telephoneActeur: responseBody['telephoneActeur'],
+              //                 whatsAppActeur: responseBody['whatsAppActeur'],
+              //                 latitude: responseBody['latitude'],
+              //                 longitude: responseBody['longitude'],
+              //                 photoSiegeActeur:
+              //                     responseBody['photoSiegeActeur'],
+              //                 logoActeur: responseBody['logoActeur'],
+              //                 niveau3PaysActeur:
+              //                     responseBody['niveau3PaysActeur'],
+              //                 password: responseBody['password'],
+              //                 dateAjout: responseBody['dateAjout'],
+              //                 dateModif: responseBody['dateModif'],
+              //                 personneModif: responseBody['personneModif'],
+              //                 localiteActeur: responseBody['localiteActeur'],
+              //                 emailActeur: responseBody['emailActeur'],
+              //                 statutActeur: responseBody['statutActeur'],
+              //                 isConnected: responseBody['isConnected'],
+              //                 pays: null,
+              //                 typeActeur: typeActeurList,
+              //                 speculation: speculationsList,
+              //               );
+              //               print("new acteur : ${acteurs}");
+              //               acteurProvider.setActeur(acteurs);
+              //             });
+
+              //             ScaffoldMessenger.of(context).showSnackBar(
+              //               const SnackBar(
+              //                 content: Text("Profil modifié avec succès"),
+              //                 duration: Duration(seconds: 5),
+              //               ),
+              //             );
+              //           } else {
+              //             setState(() {
+              //               _isLoading = false;
+              //             });
+              //             print("Erreur HTTP: ${response.statusCode}  ");
+              //             throw Exception(
+              //                 "Erreur HTTP: ${response.statusCode}");
+              //           }
+              //         } else {
+              //           var response = await ActeurService().updateActeur(
+              //             idActeur: acteur.idActeur!,
+              //             nomActeur: nomActeur,
+              //             adresseActeur: adresse!,
+              //             telephoneActeur: tel,
+              //             whatsAppActeur: whatsApp,
+              //             localiteActeur: localisation,
+              //             emailActeur: emailActeur,
+              //             niveau3PaysActeur: acteur.niveau3PaysActeur!,
+              //             typeActeur:
+              //                 typeActeur, // Passez les objets TypeActeur ici
+              //             speculation:
+              //                 speculation, // Passez les objets Speculation ici
+              //             // password: password,
+              //           );
+
+              //           if (response.statusCode == 200 ||
+              //               response.statusCode == 201 ||
+              //               response.statusCode == 202) {
+              //             setState(() {
+              //               _isLoading = false;
+              //               final responseBody =
+              //                   json.decode(utf8.decode(response.bodyBytes));
+              //               print("response body ${responseBody.toString()}");
+
+              //               List<dynamic> typeActeurData =
+              //                   responseBody['typeActeur'];
+              //               List<TypeActeur> typeActeurList = typeActeurData
+              //                   .map((data) => TypeActeur.fromMap(data))
+              //                   .toList();
+              //               List<dynamic> speculationData =
+              //                   responseBody['speculation'];
+              //               List<Speculation> speculationsList = speculationData
+              //                   .map((data) => Speculation.fromMap(data))
+              //                   .toList();
+
+              //               Acteur acteurs = Acteur(
+              //                 idActeur: responseBody['idActeur'],
+              //                 resetToken: responseBody['resetToken'],
+              //                 tokenCreationDate:
+              //                     responseBody['tokenCreationDate'],
+              //                 codeActeur: responseBody['emailActeur'],
+              //                 nomActeur: responseBody['nomActeur'],
+              //                 adresseActeur: responseBody['adresseActeur'],
+              //                 telephoneActeur: responseBody['telephoneActeur'],
+              //                 whatsAppActeur: responseBody['whatsAppActeur'],
+              //                 latitude: responseBody['latitude'],
+              //                 longitude: responseBody['longitude'],
+              //                 photoSiegeActeur:
+              //                     responseBody['photoSiegeActeur'],
+              //                 logoActeur: responseBody['logoActeur'],
+              //                 niveau3PaysActeur:
+              //                     responseBody['niveau3PaysActeur'],
+              //                 password: responseBody['password'],
+              //                 dateAjout: responseBody['dateAjout'],
+              //                 dateModif: responseBody['dateModif'],
+              //                 personneModif: responseBody['personneModif'],
+              //                 localiteActeur: responseBody['localiteActeur'],
+              //                 emailActeur: responseBody['emailActeur'],
+              //                 statutActeur: responseBody['statutActeur'],
+              //                 isConnected: responseBody['isConnected'],
+              //                 pays: null,
+              //                 typeActeur: typeActeurList,
+              //                 speculation: speculationsList,
+              //               );
+              //               print("new acteur : ${acteurs}");
+              //               acteurProvider.setActeur(acteurs);
+              //             });
+              //             ScaffoldMessenger.of(context).showSnackBar(
+              //               const SnackBar(
+              //                 content: Text("Profil modifié avec succès"),
+              //                 duration: Duration(seconds: 5),
+              //               ),
+              //             );
+              //           } else {
+              //             setState(() {
+              //               _isLoading = false;
+              //             });
+              //             print("Erreur 2 HTTP: ${response.statusCode}");
+              //             throw Exception(
+              //                 "Erreur HTTP: ${response.statusCode}");
+              //           }
+              //         }
+              //       } catch (e) {
+              //         var response = await ActeurService().updateActeur(
+              //           idActeur: acteur.idActeur!,
+              //           nomActeur: nomActeur,
+              //           adresseActeur: adresse!,
+              //           telephoneActeur: tel,
+              //           whatsAppActeur: whatsApp,
+              //           localiteActeur: localisation,
+              //           emailActeur: emailActeur,
+              //           niveau3PaysActeur: acteur.niveau3PaysActeur!,
+              //           typeActeur:
+              //               typeActeur, // Passez les objets TypeActeur ici
+              //           speculation:
+              //               speculation, // Passez les objets Speculation ici
+              //         );
+
+              //         if (response.statusCode == 200 ||
+              //             response.statusCode == 201) {
+              //           setState(() {
+              //             _isLoading = false;
+              //             final responseBody =
+              //                 json.decode(utf8.decode(response.bodyBytes));
+              //             print("response body ${responseBody.toString()}");
+
+              //             List<dynamic> typeActeurData =
+              //                 responseBody['typeActeur'];
+              //             List<TypeActeur> typeActeurList = typeActeurData
+              //                 .map((data) => TypeActeur.fromMap(data))
+              //                 .toList();
+              //             List<dynamic> speculationData =
+              //                 responseBody['speculation'];
+              //             List<Speculation> speculationsList = speculationData
+              //                 .map((data) => Speculation.fromMap(data))
+              //                 .toList();
+
+              //             Acteur acteurs = Acteur(
+              //               idActeur: responseBody['idActeur'],
+              //               resetToken: responseBody['resetToken'],
+              //               tokenCreationDate:
+              //                   responseBody['tokenCreationDate'],
+              //               codeActeur: responseBody['emailActeur'],
+              //               nomActeur: responseBody['nomActeur'],
+              //               adresseActeur: responseBody['adresseActeur'],
+              //               telephoneActeur: responseBody['telephoneActeur'],
+              //               whatsAppActeur: responseBody['whatsAppActeur'],
+              //               latitude: responseBody['latitude'],
+              //               longitude: responseBody['longitude'],
+              //               photoSiegeActeur: responseBody['photoSiegeActeur'],
+              //               logoActeur: responseBody['logoActeur'],
+              //               niveau3PaysActeur:
+              //                   responseBody['niveau3PaysActeur'],
+              //               password: responseBody['password'],
+              //               dateAjout: responseBody['dateAjout'],
+              //               dateModif: responseBody['dateModif'],
+              //               personneModif: responseBody['personneModif'],
+              //               localiteActeur: responseBody['localiteActeur'],
+              //               emailActeur: responseBody['emailActeur'],
+              //               statutActeur: responseBody['statutActeur'],
+              //               isConnected: responseBody['isConnected'],
+              //               pays: null,
+              //               typeActeur: typeActeurList,
+              //               speculation: speculationsList,
+              //             );
+              //             print("new acteur : ${acteurs}");
+              //             acteurProvider.setActeur(acteurs);
+              //           });
+
+              //           ScaffoldMessenger.of(context).showSnackBar(
+              //             const SnackBar(
+              //               content: Text("Profil  modifié avec succès"),
+              //               duration: Duration(seconds: 5),
+              //             ),
+              //           );
+              //         } else {
+              //           setState(() {
+              //             _isLoading = false;
+              //           });
+              //           print("Erreur HTTP: ${response.statusCode}  ");
+              //           // throw Exception("Erreur HTTP: ${response.statusCode}");
+              //         }
+              //       }
+              //     },
+              //     child: Text(
+              //       "Modifier",
+              //       style: TextStyle(
+              //         fontSize: 20,
+              //         color: Colors.white,
+              //         fontWeight: FontWeight.bold,
+              //       ),
+              //     ),
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor:
+              //           const Color(0xFFFF8A00), // Code couleur orange
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(15),
+              //       ),
+              //       minimumSize: Size(250, 40),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

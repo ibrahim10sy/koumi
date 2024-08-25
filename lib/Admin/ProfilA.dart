@@ -33,7 +33,7 @@ class _ProfilAState extends State<ProfilA> {
   @override
   void initState() {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-
+    print("profil init : ${acteur.toString()}");
     super.initState();
   }
 
@@ -41,11 +41,10 @@ class _ProfilAState extends State<ProfilA> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
-
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           title: const Text(
             "Mon Profil",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -153,7 +152,7 @@ class _ProfilAState extends State<ProfilA> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     EditProfil(
-                                                      acteurs: ac,
+                                                      acteurs: acteur,
                                                     )),
                                           );
                                         },
