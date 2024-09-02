@@ -126,7 +126,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen>
     try {
       final emailActeur = emailController.text;
       final whatsAppActeur = processedNumberWA;
-
+      print("num : $whatsAppActeur");
       if (isVisible) {
         await ActeurService.sendOtpCodeEmail(emailActeur, context).then(
           (value) => {
@@ -370,6 +370,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen>
                           setState(() {
                             processedNumberWA =
                                 removePlus(whatsAppController.text);
+                                print("wa num $processedNumberWA");
                           });
                           print("wa change country $processedNumberWA");
 
@@ -380,11 +381,6 @@ class _ForgetPassScreenState extends State<ForgetPassScreen>
                           // Ajouter l'indicatif du nouveau pays au numéro actuel
                           String newCompleteNumber =
                               '+${country.dialCode}$currentNumber';
-
-                          // Mettre à jour le controller avec le nouveau numéro complet
-                          // whatsAppController.text = newCompleteNumber;
-
-                          // Mettre à jour processedNumberWA avec le nouveau numéro complet sans le signe +
                           setState(() {
                             processedNumberWA = removePlus(newCompleteNumber);
                           });

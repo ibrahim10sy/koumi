@@ -120,11 +120,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
     return stockListe;
   }
 
-  Future<List<Stock>> fetchAllStock() async {
-    stockListe = await StockService().fetchStockByActeur(acteur.idActeur!);
-
-    return stockListe;
-  }
+  
 
   Future<List<Stock>> fetchAllStockByCate() async {
     if (selectedCat != null) {
@@ -199,7 +195,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
       type = typeActeurData.map((data) => data.libelle).join(', ');
       setState(() {
         isExist = true;
-        stockListeFuture = fetchAllStock();
+        
       });
     } else {
       setState(() {
@@ -249,12 +245,21 @@ class _MyProductScreenState extends State<MyProductScreen> {
       scrollableController1.addListener(_scrollListener1);
     });
 
-    verify();
+    // verify();
+      acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+      typeActeurData = acteur.typeActeur!;
+      type = typeActeurData.map((data) => data.libelle).join(', ');
     stockListeFuture1 = fetchAllStockByCate();
+    stockListeFuture = fetchAllStock();
     _searchController = TextEditingController();
     _catList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
   }
 
+Future<List<Stock>> fetchAllStock() async {
+    stockListe = await StockService().fetchStockByActeur(acteur.idActeur!);
+
+    return stockListe;
+  }
   Future<void> _getResultFromNextScreen1(BuildContext context) async {
     final result = await Navigator.push(
         context,
@@ -370,68 +375,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                         )),
                   ]
                 : null),
-        body: !isExist
-            ? Center(
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset("assets/images/lock.png",
-                          width: 100, height: 100),
-                      SizedBox(height: 20),
-                      Text(
-                        "Vous devez vous connecter pour voir vos produits",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Future.microtask(() {
-                            Provider.of<BottomNavigationService>(context,
-                                    listen: false)
-                                .changeIndex(0);
-                          });
-                          Get.to(
-                            PinLoginScreen(),
-                            duration: Duration(seconds: 1),
-                            transition: Transition.leftToRight,
-                          );
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              Colors.transparent),
-                          elevation: MaterialStateProperty.all<double>(0),
-                          overlayColor: MaterialStateProperty.all<Color>(
-                              Colors.grey.withOpacity(0.2)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: d_colorGreen),
-                            ),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: Text(
-                            "Se connecter",
-                            style: TextStyle(fontSize: 16, color: d_colorGreen),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : GestureDetector(
+        body:  GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
                 },

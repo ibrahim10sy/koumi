@@ -284,8 +284,8 @@ class _AddAndUpdateProductEndSreenState
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        magasinListe = http
-        .get(Uri.parse('$apiOnlineUrl/Magasin/getAllMagasinByActeur/${acteur.idActeur}'));
+        magasinListe = http.get(Uri.parse(
+            '$apiOnlineUrl/Magasin/getAllMagasinByActeur/${acteur.idActeur}'));
       });
     }
   }
@@ -293,16 +293,16 @@ class _AddAndUpdateProductEndSreenState
   @override
   Widget build(BuildContext context) {
     const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
-const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
+    const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
     return LoadingOverlay(
       isLoading: isLoading,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -324,18 +324,17 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                         SizedBox(
-                height: 10,
-              ),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Type Produit  ",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Type Produit  ",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
                         ),
                         TextFormField(
                           validator: (value) {
@@ -355,16 +354,18 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Description Produit  ",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Description Produit ",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
                         ),
                         TextFormField(
                           validator: (value) {
@@ -384,15 +385,16 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Chosir une filière",
+                              "Chosir une filière ",
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                                  color: (Colors.black), fontSize: 18),
                             ),
                           ),
                         ),
@@ -515,15 +517,16 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                             );
                           },
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Chosir une categorie",
+                              "Chosir une catégorie ",
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                                  color: (Colors.black), fontSize: 18),
                             ),
                           ),
                         ),
@@ -646,15 +649,16 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                             );
                           },
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Chosir une speculation",
+                              "Chosir une spéculation ",
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                                  color: (Colors.black), fontSize: 18),
                             ),
                           ),
                         ),
@@ -772,16 +776,18 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                                 ),
                               );
                             }),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Magasin  ",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Magasin",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
                         ),
                         FutureBuilder(
                           future: magasinListe,
@@ -806,7 +812,7 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                                 items: [],
                                 onChanged: null,
                                 decoration: InputDecoration(
-                                  labelText: 'Probleme de connexion',
+                                  labelText: 'Chargement...',
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
                                   border: OutlineInputBorder(
@@ -913,16 +919,18 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                             );
                           },
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Unité  ",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Unité",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
                         ),
                         FutureBuilder(
                           future: uniteListe,
@@ -947,7 +955,7 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                                 items: [],
                                 onChanged: null,
                                 decoration: InputDecoration(
-                                  labelText: 'Probleme de connexion',
+                                  labelText: 'Chargement...',
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
                                   border: OutlineInputBorder(
@@ -1056,16 +1064,18 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                             );
                           },
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Zone de production  ",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Zone de production",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
                         ),
                         FutureBuilder(
                           future: zoneListe,

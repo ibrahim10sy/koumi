@@ -42,16 +42,6 @@ class _ZoneState extends State<Zone> {
     super.initState();
   }
 
-  void _selectMode(String mode) {
-    setState(() {
-      if (mode == 'Rechercher') {
-        isSearchMode = true;
-      } else if (mode == 'Fermer') {
-        isSearchMode = false;
-      }
-    });
-  }
-
   Future<void> _getResultFromZonePage(BuildContext context) async {
     final result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => AddZone()));

@@ -66,19 +66,19 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         await Geolocator.openLocationSettings();
-        return Future.error('Location services are disabled.');
+        return Future.error('Location services are disabled. Acceuil admin ');
       }
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          return Future.error('Location permissions are denied');
+          return Future.error('Location permissions are denied Acceuil admin ');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location permissions are permanently denied.');
+        return Future.error('Location permissions are permanently denied. Acceuil admin ');
       }
 
       Position position = await Geolocator.getCurrentPosition(
@@ -95,7 +95,7 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
         detectedCountryCode = placemark.isoCountryCode!;
       });
     } catch (e) {
-      print('Error: $e');
+      print('Error Acceuil admin  : $e');
     }
   }
 
@@ -115,31 +115,26 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
       // accessing the position and request users of the
       // App to enable the location services.
       await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
+      return Future.error('Location services are disabled. Acceuil admin ');
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
+       
+        return Future.error('Location permissions are denied Acceuil admin  ');
       }
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Location permissions are permanently denied, we cannot request permissions. Acceuil admin ');
     }
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+   
     streamSubscription =
         Geolocator.getPositionStream().listen((Position position) {
-      latitude.value = 'Latitude : ${position.latitude}';
-      longitude.value = 'Longitude : ${position.longitude}';
+      latitude.value = 'Latitude Acceuil admin  : ${position.latitude}';
+      longitude.value = 'Longitude Acceuil admin  : ${position.longitude}';
       getAddressFromLatLang(position);
     });
   }
@@ -152,38 +147,40 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
       if (placemark.isNotEmpty) {
         Placemark place = placemark[0];
-        debugPrint("Address ISO: $detectedC");
+        debugPrint("Address ISO Acceuil admin : $detectedC");
         address.value =
-            'Address : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
-
+            'Address Acceuil admin : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+      // if (detectedCountryCode != place.isoCountryCode) {
+        
+      // }
         if (mounted) {
           setState(() {
             detectedC = place.isoCountryCode;
             detectedCountryCode = place.isoCountryCode ?? "ML";
             detectedCountry = place.country ?? "Mali";
-            print("pays : ${detectedCountry} code: ${detectedCountryCode}");
+            print("pays Acceuil admin  : ${detectedCountry} code: ${detectedCountryCode}");
             if (detectedCountry != null || detectedCountry!.isNotEmpty) {
               detectorPays.setDetectedCountryAndCode(
                   detectedCountry!, detectedCountryCode!);
-              print("pays : $detectedCountry code: $detectedCountryCode");
+              print("pays Acceuil admin  : $detectedCountry code: $detectedCountryCode");
             } else {
               detectorPays.setDetectedCountryAndCode("Mali", "ML");
-              print("Le pays n'a pas pu être détecté.");
+              print("Le pays n'a pas pu être détecté. Acceuil admin  ");
             }
           });
         }
 
         debugPrint(
-            "Address: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
+            "Address Acceuil admin : ${place.locality}, ${place.country}, ${place.isoCountryCode}");
       } else {
         detectorPays.setDetectedCountryAndCode("Mali", "ML");
         debugPrint(
-            "Aucun emplacement trouvé dans admin accueil pour les coordonnées fournies.");
+            "Acceuil admin  Aucun emplacement trouvé dans admin accueil pour les coordonnées fournies. ");
       }
     } catch (e) {
       detectorPays.setDetectedCountryAndCode("Mali", "ML");
       debugPrint(
-          "Une erreur est survenue lors de la récupération de l'adresse : $e");
+          "Acceuil admin  Une erreur est survenue lors de la récupération de l'adresse : $e");
     }
     // }
   }
@@ -208,11 +205,9 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
     verify();
     getLocation();
-    //  Snack.info(message:'Connecté en tant que : ${acteur.nomActeur!.toUpperCase()}') ;
-    //   });
+   
   }
 
   @override
@@ -254,14 +249,6 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
     List<Widget> cards = [
       _buildAccueilCard("Conseils", "cons1.png", 2),
       _buildAccueilCard("Alertes", "alt21.png", 8),
-      // _buildAccueilCard("Semences et plants", "semence.png", 14),
-      // _buildAccueilCard("Produits phytosanitaires", "physo.png", 15),
-      // _buildAccueilCard("Engrais et apports", "engrais.png", 17),
-      // _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 16),
-      // _buildAccueilCard("Compléments alimentaires", "compl.png", 18),
-      // _buildAccueilCard("Produits d'élevages", "elevage.png", 19),
-      // _buildAccueilCard("Matériels et équipements", "equi.png", 13),
-      // _buildAccueilCard("Produits transformés", "transforme.png", 20),
       _buildAccueilCard("Commandes", "cm.png", 3),
       _buildAccueilCard("Magasins", "shop1.png", 4),
       _buildAccueilCard("Intrants agricoles", "int1.png", 1),

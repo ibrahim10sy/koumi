@@ -213,7 +213,7 @@ class _AddZoneState extends State<AddZone> {
           toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context, true);
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
           title: const Text(
@@ -375,7 +375,7 @@ class _AddZoneState extends State<AddZone> {
                                             // duration: const Duration(seconds: 5),
                                           ),
                                         ),
-                                        Navigator.of(context).pop(),
+                                        Navigator.pop(context, true),
                                       })
                                   .catchError((onError) {
                                 print(onError.message);
@@ -413,7 +413,7 @@ class _AddZoneState extends State<AddZone> {
                                             // duration: const Duration(seconds: 5),
                                           ),
                                         ),
-                                        Navigator.of(context).pop(),
+                                        Navigator.pop(context, true),
                                       })
                                   .catchError((onError) {
                                 print(

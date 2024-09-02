@@ -119,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Brazil': 'Brésil',
     'Brunei': 'Brunéi',
     'Bulgaria': 'Bulgarie',
-    'Burkina Faso': 'Burkina Faso',
+    'Burkina Faso': 'Burkina Faso',  
     'Burundi': 'Burundi',
     'Cabo Verde': 'Cap-Vert',
     'Cambodia': 'Cambodge',

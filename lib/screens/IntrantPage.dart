@@ -461,7 +461,7 @@ class _IntrantPageState extends State<IntrantPage> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                !isExist
+                                isExist
                                     ? (typeActeurData
                                                 .map((e) =>
                                                     e.libelle!.toLowerCase())

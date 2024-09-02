@@ -245,7 +245,7 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                           controller: _nomController,
                           maxLines: null,
                           decoration: InputDecoration(
-                            hintText: "Nom materiel",
+                            hintText: "Nom produit",
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
                             border: OutlineInputBorder(

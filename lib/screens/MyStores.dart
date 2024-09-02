@@ -202,7 +202,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                 },
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: Text(
-              'Mes boutiques',
+              'Mes magasins',
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

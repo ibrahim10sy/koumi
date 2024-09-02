@@ -119,24 +119,160 @@ class _CarrouselState extends State<Carrousel> {
   String? detectedCountry;
   late BuildContext _currentContext;
 
-  void getLocationNew() async {
+  // void getLocationNew() async { 
+  //   try {
+  //     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //     if (!serviceEnabled) {
+  //       await Geolocator.openLocationSettings();
+  //       return Future.error('Caroussel Location services are disabled. ');
+  //     }
+
+  //     LocationPermission permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       permission = await Geolocator.requestPermission();
+  //       if (permission == LocationPermission.denied) {
+  //         return Future.error('Caroussel Location permissions are denied');
+  //       }
+  //     }
+
+  //     if (permission == LocationPermission.deniedForever) {
+  //       return Future.error('Caroussel Location permissions are permanently denied.');
+  //     }
+
+  //     Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high,
+  //     );
+
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(
+  //       position.latitude,
+  //       position.longitude,
+  //     );
+
+  //     Placemark placemark = placemarks.first;
+  //     setState(() {
+  //       detectedCountryCode = placemark.isoCountryCode!;
+  //     });
+  //   } catch (e) {
+  //     print('Caroussel Error: $e');
+  //   }
+  // }
+
+  var latitude = 'Getting Latitude..'.obs;
+  var longitude = 'Getting Longitude..'.obs;
+  var address = 'Getting Address..'.obs;
+  StreamSubscription<Position>? streamSubscription;
+
+  // getLocation() async {
+  //   bool serviceEnabled;
+
+  //   LocationPermission permission;
+  //   // Test if location services are enabled.
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     // Location services are not enabled don't continue
+  //     // accessing the position and request users of the
+  //     // App to enable the location services.
+  //     await Geolocator.openLocationSettings();
+  //     return Future.error('Caroussel Location services are disabled.');
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+       
+  //       return Future.error('Caroussel Location permissions are denied');
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     // Permissions are denied forever, handle appropriately.
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
+   
+  //   streamSubscription =
+  //       Geolocator.getPositionStream(
+
+  //       ).listen((Position position) {
+  //     latitude.value = 'Caroussel Latitude : ${position.latitude}';
+  //     longitude.value = 'Caroussel Longitude : ${position.longitude}';
+  //     getAddressFromLatLang(position);
+  //   });
+    
+  // }
+
+  // Future<void> getAddressFromLatLang(Position position) async {
+  //   try {
+  //     List<Placemark> placemark =
+  //         await placemarkFromCoordinates(position.latitude, position.longitude);
+  //     if (placemark.isNotEmpty) {
+  //       Placemark place = placemark[0];
+  //       debugPrint("Address ISO dans carrousel: $detectedC");
+  //       address.value =
+  //           'Address dans carrousel : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+
+  //       if (mounted) {
+  //         setState(() {
+  //           detectedC = place.isoCountryCode;
+  //           detectedCountryCode = place.isoCountryCode ?? "ML";
+  //           detectedCountry = place.country ?? "Mali";
+  //            fetchAlertes(detectedCountry!).then((alerts) {
+  //     if (mounted) {
+  //       setState(() {
+  //         alertesList = alerts;
+  //         isLoading = false;
+  //       });
+  //     }
+  //   });
+  //           print(
+  //               "pays dans carrousel: ${detectedCountry} code: ${detectedCountryCode}");
+  //         });
+  //       }
+
+  //       debugPrint(
+  //           "Address dans carrousel: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
+  //     } else {
+  //       debugPrint(
+  //           "Aucun emplacement trouvé dans  carrousel pour les coordonnées fournies.");
+  //     }
+  //   } catch (e) {
+  //     debugPrint(
+  //         "Une erreur est survenue lors de la récupération de l'adresse : $e");
+  //   }
+
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getLocation();
+
+  }
+
+  @override
+  void dispose() {
+    streamSubscription?.cancel();
+    super.dispose();
+  }
+
+Future<void> getLocationNew() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         await Geolocator.openLocationSettings();
-        return Future.error('Location services are disabled.');
+        return Future.error('carrousel Location services are disabled.');
       }
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          return Future.error('Location permissions are denied');
+          return Future.error('carrousel Location permissions are denied');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location permissions are permanently denied.');
+        return Future.error('carrousel Location permissions are permanently denied.');
       }
 
       Position position = await Geolocator.getCurrentPosition(
@@ -153,109 +289,78 @@ class _CarrouselState extends State<Carrousel> {
         detectedCountryCode = placemark.isoCountryCode!;
       });
     } catch (e) {
-      print('Error: $e');
+      print('carrousel Error: $e');
     }
   }
 
-  var latitude = 'Getting Latitude..'.obs;
-  var longitude = 'Getting Longitude..'.obs;
-  var address = 'Getting Address..'.obs;
-  StreamSubscription<Position>? streamSubscription;
-
-  getLocation() async {
+  Future<void> getLocation() async {
     bool serviceEnabled;
-
     LocationPermission permission;
-    // Test if location services are enabled.
+
+    // Vérifie si les services de localisation sont activés
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
+      return Future.error('carrousel Location services are disabled.');
     }
+
+    // Vérifie les permissions de localisation
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
+        return Future.error('carrousel Location permissions are denied');
       }
     }
+
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied.');
     }
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    streamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-      latitude.value = 'Latitude : ${position.latitude}';
-      longitude.value = 'Longitude : ${position.longitude}';
+
+    // S'abonne au flux de positions avec des filtres pour réduire la fréquence des mises à jour
+    streamSubscription = Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10000, 
+      ),
+    ).listen((Position position) {
+      latitude.value = 'carrousel Latitude : ${position.latitude}';
+      longitude.value = 'carrousel Longitude : ${position.longitude}';
       getAddressFromLatLang(position);
     });
-    
   }
 
   Future<void> getAddressFromLatLang(Position position) async {
     try {
-      List<Placemark> placemark =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
+      List<Placemark> placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
       if (placemark.isNotEmpty) {
         Placemark place = placemark[0];
-        debugPrint("Address ISO dans carrousel: $detectedC");
-        address.value =
-            'Address dans carrousel : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
 
-        if (mounted) {
+        // Évite les appels répétés de setState si le pays détecté ne change pas
+        if (detectedCountryCode != place.isoCountryCode) {
           setState(() {
-            detectedC = place.isoCountryCode;
             detectedCountryCode = place.isoCountryCode ?? "ML";
             detectedCountry = place.country ?? "Mali";
-             fetchAlertes(detectedCountry!).then((alerts) {
-      if (mounted) {
-        setState(() {
-          alertesList = alerts;
-          isLoading = false;
-        });
-      }
-    });
-            print(
-                "pays dans carrousel: ${detectedCountry} code: ${detectedCountryCode}");
+            fetchAlertes(detectedCountry!).then((alerts) {
+              if (mounted) {
+                setState(() {
+                  alertesList = alerts;
+                  isLoading = false;
+                });
+              }
+            });
+            print("Pays dans carrousel: ${detectedCountry} code: ${detectedCountryCode}");
           });
         }
 
-        debugPrint(
-            "Address dans carrousel: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
+        address.value = 'Address dans carrousel : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+        debugPrint("Address dans carrousel: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
       } else {
-        debugPrint(
-            "Aucun emplacement trouvé dans  carrousel pour les coordonnées fournies.");
+        debugPrint("Aucun emplacement trouvé dans carrousel pour les coordonnées fournies.");
       }
     } catch (e) {
-      debugPrint(
-          "Une erreur est survenue lors de la récupération de l'adresse : $e");
+      debugPrint("Une erreur est survenue lors de la récupération de l'adresse : $e");
     }
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    getLocation();
-
-  }
-
-  @override
-  void dispose() {
-    streamSubscription?.cancel();
-    super.dispose();
   }
 
   bool isLoading = true;
