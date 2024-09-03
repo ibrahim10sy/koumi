@@ -1122,8 +1122,8 @@ class _IntrantPageState extends State<IntrantPage> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1280,8 +1280,8 @@ class _IntrantPageState extends State<IntrantPage> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1542,8 +1542,8 @@ class _IntrantPageState extends State<IntrantPage> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1700,8 +1700,8 @@ class _IntrantPageState extends State<IntrantPage> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:

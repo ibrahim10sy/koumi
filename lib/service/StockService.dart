@@ -225,7 +225,7 @@ class StockService extends ChangeNotifier {
     }
   }
 
-  Future<List<Stock>> fetchStock(String niveau3PaysActeur,
+  Future<List<Stock>> fetchStock(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -239,9 +239,9 @@ class StockService extends ChangeNotifier {
 
     try {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}'));
+          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?page=${page}&size=${size}'));
       debugPrint(
-          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}');
+          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?page=${page}&size=${size}');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
@@ -270,6 +270,52 @@ class StockService extends ChangeNotifier {
     }
     return stockList;
   }
+
+  // Future<List<Stock>> fetchStock(String niveau3PaysActeur,
+  //     {bool refresh = false}) async {
+  //   if (isLoading == true) return [];
+
+  //   isLoading = true;
+
+  //   if (refresh) {
+  //     stockList.clear();
+  //     page = 0;
+  //     hasMore = true;
+  //   }
+
+  //   try {
+  //     final response = await http.get(Uri.parse(
+  //         '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}'));
+  //     debugPrint(
+  //         '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}');
+  //     if (response.statusCode == 200) {
+  //       final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+  //       final List<dynamic> body = jsonData['content'];
+
+  //       if (body.isEmpty) {
+  //         hasMore = false;
+  //       } else {
+  //         List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+  //         stockList.addAll(newStocks.where((newStock) => !stockList
+  //             .any((existStock) => existStock.idStock == newStock.idStock)));
+  //       }
+
+  //       debugPrint(
+  //           "response body all stock with pagination ${page} par défilement soit ${stockList.length}");
+  //       return stockList;
+  //     } else {
+  //       print(
+  //           'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+  //       return [];
+  //     }
+  //   } catch (e) {
+  //     print(
+  //         'Une erreur s\'est produite lors de la récupération des stocks: $e');
+  //   } finally {
+  //     isLoading = false;
+  //   }
+  //   return stockList;
+  // }
 
   Future<List<Stock>> fetchStockByCategorie(
       String idCategorie, String niveau3PaysActeur,

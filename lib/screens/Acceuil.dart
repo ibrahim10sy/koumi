@@ -7,12 +7,12 @@ import 'package:get/get.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/providers/CountryProvider.dart';
-import 'package:koumi/widgets/Carrousel.dart';
 import 'package:koumi/widgets/CustomAppBar.dart';
 import 'package:koumi/widgets/Default_Acceuil.dart';
 import 'package:koumi/widgets/DetectorPays.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:koumi/widgets/Carrousel.dart';
 
 class Accueil extends StatefulWidget {
   const Accueil({super.key});
@@ -81,7 +81,66 @@ class _AccueilState extends State<Accueil> {
   var address = 'Getting Address..'.obs;
    StreamSubscription<Position>? streamSubscription;
 
-  getLocation() async {
+ 
+  // Future<void> getAddressFromLatLang(Position position) async {
+  //   final detectorPays = Provider.of<DetectorPays>(context, listen: false);
+  //   // if (!detectorPays.hasLocation){
+  //      try {
+  //       List<Placemark> placemark = await placemarkFromCoordinates(
+  //           position.latitude, position.longitude);
+  //       if (placemark.isNotEmpty) {
+  //         Placemark place = placemark[0];
+  //         debugPrint("Address ISO dans acceuil: $detectedC");
+  //         address.value =
+  //             'Address dans acceuil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+
+  //         if (mounted) {
+  //           setState(() {
+  //             detectedC = place.isoCountryCode;
+  //             detectedCountryCode = place.isoCountryCode ?? "ML";
+  //             detectedCountry = place.country ?? "Mali";
+  //             print("pays dans acceuil: ${detectedCountry} code: ${detectedCountryCode}");
+  //             if (detectedCountry != null || detectedCountry!.isNotEmpty) {
+  //               detectorPays.setDetectedCountryAndCode(
+  //                   detectedCountry!, detectedCountryCode!);
+  //               print("pays dans acceuil: $detectedCountry code: $detectedCountryCode");
+  //             } else {
+  //               detectorPays.setDetectedCountryAndCode("Mali", "ML");
+  //               print("Le pays n'a pas pu être détecté dans acceuil.");
+  //             }
+  //           });
+  //         }
+
+  //         debugPrint(
+  //             "Address dans acceuil: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
+  //       } else {
+  //         detectorPays.setDetectedCountryAndCode("Mali", "ML");
+  //         debugPrint(
+  //             "Aucun emplacement trouvé dans  accueil pour les coordonnées fournies.");
+  //       }
+  //     } catch (e) {
+  //       detectorPays.setDetectedCountryAndCode("Mali", "ML");
+  //       debugPrint(
+  //           "Une erreur est survenue lors de la récupération de l'adresse : $e");
+  //     }
+  // }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // verify();
+    getLocation();
+  }
+
+  @override
+  void dispose() {
+    streamSubscription?.cancel();
+    super.dispose();
+  }
+
+ getLocation() async {
     bool serviceEnabled;
 
     LocationPermission permission;
@@ -98,11 +157,6 @@ class _AccueilState extends State<Accueil> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
     }
@@ -111,29 +165,37 @@ class _AccueilState extends State<Accueil> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    streamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-      latitude.value = 'Latitude : ${position.latitude}';
-      longitude.value = 'Longitude : ${position.longitude}';
-      getAddressFromLatLang(position);
-    });
+    streamSubscription = Geolocator.getPositionStream(
+    locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10000,
+    ),
+).listen((Position position) {
+    latitude.value = 'accueil Latitude : ${position.latitude}';
+    longitude.value = 'accueil Longitude : ${position.longitude}';
+    getAddressFromLatLang(position);
+    streamSubscription?.cancel();  // Annule après la première mise à jour
+});
   }
 
-  Future<void> getAddressFromLatLang(Position position) async {
-    final detectorPays = Provider.of<DetectorPays>(context, listen: false);
-    // if (!detectorPays.hasLocation){
-       try {
-        List<Placemark> placemark = await placemarkFromCoordinates(
-            position.latitude, position.longitude);
+ Future<void> getAddressFromLatLang(Position position) async {
+   final detectorPays = Provider.of<DetectorPays>(context, listen: false);
+    
+    try {
+        List<Placemark> placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
         if (placemark.isNotEmpty) {
-          Placemark place = placemark[0];
+            Placemark place = placemark[0];
+
           debugPrint("Address ISO dans acceuil: $detectedC");
           address.value =
               'Address dans acceuil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
 
-          if (mounted) {
+            // Comparez avec les valeurs existantes avant de mettre à jour
+            String newDetectedCountryCode = place.isoCountryCode ?? "ML";
+            String newDetectedCountry = place.country ?? "Mali";
+
+            if (detectedCountryCode != newDetectedCountryCode || detectedCountry != newDetectedCountry) {
+                 if (mounted) {
             setState(() {
               detectedC = place.isoCountryCode;
               detectedCountryCode = place.isoCountryCode ?? "ML";
@@ -149,50 +211,19 @@ class _AccueilState extends State<Accueil> {
               }
             });
           }
+            }
 
-          debugPrint(
-              "Address dans acceuil: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
+            String newAddress = 'Address dans accueil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+            if (address.value != newAddress) {
+                address.value = newAddress;
+                debugPrint(newAddress);
+            }
         } else {
-          detectorPays.setDetectedCountryAndCode("Mali", "ML");
-          debugPrint(
-              "Aucun emplacement trouvé dans  accueil pour les coordonnées fournies.");
+            debugPrint("Aucun emplacement trouvé dans accueil pour les coordonnées fournies.");
         }
-      } catch (e) {
-        detectorPays.setDetectedCountryAndCode("Mali", "ML");
-        debugPrint(
-            "Une erreur est survenue lors de la récupération de l'adresse : $e");
-      }
-    // }
-  }
-
-  // void verify() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   email = prefs.getString('whatsAppActeur');
-  //   if (email != null) {
-  //     // Si l'email de l'acteur est présent, exécute checkLoggedIn
-  //     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-  //     setState(() {
-  //       isExist = true;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       isExist = false;
-  //     });
-  //   }
-  // }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // verify();
-    getLocation();
-  }
-
-  @override
-  void dispose() {
-    streamSubscription?.cancel();
-    super.dispose();
+    } catch (e) {
+        debugPrint("Une erreur est survenue lors de la récupération de l'adresse : $e");
+    }
   }
 
   @override

@@ -9,6 +9,7 @@ const kShadowColor = Color(0xFFEDEDED);
 const kAnimationDuration = Duration(milliseconds: 200);
 
 const double kBorderRadius = 28;
+// int sized = 10;
 int sized = 300;
 double? fontSized = 18;
 // api url

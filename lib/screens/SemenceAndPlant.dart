@@ -46,7 +46,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
   String? email = "";
   late List<TypeActeur> typeActeurData = [];
   late String type;
-   String? nomP;
+  String? nomP;
   late Future _paysList;
   bool hasMore = true;
   late Future<List<Intrant>> intrantListeFuture;
@@ -181,7 +181,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
     }
     debugPrint("no");
   }
- Future<List<Intrant>> fetchAllIntrantByPays({bool refresh = false}) async {
+
+  Future<List<Intrant>> fetchAllIntrantByPays({bool refresh = false}) async {
     if (isLoading) return [];
 
     setState(() {
@@ -240,6 +241,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
     }
     return intrantListe;
   }
+
   Future<List<Intrant>> fetchIntrantByCategorieAndFiliere(String pays,
       {bool refresh = false}) async {
     if (isLoading == true) return [];
@@ -323,7 +325,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
           selectedCat!.idCategorieProduit!,
           libelle,
           detectedCountry != null ? detectedCountry! : "Mali");
-    }else if (nomP != null && nomP!.isNotEmpty) {
+    } else if (nomP != null && nomP!.isNotEmpty) {
       intrantListe = await IntrantService().fetchAllByPays(nomP!);
     }
 
@@ -346,7 +348,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
             Provider.of<DetectorPays>(context, listen: false).detectedCountry!
         : detectedCountry = "Mali";
     verify();
-     _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
+    _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
     _typeList = http.get(Uri.parse(
         '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
     intrantListeFuture1 = getAllIntrant();
@@ -368,8 +370,12 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
   }
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeIntrantByActeur(isRoute: true,)));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListeIntrantByActeur(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -549,7 +555,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                !isExist
+                                isExist
                                     ? (typeActeurData
                                                 .map((e) =>
                                                     e.libelle!.toLowerCase())
@@ -666,7 +672,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                           color: d_colorGreen, fontSize: 17),
                                     ),
                                   ),
-                                 if (isSearchMode)
+                                if (isSearchMode)
                                   TextButton.icon(
                                     onPressed: () {
                                       if (mounted) {
@@ -681,8 +687,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                           selectedCat =
                                               null; // Réinitialiser la catégorie sélectionnée
                                           intrantListeFuture = IntrantService()
-                                    .fetchIntrantByPays(
-                                        detectedCountry!); // Recharger les stocks
+                                              .fetchIntrantByPays(
+                                                  detectedCountry!); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -700,7 +706,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                   )
                               ]),
                         ),
-                       Visibility(
+                        Visibility(
                           visible: isSearchMode,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -790,7 +796,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                 nomP = pays?.nomPays;
                                                 page = 0;
                                                 hasMore = true;
-                                                fetchAllIntrantByPays(refresh: true);
+                                                fetchAllIntrantByPays(
+                                                    refresh: true);
                                                 if (page == 0 &&
                                                     isLoading == true) {
                                                   SchedulerBinding.instance
@@ -949,21 +956,24 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                             },
                                             onChanged: (dynamic cat) {
                                               setState(() {
-                                          selectedCat = cat;
-                                          page = 0;
-                                          hasMore = true;
-                                          fetchIntrantByCategorieAndFiliere(
-                                              detectedCountry != null
-                                                  ? detectedCountry!
-                                                  : "Mali",
-                                              refresh: true);
-                                          if (page == 0 && isLoading == true) {
-                                            SchedulerBinding.instance
-                                                .addPostFrameCallback((_) {
-                                              scrollableController1.jumpTo(0.0);
-                                            });
-                                          }
-                                        });
+                                                selectedCat = cat;
+                                                page = 0;
+                                                hasMore = true;
+                                                fetchIntrantByCategorieAndFiliere(
+                                                    detectedCountry != null
+                                                        ? detectedCountry!
+                                                        : "Mali",
+                                                    refresh: true);
+                                                if (page == 0 &&
+                                                    isLoading == true) {
+                                                  SchedulerBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) {
+                                                    scrollableController1
+                                                        .jumpTo(0.0);
+                                                  });
+                                                }
+                                              });
                                             },
                                             displayItemFn: (dynamic item) =>
                                                 Padding(
@@ -1082,15 +1092,17 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                         debugPrint("refresh page ${page}");
                         selectedCat != null || nomP != null
                             ? setState(() {
-                              nomP == null || nomP!.isEmpty?
-                                intrantListeFuture = IntrantService()
-                                    .fetchIntrantByCategorieAndFilieres(
-                                        selectedCat!.idCategorieProduit!,
-                                        libelle,
-                                        detectedCountry != null
-                                            ? detectedCountry!
-                                            : "Mali"):  intrantListeFuture = IntrantService()
-                                    .fetchAllByPaysAndFiliere(libelle, nomP!);
+                                nomP == null || nomP!.isEmpty
+                                    ? intrantListeFuture = IntrantService()
+                                        .fetchIntrantByCategorieAndFilieres(
+                                            selectedCat!.idCategorieProduit!,
+                                            libelle,
+                                            detectedCountry != null
+                                                ? detectedCountry!
+                                                : "Mali")
+                                    : intrantListeFuture = IntrantService()
+                                        .fetchAllByPaysAndFiliere(
+                                            libelle, nomP!);
                               })
                             : setState(() {
                                 intrantListeFuture = fetchIntrantByCategorie(
@@ -1204,8 +1216,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1352,7 +1364,6 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1363,8 +1374,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1612,8 +1623,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1760,7 +1771,6 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1771,8 +1781,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:

@@ -69,7 +69,6 @@ class _NextAddIntratState extends State<NextAddIntrat> {
   late Forme forme;
 
   bool isLoadingLibelle = true;
- 
 
   Future<File> saveImagePermanently(String imagePath) async {
     final directory = await getApplicationDocumentsDirectory();
@@ -151,7 +150,7 @@ class _NextAddIntratState extends State<NextAddIntrat> {
   void initState() {
     super.initState();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-    
+
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
     _formeList = http.get(Uri.parse('$apiOnlineUrl/formeproduit/getAllForme/'));
   }
@@ -167,8 +166,8 @@ class _NextAddIntratState extends State<NextAddIntrat> {
         isLoading: _isLoading,
         child: Scaffold(
           backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-           appBar: AppBar(
-             backgroundColor: d_colorOr,
+          appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(
@@ -179,13 +178,17 @@ class _NextAddIntratState extends State<NextAddIntrat> {
             title: Text(
               'Etape 2 ',
               style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
+                const SizedBox(
+                  width: 15,
+                ),
                 Form(
                   key: formkey,
                   child: Column(children: [
@@ -564,11 +567,10 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                           final CategorieProduit categorieProduit =
                               widget.categorieProduit;
                           final String unite = widget.unite;
-                           String formattedMontant =
+                          String formattedMontant =
                               _prixController.text.replaceAll(',', '');
 
-                          final int prix =
-                               int.tryParse(formattedMontant) ?? 0;
+                          final int prix = int.tryParse(formattedMontant) ?? 0;
                           print("prix formated $prix");
                           final String date = _dateController.text;
 
@@ -588,11 +590,9 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                                         dateExpiration: date,
                                         forme: forme,
                                         unite: unite,
-                                       
                                         categorieProduit: categorieProduit,
                                         acteur: acteur,
-                                        monnaie: monnaie
-                                        )
+                                        monnaie: monnaie)
                                     .then((value) => {
                                           Provider.of<IntrantService>(context,
                                                   listen: false)
@@ -653,8 +653,7 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                                         forme: forme,
                                         unite: unite,
                                         acteur: acteur,
-                                        monnaie: monnaie
-                                        )
+                                        monnaie: monnaie)
                                     .then((value) => {
                                           Provider.of<IntrantService>(context,
                                                   listen: false)
@@ -663,7 +662,7 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                                           setState(() {
                                             _isLoading = false;
                                           }),
-                                         Navigator.pop(context, true),
+                                          Navigator.pop(context, true),
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             const SnackBar(

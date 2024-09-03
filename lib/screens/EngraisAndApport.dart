@@ -546,7 +546,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                !isExist
+                                isExist
                                     ? (typeActeurData
                                                 .map((e) =>
                                                     e.libelle!.toLowerCase())
@@ -1085,7 +1085,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                         debugPrint("refresh page ${page}");
                         selectedCat != null || nomP != null
                             ? setState(() {
-                                nomP == null 
+                                nomP == null
                                     ? intrantListeFuture1 = IntrantService()
                                         .fetchIntrantByCategorieAndFilieres(
                                             selectedCat!.idCategorieProduit!,
@@ -1208,8 +1208,8 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1366,8 +1366,8 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1628,8 +1628,8 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1786,8 +1786,8 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:

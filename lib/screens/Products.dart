@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:country_flags/country_flags.dart';
 import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
-import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/Admin/Zone.dart';
 import 'package:koumi/models/Acteur.dart';
@@ -24,7 +22,6 @@ import 'package:koumi/screens/MyStores.dart';
 import 'package:koumi/service/StockService.dart';
 import 'package:koumi/widgets/AutoComptet.dart';
 import 'package:koumi/widgets/DetectorPays.dart';
-import 'package:koumi/widgets/GetFlagPays.dart';
 import 'package:provider/provider.dart';
 import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -105,9 +102,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Future<List<Stock>> getAllStocks() async {
     stockListe = await StockService()
-        .fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
+        .fetchStock();
     return stockListe;
   }
+  // Future<List<Stock>> getAllStocks() async {
+  //   stockListe = await StockService()
+  //       .fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
+  //   return stockListe;
+  // }
 
   void _scrollListener() {
     if (scrollableController.position.pixels >=
@@ -121,7 +123,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           page++;
         });
       debugPrint("yes - fetch all stocks by pays");
-      fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
+      fetchStock()
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
@@ -132,6 +134,29 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
     debugPrint("no");
   }
+  // void _scrollListener() {
+  //   if (scrollableController.position.pixels >=
+  //           scrollableController.position.maxScrollExtent - 200 &&
+  //       hasMore &&
+  //       !isLoading &&
+  //       selectedCat == null) {
+  //     if (mounted)
+  //       setState(() {
+  //         // Rafraîchir les données ici
+  //         page++;
+  //       });
+  //     debugPrint("yes - fetch all stocks by pays");
+  //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
+  //         .then((value) {
+  //       setState(() {
+  //         // Rafraîchir les données ici
+  //         debugPrint("page inc all ${page}");
+  //       });
+  //     });
+  //   }
+
+  //   debugPrint("no");
+  // }
 
   void _scrollListener1() {
     if (scrollableController1.position.pixels >=
@@ -169,7 +194,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     debugPrint("no");
   }
 
-  Future<List<Stock>> fetchStock(String niveau3PaysActeur,
+  Future<List<Stock>> fetchStock(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -187,9 +212,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
     try {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}'));
+          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?page=${page}&size=${size}'));
       debugPrint(
-          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}');
+          '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?page=${page}&size=${size}');
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -225,6 +250,62 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
     return stockListe;
   }
+  // Future<List<Stock>> fetchStock(String niveau3PaysActeur,
+  //     {bool refresh = false}) async {
+  //   if (isLoading == true) return [];
+
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+
+  //   if (mounted) if (refresh) {
+  //     setState(() {
+  //       stockListe.clear();
+  //       page = 0;
+  //       hasMore = true;
+  //     });
+  //   }
+
+  //   try {
+  //     final response = await http.get(Uri.parse(
+  //         '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}'));
+  //     debugPrint(
+  //         '$apiOnlineUrl/Stock/getStocksByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=${page}&size=${size}');
+
+  //     if (response.statusCode == 200) {
+  //       final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+  //       final List<dynamic> body = jsonData['content'];
+
+  //       if (body.isEmpty) {
+  //         setState(() {
+  //           hasMore = false;
+  //         });
+  //       } else {
+  //         List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+  //         setState(() {
+  //           stockListe.addAll(newStocks.where((newStock) => !stockListe
+  //               .any((existStock) => existStock.idStock == newStock.idStock)));
+  //         });
+  //       }
+
+  //       debugPrint(
+  //           "response body all stock with pagination ${page} par défilement soit ${stockListe.length}");
+  //       return stockListe;
+  //     } else {
+  //       print(
+  //           'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+  //       return [];
+  //     }
+  //   } catch (e) {
+  //     print(
+  //         'Une erreur s\'est produite lors de la récupération des stocks: $e');
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  //   return stockListe;
+  // }
 
   Future<List<Stock>> fetchStockByCategorie(String niveau3PaysActeur,
       {bool refresh = false}) async {
@@ -414,24 +495,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
   }
 
-  void refresh() {
-    if (selectedCat != null || nomP != null) {
-      setState(() {
-        stockListeFuture = StockService()
-            .fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          scrollableController.addListener(_scrollListener);
-        });
-      });
-    }
-  }
-  // void _onSearchPressed() {
-  //   // setState(() {
-  //   //   isSearchMode = !isSearchMode;
-  //   // });
-  //   _showSearchPopup(context); // Display the popup
-  // }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1002,10 +1066,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       })
                     : setState(() {
                         stockListeFuture = StockService().fetchStock(
-                            detectedCountry != null
-                                ? detectedCountry!
-                                : "Mali");
+                          );
                       });
+                    // : setState(() {
+                    //     stockListeFuture = StockService().fetchStock(
+                    //         detectedCountry != null
+                    //             ? detectedCountry!
+                    //             : "Mali");
+                    //   });
               },
               child: selectedCat == null && nomP == null
                   ? SingleChildScrollView(

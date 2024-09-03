@@ -372,8 +372,12 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
   }
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeIntrantByActeur(isRoute: true,)));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListeIntrantByActeur(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -524,7 +528,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                !isExist
+                                isExist
                                     ? (typeActeurData
                                                 .map((e) =>
                                                     e.libelle!.toLowerCase())
@@ -1198,8 +1202,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1346,7 +1350,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                           
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1357,8 +1360,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1619,8 +1622,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:
@@ -1767,7 +1770,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       child: Text(
                                                         "Produits etrangère",
                                                         style: TextStyle(
-                                                          
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1778,8 +1780,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                       gridDelegate:
                                                           SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 5,
+                                                        crossAxisSpacing: 5,
                                                         childAspectRatio: 0.8,
                                                       ),
                                                       itemCount:

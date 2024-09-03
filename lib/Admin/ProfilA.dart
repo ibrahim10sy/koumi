@@ -166,7 +166,6 @@ class _ProfilAState extends State<ProfilA> {
                                                 fontSize: 18,
                                                 color: Colors.black87,
                                                 overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Icon(
@@ -214,7 +213,7 @@ class _ProfilAState extends State<ProfilA> {
                           children: [
                             Row(children: [
                               const Icon(Icons.align_horizontal_left_outlined,
-                                  color: d_colorGreen, size: 25),
+                                  color: Colors.black87, size: 25),
                               const SizedBox(
                                 width: 15,
                               ),
@@ -230,7 +229,7 @@ class _ProfilAState extends State<ProfilA> {
                                   child: Text(
                                     "Changer son mot de passe",
                                     style: TextStyle(
-                                        fontSize: 17, color: d_colorGreen),
+                                        fontSize: 17, color: Colors.black87),
                                   ))
                             ]),
                           ],
@@ -270,7 +269,7 @@ class _ProfilAState extends State<ProfilA> {
                             vertical: 0, horizontal: 15),
                         child: Row(children: [
                           const Icon(Icons.align_horizontal_left_outlined,
-                              color: d_colorGreen, size: 25),
+                              color: Colors.black87, size: 25),
                           const SizedBox(
                             width: 15,
                           ),
@@ -285,7 +284,7 @@ class _ProfilAState extends State<ProfilA> {
                               child: const Text(
                                 "Ajouter un type d'acteur",
                                 style: TextStyle(
-                                    fontSize: 17, color: d_colorGreen),
+                                    fontSize: 17, color: Colors.black87),
                               ))
                         ]),
                       ),
@@ -323,7 +322,7 @@ class _ProfilAState extends State<ProfilA> {
                             vertical: 0, horizontal: 15),
                         child: Row(children: [
                           const Icon(Icons.align_horizontal_left_outlined,
-                              color: d_colorGreen, size: 25),
+                              color: Colors.black87, size: 25),
                           const SizedBox(
                             width: 15,
                           ),
@@ -338,7 +337,7 @@ class _ProfilAState extends State<ProfilA> {
                               child: const Text(
                                 "Parametre Généraux",
                                 style: TextStyle(
-                                    fontSize: 17, color: d_colorGreen),
+                                    fontSize: 17, color: Colors.black87),
                               ))
                         ]),
                       ),
@@ -376,7 +375,7 @@ class _ProfilAState extends State<ProfilA> {
                             vertical: 0, horizontal: 15),
                         child: Row(children: [
                           const Icon(Icons.align_horizontal_left_outlined,
-                              color: d_colorGreen, size: 25),
+                              color: Colors.black87, size: 25),
                           const SizedBox(
                             width: 15,
                           ),
@@ -391,7 +390,7 @@ class _ProfilAState extends State<ProfilA> {
                               child: const Text(
                                 "Parametre système",
                                 style: TextStyle(
-                                    fontSize: 17, color: d_colorGreen),
+                                    fontSize: 17, color: Colors.black87),
                               ))
                         ]),
                       ),
@@ -431,7 +430,7 @@ class _ProfilAState extends State<ProfilA> {
                           children: [
                             Row(children: [
                               const Icon(Icons.align_horizontal_left_outlined,
-                                  color: d_colorGreen, size: 25),
+                                  color: Colors.black87, size: 25),
                               const SizedBox(
                                 width: 15,
                               ),
@@ -446,7 +445,7 @@ class _ProfilAState extends State<ProfilA> {
                                   child: Text(
                                     "Mes zones de production",
                                     style: TextStyle(
-                                        fontSize: 17, color: d_colorGreen),
+                                        fontSize: 17, color: Colors.black87),
                                   ))
                             ]),
                             Consumer<ZoneProductionService>(
@@ -534,13 +533,13 @@ class _ProfilAState extends State<ProfilA> {
                     ),
                     icon: const Icon(
                       Icons.logout_rounded,
-                      color: Colors.green,
+                      color: d_colorOr,
                     ),
                     label: Text(
                       "Déconnexion",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Colors.green,
+                        color: d_colorOr,
                         fontWeight: FontWeight.w700,
                       ),
                     )),

@@ -99,7 +99,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
         page++;
       });
 
-      fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
+      fetchStock()
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
@@ -109,6 +109,29 @@ class _ProduitElevageState extends State<ProduitElevage> {
     }
     debugPrint("no");
   }
+  // void _scrollListener() {
+  //   if (scrollableController.position.pixels >=
+  //           scrollableController.position.maxScrollExtent - 200 &&
+  //       hasMore &&
+  //       !isLoading) {
+  //     // if (selectedCat != null) {
+  //     // Incrementez la page et récupérez les stocks par catégorie
+  //     debugPrint("yes - fetch by category");
+  //     setState(() {
+  //       // Rafraîchir les données ici
+  //       page++;
+  //     });
+
+  //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
+  //         .then((value) {
+  //       setState(() {
+  //         // Rafraîchir les données ici
+  //         debugPrint("page inc all ${page}");
+  //       });
+  //     });
+  //   }
+  //   debugPrint("no");
+  // }
 
   void _scrollListener1() {
     if (scrollableController1.position.pixels >=
@@ -268,7 +291,67 @@ class _ProduitElevageState extends State<ProduitElevage> {
     return stockListe;
   }
 
-  Future<List<Stock>> fetchStock(String pays, {bool refresh = false}) async {
+  // Future<List<Stock>> fetchStock(String pays, {bool refresh = false}) async {
+  //   if (isLoading == true) return [];
+
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+
+  //   if (refresh) {
+  //     setState(() {
+  //       stockListe.clear();
+  //       page = 0;
+  //       hasMore = true;
+  //     });
+  //   }
+
+  //   try {
+  //     // List<Stock> tempStockListe = [];
+  //     // for (String libelle in libelles) {
+  //     final response = await http.get(Uri.parse(
+  //         '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size'));
+
+  //     debugPrint(
+  //         '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
+  //     // '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+  //       final List<dynamic> body = jsonData['content'];
+
+  //       if (body.isEmpty) {
+  //         setState(() {
+  //           hasMore = false;
+  //         });
+  //       } else {
+  //         List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+  //         setState(() {
+  //           stockListe.addAll(newStocks.where((newStock) => !stockListe
+  //               .any((existStock) => existStock.idStock == newStock.idStock)));
+  //         });
+  //       }
+
+  //       debugPrint(
+  //           "response body all stock by categorie with pagination ${page} par défilement soit ${stockListe.length}");
+  //     } else {
+  //       print(
+  //           'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+  //     }
+
+  //     // setState(() {
+  //     //   stockListe.addAll(tempStockListe);
+  //     // });
+  //   } catch (e) {
+  //     print(
+  //         'Une erreur s\'est produite lors de la récupération des intrants: $e');
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  //   return stockListe;
+  // }
+  Future<List<Stock>> fetchStock({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -287,10 +370,10 @@ class _ProduitElevageState extends State<ProduitElevage> {
       // List<Stock> tempStockListe = [];
       // for (String libelle in libelles) {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size'));
+          '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&page=$page&size=$size'));
 
       debugPrint(
-          '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
+          '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&page=$page&size=$size');
       // '$apiOnlineUrl/Stock/listeStockByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -350,7 +433,9 @@ class _ProduitElevageState extends State<ProduitElevage> {
         '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
     stockListeFuture1 = getAllStock();
     stockListeFuture =
-        fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
+        fetchStock();
+    // stockListeFuture =
+    //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
   }
 
   @override
@@ -379,7 +464,9 @@ class _ProduitElevageState extends State<ProduitElevage> {
       print("Rafraichissement en cours");
       setState(() {
         stockListeFuture =
-            fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
+            fetchStock();
+        // stockListeFuture =
+        //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
       });
     }
   }
@@ -421,8 +508,9 @@ class _ProduitElevageState extends State<ProduitElevage> {
               [
             IconButton(
                 onPressed: () {
-                  stockListeFuture = fetchStock(
-                      detectedCountry != null ? detectedCountry! : "Mali");
+                  stockListeFuture = fetchStock();
+                  // stockListeFuture = fetchStock(
+                  //     detectedCountry != null ? detectedCountry! : "Mali");
                 },
                 icon: const Icon(Icons.refresh, color: Colors.white)),
           ]
@@ -500,7 +588,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                !isExist
+                                isExist
                                     ? (typeActeurData
                                                 .map((e) =>
                                                     e.libelle!.toLowerCase())
@@ -670,10 +758,11 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                               null; // Réinitialiser le pays sélectionné
                                           selectedCat =
                                               null; // Réinitialiser la catégorie sélectionnée
-                                          stockListeFuture = fetchStock(
-                                              detectedCountry != null
-                                                  ? detectedCountry!
-                                                  : "Mali"); // Recharger les stocks
+                                          stockListeFuture = fetchStock(); // Recharger les stocks
+                                          // stockListeFuture = fetchStock(
+                                          //     detectedCountry != null
+                                          //         ? detectedCountry!
+                                          //         : "Mali"); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1090,10 +1179,12 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                             libelle, nomP!);
                               })
                             : setState(() {
-                                stockListeFuture = fetchStock(
-                                    detectedCountry != null
-                                        ? detectedCountry!
-                                        : "Mali");
+                                stockListeFuture = fetchStock();
+                            // : setState(() {
+                            //     stockListeFuture = fetchStock(
+                            //         detectedCountry != null
+                            //             ? detectedCountry!
+                            //             : "Mali");
                               });
                         debugPrint("refresh page ${page}");
                       },

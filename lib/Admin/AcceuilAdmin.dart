@@ -104,87 +104,6 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
   var address = 'Getting Address..'.obs;
   StreamSubscription<Position>? streamSubscription;
 
-  getLocation() async {
-    bool serviceEnabled;
-
-    LocationPermission permission;
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled. Acceuil admin ');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-       
-        return Future.error('Location permissions are denied Acceuil admin  ');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions. Acceuil admin ');
-    }
-   
-    streamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-      latitude.value = 'Latitude Acceuil admin  : ${position.latitude}';
-      longitude.value = 'Longitude Acceuil admin  : ${position.longitude}';
-      getAddressFromLatLang(position);
-    });
-  }
-
-  Future<void> getAddressFromLatLang(Position position) async {
-    final detectorPays = Provider.of<DetectorPays>(context, listen: false);
-    // if (!detectorPays.hasLocation) {
-    try {
-      List<Placemark> placemark =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemark.isNotEmpty) {
-        Placemark place = placemark[0];
-        debugPrint("Address ISO Acceuil admin : $detectedC");
-        address.value =
-            'Address Acceuil admin : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
-      // if (detectedCountryCode != place.isoCountryCode) {
-        
-      // }
-        if (mounted) {
-          setState(() {
-            detectedC = place.isoCountryCode;
-            detectedCountryCode = place.isoCountryCode ?? "ML";
-            detectedCountry = place.country ?? "Mali";
-            print("pays Acceuil admin  : ${detectedCountry} code: ${detectedCountryCode}");
-            if (detectedCountry != null || detectedCountry!.isNotEmpty) {
-              detectorPays.setDetectedCountryAndCode(
-                  detectedCountry!, detectedCountryCode!);
-              print("pays Acceuil admin  : $detectedCountry code: $detectedCountryCode");
-            } else {
-              detectorPays.setDetectedCountryAndCode("Mali", "ML");
-              print("Le pays n'a pas pu être détecté. Acceuil admin  ");
-            }
-          });
-        }
-
-        debugPrint(
-            "Address Acceuil admin : ${place.locality}, ${place.country}, ${place.isoCountryCode}");
-      } else {
-        detectorPays.setDetectedCountryAndCode("Mali", "ML");
-        debugPrint(
-            "Acceuil admin  Aucun emplacement trouvé dans admin accueil pour les coordonnées fournies. ");
-      }
-    } catch (e) {
-      detectorPays.setDetectedCountryAndCode("Mali", "ML");
-      debugPrint(
-          "Acceuil admin  Une erreur est survenue lors de la récupération de l'adresse : $e");
-    }
-    // }
-  }
-
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
@@ -215,6 +134,93 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
     streamSubscription?.cancel();
     super.dispose();
   }
+
+ getLocation() async {
+    bool serviceEnabled;
+
+    LocationPermission permission;
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    streamSubscription = Geolocator.getPositionStream(
+    locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10000,
+    ),
+).listen((Position position) {
+    latitude.value = 'accueil admin Latitude : ${position.latitude}';
+    longitude.value = 'accueil admin Longitude : ${position.longitude}';
+    getAddressFromLatLang(position);
+    streamSubscription?.cancel();  // Annule après la première mise à jour
+});
+  }
+
+ Future<void> getAddressFromLatLang(Position position) async {
+   final detectorPays = Provider.of<DetectorPays>(context, listen: false);
+    
+    try {
+        List<Placemark> placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
+        if (placemark.isNotEmpty) {
+            Placemark place = placemark[0];
+
+          debugPrint("Address ISO dans acceuil: $detectedC");
+          address.value =
+              'Address dans acceuil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+
+            // Comparez avec les valeurs existantes avant de mettre à jour
+            String newDetectedCountryCode = place.isoCountryCode ?? "ML";
+            String newDetectedCountry = place.country ?? "Mali";
+
+            if (detectedCountryCode != newDetectedCountryCode || detectedCountry != newDetectedCountry) {
+                 if (mounted) {
+            setState(() {
+              detectedC = place.isoCountryCode;
+              detectedCountryCode = place.isoCountryCode ?? "ML";
+              detectedCountry = place.country ?? "Mali";
+              print("pays dans acceuil: ${detectedCountry} code: ${detectedCountryCode}");
+              if (detectedCountry != null || detectedCountry!.isNotEmpty) {
+                detectorPays.setDetectedCountryAndCode(
+                    detectedCountry!, detectedCountryCode!);
+                print("pays dans acceuil: $detectedCountry code: $detectedCountryCode");
+              } else {
+                detectorPays.setDetectedCountryAndCode("Mali", "ML");
+                print("Le pays n'a pas pu être détecté dans acceuil.");
+              }
+            });
+          }
+            }
+
+            String newAddress = 'Address dans accueil admin : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+            if (address.value != newAddress) {
+                address.value = newAddress;
+                debugPrint(newAddress);
+            }
+        } else {
+            debugPrint("Aucun emplacement trouvé dans accueil admin pour les coordonnées fournies.");
+        }
+    } catch (e) {
+        debugPrint("Une erreur est survenue lors de la récupération de l'adresse : $e");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
