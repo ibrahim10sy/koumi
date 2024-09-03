@@ -99,15 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('emailActeur', emailActeur);
         prefs.setString('password', password);
-        // prefs.setString('nomActeur', responseBody['nomActeur']);
-        // Vérifier si l'image de profil est présente, sinon, enregistrer l'image par défaut dans SharedPreferences
-
-        // if (logoActeur == null) {
-        //   prefs.setString('logoActeur', defaultProfileImage);
-        // }
-        // if (photoSiegeActeur == null) {
-        //   prefs.setString('photoSiegeActeur', defaultProfileImage);
-        // }
+       
         final nomActeur = responseBody['nomActeur'];
         final idActeur = responseBody['idActeur'];
         final adresseActeur = responseBody['adresseActeur'];
@@ -146,6 +138,15 @@ class _LoginScreenState extends State<LoginScreen> {
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
 
+     // Convertir les listes en JSON pour les stocker
+      String typeActeurJson = json.encode(
+          typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
+      String speculationsJson = json.encode(
+          speculationsList.map((speculation) => speculation.toMap()).toList());
+
+      // Sauvegarder les JSON dans SharedPreferences
+      prefs.setString('typeActeurList', typeActeurJson);
+      prefs.setString('speculationsList', speculationsJson);
 // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
         prefs.setStringList('userType', userTypeLabels);
         prefs.setStringList('specType', speculationLabels);
@@ -357,17 +358,61 @@ class _LoginScreenState extends State<LoginScreen> {
         emailController.clear();
         passwordController.clear();
 
-        // List<dynamic> speculationData = responseBody['speculations'];
-        // List<Speculation> speculationList =
-        //     speculationData.map((data) => Speculation.fromMap(data)).toList();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('emailActeur', emailActeur);
+        prefs.setString('password', password);
+       
+        final nomActeur = responseBody['nomActeur'];
+        final idActeur = responseBody['idActeur'];
+        final adresseActeur = responseBody['adresseActeur'];
+        final telephoneActeur = responseBody['telephoneActeur'];
+        final whatsAppActeur = responseBody['whatsAppActeur'];
+
+        final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
+        final localiteActeur = responseBody['localiteActeur'];
+
+        prefs.setString('nomActeur', nomActeur);
+        prefs.setString('idActeur', idActeur);
+        //  prefs.setString('resetToken', responseBody['resetToken']);
+        prefs.setString('codeActeur', responseBody['codeActeur']);
+        prefs.setString('adresseActeur', adresseActeur);
+        prefs.setString('telephoneActeur', telephoneActeur);
+        prefs.setString('whatsAppActeur', whatsAppActeur);
+        prefs.setString('niveau3PaysActeur', niveau3PaysActeur);
+        prefs.setString('localiteActeur', localiteActeur);
+        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
+
+        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
 
         List<dynamic> typeActeurData = responseBody['typeActeur'];
+        List<dynamic> speculationData = responseBody['speculation'];
+
         List<TypeActeur> typeActeurList =
             typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
 
-        List<dynamic> speculationData = responseBody['speculation'];
         List<Speculation> speculationsList =
             speculationData.map((data) => Speculation.fromMap(data)).toList();
+
+        // Extraire les libellés des types d'utilisateur et les ajouter à une nouvelle liste de chaînes
+        List<String> userTypeLabels =
+            typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
+
+        List<String> speculationLabels =
+            speculationsList.map((spec) => spec.nomSpeculation!).toList();
+
+     // Convertir les listes en JSON pour les stocker
+      String typeActeurJson = json.encode(
+          typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
+      String speculationsJson = json.encode(
+          speculationsList.map((speculation) => speculation.toMap()).toList());
+
+      // Sauvegarder les JSON dans SharedPreferences
+      prefs.setString('typeActeurList', typeActeurJson);
+      prefs.setString('speculationsList', speculationsJson);
+// Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
+        prefs.setStringList('userType', userTypeLabels);
+        prefs.setStringList('specType', speculationLabels);
+       
 
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],

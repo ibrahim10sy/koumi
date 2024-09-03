@@ -103,76 +103,126 @@ class ActeurService extends ChangeNotifier {
   }
 
   Future<void> updateActeur({
-  required BuildContext context,
-  required String idActeur,
-  required String adresseActeur,
-  required String nomActeur,
-  required String telephoneActeur,
-  required String whatsAppActeur,
-  required String localiteActeur,
-  String? niveau3PaysActeur,
-  String? emailActeur,
-  List<TypeActeur>? typeActeur,
-  List<Speculation>? speculation,
-  File? logoActeur,
-}) async {
-  try {
-    var request = http.MultipartRequest(
-      'PUT',
-      Uri.parse('$baseUrl/update/$idActeur'),
-    );
-
-    // Ajout du fichier image, s'il est présent
-    if (logoActeur != null) {
-      request.files.add(
-        http.MultipartFile(
-          'image2',
-          logoActeur.readAsBytes().asStream(),
-          logoActeur.lengthSync(),
-          filename: basename(logoActeur.path),
-        ),
+    required BuildContext context,
+    required String idActeur,
+    required String adresseActeur,
+    required String nomActeur,
+    required String telephoneActeur,
+    required String whatsAppActeur,
+    required String localiteActeur,
+    String? niveau3PaysActeur,
+    String? emailActeur,
+    List<TypeActeur>? typeActeur,
+    List<Speculation>? speculation,
+    File? logoActeur,
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        'PUT',
+        Uri.parse('$baseUrl/update/$idActeur'),
       );
+
+      // Ajout du fichier image, s'il est présent
+      if (logoActeur != null) {
+        request.files.add(
+          http.MultipartFile(
+            'image2',
+            logoActeur.readAsBytes().asStream(),
+            logoActeur.lengthSync(),
+            filename: basename(logoActeur.path),
+          ),
+        );
+      }
+
+      // Préparez les données de l'acteur sous forme de chaîne JSON
+      request.fields['acteur'] = jsonEncode({
+        'idActeur': idActeur,
+        'adresseActeur': adresseActeur,
+        'nomActeur': nomActeur,
+        'telephoneActeur': telephoneActeur,
+        'whatsAppActeur': whatsAppActeur,
+        'localiteActeur': localiteActeur,
+        if (niveau3PaysActeur != null) 'niveau3PaysActeur': niveau3PaysActeur,
+        if (emailActeur != null && emailActeur.isNotEmpty)
+          'emailActeur': emailActeur,
+        if (speculation != null)
+          'speculation': speculation.map((e) => e.toMap()).toList(),
+        if (typeActeur != null)
+          'typeActeur': typeActeur.map((e) => e.toMap()).toList(),
+        'logoActeur': "", // Ajoutez la logique si nécessaire
+      });
+
+      // Envoie de la requête
+      var response = await request.send();
+
+      // Conversion de la réponse en `Response` pour plus de flexibilité
+      var responsed = await http.Response.fromStream(response);
+
+      if (response.statusCode == 200 || responsed.statusCode == 201) {
+        final donneesResponse = json.decode(utf8.decode(responsed.bodyBytes));
+        debugPrint('Réponse du service acteur: ${donneesResponse.toString()}');
+
+        // Sauvegarder les données de l'utilisateur dans shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        // Si vous devez mettre à jour un Provider, décommentez et adaptez la logique ci-dessous
+        ActeurProvider acteurProvider =
+            Provider.of<ActeurProvider>(context, listen: false);
+        List<dynamic> typeActeurData = donneesResponse['typeActeur'];
+        List<dynamic> speculationData = donneesResponse['speculation'];
+
+        List<TypeActeur> typeActeurList =
+            typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
+
+        List<Speculation> speculationsList =
+            speculationData.map((data) => Speculation.fromMap(data)).toList();
+
+        // Convertir les listes en JSON pour les stocker
+        String typeActeurJson = json.encode(
+            typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
+        String speculationsJson = json.encode(speculationsList
+            .map((speculation) => speculation.toMap())
+            .toList());
+
+        // Sauvegarder les JSON dans SharedPreferences
+        prefs.setString('typeActeurList', typeActeurJson);
+        prefs.setString('speculationsList', speculationsJson);
+
+        Acteur a = Acteur(
+          idActeur: donneesResponse['idActeur'],
+          resetToken: donneesResponse['resetToken'],
+          tokenCreationDate: donneesResponse['tokenCreationDate'],
+          codeActeur: donneesResponse['codeActeur'],
+          nomActeur: donneesResponse['nomActeur'],
+          adresseActeur: donneesResponse['adresseActeur'],
+          telephoneActeur: donneesResponse['telephoneActeur'],
+          whatsAppActeur: donneesResponse['whatsAppActeur'],
+          photoSiegeActeur: donneesResponse['photoSiegeActeur'],
+          logoActeur: donneesResponse['logoActeur'],
+          niveau3PaysActeur: donneesResponse['niveau3PaysActeur'],
+          password: donneesResponse['password'],
+          dateAjout: donneesResponse['dateAjout'],
+          localiteActeur: donneesResponse['localiteActeur'],
+          emailActeur: donneesResponse['emailActeur'],
+          statutActeur: donneesResponse['statutActeur'],
+          isConnected: donneesResponse['isConnected'],
+          speculation: speculationsList,
+          typeActeur: typeActeurList,
+        );
+
+        // Mettez à jour le provider avec les nouvelles données
+        acteurProvider.setActeur(a);
+      } else {
+        debugPrint("Erreur service : Code ${response.statusCode}");
+        final errorMessage =
+            json.decode(utf8.decode(responsed.bodyBytes))['message'];
+        throw Exception('Erreur du service : $errorMessage');
+      }
+    } catch (e) {
+      debugPrint('Erreur lors de l\'appel du service : ${e.toString()}');
+      throw Exception('Erreur lors de l\'appel du service : ${e.toString()}');
     }
-
-    // Préparez les données de l'acteur sous forme de chaîne JSON
-    request.fields['acteur'] = jsonEncode({
-      'idActeur': idActeur,
-      'adresseActeur': adresseActeur,
-      'nomActeur': nomActeur,
-      'telephoneActeur': telephoneActeur,
-      'whatsAppActeur': whatsAppActeur,
-      'localiteActeur': localiteActeur,
-      if (niveau3PaysActeur != null) 'niveau3PaysActeur': niveau3PaysActeur,
-      if (emailActeur != null && emailActeur.isNotEmpty) 'emailActeur': emailActeur,
-      if (speculation != null) 'speculation': speculation.map((e) => e.toMap()).toList(),
-      if (typeActeur != null) 'typeActeur': typeActeur.map((e) => e.toMap()).toList(),
-      'logoActeur': "", // Ajoutez la logique si nécessaire
-    });
-
-    // Envoie de la requête
-    var response = await request.send();
-
-    // Conversion de la réponse en `Response` pour plus de flexibilité
-    var responsed = await http.Response.fromStream(response);
-
-    if (response.statusCode == 200 || responsed.statusCode == 201) {
-      final donneesResponse = json.decode(utf8.decode(responsed.bodyBytes));
-      debugPrint('Réponse du service acteur: ${donneesResponse.toString()}');
-
-      // Si vous devez mettre à jour un Provider, décommentez et adaptez la logique ci-dessous
-      // ActeurProvider acteurProvider = Provider.of<ActeurProvider>(context, listen: false);
-      // acteurProvider.setActeur(Acteur.fromJson(donneesResponse));
-
-    } else {
-      debugPrint("Erreur service : Code ${response.statusCode}");
-      final errorMessage = json.decode(utf8.decode(responsed.bodyBytes))['message'];
-      throw Exception('Erreur du service : $errorMessage');
-    }
-  } catch (e) {
-    debugPrint('Erreur lors de l\'appel du service : ${e.toString()}');
-    throw Exception('Erreur lors de l\'appel du service : ${e.toString()}');
   }
-}
 
 //  Future<void> updateActeur({
 //   required BuildContext context,
@@ -223,38 +273,38 @@ class ActeurService extends ChangeNotifier {
 //       // ActeurProvider acteurProvider =
 //       //     Provider.of<ActeurProvider>(context, listen: false);
 
-//       // List<dynamic> typeActeurData = donneesResponse['typeActeur'];
-//       // List<dynamic> speculationData = donneesResponse['speculation'];
+  // List<dynamic> typeActeurData = donneesResponse['typeActeur'];
+  // List<dynamic> speculationData = donneesResponse['speculation'];
 
-//       // List<TypeActeur> typeActeurList =
-//       //     typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
+  // List<TypeActeur> typeActeurList =
+  //     typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
 
-//       // List<Speculation> speculationsList =
-//       //     speculationData.map((data) => Speculation.fromMap(data)).toList();
-//       // Acteur a = Acteur(
-//       //   idActeur: donneesResponse['idActeur'],
-//       //   resetToken: donneesResponse['resetToken'],
-//       //   tokenCreationDate: donneesResponse['tokenCreationDate'],
-//       //   codeActeur: donneesResponse['codeActeur'],
-//       //   nomActeur: donneesResponse['nomActeur'],
-//       //   adresseActeur: donneesResponse['adresseActeur'],
-//       //   telephoneActeur: donneesResponse['telephoneActeur'],
-//       //   whatsAppActeur: donneesResponse['whatsAppActeur'],
-//       //   photoSiegeActeur: donneesResponse['photoSiegeActeur'],
-//       //   logoActeur: donneesResponse['logoActeur'],
-//       //   niveau3PaysActeur: donneesResponse['niveau3PaysActeur'],
-//       //   password: donneesResponse['password'],
-//       //   dateAjout: donneesResponse['dateAjout'],
-//       //   localiteActeur: donneesResponse['localiteActeur'],
-//       //   emailActeur: donneesResponse['emailActeur'],
-//       //   statutActeur: donneesResponse['statutActeur'],
-//       //   isConnected: donneesResponse['isConnected'],
-//       //   speculation: speculationsList,
-//       //   typeActeur: typeActeurList,
-//       // );
+  // List<Speculation> speculationsList =
+  //     speculationData.map((data) => Speculation.fromMap(data)).toList();
+  // Acteur a = Acteur(
+  //   idActeur: donneesResponse['idActeur'],
+  //   resetToken: donneesResponse['resetToken'],
+  //   tokenCreationDate: donneesResponse['tokenCreationDate'],
+  //   codeActeur: donneesResponse['codeActeur'],
+  //   nomActeur: donneesResponse['nomActeur'],
+  //   adresseActeur: donneesResponse['adresseActeur'],
+  //   telephoneActeur: donneesResponse['telephoneActeur'],
+  //   whatsAppActeur: donneesResponse['whatsAppActeur'],
+  //   photoSiegeActeur: donneesResponse['photoSiegeActeur'],
+  //   logoActeur: donneesResponse['logoActeur'],
+  //   niveau3PaysActeur: donneesResponse['niveau3PaysActeur'],
+  //   password: donneesResponse['password'],
+  //   dateAjout: donneesResponse['dateAjout'],
+  //   localiteActeur: donneesResponse['localiteActeur'],
+  //   emailActeur: donneesResponse['emailActeur'],
+  //   statutActeur: donneesResponse['statutActeur'],
+  //   isConnected: donneesResponse['isConnected'],
+  //   speculation: speculationsList,
+  //   typeActeur: typeActeurList,
+  // );
 
-//       // // Mettez à jour le provider avec les nouvelles données
-//       // acteurProvider.setActeur(a);
+  // // Mettez à jour le provider avec les nouvelles données
+  // acteurProvider.setActeur(a);
 
 //       debugPrint('Service acteur: ${donneesResponse.toString()}');
 //     } else {
@@ -268,7 +318,6 @@ class ActeurService extends ChangeNotifier {
 //     throw Exception(e.toString());
 //   }
 // }
-
 
 //  Future<void> updateActeur({
 //   required BuildContext context,

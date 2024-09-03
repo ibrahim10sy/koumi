@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:koumi/models/Acteur.dart';
+import 'package:koumi/models/TypeActeur.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,7 +47,6 @@ class ActeurProvider with ChangeNotifier {
         whatsAppActeur != null &&
         niveau3PaysActeur != null &&
         localiteActeur != null) {
-
       _acteur = Acteur.fromSharedPreferencesData(
           emailActeur,
           password,
@@ -66,17 +66,19 @@ class ActeurProvider with ChangeNotifier {
 
   void setActeur(Acteur newActeur) {
     _acteur = newActeur;
+    List<TypeActeur> typeActeurList = newActeur.typeActeur!;
+    print("Provider Type acteur ${typeActeurList.toString()}");
     print("new acteur ${newActeur}");
     notifyListeners();
   }
 
   void setActeurUpdate(Acteur newActeurs) {
     _acteurUpdate = newActeurs;
+
     print("new acteur ${newActeurs.toString()}");
     notifyListeners();
   }
 
-  
   Future<void> logout() async {
     // Récupérer les données utilisateur avant de les effacer
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -84,7 +86,7 @@ class ActeurProvider with ChangeNotifier {
     String? codeActeur = prefs.getString('codeActeur');
 
     // Effacer toutes les préférences
-     // Réinitialiser l'acteur local
+    // Réinitialiser l'acteur local
     _acteur = null;
 
     await prefs.clear();
@@ -93,7 +95,7 @@ class ActeurProvider with ChangeNotifier {
     } else {
       debugPrint("whatsAppActeur shared isExist : $whatsAppActeur");
     }
-    
+
     if (codeActeur != null) {
       prefs.setString('codeActeur', codeActeur);
       print("code acteur apres logout : $codeActeur");

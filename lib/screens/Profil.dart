@@ -149,8 +149,8 @@ class _ProfilState extends State<Profil> {
                                 horizontal: 20, vertical: 10),
                             child: Text(
                               "Se connecter",
-                              style:
-                                  TextStyle(fontSize: 16, color: d_colorGreen),
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.black87),
                             ),
                           ),
                         ),
@@ -266,8 +266,8 @@ class _ProfilState extends State<Profil> {
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             EditProfil(
-                                                              acteurs: ac,
-                                                            )),
+                                                                // acteurs: ac,
+                                                                )),
                                                   );
                                                 },
                                                 child: Row(
@@ -282,8 +282,6 @@ class _ProfilState extends State<Profil> {
                                                         color: Colors.black87,
                                                         overflow: TextOverflow
                                                             .ellipsis,
-                                                        fontWeight:
-                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     Icon(
@@ -332,7 +330,7 @@ class _ProfilState extends State<Profil> {
                                     Row(children: [
                                       const Icon(
                                           Icons.align_horizontal_left_outlined,
-                                          color: d_colorGreen,
+                                          color: Colors.black87,
                                           size: 25),
                                       const SizedBox(
                                         width: 15,
@@ -351,7 +349,7 @@ class _ProfilState extends State<Profil> {
                                             "Changer son mot de passe",
                                             style: TextStyle(
                                                 fontSize: 17,
-                                                color: d_colorGreen),
+                                                color: Colors.black87),
                                           ))
                                     ]),
                                   ],
@@ -393,7 +391,7 @@ class _ProfilState extends State<Profil> {
                                 child: Row(children: [
                                   const Icon(
                                       Icons.align_horizontal_left_outlined,
-                                      color: d_colorGreen,
+                                      color: Colors.black87,
                                       size: 25),
                                   const SizedBox(
                                     width: 15,
@@ -411,13 +409,13 @@ class _ProfilState extends State<Profil> {
                                               "Parametre Généraux",
                                               style: TextStyle(
                                                   fontSize: 17,
-                                                  color: d_colorGreen),
+                                                  color: Colors.black87),
                                             )
                                           : Text(
                                               "Information sur la structure",
                                               style: TextStyle(
                                                   fontSize: 17,
-                                                  color: d_colorGreen),
+                                                  color: Colors.black87),
                                             ))
                                 ]),
                               ),
@@ -481,7 +479,7 @@ class _ProfilState extends State<Profil> {
                                             const Icon(
                                                 Icons
                                                     .align_horizontal_left_outlined,
-                                                color: d_colorGreen,
+                                                color: Colors.black87,
                                                 size: 25),
                                             const SizedBox(
                                               width: 15,
@@ -498,7 +496,7 @@ class _ProfilState extends State<Profil> {
                                                   "Mes zones de production",
                                                   style: TextStyle(
                                                       fontSize: 17,
-                                                      color: d_colorGreen),
+                                                      color: Colors.black87),
                                                 ))
                                           ]),
                                           Consumer<ZoneProductionService>(
@@ -612,7 +610,7 @@ class _ProfilState extends State<Profil> {
                                             const Icon(
                                                 Icons
                                                     .align_horizontal_left_outlined,
-                                                color: d_colorGreen,
+                                                color: Colors.black87,
                                                 size: 25),
                                             const SizedBox(
                                               width: 15,
@@ -629,7 +627,7 @@ class _ProfilState extends State<Profil> {
                                                   "Surface cultiver",
                                                   style: TextStyle(
                                                       fontSize: 17,
-                                                      color: d_colorGreen),
+                                                      color: Colors.black87),
                                                 ))
                                           ]),
                                         ],
@@ -678,13 +676,13 @@ class _ProfilState extends State<Profil> {
                             ),
                             icon: const Icon(
                               Icons.logout_rounded,
-                              color: Colors.green,
+                              color: d_colorOr,
                             ),
                             label: Text(
                               "Déconnexion",
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Colors.green,
+                                color: d_colorOr,
                                 fontWeight: FontWeight.w700,
                               ),
                             )),
@@ -750,7 +748,7 @@ class _ProfilState extends State<Profil> {
   //                     children: [
   //                       Row(children: [
   //                         const Icon(Icons.align_horizontal_left_outlined,
-  //                             color: d_colorGreen, size: 25),
+  //                            Colors.black87, size: 25),
   //                         const SizedBox(
   //                           width: 15,
   //                         ),
@@ -765,7 +763,7 @@ class _ProfilState extends State<Profil> {
   //                             child: Text(
   //                               "Mes véhicule",
   //                               style: TextStyle(
-  //                                   fontSize: 17, color: d_colorGreen),
+  //                                   fontSize: 17,Colors.black87),
   //                             ))
   //                       ]),
 
