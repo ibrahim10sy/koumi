@@ -581,8 +581,9 @@ class _DetailMaterielState extends State<DetailMateriel> {
         _buildItem('Type matériel: ', materiels.typeMateriel!.nom!),
         _buildItem('Localité : ', materiels.localisation!),
         _buildItem('Etat du matériel : ', materiels.etatMateriel!),
-       
-         widget.isEquipement! ?
+      
+      (widget.isEquipement ?? false) ?
+      
           _buildItem('Prix du matériel : ',
               "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}")
         :

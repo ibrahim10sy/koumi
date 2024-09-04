@@ -510,7 +510,7 @@ class _DetailTransportState extends State<DetailTransport> {
                     )
                   : IconButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.pop(context, true);
                       },
                       icon:
                           const Icon(Icons.arrow_back_ios, color: Colors.white),

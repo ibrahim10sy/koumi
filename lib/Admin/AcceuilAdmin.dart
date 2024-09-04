@@ -17,7 +17,6 @@ import 'package:koumi/screens/ConseilScreen.dart';
 import 'package:koumi/screens/EngraisAndApport.dart';
 import 'package:koumi/screens/FruitsAndLegumes.dart';
 import 'package:koumi/screens/IntrantPage.dart';
-import 'package:koumi/screens/IntrantScreen.dart';
 import 'package:koumi/screens/MatereilAndEquipement.dart';
 import 'package:koumi/screens/MesCommande.dart';
 import 'package:koumi/screens/MyProduct.dart';

@@ -74,7 +74,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
       });
 
       fetchIntrantByCategorie(
-              detectedCountry != null ? detectedCountry! : "Mali")
+              // detectedCountry != null ? detectedCountry! : "Mali"
+              )
           .then((value) {
         setState(() {
           debugPrint("page inc all $page");
@@ -84,7 +85,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
     debugPrint("no");
   }
 
-  Future<List<Intrant>> fetchIntrantByCategorie(String pays,
+  Future<List<Intrant>> fetchIntrantByCategorie(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -103,9 +104,9 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
     try {
       // for (String libelle in libelles) {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size'));
+          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&page=$page&size=$size'));
       debugPrint(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
+          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&page=$page&size=$size');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
@@ -353,7 +354,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
         '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
     intrantListeFuture1 = getAllIntrant();
     intrantListeFuture = fetchIntrantByCategorie(
-        detectedCountry != null ? detectedCountry! : "Mali");
+        // detectedCountry != null ? detectedCountry! : "Mali"
+        );
   }
 
   Future<void> _getResultFromNextScreen1(BuildContext context) async {
@@ -364,7 +366,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
       print("Rafraichissement en cours");
       setState(() {
         intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectedCountry != null ? detectedCountry! : "Mali");
+            // detectedCountry != null ? detectedCountry! : "Mali"
+            );
       });
     }
   }
@@ -381,7 +384,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
       print("Rafraichissement en cours");
       setState(() {
         intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectedCountry != null ? detectedCountry! : "Mali");
+            // detectedCountry != null ? detectedCountry! : "Mali"
+            );
       });
     }
   }
@@ -535,7 +539,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
               IconButton(
                   onPressed: () {
                     intrantListeFuture = fetchIntrantByCategorie(
-                        detectedCountry != null ? detectedCountry! : "Mali");
+                        // detectedCountry != null ? detectedCountry! : "Mali"
+                        );
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
             ]),
@@ -688,7 +693,8 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                               null; // Réinitialiser la catégorie sélectionnée
                                           intrantListeFuture = IntrantService()
                                               .fetchIntrantByPays(
-                                                  detectedCountry!); // Recharger les stocks
+                                                  // detectedCountry!
+                                                  ); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1106,9 +1112,10 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                               })
                             : setState(() {
                                 intrantListeFuture = fetchIntrantByCategorie(
-                                    detectedCountry != null
-                                        ? detectedCountry!
-                                        : "Mali");
+                                    // detectedCountry != null
+                                    //     ? detectedCountry!
+                                    //     : "Mali"
+                                        );
                               });
                       },
                       child: selectedCat == null && nomP == null

@@ -71,7 +71,9 @@ class _IntrantPageState extends State<IntrantPage> {
         page++;
       });
 
-      fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali")
+      fetchIntrant(
+        // detectedCountry != null ? detectedCountry! : "Mali"
+      )
           .then((value) {
         setState(() {
           debugPrint("page inc all $page");
@@ -181,7 +183,7 @@ class _IntrantPageState extends State<IntrantPage> {
     return intrantListe;
   }
 
-  Future<List<Intrant>> fetchIntrant(String niveau3PaysActeur,
+  Future<List<Intrant>> fetchIntrant(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -200,9 +202,9 @@ class _IntrantPageState extends State<IntrantPage> {
     try {
       // for (String libelle in libelles) {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
+          '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?page=$page&size=$size'));
       debugPrint(
-          '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size');
+          '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?page=$page&size=$size');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
@@ -239,6 +241,64 @@ class _IntrantPageState extends State<IntrantPage> {
     }
     return intrantListe;
   }
+  // Future<List<Intrant>> fetchIntrant(String niveau3PaysActeur,
+  //     {bool refresh = false}) async {
+  //   if (isLoading == true) return [];
+
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+
+  //   if (refresh) {
+  //     setState(() {
+  //       intrantListe.clear();
+  //       page = 0;
+  //       hasMore = true;
+  //     });
+  //   }
+
+  //   try {
+  //     // for (String libelle in libelles) {
+  //     final response = await http.get(Uri.parse(
+  //         '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
+  //     debugPrint(
+  //         '$apiOnlineUrl/intrant/getIntrantsByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size');
+  //     if (response.statusCode == 200) {
+  //       final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+  //       final List<dynamic> body = jsonData['content'];
+
+  //       if (body.isEmpty) {
+  //         setState(() {
+  //           hasMore = false;
+  //         });
+  //       } else {
+  //         List<Intrant> newIntrants =
+  //             body.map((e) => Intrant.fromMap(e)).toList();
+
+  //         setState(() {
+  //           // Ajouter uniquement les nouveaux intrants qui ne sont pas déjà dans la liste
+  //           intrantListe.addAll(newIntrants.where((newIntrant) =>
+  //               !intrantListe.any((existingIntrant) =>
+  //                   existingIntrant.idIntrant == newIntrant.idIntrant)));
+  //         });
+  //       }
+
+  //       debugPrint(
+  //           "response body all intrants by categorie with pagination ${page} par défilement soit ${intrantListe.length}");
+  //     } else {
+  //       print(
+  //           'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print(
+  //         'Une erreur s\'est produite lors de la récupération des intrants: $e');
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  //   return intrantListe;
+  // }
 
   Future<List<Intrant>> fetchAllIntrantByPays({bool refresh = false}) async {
     if (isLoading) return [];
@@ -351,7 +411,8 @@ class _IntrantPageState extends State<IntrantPage> {
     intrantListeFuture1 = getAllIntrant();
     verify();
     intrantListeFuture =
-        fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali");
+        fetchIntrant();
+        // fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali");
   }
 
   Future<void> _getResultFromNextScreen1(BuildContext context) async {
@@ -362,7 +423,8 @@ class _IntrantPageState extends State<IntrantPage> {
       print("Rafraichissement en cours");
       setState(() {
         intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectedCountry != null ? detectedCountry! : "Mali");
+            // detectedCountry != null ? detectedCountry! : "Mali"
+            );
       });
     }
   }
@@ -379,7 +441,8 @@ class _IntrantPageState extends State<IntrantPage> {
       print("Rafraichissement en cours");
       setState(() {
         intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectedCountry != null ? detectedCountry! : "Mali");
+            // detectedCountry != null ? detectedCountry! : "Mali"
+            );
       });
     }
   }
@@ -438,7 +501,8 @@ class _IntrantPageState extends State<IntrantPage> {
               IconButton(
                   onPressed: () {
                     intrantListeFuture = fetchIntrant(
-                        detectedCountry != null ? detectedCountry! : "Mali");
+                        // detectedCountry != null ? detectedCountry! : "Mali"
+                        );
                   },
                   icon: const Icon(
                     Icons.refresh,
@@ -594,7 +658,8 @@ class _IntrantPageState extends State<IntrantPage> {
                                               null; // Réinitialiser la catégorie sélectionnée
                                           intrantListeFuture = IntrantService()
                                               .fetchIntrantByPays(
-                                                  detectedCountry!); // Recharger les stocks
+                                                  // detectedCountry!
+                                                  ); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1001,9 +1066,11 @@ class _IntrantPageState extends State<IntrantPage> {
                         selectedCat == null || nomP == null
                             ? setState(() {
                                 intrantListeFuture = IntrantService()
-                                    .fetchIntrantByPays(detectedCountry != null
-                                        ? detectedCountry!
-                                        : "Mali");
+                                    .fetchIntrantByPays(
+                                      // detectedCountry != null
+                                      //   ? detectedCountry!
+                                      //   : "Mali"
+                                        );
                               })
                             : setState(() {
                                 selectedCat != null

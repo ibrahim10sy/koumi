@@ -74,7 +74,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
       });
 
       fetchIntrantByCategorie(
-              detectedCountry != null ? detectedCountry! : "Mali")
+              // detectedCountry != null ? detectedCountry! : "Mali"
+              )
           .then((value) {
         setState(() {
           debugPrint("page inc all $page");
@@ -84,7 +85,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     debugPrint("no");
   }
 
-  Future<List<Intrant>> fetchIntrantByCategorie(String pays,
+  Future<List<Intrant>> fetchIntrantByCategorie(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -102,9 +103,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
 
     try {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size'));
+          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&page=$page&size=$size'));
       debugPrint(
-          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&pays=$pays&page=$page&size=$size');
+          '$apiOnlineUrl/intrant/listeIntrantByLibelleCategorie?libelle=$libelle&page=$page&size=$size');
       if (response.statusCode == 200 ||
           response.statusCode == 201 ||
           response.statusCode == 202) {
@@ -354,7 +355,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
         '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
     intrantListeFuture1 = getAllIntrant();
     intrantListeFuture = fetchIntrantByCategorie(
-        detectedCountry != null ? detectedCountry! : "Mali");
+        // detectedCountry != null ? detectedCountry! : "Mali"
+        );
     verify();
   }
 
@@ -366,7 +368,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
       print("Rafraichissement en cours");
       setState(() {
         intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectedCountry != null ? detectedCountry! : "Mali");
+            // detectedCountry != null ? detectedCountry! : "Mali"
+            );
       });
     }
   }
@@ -383,7 +386,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
       print("Rafraichissement en cours");
       setState(() {
         intrantListeFuture = IntrantService().fetchIntrantByPays(
-            detectedCountry != null ? detectedCountry! : "Mali");
+            // detectedCountry != null ? detectedCountry! : "Mali"
+            );
       });
     }
   }
@@ -429,7 +433,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
               IconButton(
                   onPressed: () {
                     intrantListeFuture = fetchIntrantByCategorie(
-                        detectedCountry != null ? detectedCountry! : "Mali");
+                        // detectedCountry != null ? detectedCountry! : "Mali"
+                        );
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
             ]
@@ -661,7 +666,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                               null; // Réinitialiser la catégorie sélectionnée
                                           intrantListeFuture = IntrantService()
                                               .fetchIntrantByPays(
-                                                  detectedCountry!); // Recharger les stocks
+                                                  // detectedCountry!
+                                                  ); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1079,9 +1085,10 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                               })
                             : setState(() {
                                 intrantListeFuture = fetchIntrantByCategorie(
-                                    detectedCountry != null
-                                        ? detectedCountry!
-                                        : "Mali");
+                                    // detectedCountry != null
+                                    //     ? detectedCountry!
+                                    //     : "Mali"
+                                        );
                               });
                       },
                       child: selectedCat == null && nomP == null

@@ -99,13 +99,20 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
           page++;
         });
 
-      fetchStockByCategorie(detectedCountry != null ? detectedCountry! : "Mali")
+      fetchStockByCategorie()
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
           debugPrint("page inc all ${page}");
         });
       });
+      // fetchStockByCategorie(detectedCountry != null ? detectedCountry! : "Mali")
+      //     .then((value) {
+      //   setState(() {
+      //     // Rafraîchir les données ici
+      //     debugPrint("page inc all ${page}");
+      //   });
+      // });
     }
     debugPrint("no");
   }
@@ -115,7 +122,8 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
       stockListe = await StockService().fetchStockByCategorieAndFiliere(
           selectedCat!.idCategorieProduit!,
           libelle,
-          detectedCountry != null ? detectedCountry! : "Mali");
+          // detectedCountry != null ? detectedCountry! : "Mali"
+          );
     } else if (nomP != null && nomP!.isNotEmpty) {
       debugPrint("yes - fetch by country");
       if (mounted)
@@ -186,7 +194,59 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
     return stockListe;
   }
 
-  Future<List<Stock>> fetchStockByCategorie(String niveau3PaysActeur,
+  // Future<List<Stock>> fetchStockByCategorie(String niveau3PaysActeur,
+  //     {bool refresh = false}) async {
+  //   if (isLoading == true) return [];
+
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+
+  //   if (refresh) {
+  //     setState(() {
+  //       stockListe.clear();
+  //       page = 0;
+  //       hasMore = true;
+  //     });
+  //   }
+
+  //   try {
+  //     final response = await http.get(Uri.parse(
+  //         '$apiOnlineUrl/Stock/getAllStocksByCategorieAndFiliere?idCategorie=${selectedCat!.idCategorieProduit}&libelleFiliere=$libelle&niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
+
+  //     if (response.statusCode == 200) {
+  //       final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+  //       final List<dynamic> body = jsonData['content'];
+
+  //       if (body.isEmpty) {
+  //         setState(() {
+  //           hasMore = false;
+  //         });
+  //       } else {
+  //         List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
+  //         setState(() {
+  //           stockListe.addAll(newStocks.where((newStock) => !stockListe
+  //               .any((existStock) => existStock.idStock == newStock.idStock)));
+  //         });
+  //       }
+
+  //       debugPrint(
+  //           "response body all stock by categorie and pays with pagination ${page} par défilement soit ${stockListe.length}");
+  //     } else {
+  //       print(
+  //           'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print(
+  //         'Une erreur s\'est produite lors de la récupération des stocks: $e');
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  //   return stockListe;
+  // }
+  Future<List<Stock>> fetchStockByCategorie(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -204,7 +264,7 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
 
     try {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/Stock/getAllStocksByCategorieAndFiliere?idCategorie=${selectedCat!.idCategorieProduit}&libelleFiliere=$libelle&niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
+          '$apiOnlineUrl/Stock/getAllStocksByCategorieAndFiliere?idCategorie=${selectedCat!.idCategorieProduit}&libelleFiliere=$libelle&page=$page&size=$size'));
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -1009,10 +1069,13 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
                                                 page = 0;
                                                 hasMore = true;
                                                 fetchStockByCategorie(
-                                                    detectedCountry != null
-                                                        ? detectedCountry!
-                                                        : "Mali",
+                                                   
                                                     refresh: true);
+                                                // fetchStockByCategorie(
+                                                //     detectedCountry != null
+                                                //         ? detectedCountry!
+                                                //         : "Mali",
+                                                //     refresh: true);
                                                 if (page == 0 &&
                                                     isLoading == true) {
                                                   SchedulerBinding.instance
@@ -1147,9 +1210,10 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
                                         .fetchStockByCategorieAndFiliere(
                                             selectedCat!.idCategorieProduit!,
                                             libelle,
-                                            detectedCountry != null
-                                                ? detectedCountry!
-                                                : "Mali")
+                                            // detectedCountry != null
+                                            //     ? detectedCountry!
+                                            //     : "Mali"
+                                                )
                                     : stockListeFuture1 = StockService()
                                         .fetchStockByPaysAndFiliere(
                                             libelle, nomP!);
@@ -2143,7 +2207,7 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
           page = 0;
           hasMore = true;
           fetchStockByCategorie(
-              detectedCountry != null ? detectedCountry! : "Mali",
+              // detectedCountry != null ? detectedCountry! : "Mali",
               refresh: true);
           if (page == 0 && isLoading == true) {
             SchedulerBinding.instance.addPostFrameCallback((_) {

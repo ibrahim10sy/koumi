@@ -349,17 +349,10 @@ class _TransportState extends State<Transport> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      selectedType == null
-          ? setState(() {
-              vehiculeListeFuture = VehiculeService().fetchVehicule(
-                  detectedCountry != null ? detectedCountry! : "Mali");
-            })
-          : setState(() {
-              vehiculeListeFuture1 = VehiculeService()
-                  .fetchVehiculeByTypeVoitureWithPagination(
-                      selectedType!.idTypeVoiture!,
-                      detectedCountry != null ? detectedCountry! : "Mali");
-            });
+      setState(() {
+        vehiculeListeFuture = VehiculeService()
+            .fetchVehicule(detectedCountry != null ? detectedCountry! : "Mali");
+      });
     }
   }
 
@@ -373,17 +366,28 @@ class _TransportState extends State<Transport> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      selectedType == null
-          ? setState(() {
-              vehiculeListeFuture = VehiculeService().fetchVehicule(
-                  detectedCountry != null ? detectedCountry! : "Mali");
-            })
-          : setState(() {
-              vehiculeListeFuture1 = VehiculeService()
-                  .fetchVehiculeByTypeVoitureWithPagination(
-                      selectedType!.idTypeVoiture!,
-                      detectedCountry != null ? detectedCountry! : "Mali");
-            });
+      setState(() {
+        vehiculeListeFuture = VehiculeService()
+            .fetchVehicule(detectedCountry != null ? detectedCountry! : "Mali");
+      });
+    }
+  }
+
+  Future<void> _getResultFromNextScreen3(
+      BuildContext context, Vehicule v) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailTransport(vehicule: v),
+      ),
+    );
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        vehiculeListeFuture = VehiculeService()
+            .fetchVehicule(detectedCountry != null ? detectedCountry! : "Mali");
+      });
     }
   }
 
@@ -471,136 +475,7 @@ class _TransportState extends State<Transport> {
                           });
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
-            ]
-            // :
-            // [
-            //     IconButton(
-            //         onPressed: () {
-            //           selectedType == null
-            //               ? setState(() {
-            //                   vehiculeListeFuture = VehiculeService()
-            //                       .fetchVehicule(detectedCountry != null
-            //                           ? detectedCountry!
-            //                           : "Mali");
-            //                 })
-            //               : setState(() {
-            //                   vehiculeListeFuture1 = VehiculeService()
-            //                       .fetchVehiculeByTypeVoitureWithPagination(
-            //                           selectedType!.idTypeVoiture!,
-            //                           detectedCountry != null
-            //                               ? detectedCountry!
-            //                               : "Mali");
-            //                 });
-            //         },
-            //         icon: const Icon(Icons.refresh, color: Colors.white)),
-            //     (typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("transporteur") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("admin"))
-            //         // (type.toLowerCase() == 'admin' ||
-            //         //         type.toLowerCase() == 'transporteur')
-            //         ? PopupMenuButton<String>(
-            //             padding: EdgeInsets.zero,
-            //             itemBuilder: (context) {
-            //               return <PopupMenuEntry<String>>[
-            //                 PopupMenuItem<String>(
-            //                   child: ListTile(
-            //                     leading: const Icon(
-            //                       Icons.add,
-            //                       color: Colors.green,
-            //                     ),
-            //                     title: const Text(
-            //                       "Ajouter un vehicule",
-            //                       style: TextStyle(
-            //                         color: Colors.green,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     onTap: () async {
-            //                       Navigator.of(context).pop();
-            //                       _getResultFromNextScreen1(context);
-            //                     },
-            //                   ),
-            //                 ),
-            //                 PopupMenuItem<String>(
-            //                   child: ListTile(
-            //                     leading: const Icon(
-            //                       Icons.remove_red_eye,
-            //                       color: Colors.green,
-            //                     ),
-            //                     title: const Text(
-            //                       "Mes véhicules",
-            //                       style: TextStyle(
-            //                         color: Colors.green,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     onTap: () async {
-            //                       Navigator.of(context).pop();
-            //                       _getResultFromNextScreen2(context);
-            //                     },
-            //                   ),
-            //                 ),
-            //                 PopupMenuItem<String>(
-            //                   child: ListTile(
-            //                     leading: const Icon(
-            //                       Icons.remove_red_eye,
-            //                       color: Colors.green,
-            //                     ),
-            //                     title: const Text(
-            //                       "Transporteurs",
-            //                       style: TextStyle(
-            //                         color: Colors.green,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     onTap: () async {
-            //                       Navigator.of(context).pop();
-            //                       Navigator.push(
-            //                           context,
-            //                           MaterialPageRoute(
-            //                               builder: (context) =>
-            //                                   PageTransporteur()));
-            //                     },
-            //                   ),
-            //                 ),
-            //               ];
-            //             },
-            //           )
-            //         : PopupMenuButton<String>(
-            //             padding: EdgeInsets.zero,
-            //             itemBuilder: (context) {
-            //               return <PopupMenuEntry<String>>[
-            //                 PopupMenuItem<String>(
-            //                   child: ListTile(
-            //                     leading: const Icon(
-            //                       Icons.remove_red_eye,
-            //                       color: Colors.green,
-            //                     ),
-            //                     title: const Text(
-            //                       "Transporteurs",
-            //                       style: TextStyle(
-            //                         color: Colors.green,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     onTap: () async {
-            //                       Navigator.of(context).pop();
-            //                       Navigator.push(
-            //                           context,
-            //                           MaterialPageRoute(
-            //                               builder: (context) =>
-            //                                   PageTransporteur()));
-            //                     },
-            //                   ),
-            //                 ),
-            //               ];
-            //             },
-            //           )
-            //   ]
-            ),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -1351,13 +1226,17 @@ class _TransportState extends State<Transport> {
                                                         produitsLocaux.length) {
                                                       return GestureDetector(
                                                         onTap: () {
-                                                          Navigator.push(
+                                                          // Navigator.push(
+                                                          //     context,
+                                                          //    MaterialPageRoute(
+                                                          //         builder: (context) =>
+                                                          //             DetailTransport(
+                                                          //                 vehicule:
+                                                          //                     produitsLocaux[index])));
+                                                          _getResultFromNextScreen3(
                                                               context,
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      DetailTransport(
-                                                                          vehicule:
-                                                                              produitsLocaux[index])));
+                                                              produitsLocaux[
+                                                                  index]);
                                                         },
                                                         child: Card(
                                                           margin:
@@ -1509,13 +1388,10 @@ class _TransportState extends State<Transport> {
                                                             .length) {
                                                       return GestureDetector(
                                                         onTap: () {
-                                                          Navigator.push(
+                                                          _getResultFromNextScreen3(
                                                               context,
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      DetailTransport(
-                                                                          vehicule:
-                                                                              produitsEtrangers[index])));
+                                                              produitsEtrangers[
+                                                                  index]);
                                                         },
                                                         child: Card(
                                                           margin:
@@ -1766,12 +1642,10 @@ class _TransportState extends State<Transport> {
                                                                 .length) {
                                                           return GestureDetector(
                                                             onTap: () {
-                                                              Navigator.push(
+                                                              _getResultFromNextScreen3(
                                                                   context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          DetailTransport(
-                                                                              vehicule: produitsLocaux[index])));
+                                                                  produitsLocaux[
+                                                                      index]);
                                                             },
                                                             child: Card(
                                                               margin: EdgeInsets
@@ -1917,12 +1791,10 @@ class _TransportState extends State<Transport> {
                                                                 .length) {
                                                           return GestureDetector(
                                                             onTap: () {
-                                                              Navigator.push(
+                                                              _getResultFromNextScreen3(
                                                                   context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          DetailTransport(
-                                                                              vehicule: produitsEtrangers[index])));
+                                                                  produitsEtrangers[
+                                                                      index]);
                                                             },
                                                             child: Card(
                                                               margin: EdgeInsets

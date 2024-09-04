@@ -180,7 +180,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
       stockListe = await StockService().fetchStockByCategorieAndFiliere(
           selectedCat!.idCategorieProduit!,
           libelle,
-          detectedCountry != null ? detectedCountry! : "mali");
+          // detectedCountry != null ? detectedCountry! : "mali"
+          );
     } else if (nomP != null && nomP!.isNotEmpty) {
       stockListe =
           await StockService().fetchStockByPaysAndFiliere(libelle, nomP!);
@@ -242,7 +243,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
     return stockListe;
   }
 
-  Future<List<Stock>> fetchStockByCategorie(String niveau3PaysActeur,
+  Future<List<Stock>> fetchStockByCategorie(
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
@@ -260,7 +261,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
 
     try {
       final response = await http.get(Uri.parse(
-          '$apiOnlineUrl/Stock/getAllStocksByCategorieAndFiliere?idCategorie=${selectedCat!.idCategorieProduit}&libelleFiliere=$libelle&niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
+          '$apiOnlineUrl/Stock/getAllStocksByCategorieAndFiliere?idCategorie=${selectedCat!.idCategorieProduit}&libelleFiliere=$libelle&page=$page&size=$size'));
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -357,7 +358,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
           page++;
         });
 
-      fetchStockByCategorie(detectedCountry != null ? detectedCountry! : "Mali")
+      fetchStockByCategorie(
+        // detectedCountry != null ? detectedCountry! : "Mali"
+        )
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
@@ -1050,9 +1053,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                 page = 0;
                                                 hasMore = true;
                                                 fetchStockByCategorie(
-                                                    detectedCountry != null
-                                                        ? detectedCountry!
-                                                        : "Mali",
+                                                    // detectedCountry != null
+                                                    //     ? detectedCountry!
+                                                    //     : "Mali",
                                                     refresh: true);
                                                 if (page == 0 &&
                                                     isLoading == true) {
@@ -1188,9 +1191,10 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                         .fetchStockByCategorieAndFiliere(
                                             selectedCat!.idCategorieProduit!,
                                             libelle,
-                                            detectedCountry != null
-                                                ? detectedCountry!
-                                                : "Mali")
+                                            // detectedCountry != null
+                                            //     ? detectedCountry!
+                                            //     : "Mali"
+                                                )
                                     : stockListeFuture1 = StockService()
                                         .fetchStockByPaysAndFiliere(
                                             libelle, nomP!);
@@ -2131,7 +2135,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
           page = 0;
           hasMore = true;
           fetchStockByCategorie(
-              detectedCountry != null ? detectedCountry! : "Mali",
+              // detectedCountry != null ? detectedCountry! : "Mali",
               refresh: true);
           if (page == 0 && isLoading == true) {
             SchedulerBinding.instance.addPostFrameCallback((_) {

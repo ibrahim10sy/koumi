@@ -10,7 +10,6 @@ import 'package:koumi/screens/ComplementAlimentaire.dart';
 import 'package:koumi/screens/ConseilScreen.dart';
 import 'package:koumi/screens/EngraisAndApport.dart';
 import 'package:koumi/screens/FruitsAndLegumes.dart';
-import 'package:koumi/screens/IntrantScreen.dart';
 import 'package:koumi/screens/IntrantPage.dart';
 import 'package:koumi/screens/Location.dart' as l;
 import 'package:koumi/screens/MatereilAndEquipement.dart';
