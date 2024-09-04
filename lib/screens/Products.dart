@@ -467,7 +467,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
     final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MyProductScreen()));
+        context, MaterialPageRoute(builder: (context) => MyProductScreen(isRoute: true,)));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");

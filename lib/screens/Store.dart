@@ -1158,8 +1158,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         .nomMagasin,
                                                                     pays: produitsLocaux[
                                                                             index]
-                                                                        .acteur!
-                                                                        .niveau3PaysActeur!,
+                                                                        .pays
                                                                   ),
                                                                 ),
                                                               );
@@ -1315,8 +1314,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         .nomMagasin,
                                                                     pays: produitsEtrangers[
                                                                             index]
-                                                                        .acteur!
-                                                                        .niveau3PaysActeur!,
+                                                                        .pays,
                                                                   ),
                                                                 ),
                                                               );
@@ -1584,8 +1582,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         nom: produitsLocaux[index]
                                                                             .nomMagasin,
                                                                         pays: produitsLocaux[index]
-                                                                            .acteur!
-                                                                            .niveau3PaysActeur!,
+                                                                            .pays,
                                                                       ),
                                                                     ),
                                                                   );
@@ -1739,8 +1736,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         nom: produitsEtrangers[index]
                                                                             .nomMagasin,
                                                                         pays: produitsEtrangers[index]
-                                                                            .acteur!
-                                                                            .niveau3PaysActeur!,
+                                                                            .pays,
                                                                       ),
                                                                     ),
                                                                   );
