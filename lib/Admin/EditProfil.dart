@@ -221,7 +221,7 @@ class _EditProfilState extends State<EditProfil> {
             icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           ),
           title: const Text(
-            "Modification de Profil",
+            "Modifier le Profil",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
@@ -317,7 +317,9 @@ class _EditProfilState extends State<EditProfil> {
                       'Content-Type': 'application/json',
                     },
                   ),
-
+                  // searchEnabled: true,
+                  // searchLabel: 'Rechercher...',
+                  searchBackgroundColor: Colors.blueGrey[50],
                   chipConfig: const ChipConfig(wrapType: WrapType.wrap),
                   responseParser: (response) {
                     typeActeur = (response as List<dynamic>)
@@ -358,8 +360,7 @@ class _EditProfilState extends State<EditProfil> {
                   hint: typeLibelle.map((e) => e).join(','),
 
                   fieldBackgroundColor: Color.fromARGB(255, 228, 227, 227),
-                  searchEnabled: false,
-                  searchLabel: "Search",
+
                   onOptionSelected: (options) {
                     if (mounted) {
                       setState(() {
@@ -396,10 +397,11 @@ class _EditProfilState extends State<EditProfil> {
                     method: RequestMethod.get,
                     headers: {'Content-Type': 'application/json'},
                   ),
+                  // searchEnabled: true,
+                  // searchLabel: 'Rechercher...',
+                  searchBackgroundColor: Colors.blueGrey[50],
                   chipConfig: const ChipConfig(wrapType: WrapType.wrap),
                   responseParser: (response) {
-                    // List<dynamic> decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
-
                     listeSpeculations = (response as List<dynamic>).map((e) {
                       return Speculation(
                         idSpeculation: e['idSpeculation'] as String,

@@ -191,6 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'commercant' ||
             type.libelle!.toLowerCase() == 'commerçant' ||
             type.libelle!.toLowerCase() == 'transformeur' ||
+            type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
           Timer(const Duration(seconds: 2), () {
@@ -211,6 +212,15 @@ class _LoginScreenState extends State<LoginScreen> {
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Index pour les véhicules
           // Mise à jour de l'index de navigation
+          Timer(const Duration(seconds: 2), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        }  else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
+          
           Timer(const Duration(seconds: 2), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
@@ -454,6 +464,7 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'commercant' ||
             type.libelle!.toLowerCase() == 'commerçant' ||
             type.libelle!.toLowerCase() == 'transformeur' ||
+            type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
           Timer(const Duration(seconds: 2), () {
@@ -472,15 +483,24 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
-          // Index pour les véhicules
-          // Mise à jour de l'index de navigation
+          
           Timer(const Duration(seconds: 2), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
                 .changeIndex(1);
           });
-        } else {
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
+          
+          Timer(const Duration(seconds: 2), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        }
+         else {
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);

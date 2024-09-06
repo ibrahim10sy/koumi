@@ -18,7 +18,8 @@ import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ListeMaterielByActeur extends StatefulWidget {
-  const ListeMaterielByActeur({super.key});
+  bool? isRoute;
+  ListeMaterielByActeur({super.key, this.isRoute});
 
   @override
   State<ListeMaterielByActeur> createState() => _ListeMaterielByActeurState();
@@ -38,7 +39,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
   bool _isNotActive = false;
   int page = 0;
   bool isLoading = false;
-  int size = sized;
+  int size = 100;
+  // int size = sized;
   bool hasMore = true;
   ScrollController scrollableController = ScrollController();
   late TextEditingController _searchController;
@@ -175,11 +177,16 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
             backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            leading: (widget.isRoute ?? false)
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        Navigator.pop(context, true);
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  )
+                : Container(),
             title: Text(
               "Mes Matériels",
               style: const TextStyle(
@@ -188,15 +195,18 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                   fontSize: 20),
             ),
             actions: [
-              IconButton(
-                  onPressed: () {
-                    futureListe = MaterielService()
-                        .fetchMaterielByActeurWithPagination(acteur.idActeur!);
-                  },
-                  icon: const Icon(Icons.refresh, color: Colors.white)),
+              (widget.isRoute ?? false)
+                  ? IconButton(
+                      onPressed: () {
+                        futureListe = MaterielService()
+                            .fetchMaterielByActeurWithPagination(
+                                acteur.idActeur!);
+                      },
+                      icon: const Icon(Icons.refresh, color: Colors.white))
+                  : Container(),
             ]),
         body: GestureDetector(
-          onTap: () {
+          onTap: () { 
             FocusScope.of(context).unfocus();
           },
           child: Container(
@@ -322,7 +332,6 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                         },
                       ),
                     ),
-
                 ])),
               ];
             },
@@ -340,7 +349,11 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                   child: Consumer<MaterielService>(
                     builder: (context, materielService, child) {
                       return FutureBuilder(
-                          future: materielService.fetchMaterielByActeurWithPagination(acteur.idActeur!),
+                          future: (widget.isRoute ?? false)
+                              ? futureListe
+                              : materielService
+                                  .fetchMaterielByActeurWithPagination(
+                                      acteur.idActeur!),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

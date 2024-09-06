@@ -276,7 +276,7 @@ class _ProfilState extends State<Profil> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      "Modifier profil",
+                                                      "Modifier le profil",
                                                       style: const TextStyle(
                                                         fontSize: 18,
                                                         color: Colors.black87,

@@ -19,8 +19,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListeIntrantByActeur extends StatefulWidget {
-   bool? isRoute;
-   ListeIntrantByActeur({super.key,this.isRoute});
+  bool? isRoute;
+  ListeIntrantByActeur({super.key, this.isRoute});
 
   @override
   State<ListeIntrantByActeur> createState() => _ListeIntrantByActeurState();
@@ -32,14 +32,15 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
   late TextEditingController _searchController;
   List<Intrant> intrantListe = [];
-   Future? futureList;
- late Acteur acteur = Acteur();
+  Future? futureList;
+  late Acteur acteur = Acteur();
   // List<ParametreGeneraux> paraList = [];
   // late ParametreGeneraux para = ParametreGeneraux();
 
   int page = 0;
   bool isLoading = false;
-  int size = sized;
+  int size = 100;
+  // int size = sized;
   bool hasMore = true;
   bool isExist = false;
   String? email = "";
@@ -128,7 +129,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     if (email != null) {
       // Si l'email de l'acteur est présent, exécute checkLoggedIn
       acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-      
+
       setState(() {
         isExist = true;
       });
@@ -146,8 +147,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     // acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     // verify();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-      
-    
+
     futureList = fetchIntrantByActeur(acteur.idActeur!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollableController.addListener(_scrollListener);
@@ -160,10 +160,11 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      // setState(() {
-      //   futureList = IntrantService()
-      //       .fetchIntrantByActeurWithPagination(acteur.idActeur!);
-      // });
+      setState(() {
+        futureList = IntrantService().fetchIntrantByActeurWithPagination(
+            acteur.idActeur!,
+            refresh: true);
+      });
     }
   }
 
@@ -182,6 +183,12 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
         futureList = IntrantService()
             .fetchIntrantByActeurWithPagination(acteur.idActeur!);
       });
+      // (widget.isRoute ?? false)
+      //     ? setState(() {
+      //         futureList = IntrantService()
+      //             .fetchIntrantByActeurWithPagination(acteur.idActeur!);
+      //       })
+      //     : Container();
     }
   }
 
@@ -199,28 +206,40 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        backgroundColor: d_colorOr,
-        centerTitle: true,
-        toolbarHeight: 75,
-        leading: (widget.isRoute ?? false)
-            ? 
-            IconButton(
-                onPressed: () {
-                  setState(() {
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
+          leading: (widget.isRoute ?? false)
+              ? IconButton(
+                  onPressed: () {
                     Navigator.pop(context, true);
-                  });
-                },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-              ) :Container(),
-        title: const Text(
-          "Mes intrants",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+                  },
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                )
+              : Container(),
+          title: const Text(
+            "Mes intrants",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ),
+          actions: [
+            (widget.isRoute ?? false)
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        futureList = IntrantService()
+                            .fetchIntrantByActeurWithPagination(
+                                acteur.idActeur!,
+                                refresh: true);
+                      });
+                    },
+                    icon: const Icon(Icons.refresh, color: Colors.white),
+                  )
+                : Container(),
+          ]),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -292,24 +311,46 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                             ],
                           ),
                         ),
-                        TextButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              isSearchMode = !isSearchMode;
-                              _searchController.clear();
-                            });
-                          },
-                          icon: Icon(
-                            isSearchMode ? Icons.close : Icons.search,
-                            color: isSearchMode ? Colors.red : d_colorGreen,
+                        if (!isSearchMode)
+                          TextButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                isSearchMode = true;
+                              });
+                              debugPrint(
+                                  "rechercher mode value : ${isSearchMode}");
+                            },
+                            icon: Icon(
+                              Icons.search,
+                              color: d_colorGreen,
+                            ),
+                            label: Text(
+                              'Rechercher...',
+                              style:
+                                  TextStyle(color: d_colorGreen, fontSize: 17),
+                            ),
                           ),
-                          label: Text(
-                            isSearchMode ? 'Fermer' : 'Rechercher...',
-                            style: TextStyle(
-                                color: isSearchMode ? Colors.red : d_colorGreen,
-                                fontSize: 17),
+                        if (isSearchMode)
+                          TextButton.icon(
+                            onPressed: () {
+                              if (mounted) {
+                                setState(() {
+                                  isSearchMode = !isSearchMode;
+                                  _searchController.clear();
+                                });
+                                debugPrint(
+                                    "Rechercher mode désactivé : $isSearchMode");
+                              }
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                            label: Text(
+                              'Fermer',
+                              style: TextStyle(color: Colors.red, fontSize: 17),
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -347,8 +388,6 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                         },
                       ),
                     ),
-
-                 
                 ])),
               ];
             },
@@ -369,10 +408,9 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                   child: Consumer<IntrantService>(
                       builder: (context, intrantService, child) {
                     return FutureBuilder(
-                      future: (widget.isRoute ?? false)
-    ? futureList
-    : intrantService.fetchIntrantByActeurWithPagination(acteur.idActeur!),
-                        // future: intrantService.fetchIntrantByActeurWithPagination(acteur.idActeur!),
+                        future: futureList,
+                        // : intrantService.fetchIntrantByActeurWithPagination(
+                        //     acteur.idActeur!),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {

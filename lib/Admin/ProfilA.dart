@@ -152,8 +152,8 @@ class _ProfilAState extends State<ProfilA> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     EditProfil(
-                                                      // acteurs: ac,
-                                                    )),
+                                                        // acteurs: ac,
+                                                        )),
                                           );
                                         },
                                         child: Row(
@@ -161,7 +161,7 @@ class _ProfilAState extends State<ProfilA> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              "Modifier profil",
+                                              "Modifier le profil",
                                               style: const TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.black87,

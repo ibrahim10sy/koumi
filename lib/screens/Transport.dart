@@ -1196,17 +1196,7 @@ class _TransportState extends State<Transport> {
                                             children: [
                                               if (produitsLocaux
                                                   .isNotEmpty) ...[
-                                                // Padding(
-                                                //   padding:
-                                                //       const EdgeInsets.all(8.0),
-                                                //   child: Text(
-                                                //     "Transport locaux",
-                                                //     style: TextStyle(
-                                                //         fontWeight:
-                                                //             FontWeight.bold,
-                                                //         fontSize: 18),
-                                                //   ),
-                                                // ),
+                                               
                                                 GridView.builder(
                                                   shrinkWrap: true,
                                                   physics:

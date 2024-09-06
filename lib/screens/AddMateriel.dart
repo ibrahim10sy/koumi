@@ -224,6 +224,7 @@ class _AddMaterielState extends State<AddMateriel> {
                     key: formkey,
                     child: Column(
                       children: [
+                        SizedBox(height: 10),
                         if (widget.isEquipement!)
                           Padding(
                             padding: EdgeInsets.symmetric(
@@ -680,7 +681,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -718,7 +719,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -852,7 +853,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -989,7 +990,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -1026,7 +1027,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -1160,7 +1161,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         widget.isEquipement!
                             ? Padding(

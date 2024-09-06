@@ -119,19 +119,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
         selectedCat == null) {
       if (mounted)
         setState(() {
-          // Rafraîchir les données ici
           page++;
         });
       debugPrint("yes - fetch all stocks by pays");
       fetchStock()
           .then((value) {
         setState(() {
-          // Rafraîchir les données ici
           debugPrint("page inc all ${page}");
         });
       });
     }
-
     debugPrint("no");
   }
   // void _scrollListener() {

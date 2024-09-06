@@ -94,7 +94,7 @@ class _IntrantPageState extends State<IntrantPage> {
       debugPrint("yes - fetch by category and pays");
       if (mounted)
         setState(() {
-          // Rafraîchir les données ici
+        
           page++;
         });
 

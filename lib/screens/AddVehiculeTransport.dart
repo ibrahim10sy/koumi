@@ -166,7 +166,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -204,7 +204,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -245,7 +245,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -377,7 +377,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(

@@ -203,6 +203,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             type.libelle!.toLowerCase() == 'commercant' ||
             type.libelle!.toLowerCase() == 'commerçant' ||
             type.libelle!.toLowerCase() == 'transformeur' ||
+            type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           Timer(const Duration(seconds: 2), () {
             Get.offAll(BottomNavigationPage(),
@@ -227,7 +228,17 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             Provider.of<BottomNavigationService>(context, listen: false)
                 .changeIndex(1);
           });
-        } else {
+        } else if (acteurs.typeActeur!
+            .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
+          // Mise à jour de l'index de navigation
+          Timer(const Duration(seconds: 2), () {
+            Get.offAll(BottomNavigationPage(),
+                transition: Transition.leftToRight);
+            Provider.of<BottomNavigationService>(context, listen: false)
+                .changeIndex(1);
+          });
+        } 
+        else {
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);

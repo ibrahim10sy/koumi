@@ -5,6 +5,7 @@ import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/Acceuil.dart';
 import 'package:koumi/screens/ListeIntrantByActeur.dart';
+import 'package:koumi/screens/ListeMaterielByActeur.dart';
 import 'package:koumi/screens/MyProduct.dart';
 import 'package:koumi/screens/Panier.dart';
 import 'package:koumi/screens/Profil.dart';
@@ -138,6 +139,37 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ];
       } else if (typeActeurData!
           .map((e) => e.libelle!.toLowerCase())
+          .contains("prestataire")) {
+        pages = [
+          const Accueil(),
+          ListeMaterielByActeur(),
+          Panier(),
+          const Profil(),
+        ];
+        bottomNavigationBarItems = [
+          BottomNavigationBarItem(
+            backgroundColor: Color.fromARGB(255, 250, 250, 250),
+            icon: Icon(Icons.home_filled),
+            label: "Accueil",
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Color.fromARGB(255, 250, 250, 250),
+            icon: Icon(Icons.list_alt_sharp),
+            label: "Mes matériels",
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Color.fromARGB(255, 250, 250, 250),
+            icon: Icon(Icons.shopping_cart),
+            label: "Panier",
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Color.fromARGB(255, 250, 250, 250),
+            icon: Icon(Icons.person_pin),
+            label: "Profil",
+          ),
+        ];
+      } else if (typeActeurData!
+          .map((e) => e.libelle!.toLowerCase())
           .contains("transporteur")) {
         pages = [
           const Accueil(),
@@ -212,11 +244,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           icon: Icon(Icons.home_filled),
           label: "Accueil",
         ),
-        // BottomNavigationBarItem(
-        //   backgroundColor: Color.fromARGB(255, 250, 250, 250),
-        //   icon: Icon(Icons.list_alt_sharp),
-        //   label: "Mes Produits",
-        // ),
         BottomNavigationBarItem(
           backgroundColor: Color.fromARGB(255, 250, 250, 250),
           icon: Icon(Icons.shopping_cart),
@@ -266,10 +293,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // Future.microtask(() {
-    //   Provider.of<BottomNavigationService>(context, listen: false)
-    //       .changeIndex(0);
-    // });
+   
     verify();
     _setupNavigationItems();
     Get.put(ConnectionVerify(), permanent: true);
@@ -309,7 +333,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           selectedItemColor: Color(0xFFFF8A00),
           iconSize: 30,
           showUnselectedLabels: true,
-          selectedLabelStyle: TextStyle(color: Colors.black),
+          selectedLabelStyle: TextStyle(
+            color: Colors.black,
+          ),
           currentIndex: activePageIndex,
           onTap: _onItemTap,
         ),
@@ -325,7 +351,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
   Widget _buildOffstageNavigator(int index) {
     var routeBuilders = _routeBuilders(context, index);
-
     return Offstage(
       offstage: activePageIndex != index,
       child: Navigator(

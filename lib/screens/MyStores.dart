@@ -43,7 +43,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
 
   int page = 0;
   bool isLoading = false;
-  int size = 50;
+  int size = 100;
   bool hasMore = true;
   ScrollController scrollableController = ScrollController();
 

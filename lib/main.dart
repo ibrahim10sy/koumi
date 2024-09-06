@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:get/get.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/providers/CartProvider.dart';
@@ -83,8 +83,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => FormeService()),
     ChangeNotifierProvider(create: (context) => BottomNavigationService())
   ], child: MyApp()));
-  // DependencyInjection.init();
-  // Get.put(ConnectionVerify(), permanent: true);
+
 }
  
 class MyApp extends StatefulWidget {
@@ -104,6 +103,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      // showPerformanceOverlay :true,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade400),
         useMaterial3: true,

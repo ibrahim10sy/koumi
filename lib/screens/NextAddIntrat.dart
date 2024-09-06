@@ -186,12 +186,10 @@ class _NextAddIntratState extends State<NextAddIntrat> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(
-                  width: 15,
-                ),
                 Form(
                   key: formkey,
                   child: Column(children: [
+                    SizedBox(height: 10),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 22,

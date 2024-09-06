@@ -52,7 +52,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
   String? email = "";
   int page = 0;
   bool isLoading = false;
-  int size = sized;
+  int size = 100;
+  // int size = sized;
   bool hasMore = true;
 
   void _scrollListener() {
@@ -229,16 +230,18 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                   fontSize: 20),
             ),
             actions: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      page = 0;
-                      // Rafraîchir les données ici
-                      _liste = VehiculeService()
-                          .fetchVehiculeByActeur(acteur.idActeur!);
-                    });
-                  },
-                  icon: const Icon(Icons.refresh, color: Colors.white)),
+              (widget.isRoute ?? false)
+                  ? IconButton(
+                      onPressed: () {
+                        setState(() {
+                          page = 0;
+                          // Rafraîchir les données ici
+                          _liste = VehiculeService()
+                              .fetchVehiculeByActeur(acteur.idActeur!);
+                        });
+                      },
+                      icon: const Icon(Icons.refresh, color: Colors.white))
+                  : Container(),
             ]),
         body: GestureDetector(
           onTap: () {
@@ -324,28 +327,47 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                       ],
                                     ),
                                   ),
-                                  TextButton.icon(
-                                    onPressed: () {
-                                      setState(() {
-                                        isSearchMode = !isSearchMode;
-                                        _searchController.clear();
-                                      });
-                                    },
-                                    icon: Icon(
-                                      isSearchMode ? Icons.close : Icons.search,
-                                      color: isSearchMode
-                                          ? Colors.red
-                                          : d_colorGreen,
+                                  if (!isSearchMode)
+                                    TextButton.icon(
+                                      onPressed: () {
+                                        setState(() {
+                                          isSearchMode = true;
+                                        });
+                                        debugPrint(
+                                            "rechercher mode value : ${isSearchMode}");
+                                      },
+                                      icon: Icon(
+                                        Icons.search,
+                                        color: d_colorGreen,
+                                      ),
+                                      label: Text(
+                                        'Rechercher...',
+                                        style: TextStyle(
+                                            color: d_colorGreen, fontSize: 17),
+                                      ),
                                     ),
-                                    label: Text(
-                                      isSearchMode ? 'Fermer' : 'Rechercher...',
-                                      style: TextStyle(
-                                          color: isSearchMode
-                                              ? Colors.red
-                                              : d_colorGreen,
-                                          fontSize: 17),
+                                  if (isSearchMode)
+                                    TextButton.icon(
+                                      onPressed: () {
+                                        if (mounted) {
+                                          setState(() {
+                                            isSearchMode = false;
+                                            _searchController.clear();
+                                          });
+                                          debugPrint(
+                                              "Rechercher mode désactivé : $isSearchMode");
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                      ),
+                                      label: Text(
+                                        'Fermer',
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 17),
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ),

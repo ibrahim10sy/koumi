@@ -394,7 +394,7 @@ Future<List<Materiels>> fetchAllByPays(
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
     final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeMaterielByActeur()));
+        MaterialPageRoute(builder: (context) => ListeMaterielByActeur(isRoute: true,)));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");

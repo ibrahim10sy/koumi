@@ -62,7 +62,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
 
   int page = 0;
   bool isLoading = false;
-  int size = sized;
+  int size = 100;
+  // int size = sized;
   bool hasMore = true;
 
   bool isLoadingLibelle = true;
@@ -268,7 +269,9 @@ class _MyProductScreenState extends State<MyProductScreen> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
-      stockListeFuture = StockService().fetchStockByActeur(acteur.idActeur!);
+      setState(() {
+        stockListeFuture = StockService().fetchStockByActeur(acteur.idActeur!);
+      });
     }
   }
 
@@ -333,21 +336,19 @@ class _MyProductScreenState extends State<MyProductScreen> {
                   fontSize: 20),
             ),
             actions: [
-              IconButton(
-                  onPressed: () {
-                    selectedCat != null
-                        ? setState(() {
-                            stockListeFuture1 = fetchAllStock();
-                          })
-                        : setState(() {
-                            stockListeFuture = fetchAllStock();
-                          });
-                    ;
-                  },
-                  icon: const Icon(
-                    Icons.refresh,
-                    color: Colors.white,
-                  )),
+              (widget.isRoute ?? false)
+                  ? IconButton(
+                      onPressed: () {
+                        setState(() {
+                          stockListeFuture = StockService()
+                              .fetchStockByActeur(acteur.idActeur!);
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.refresh,
+                        color: Colors.white,
+                      ))
+                  : Container(),
             ]),
         body: GestureDetector(
           onTap: () {
@@ -587,8 +588,10 @@ class _MyProductScreenState extends State<MyProductScreen> {
                       child: Consumer<StockService>(
                           builder: (context, sService, child) {
                         return FutureBuilder(
-                            future:
-                                sService.fetchStockByActeur(acteur.idActeur!),
+                            future: stockListeFuture,
+                            // future: (widget.isRoute ?? false)
+                            //     ? stockListeFuture
+                            //     : sService.fetchStockByActeur(acteur.idActeur!),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -596,10 +599,29 @@ class _MyProductScreenState extends State<MyProductScreen> {
                               }
 
                               if (!snapshot.hasData) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child:
-                                      Center(child: Text("Aucun donné trouvé")),
+                                return SingleChildScrollView(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Center(
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                              'assets/images/notif.jpg'),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            'Aucun produit trouvé',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 17,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 );
                               } else {
                                 stockListe = snapshot.data!;
@@ -612,10 +634,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
-                                return filteredSearch
-                                            // .where((element) => element.statutIntrant == true)
-                                            .isEmpty &&
-                                        isLoading == false
+                                return filteredSearch.isEmpty
                                     ? SingleChildScrollView(
                                         child: Padding(
                                           padding: EdgeInsets.all(10),
