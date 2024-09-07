@@ -366,51 +366,7 @@ class _StoreScreenState extends State<StoreScreen> {
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
             ]
-            // : [
-            //     IconButton(
-            //         onPressed: () {
-            //           magasinListeFuture = MagasinService().fetchAllMagasin();
-            //         },
-            //         icon: const Icon(Icons.refresh, color: Colors.white)),
-            //     (typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("commercant") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("admin") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("commerçant") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("producteur"))
-            //         ? PopupMenuButton<String>(
-            //             padding: EdgeInsets.zero,
-            //             itemBuilder: (context) {
-            //               return <PopupMenuEntry<String>>[
-            //                 PopupMenuItem<String>(
-            //                   child: ListTile(
-            //                     leading: const Icon(
-            //                       Icons.remove_red_eye,
-            //                       color: Colors.green,
-            //                     ),
-            //                     title: const Text(
-            //                       "Mes boutiques",
-            //                       style: TextStyle(
-            //                         color: Colors.green,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     onTap: () async {
-            //                       Navigator.of(context).pop();
-            //                     },
-            //                   ),
-            //                 ),
-            //               ];
-            //             },
-            //           )
-            //         : Container()
-            //   ],
+           
             ),
         body: GestureDetector(
           onTap: () {

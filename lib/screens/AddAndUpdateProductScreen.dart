@@ -254,70 +254,7 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                           ),
                         ),
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(
-                      //       vertical: 10, horizontal: 20),
-                      //   child: Autocomplete<String>(
-                      //     optionsBuilder: (TextEditingValue textEditingValue) {
-                      //       if (textEditingValue.text.isEmpty) {
-                      //         return const Iterable<String>.empty();
-                      //       }
-                      //       return AutoComplet.getSuggestions()
-                      //           .where((String option) {
-                      //         return option.toLowerCase().contains(
-                      //             textEditingValue.text.toLowerCase());
-                      //       });
-                      //     },
-                      //     onSelected: (String selection) {
-                      //       _nomController.text = selection;
-                      //        print("nom : ${_nomController.text}");
-                      //     },
-                      //     fieldViewBuilder: (BuildContext context,
-                      //         TextEditingController fieldTextEditingController,
-                      //         FocusNode fieldFocusNode,
-                      //         VoidCallback onFieldSubmitted) {
-                      //       return TextFormField(
-                      //         controller: fieldTextEditingController,
-                      //         focusNode: fieldFocusNode,
-                      //         validator: (value) {
-                      //           if (value == null || value.isEmpty) {
-                      //             return "Veuillez remplir le champs";
-                      //           }
-                      //           return null;
-                      //         },
-                      //         decoration: InputDecoration(
-                      //           hintText: "Nom produit",
-                      //           contentPadding: const EdgeInsets.symmetric(
-                      //               vertical: 10, horizontal: 20),
-                      //           border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(8),
-                      //           ),
-                      //         ),
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(
-                      //       vertical: 10, horizontal: 20),
-                      //   child: TextFormField(
-                      //     validator: (value) {
-                      //       if (value == null || value.isEmpty) {
-                      //         return "Veuillez remplir le champs";
-                      //       }
-                      //       return null;
-                      //     },
-                      //     controller: _nomController,
-                      //     decoration: InputDecoration(
-                      //       hintText: "Nom produit",
-                      //       contentPadding: const EdgeInsets.symmetric(
-                      //           vertical: 10, horizontal: 20),
-                      //       border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.circular(8),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                     
                       SizedBox(
                         height: 10,
                       ),
@@ -339,7 +276,6 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                             vertical: 10, horizontal: 20),
                         child: FutureBuilder(
                           future: _formeList,
-                          // future: speculationService.fetchSpeculationByCategorie(categorieProduit.idCategorieProduit!),
                           builder: (_, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -882,9 +818,9 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                                 int.tryParse(formattedMontant) ?? 0;
                             print("prix formated $prix");
 
-                            if (formkey.currentState!.validate()) {
+                            // if (formkey.currentState!.validate()) {
                               debugPrint(
-                                  "forme: ${forme} , formeValue : ${formeValue}, origin : ${niveau3} , value : ${n3Value}");
+                                  "forme: ${forme} , formeValue : ${formeValue}, origin : ${niveau3} , value : ${n3Value},  quantite: ${_quantiteController.text}");
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -912,7 +848,7 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                                         })
                                       }
                                   });
-                            }
+                            // }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange, // Orange color code

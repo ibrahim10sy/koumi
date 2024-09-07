@@ -190,6 +190,7 @@ class _AddAndUpdateProductEndSreenState
 
   Future<void> updateProduit() async {
     try {
+      print("quantiteStock: ${widget.quantite!},");
       if (widget.image != null) {
         await StockService().updateStock(
             idStock: widget.stock!.idStock!,
@@ -199,6 +200,7 @@ class _AddAndUpdateProductEndSreenState
             formeProduit: widget.forme!,
             quantiteStock: widget.quantite!,
             photo: widget.image,
+            dateProduction : widget.stock!.dateAjout!,
             typeProduit: _typeController.text,
             descriptionStock: _descriptionController.text,
             zoneProduction: zoneProduction,
@@ -218,6 +220,7 @@ class _AddAndUpdateProductEndSreenState
             typeProduit: _typeController.text,
             descriptionStock: _descriptionController.text,
             zoneProduction: zoneProduction,
+            dateProduction : widget.stock!.dateAjout!,
             speculation: speculation,
             unite: unite,
             magasin: magasin,
@@ -256,10 +259,17 @@ class _AddAndUpdateProductEndSreenState
       _descriptionController.text = widget.stock!.descriptionStock!;
       debugPrint("id : $id,  forme : ${widget.forme}");
       magasin = widget.stock!.magasin!;
+      magasinValue = widget.stock!.magasin!.idMagasin;
       speculation = widget.stock!.speculation!;
+      speValue = widget.stock!.speculation!.idSpeculation;
+      catValue =
+          widget.stock!.speculation!.categorieProduit!.idCategorieProduit;
+      filiereValue =
+          widget.stock!.speculation!.categorieProduit!.filiere!.idFiliere!;
       unite = widget.stock!.unite!;
+      uniteValue = widget.stock!.unite!.idUnite;
       zoneProduction = widget.stock!.zoneProduction!;
-      // debugPrint("spec : ${widget.speculation}, magasin : ${widget.magasin}, zone : ${widget.zoneProduction}   , unite : ${widget.unite}");
+      zoneValue = widget.stock!.zoneProduction!.idZoneProduction;
       super.initState();
     }
   }

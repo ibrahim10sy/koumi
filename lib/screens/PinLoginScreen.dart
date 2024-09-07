@@ -61,6 +61,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   }
 
  
+
   Future<void> loginUser() async {
     const String baseUrl = '$apiOnlineUrl/acteur/pinLogin';
 
@@ -111,7 +112,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
 
       if (response.statusCode == 200) {
         final responseBody = json.decode(utf8.decode(response.bodyBytes));
-
         // Sauvegarder les données de l'utilisateur dans shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -151,16 +151,17 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
         prefs.setStringList('userType', userTypeLabels);
         prefs.setStringList('specType', speculationLabels);
-       
-      // Convertir les listes en JSON pour les stocker
-      String typeActeurJson = json.encode(
-          typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
-      String speculationsJson = json.encode(
-          speculationsList.map((speculation) => speculation.toMap()).toList());
 
-      // Sauvegarder les JSON dans SharedPreferences
-      prefs.setString('typeActeurList', typeActeurJson);
-      prefs.setString('speculationsList', speculationsJson);
+        // Convertir les listes en JSON pour les stocker
+        String typeActeurJson = json.encode(
+            typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
+        String speculationsJson = json.encode(speculationsList
+            .map((speculation) => speculation.toMap())
+            .toList());
+
+        // Sauvegarder les JSON dans SharedPreferences
+        prefs.setString('typeActeurList', typeActeurJson);
+        prefs.setString('speculationsList', speculationsJson);
 
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
@@ -205,7 +206,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             type.libelle!.toLowerCase() == 'transformeur' ||
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -213,7 +214,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -222,7 +223,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Mise à jour de l'index de navigation
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -231,14 +232,13 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
           // Mise à jour de l'index de navigation
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
                 .changeIndex(1);
           });
-        } 
-        else {
+        } else {
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);

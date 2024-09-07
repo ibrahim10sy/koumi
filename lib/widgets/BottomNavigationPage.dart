@@ -84,6 +84,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           Panier(),
           const Profil(),
         ];
+         
         bottomNavigationBarItems = [
           BottomNavigationBarItem(
             backgroundColor: Color.fromARGB(255, 250, 250, 250),

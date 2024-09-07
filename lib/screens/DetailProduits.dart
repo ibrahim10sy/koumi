@@ -174,25 +174,25 @@ class _DetailProduitsState extends State<DetailProduits>
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
             title: const Text("Détail Produit",
                 style: TextStyle(fontSize: 20, color: Colors.white)),
-            actions: isExist
-                ? [
-                    acteur.idActeur != widget.stock.acteur!.idActeur
-                        ? SizedBox()
-                        : IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddAndUpdateProductScreen(
-                                            isEditable: true,
-                                            stock: widget.stock,
-                                          )));
-                            },
-                            icon: Icon(Icons.edit, color: Colors.white),
-                          )
-                  ]
-                : [
+            actions: 
+                // ? [
+                //     acteur.idActeur != widget.stock.acteur!.idActeur
+                //         ? SizedBox()
+                //         : IconButton(
+                //             onPressed: () {
+                //               Navigator.push(
+                //                   context,
+                //                   MaterialPageRoute(
+                //                       builder: (context) =>
+                //                           AddAndUpdateProductScreen(
+                //                             isEditable: true,
+                //                             stock: widget.stock,
+                //                           )));
+                //             },
+                //             icon: Icon(Icons.edit, color: Colors.white),
+                //           )
+                //   ]
+                 [
                   Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CodePays().getFlagsApp(stock.acteur!.niveau3PaysActeur!),

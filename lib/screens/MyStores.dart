@@ -191,24 +191,22 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-            title: Text(
-              'Mes magasins',
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20),
-            ),
-           ),
+        backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+          title: Text(
+            'Mes magasins',
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -220,119 +218,113 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                     return <Widget>[
                       SliverToBoxAdapter(
                           child: Column(children: [
-                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton(
-                                            onPressed: () {
-                                              // The PopupMenuButton is used here to display the menu when the button is pressed.
-                                              showMenu<String>(
-                                                context: context,
-                                                position: RelativeRect.fromLTRB(
-                                                  0,
-                                                  50, // Adjust this value based on the desired position of the menu
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  0,
-                                                ),
-                                                items: [
-                                                  PopupMenuItem<String>(
-                                                    value: 'add_store',
-                                                    child: ListTile(
-                                                      leading: const Icon(
-                                                        Icons.store,
-                                                        color: d_colorGreen,
-                                                      ),
-                                                      title: const Text(
-                                                        "Ajouter un magasin",
-                                                        style: TextStyle(
-                                                          color: d_colorGreen,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                                elevation: 8.0,
-                                              ).then((value) {
-                                                if (value != null) {
-                                                  if (value == 'add_store') {
-                                                   _getResultFromNextScreen2(context);
-                                                  }
-                                                }
-                                              });
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.add,
-                                                  color: d_colorGreen,
-                                                ),
-                                                SizedBox(
-                                                    width:
-                                                        8), // Space between icon and text
-                                                Text(
-                                                  'Ajouter',
-                                                  style: TextStyle(
-                                                    color: d_colorGreen,
-                                                    fontSize: 17,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                      ,
-                                    if (!isSearchMode)
-                                      TextButton.icon(
-                                        onPressed: () {
-                                          setState(() {
-                                            isSearchMode = true;
-                                          });
-                                          debugPrint(
-                                              "rechercher mode value : ${isSearchMode}");
-                                        },
-                                        icon: Icon(
-                                          Icons.search,
-                                          color: d_colorGreen,
-                                        ),
-                                        label: Text(
-                                          'Rechercher...',
-                                          style: TextStyle(
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    // The PopupMenuButton is used here to display the menu when the button is pressed.
+                                    showMenu<String>(
+                                      context: context,
+                                      position: RelativeRect.fromLTRB(
+                                        0,
+                                        50, // Adjust this value based on the desired position of the menu
+                                        MediaQuery.of(context).size.width,
+                                        0,
+                                      ),
+                                      items: [
+                                        PopupMenuItem<String>(
+                                          value: 'add_store',
+                                          child: ListTile(
+                                            leading: const Icon(
+                                              Icons.store,
                                               color: d_colorGreen,
-                                              fontSize: 17),
+                                            ),
+                                            title: const Text(
+                                              "Ajouter un magasin",
+                                              style: TextStyle(
+                                                color: d_colorGreen,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      elevation: 8.0,
+                                    ).then((value) {
+                                      if (value != null) {
+                                        if (value == 'add_store') {
+                                          _getResultFromNextScreen2(context);
+                                        }
+                                      }
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: d_colorGreen,
+                                      ),
+                                      SizedBox(
+                                          width:
+                                              8), // Space between icon and text
+                                      Text(
+                                        'Ajouter',
+                                        style: TextStyle(
+                                          color: d_colorGreen,
+                                          fontSize: 17,
                                         ),
                                       ),
-                                    if (isSearchMode)
-                                      TextButton.icon(
-                                        onPressed: () {
-                                          if (mounted) {
-                                            setState(() {
-                                              isSearchMode = false;
-                                      _searchController.clear();
-                                      _searchController = TextEditingController();
-                                            });
-                                            debugPrint(
-                                                "Rechercher mode désactivé : $isSearchMode");
-                                          }
-                                        },
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: Colors.red,
-                                        ),
-                                        label: Text(
-                                          'Fermer',
-                                          style: TextStyle(
-                                              color: Colors.red, fontSize: 17),
-                                        ),
-                                      ),
-                                  ]),
-                            ),
-                        
+                                    ],
+                                  ),
+                                ),
+                                if (!isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSearchMode = true;
+                                      });
+                                      debugPrint(
+                                          "rechercher mode value : ${isSearchMode}");
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: d_colorGreen,
+                                    ),
+                                    label: Text(
+                                      'Rechercher...',
+                                      style: TextStyle(
+                                          color: d_colorGreen, fontSize: 17),
+                                    ),
+                                  ),
+                                if (isSearchMode)
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      if (mounted) {
+                                        setState(() {
+                                          isSearchMode = false;
+                                          _searchController.clear();
+                                          _searchController =
+                                              TextEditingController();
+                                        });
+                                        debugPrint(
+                                            "Rechercher mode désactivé : $isSearchMode");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                    ),
+                                    label: Text(
+                                      'Fermer',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 17),
+                                    ),
+                                  ),
+                              ]),
+                        ),
                         Visibility(
                             visible: isSearchMode,
                             child: Padding(
@@ -404,17 +396,17 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                     ConnectionState.waiting) {
                                   return _buildShimmerEffect();
                                 }
-          
+
                                 if (!snapshot.hasData) {
                                   return const Padding(
                                     padding: EdgeInsets.all(10),
-                                    child:
-                                        Center(child: Text("Aucun donné trouvé")),
+                                    child: Center(
+                                        child: Text("Aucun donné trouvé")),
                                   );
                                 } else {
                                   magasinListe = snapshot.data!;
                                   // Vous pouvez afficher une image ou un texte ici
-          
+
                                   String searchText = "";
                                   List<Magasin> filtereSearch =
                                       magasinListe.where((search) {
@@ -453,7 +445,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                         )
                                       : GridView.builder(
                                           shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
                                           gridDelegate:
                                               SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 2,
@@ -476,7 +469,11 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                   .idMagasin,
                                                               nom: filtereSearch[
                                                                       index]
-                                                                  .nomMagasin),
+                                                                  .nomMagasin,
+                                                              pays:
+                                                                  filtereSearch[
+                                                                          index]
+                                                                      .pays),
                                                     ),
                                                   );
                                                 },
@@ -501,8 +498,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                     children: [
                                                       ClipRRect(
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                8.0),
+                                                            BorderRadius
+                                                                .circular(8.0),
                                                         child: Container(
                                                           height: 72,
                                                           child: filtereSearch[
@@ -531,7 +528,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                   errorWidget: (context,
                                                                           url,
                                                                           error) =>
-                                                                      Image.asset(
+                                                                      Image
+                                                                          .asset(
                                                                     'assets/images/default_image.png',
                                                                     fit: BoxFit
                                                                         .cover,
@@ -548,7 +546,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                             fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black87,
+                                                            color:
+                                                                Colors.black87,
                                                           ),
                                                           maxLines: 2,
                                                           overflow: TextOverflow
@@ -561,12 +560,14 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                               .niveau1Pays!
                                                               .nomN1!,
                                                           style: TextStyle(
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             fontSize: 14,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black87,
+                                                            color:
+                                                                Colors.black87,
                                                           ),
                                                         ),
                                                       ),
@@ -575,17 +576,20 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                       //  _buildItem(
                                                       //     "Acteur :", e.acteur!.typeActeur!.map((e) => e.libelle!).join(','))
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 8.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    8.0),
                                                         child: Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .spaceBetween,
                                                           children: [
-                                                            _buildEtat(filtereSearch[
-                                                                    index]
-                                                                .statutMagasin!),
+                                                            _buildEtat(
+                                                                filtereSearch[
+                                                                        index]
+                                                                    .statutMagasin!),
                                                             SizedBox(
                                                               width: 110,
                                                             ),
@@ -596,19 +600,18 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                 padding:
                                                                     EdgeInsets
                                                                         .zero,
-                                                                itemBuilder: (context) =>
-                                                                    <PopupMenuEntry<
-                                                                        String>>[
+                                                                itemBuilder:
+                                                                    (context) =>
+                                                                        <PopupMenuEntry<
+                                                                            String>>[
                                                                   PopupMenuItem<
                                                                           String>(
                                                                       child:
                                                                           ListTile(
-                                                                    leading: filtereSearch[index]
-                                                                                .statutMagasin ==
+                                                                    leading: filtereSearch[index].statutMagasin ==
                                                                             false
                                                                         ? Icon(
-                                                                            Icons
-                                                                                .check,
+                                                                            Icons.check,
                                                                             color:
                                                                                 Colors.green,
                                                                           )
@@ -626,26 +629,21 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                           TextStyle(
                                                                         color: filtereSearch[index].statutMagasin ==
                                                                                 false
-                                                                            ? Colors
-                                                                                .green
-                                                                            : Colors
-                                                                                .red,
+                                                                            ? Colors.green
+                                                                            : Colors.red,
                                                                         fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
+                                                                            FontWeight.bold,
                                                                       ),
                                                                     ),
                                                                     onTap:
                                                                         () async {
                                                                       // Changement d'état du magasin ici
-          
+
                                                                       filtereSearch[index].statutMagasin ==
                                                                               false
                                                                           ? await MagasinService()
-                                                                              .activerMagasin(filtereSearch[index]
-                                                                                  .idMagasin!)
-                                                                              .then((value) =>
-                                                                                  {
+                                                                              .activerMagasin(filtereSearch[index].idMagasin!)
+                                                                              .then((value) => {
                                                                                     // Mettre à jour la liste des magasins après le changement d'état
                                                                                     Provider.of<MagasinService>(context, listen: false).applyChange(),
                                                                                     setState(() {
@@ -654,8 +652,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                                     }),
                                                                                     Navigator.of(context).pop(),
                                                                                   })
-                                                                              .catchError((onError) =>
-                                                                                  {
+                                                                              .catchError((onError) => {
                                                                                     ScaffoldMessenger.of(context).showSnackBar(
                                                                                       const SnackBar(
                                                                                         content: Row(
@@ -668,19 +665,15 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                                     ),
                                                                                     Navigator.of(context).pop(),
                                                                                   })
-                                                                          : await MagasinService()
-                                                                              .desactiverMagasin(filtereSearch[index]
-                                                                                  .idMagasin!)
-                                                                              .then((value) =>
-                                                                                  {
-                                                                                    Provider.of<MagasinService>(context, listen: false).applyChange(),
-                                                                                    setState(() {
-                                                                                      page++;
-                                                                                      magasinListeFuture = MagasinService().fetchMagasinByActeur(acteur.idActeur!);
-                                                                                    }),
-                                                                                    Navigator.of(context).pop(),
-                                                                                  });
-          
+                                                                          : await MagasinService().desactiverMagasin(filtereSearch[index].idMagasin!).then((value) => {
+                                                                                Provider.of<MagasinService>(context, listen: false).applyChange(),
+                                                                                setState(() {
+                                                                                  page++;
+                                                                                  magasinListeFuture = MagasinService().fetchMagasinByActeur(acteur.idActeur!);
+                                                                                }),
+                                                                                Navigator.of(context).pop(),
+                                                                              });
+
                                                                       ScaffoldMessenger.of(
                                                                               context)
                                                                           .showSnackBar(
@@ -688,9 +681,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                           content:
                                                                               Row(
                                                                             children: [
-                                                                              Text(filtereSearch[index].statutMagasin == false
-                                                                                  ? "Activer avec succèss "
-                                                                                  : "Desactiver avec succèss"),
+                                                                              Text(filtereSearch[index].statutMagasin == false ? "Activer avec succèss " : "Desactiver avec succèss"),
                                                                             ],
                                                                           ),
                                                                           duration:
@@ -708,15 +699,15 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                         Icons
                                                                             .disabled_visible,
                                                                         color: Colors
-                                                                                .green[
-                                                                            400],
+                                                                            .green[400],
                                                                       ),
-                                                                      title: Text(
+                                                                      title:
+                                                                          Text(
                                                                         "Modifier",
                                                                         style:
                                                                             TextStyle(
-                                                                          color: Colors
-                                                                              .green[400],
+                                                                          color:
+                                                                              Colors.green[400],
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                         ),
@@ -775,8 +766,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                         "Supprimer",
                                                                         style:
                                                                             TextStyle(
-                                                                          color: Colors
-                                                                              .red,
+                                                                          color:
+                                                                              Colors.red,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                         ),

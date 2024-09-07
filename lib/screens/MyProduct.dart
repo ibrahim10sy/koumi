@@ -275,6 +275,23 @@ class _MyProductScreenState extends State<MyProductScreen> {
     }
   }
 
+  Future<void> _getResultFromNextScreen2(BuildContext context, Stock s) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddAndUpdateProductScreen(
+                  isEditable: true,
+                  stock: s,
+                )));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        stockListeFuture = StockService().fetchStockByActeur(acteur.idActeur!);
+      });
+    }
+  }
+
   Future<void> _getResultFromMagasinPage(BuildContext context) async {
     final result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => MyStoresScreen()));
@@ -802,6 +819,38 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                                                     (context) =>
                                                                         <PopupMenuEntry<
                                                                             String>>[
+                                                                  PopupMenuItem<
+                                                                      String>(
+                                                                    child:
+                                                                        ListTile(
+                                                                      leading:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .edit,
+                                                                        color: Colors
+                                                                            .green,
+                                                                      ),
+                                                                      title:
+                                                                          const Text(
+                                                                        "Modifier le produit",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.green,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                      onTap:
+                                                                          () async {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        _getResultFromNextScreen2(
+                                                                            context,
+                                                                            filteredSearch[index]);
+                                                                      },
+                                                                    ),
+                                                                  ),
                                                                   PopupMenuItem<
                                                                       String>(
                                                                     child:

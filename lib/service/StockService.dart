@@ -107,6 +107,7 @@ class StockService extends ChangeNotifier {
       required String quantiteStock,
       required String typeProduit,
       required String descriptionStock,
+      required String dateProduction,
       File? photo,
       required ZoneProduction zoneProduction,
       required Speculation speculation,
@@ -130,9 +131,10 @@ class StockService extends ChangeNotifier {
         'formeProduit': formeProduit,
         'origineProduit': origineProduit,
         'prix': prix,
-        'quantiteStock': int.tryParse(quantiteStock),
+        'quantiteStock': double.tryParse(quantiteStock),
         'typeProduit': typeProduit,
         'descriptionStock': descriptionStock,
+        'dateProduction': dateProduction,
         'photo': "",
         'zoneProduction': zoneProduction.toMap(),
         'speculation': speculation.toMap(),
@@ -225,8 +227,7 @@ class StockService extends ChangeNotifier {
     }
   }
 
-  Future<List<Stock>> fetchStock(
-      {bool refresh = false}) async {
+  Future<List<Stock>> fetchStock({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     isLoading = true;
@@ -365,34 +366,28 @@ class StockService extends ChangeNotifier {
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
-    
-
     if (refresh) {
-      
-        stockList.clear();
-        page = 0;
-        hasMore = true;
+      stockList.clear();
+      page = 0;
+      hasMore = true;
     }
 
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/Stock/getAllStocksByPays?nomPays=${nomPays}&page=$page&size=$size'));
-   print(
+      print(
           "servcie : $apiOnlineUrl/Stock/getAllStocksByPays?nomPays=${nomPays}&page=$page&size=$size");
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
 
         if (body.isEmpty) {
-          
-            hasMore = false;
-     
+          hasMore = false;
         } else {
           List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
-        
-            stockList.addAll(newStocks.where((newStock) => !stockList
-                .any((existStock) => existStock.idStock == newStock.idStock)));
-      
+
+          stockList.addAll(newStocks.where((newStock) => !stockList
+              .any((existStock) => existStock.idStock == newStock.idStock)));
         }
 
         debugPrint(
@@ -405,42 +400,37 @@ class StockService extends ChangeNotifier {
       print(
           'Une erreur s\'est produite lors de la récupération des stocks: $e');
     } finally {
-    
-        isLoading = false;
-    
+      isLoading = false;
     }
     return stockList;
   }
 
-  Future<List<Stock>> fetchStockByPaysAndFiliere(String libelle,String nomPays,
+  Future<List<Stock>> fetchStockByPaysAndFiliere(String libelle, String nomPays,
       {bool refresh = false}) async {
     if (isLoading == true) return [];
 
     if (refresh) {
-        stockList.clear();
-        page = 0;
-        hasMore = true;
+      stockList.clear();
+      page = 0;
+      hasMore = true;
     }
 
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/Stock/getAllByFiliereAndPays?libelle=${libelle}&nomPays=${nomPays}&page=$page&size=$size'));
-   print(
+      print(
           "servcie :$apiOnlineUrl/Stock/getAllByFiliereAndPays?libelle=${libelle}&nomPays=${nomPays}&page=$page&size=$size");
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
 
         if (body.isEmpty) {
-          
-            hasMore = false;
-     
+          hasMore = false;
         } else {
           List<Stock> newStocks = body.map((e) => Stock.fromMap(e)).toList();
-        
-            stockList.addAll(newStocks.where((newStock) => !stockList
-                .any((existStock) => existStock.idStock == newStock.idStock)));
-      
+
+          stockList.addAll(newStocks.where((newStock) => !stockList
+              .any((existStock) => existStock.idStock == newStock.idStock)));
         }
 
         debugPrint(
@@ -453,9 +443,7 @@ class StockService extends ChangeNotifier {
       print(
           'Une erreur s\'est produite lors de la récupération des stocks: $e');
     } finally {
-    
-        isLoading = false;
-    
+      isLoading = false;
     }
     return stockList;
   }
