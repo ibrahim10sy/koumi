@@ -560,6 +560,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                           child: SearchFieldAutoComplete<String>(
                             controller: _searchController,
                             placeholder: 'Rechercher...',
+                            autofocus: false,
                             placeholderStyle:
                                 TextStyle(fontStyle: FontStyle.italic),
                             suggestions: AutoComplet.getAgriculturalProducts,

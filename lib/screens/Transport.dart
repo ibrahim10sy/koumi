@@ -1196,7 +1196,6 @@ class _TransportState extends State<Transport> {
                                             children: [
                                               if (produitsLocaux
                                                   .isNotEmpty) ...[
-                                               
                                                 GridView.builder(
                                                   shrinkWrap: true,
                                                   physics:
@@ -1353,7 +1352,7 @@ class _TransportState extends State<Transport> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Text(
-                                                    "Transport etrangère",
+                                                    "Transport autre pays",
                                                     style:
                                                         TextStyle(fontSize: 16),
                                                   ),
@@ -1755,7 +1754,7 @@ class _TransportState extends State<Transport> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Transport etrangère",
+                                                        "Transport autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),

@@ -309,18 +309,6 @@ class _StoreScreenState extends State<StoreScreen> {
     super.dispose();
   }
 
-  Future<void> _getResultFromNextScreen1(BuildContext context) async {
-    final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MyStoresScreen()));
-    log(result.toString());
-    if (result == true) {
-      print("Rafraichissement en cours");
-      setState(() {
-        magasinListeFuture = MagasinService().fetchAllMagasin();
-      });
-    }
-  }
-
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
     final result = await Navigator.push(
         context,
@@ -331,6 +319,17 @@ class _StoreScreenState extends State<StoreScreen> {
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
+      setState(() {
+        magasinListeFuture = MagasinService().fetchAllMagasin();
+      });
+    }
+  }
+
+  Future<void> _getResultFromMagasinPage(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MyStoresScreen()));
+    log(result.toString());
+    if (result == true) {
       setState(() {
         magasinListeFuture = MagasinService().fetchAllMagasin();
       });
@@ -365,9 +364,7 @@ class _StoreScreenState extends State<StoreScreen> {
                     magasinListeFuture = MagasinService().fetchAllMagasin();
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
-            ]
-           
-            ),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -470,10 +467,8 @@ class _StoreScreenState extends State<StoreScreen> {
                                                   if (value == 'add_store') {
                                                     _getResultFromNextScreen2(
                                                         context);
-                                                  }
-                                                } else if (value != null) {
-                                                  if (value == 'store') {
-                                                    _getResultFromNextScreen1(
+                                                  } else if (value == 'store') {
+                                                    _getResultFromMagasinPage(
                                                         context);
                                                   }
                                                 }
@@ -1103,19 +1098,16 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          ProductsByStoresScreen(
-                                                                    id: produitsLocaux[
-                                                                            index]
-                                                                        .idMagasin,
-                                                                    nom: produitsLocaux[
-                                                                            index]
-                                                                        .nomMagasin,
-                                                                    pays: produitsLocaux[
-                                                                            index]
-                                                                        .pays
-                                                                  ),
+                                                                  builder: (context) => ProductsByStoresScreen(
+                                                                      id: produitsLocaux[
+                                                                              index]
+                                                                          .idMagasin,
+                                                                      nom: produitsLocaux[
+                                                                              index]
+                                                                          .nomMagasin,
+                                                                      pays: produitsLocaux[
+                                                                              index]
+                                                                          .pays),
                                                                 ),
                                                               );
                                                             },
@@ -1230,7 +1222,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Magasins etrangère",
+                                                        "Magasins autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1650,7 +1642,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               const EdgeInsets
                                                                   .all(8.0),
                                                           child: Text(
-                                                            "Magasins etrangère",
+                                                            "Magasins autre pays",
                                                             style: TextStyle(
                                                                 color:
                                                                     d_colorGreen,

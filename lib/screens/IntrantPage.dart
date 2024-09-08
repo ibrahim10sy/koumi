@@ -72,8 +72,8 @@ class _IntrantPageState extends State<IntrantPage> {
       });
 
       fetchIntrant(
-        // detectedCountry != null ? detectedCountry! : "Mali"
-      )
+              // detectedCountry != null ? detectedCountry! : "Mali"
+              )
           .then((value) {
         setState(() {
           debugPrint("page inc all $page");
@@ -94,7 +94,6 @@ class _IntrantPageState extends State<IntrantPage> {
       debugPrint("yes - fetch by category and pays");
       if (mounted)
         setState(() {
-        
           page++;
         });
 
@@ -183,8 +182,7 @@ class _IntrantPageState extends State<IntrantPage> {
     return intrantListe;
   }
 
-  Future<List<Intrant>> fetchIntrant(
-      {bool refresh = false}) async {
+  Future<List<Intrant>> fetchIntrant({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -410,9 +408,8 @@ class _IntrantPageState extends State<IntrantPage> {
     _typeList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
     intrantListeFuture1 = getAllIntrant();
     verify();
-    intrantListeFuture =
-        fetchIntrant();
-        // fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali");
+    intrantListeFuture = fetchIntrant();
+    // fetchIntrant(detectedCountry != null ? detectedCountry! : "Mali");
   }
 
   Future<void> _getResultFromNextScreen1(BuildContext context) async {
@@ -1065,11 +1062,11 @@ class _IntrantPageState extends State<IntrantPage> {
                         debugPrint("refresh page ${page}");
                         selectedCat == null || nomP == null
                             ? setState(() {
-                                intrantListeFuture = IntrantService()
-                                    .fetchIntrantByPays(
-                                      // detectedCountry != null
-                                      //   ? detectedCountry!
-                                      //   : "Mali"
+                                intrantListeFuture =
+                                    IntrantService().fetchIntrantByPays(
+                                        // detectedCountry != null
+                                        //   ? detectedCountry!
+                                        //   : "Mali"
                                         );
                               })
                             : setState(() {
@@ -1335,7 +1332,7 @@ class _IntrantPageState extends State<IntrantPage> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1755,7 +1752,7 @@ class _IntrantPageState extends State<IntrantPage> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),

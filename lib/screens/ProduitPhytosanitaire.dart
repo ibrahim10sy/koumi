@@ -85,8 +85,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
     debugPrint("no");
   }
 
-  Future<List<Intrant>> fetchIntrantByCategorie(
-      {bool refresh = false}) async {
+  Future<List<Intrant>> fetchIntrantByCategorie({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -1088,7 +1087,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                     // detectedCountry != null
                                     //     ? detectedCountry!
                                     //     : "Mali"
-                                        );
+                                    );
                               });
                       },
                       child: selectedCat == null && nomP == null
@@ -1355,7 +1354,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1775,7 +1774,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -31,6 +32,7 @@ class AddAndUpdateProductEndSreen extends StatefulWidget {
   String? nomProduit, origine, forme, prix, quantite;
   File? image;
   Monnaie? monnaies;
+  Unite? unite;
 
   AddAndUpdateProductEndSreen(
       {super.key,
@@ -42,6 +44,7 @@ class AddAndUpdateProductEndSreen extends StatefulWidget {
       this.prix,
       this.quantite,
       this.image,
+      this.unite,
       this.monnaies});
 
   @override
@@ -200,7 +203,7 @@ class _AddAndUpdateProductEndSreenState
             formeProduit: widget.forme!,
             quantiteStock: widget.quantite!,
             photo: widget.image,
-            dateProduction : widget.stock!.dateAjout!,
+            dateProduction: widget.stock!.dateAjout!,
             typeProduit: _typeController.text,
             descriptionStock: _descriptionController.text,
             zoneProduction: zoneProduction,
@@ -220,7 +223,7 @@ class _AddAndUpdateProductEndSreenState
             typeProduit: _typeController.text,
             descriptionStock: _descriptionController.text,
             zoneProduction: zoneProduction,
-            dateProduction : widget.stock!.dateAjout!,
+            dateProduction: widget.stock!.dateAjout!,
             speculation: speculation,
             unite: unite,
             magasin: magasin,
@@ -239,13 +242,15 @@ class _AddAndUpdateProductEndSreenState
     verify();
     magasinListe = http
         .get(Uri.parse('$apiOnlineUrl/Magasin/getAllMagasinByActeur/${id}'));
-    _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
+    // _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
 
-    _categorieList = http.get(Uri.parse(
-        '$apiOnlineUrl/Categorie/allCategorieByFiliere/${filiere.idFiliere}'));
+    // _categorieList = http.get(Uri.parse(
+    //     '$apiOnlineUrl/Categorie/allCategorieByFiliere/${filiere.idFiliere}'));
 
-    _speculationList = http.get(Uri.parse(
-        '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${categorieProduit.idCategorieProduit}'));
+    _speculationList =
+        http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
+    // _speculationList = http.get(Uri.parse(
+    //     '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${categorieProduit.idCategorieProduit}'));
     uniteListe = http.get(Uri.parse('$apiOnlineUrl/Unite/getAllUnite'));
     zoneListe = http.get(
         Uri.parse('$apiOnlineUrl/ZoneProduction/getAllZonesByActeurs/${id}'));
@@ -253,8 +258,10 @@ class _AddAndUpdateProductEndSreenState
     debugPrint(
         "nom : ${widget.nomProduit},   monnaie : ${widget.monnaies},  bool : ${widget.isEditable} ,image : ${widget.image.toString()} , forme: ${widget.forme}, origine : ${widget.origine}, qte : ${widget.quantite}, prix : ${widget.prix}");
     monnaies = widget.monnaies!;
-
+    unite = widget.unite!;
     if (widget.isEditable! == true) {
+      unite = widget.unite!;
+
       _typeController.text = widget.stock!.typeProduit!;
       _descriptionController.text = widget.stock!.descriptionStock!;
       debugPrint("id : $id,  forme : ${widget.forme}");
@@ -340,90 +347,28 @@ class _AddAndUpdateProductEndSreenState
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Type Produit  ",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Veuillez saisir le type du produit";
-                            }
-                            return null;
-                          },
-                          controller: _typeController,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            hintText: "Type produit",
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Description Produit ",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Veuillez saisir la description du produit";
-                            }
-                            return null;
-                          },
-                          controller: _descriptionController,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            hintText: "Description produit",
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Chosir une filière ",
+                              "Choisir une spéculation ",
                               style: TextStyle(
                                   color: (Colors.black), fontSize: 18),
                             ),
                           ),
                         ),
                         FutureBuilder(
-                          future: _filiereList,
+                          future: _speculationList,
                           builder: (_, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
+                              return TextDropdownFormField(
+                                options: [],
                                 decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: "Chargement..."),
+                                cursorColor: Colors.green,
                               );
                             }
 
@@ -432,284 +377,17 @@ class _AddAndUpdateProductEndSreenState
                                   utf8.decode(snapshot.data.bodyBytes);
                               dynamic responseData = json.decode(jsonString);
 
-                              // Vérifier si responseData est une liste
                               if (responseData is List) {
                                 final reponse = responseData;
-                                final filiereList = reponse
-                                    .map((e) => Filiere.fromMap(e))
-                                    .where((con) => con.statutFiliere == true)
+                                final monaieList = reponse
+                                    .map((e) => Speculation.fromMap(e))
+                                    .where(
+                                        (con) => con.statutSpeculation == true)
                                     .toList();
-
-                                if (filiereList.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
+                                if (monaieList.isEmpty) {
+                                  return TextDropdownFormField(
+                                    options: [],
                                     decoration: InputDecoration(
-                                      labelText: 'Aucun filière trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  items: filiereList
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idFiliere,
-                                          child: Text(e.libelleFiliere!),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: filiereValue,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      catValue = null;
-                                      filiereValue = newValue;
-                                      if (newValue != null) {
-                                        filiere = filiereList.firstWhere(
-                                          (element) =>
-                                              element.idFiliere == newValue,
-                                        );
-                                        debugPrint("valeur : $newValue");
-                                        _categorieList = http.get(Uri.parse(
-                                            '$apiOnlineUrl/Categorie/allCategorieByFiliere/${newValue}'));
-                                      }
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: widget.isEditable == false
-                                        ? 'Selectionner une filière'
-                                        : widget
-                                            .stock!
-                                            .speculation!
-                                            .categorieProduit!
-                                            .filiere!
-                                            .libelleFiliere!,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun filière trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucun filière trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Chosir une catégorie ",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        FutureBuilder(
-                          future: _categorieList,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              // Vérifier si responseData est une liste
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final catList = reponse
-                                    .map((e) => CategorieProduit.fromMap(e))
-                                    .where((con) => con.statutCategorie == true)
-                                    .toList();
-
-                                if (catList.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucune categorie trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  items: catList
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idCategorieProduit,
-                                          child: Text(e.libelleCategorie!),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: catValue,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      speValue = null;
-                                      catValue = newValue;
-                                      if (newValue != null) {
-                                        categorieProduit = catList.firstWhere(
-                                          (element) =>
-                                              element.idCategorieProduit ==
-                                              newValue,
-                                        );
-                                        debugPrint("valeur : $newValue");
-                                        _speculationList = http.get(Uri.parse(
-                                            '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${newValue}'));
-                                      }
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: widget.isEditable == false
-                                        ? 'Selectionner une catégorie'
-                                        : widget
-                                            .stock!
-                                            .speculation!
-                                            .categorieProduit!
-                                            .libelleCategorie!,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucune catégorie trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucune catégorie trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Chosir une spéculation ",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        FutureBuilder(
-                            future: _speculationList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Chargement...',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final speList = reponse
-                                      .map((e) => Speculation.fromMap(e))
-                                      .where((cat) =>
-                                          cat.statutSpeculation == true)
-                                      .toList();
-
-                                  if (speList.isEmpty) {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
-                                      decoration: InputDecoration(
-                                        labelText: 'Aucune speculation trouvé',
                                         contentPadding:
                                             const EdgeInsets.symmetric(
                                                 vertical: 10, horizontal: 20),
@@ -717,75 +395,80 @@ class _AddAndUpdateProductEndSreenState
                                           borderRadius:
                                               BorderRadius.circular(8),
                                         ),
-                                      ),
-                                    );
-                                  }
-
-                                  return DropdownButtonFormField<String>(
-                                    isExpanded: true,
-                                    items: speList
-                                        .map(
-                                          (e) => DropdownMenuItem(
-                                            value: e.idSpeculation,
-                                            child: Text(e.nomSpeculation!),
-                                          ),
-                                        )
-                                        .toList(),
-                                    value: speValue,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        speValue = newValue;
-                                        if (newValue != null) {
-                                          speculation = speList.firstWhere(
-                                            (element) =>
-                                                element.idSpeculation ==
-                                                newValue,
-                                          );
-                                        }
-                                      });
-                                    },
-                                    decoration: InputDecoration(
-                                      labelText: widget.isEditable == false
-                                          ? 'Selectionner une spéculation'
-                                          : widget.stock!.speculation!
-                                              .nomSpeculation!,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucune speculation trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucune spéculation trouvé"),
+                                    cursorColor: Colors.green,
                                   );
                                 }
+
+                                return DropdownFormField<Speculation>(
+                                  onEmptyActionPressed: (String str) async {},
+                                  dropdownHeight: 200,
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: widget.isEditable == false
+                                          ? 'Selectionner une spécumation'
+                                          : widget.stock!.speculation!
+                                              .nomSpeculation!),
+                                  onSaved: (dynamic n) {
+                                    speculation = n;
+                                    print("onSaved : $speculation");
+                                  },
+                                  onChanged: (dynamic n) {
+                                    speculation = n;
+                                    print("selected : $speculation");
+                                  },
+                                  displayItemFn: (dynamic item) => Text(
+                                    item?.nomSpeculation ?? '',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  findFn: (String str) async => monaieList,
+                                  selectedFn: (dynamic item1, dynamic item2) {
+                                    if (item1 != null && item2 != null) {
+                                      return item1.idSpeculation ==
+                                          item2.idSpeculation;
+                                    }
+                                    return false;
+                                  },
+                                  filterFn: (dynamic item, String str) => item
+                                      .nomSpeculation!
+                                      .toLowerCase()
+                                      .contains(str.toLowerCase()),
+                                  dropdownItemFn: (dynamic item,
+                                          int position,
+                                          bool focused,
+                                          bool selected,
+                                          Function() onTap) =>
+                                      ListTile(
+                                    title: Text(item.nomSpeculation!),
+                                    tileColor: focused
+                                        ? Color.fromARGB(20, 0, 0, 0)
+                                        : Colors.transparent,
+                                    onTap: onTap,
+                                  ),
+                                );
                               }
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Aucune speculation trouvé',
+                            }
+                            return TextDropdownFormField(
+                              options: [],
+                              decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                ),
-                              );
-                            }),
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Aucune spéculation trouvé"),
+                              cursorColor: Colors.green,
+                            );
+                          },
+                        ),
                         const SizedBox(height: 5),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -936,151 +619,6 @@ class _AddAndUpdateProductEndSreenState
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Unité",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        FutureBuilder(
-                          future: uniteListe,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'En cours de chargement',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-                            if (snapshot.hasError) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final uniteListe = reponse
-                                    .map((e) => Unite.fromMap(e))
-                                    .where((con) => con.statutUnite == true)
-                                    .toList();
-
-                                if (uniteListe.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucune unité trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Veuillez sélectionner une unité";
-                                    }
-                                    return null;
-                                  },
-                                  items: uniteListe
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idUnite,
-                                          child: Text(
-                                            e.nomUnite!,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: unite.idUnite,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      unite.idUnite = newValue;
-                                      if (newValue != null) {
-                                        unite = uniteListe.firstWhere(
-                                          (unite) => unite.idUnite == newValue,
-                                        );
-                                        print("unité : ${unite.nomUnite}");
-                                      }
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: widget.isEditable == false
-                                        ? 'Selectionner une unité'
-                                        : widget.stock!.unite!.nomUnite,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucune unité trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucune unité trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
                               "Zone de production",
                               style: TextStyle(
                                   color: (Colors.black), fontSize: 18),
@@ -1207,6 +745,69 @@ class _AddAndUpdateProductEndSreenState
                               ),
                             );
                           },
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Type Produit  ",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Veuillez saisir le type du produit";
+                            }
+                            return null;
+                          },
+                          controller: _typeController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            hintText: "Type produit",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Description Produit ",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Veuillez saisir la description du produit";
+                            }
+                            return null;
+                          },
+                          enableSuggestions: true,
+                          maxLines: null,
+                          controller: _descriptionController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            hintText: "Description produit",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                         ),
                         const SizedBox(
                           height: 20,

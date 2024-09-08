@@ -49,21 +49,23 @@ class _AddSuperficieState extends State<AddSuperficie> {
   DateTime selectedDate = DateTime.now();
   late Acteur acteur;
   bool _isLoading = false;
-    bool isLoadingLibelle = true;
-    String? libelleNiveau3Pays;
+  bool isLoadingLibelle = true;
+  String? libelleNiveau3Pays;
 
-    Future<String> getLibelleNiveau3PaysByActor(String id) async {
-    final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
+  Future<String> getLibelleNiveau3PaysByActor(String id) async {
+    final response = await http
+        .get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
 
     if (response.statusCode == 200) {
       print("libelle : ${response.body}");
-      return response.body;  // Return the body directly since it's a plain string
+      return response
+          .body; // Return the body directly since it's a plain string
     } else {
       throw Exception('Failed to load libelle niveau3Pays');
     }
-}
+  }
 
-     Future<void> fetchLibelleNiveau3Pays() async {
+  Future<void> fetchLibelleNiveau3Pays() async {
     try {
       String libelle = await getLibelleNiveau3PaysByActor(acteur.idActeur!);
       setState(() {
@@ -78,7 +80,6 @@ class _AddSuperficieState extends State<AddSuperficie> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -86,13 +87,13 @@ class _AddSuperficieState extends State<AddSuperficie> {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _liste = getCampListe();
 
-    _speculationList = http.get(
-        Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
-  
-    _niveau3List =
-        http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
-        fetchLibelleNiveau3Pays(); 
- }
+    _speculationList =
+        http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
+
+    _niveau3List = http.get(Uri.parse(
+        '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
+    fetchLibelleNiveau3Pays();
+  }
 
   List<String?> selectedIntrantList = [];
 
@@ -128,9 +129,9 @@ class _AddSuperficieState extends State<AddSuperficie> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -145,7 +146,7 @@ class _AddSuperficieState extends State<AddSuperficie> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-               SizedBox(
+              SizedBox(
                 height: 10,
               ),
               Form(
@@ -189,28 +190,33 @@ class _AddSuperficieState extends State<AddSuperficie> {
                       SizedBox(
                         height: 10,
                       ),
-                          isLoadingLibelle ?
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Chargement ................",style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),)),
-                      )
-                      :
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 22,
-                        ),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                           libelleNiveau3Pays != null ? libelleNiveau3Pays!.toUpperCase() : "Localité",
-                            style:
-                                TextStyle(color: (Colors.black), fontSize: 18),
-                          ),
-                        ),
-                      ),
+                      isLoadingLibelle
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Chargement ................",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                            )
+                          : Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 22,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  libelleNiveau3Pays != null
+                                      ? libelleNiveau3Pays!.toUpperCase()
+                                      : "Localité",
+                                  style: TextStyle(
+                                      color: (Colors.black), fontSize: 18),
+                                ),
+                              ),
+                            ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
@@ -334,7 +340,7 @@ class _AddSuperficieState extends State<AddSuperficie> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Chosir une spéculation",
+                            "Choisir une spéculation",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
@@ -471,7 +477,7 @@ class _AddSuperficieState extends State<AddSuperficie> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Chosir une campagne",
+                            "Choisir une campagne",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
@@ -718,10 +724,10 @@ class _AddSuperficieState extends State<AddSuperficie> {
                               Navigator.of(context).pop()
                             })
                         .catchError((onError) => {
-                           setState(() {
+                              setState(() {
                                 _isLoading = false;
                               }),
-                        });
+                            });
                   } catch (e) {
                     setState(() {
                       _isLoading = false;

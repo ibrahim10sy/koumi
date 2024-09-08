@@ -487,7 +487,7 @@ class _AddMaterielByTypeState extends State<AddMaterielByType> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Chosir la monnaie",
+                            "Choisir la monnaie",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),

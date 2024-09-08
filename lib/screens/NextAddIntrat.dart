@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:intl/intl.dart';
 import 'package:koumi/constants.dart';
@@ -13,10 +13,8 @@ import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/CategorieProduit.dart';
 import 'package:koumi/models/Forme.dart';
 import 'package:koumi/models/Monnaie.dart';
-import 'package:koumi/models/ParametreGeneraux.dart';
 import 'package:koumi/models/Speculation.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
-import 'package:koumi/providers/ParametreGenerauxProvider.dart';
 import 'package:koumi/service/FormeService.dart';
 import 'package:koumi/service/IntrantService.dart';
 import 'package:koumi/widgets/LoadingOverlay.dart';
@@ -197,7 +195,7 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Chosir la forme",
+                          "Choisir la forme",
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
@@ -207,21 +205,20 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                           vertical: 10, horizontal: 20),
                       child: FutureBuilder(
                         future: _formeList,
-                        // future: speculationService.fetchSpeculationByCategorie(categorieProduit.idCategorieProduit!),
                         builder: (_, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
+                            return TextDropdownFormField(
+                              options: [],
                               decoration: InputDecoration(
-                                labelText: 'Chargement...',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Chargement..."),
+                              cursorColor: Colors.green,
                             );
                           }
 
@@ -231,249 +228,90 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                             dynamic responseData = json.decode(jsonString);
 
                             if (responseData is List) {
-                              List<Forme> speList = responseData
+                              final reponse = responseData;
+                              final monaieList = reponse
                                   .map((e) => Forme.fromMap(e))
+                                  .where((con) => con.statutForme == true)
                                   .toList();
-
-                              if (speList.isEmpty) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
+                              if (monaieList.isEmpty) {
+                                return TextDropdownFormField(
+                                  options: [],
                                   decoration: InputDecoration(
-                                    labelText: 'Aucune forme trouvé',
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Aucune forme trouvé"),
+                                  cursorColor: Colors.green,
+                                );
+                              }
+
+                              return DropdownFormField<Forme>(
+                                onEmptyActionPressed: (String str) async {},
+                                dropdownHeight: 200,
+                                decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                  ),
-                                );
-                              }
-
-                              return DropdownButtonFormField<String>(
-                                isExpanded: true,
-                                items: speList
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e.idForme,
-                                        child: Text(e.libelleForme!),
-                                      ),
-                                    )
-                                    .toList(),
-                                value: formeValue,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    formeValue = newValue;
-                                    if (newValue != null) {
-                                      forme = speList.firstWhere(
-                                        (element) =>
-                                            element.idForme == newValue,
-                                      );
-                                    }
-                                  });
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: 'Sélectionner une forme'),
+                                onSaved: (dynamic n) {
+                                  forme = n;
+                                  print("onSaved : $forme");
                                 },
-                                decoration: InputDecoration(
-                                  labelText: 'Sélectionner la forme',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                                onChanged: (dynamic n) {
+                                  forme = n;
+                                  print("selected : $forme");
+                                },
+                                displayItemFn: (dynamic item) => Text(
+                                  item?.libelleForme ?? '',
+                                  style: TextStyle(fontSize: 16),
                                 ),
-                              );
-                            } else {
-                              // Handle case when response data is not a list
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Aucune forme trouvé',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                                findFn: (String str) async => monaieList,
+                                selectedFn: (dynamic item1, dynamic item2) {
+                                  if (item1 != null && item2 != null) {
+                                    return item1.idForme == item2.idForme;
+                                  }
+                                  return false;
+                                },
+                                filterFn: (dynamic item, String str) => item
+                                    .libelleForme!
+                                    .toLowerCase()
+                                    .contains(str.toLowerCase()),
+                                dropdownItemFn: (dynamic item,
+                                        int position,
+                                        bool focused,
+                                        bool selected,
+                                        Function() onTap) =>
+                                    ListTile(
+                                  title: Text(item.libelleForme!),
+                                  tileColor: focused
+                                      ? Color.fromARGB(20, 0, 0, 0)
+                                      : Colors.transparent,
+                                  onTap: onTap,
                                 ),
                               );
                             }
-                          } else {
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucune forme trouvé',
+                          }
+                          return TextDropdownFormField(
+                            options: [],
+                            decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 20),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                              ),
-                            );
-                          }
+                                suffixIcon: Icon(Icons.search),
+                                labelText: "Aucune forme trouvé"),
+                            cursorColor: Colors.green,
+                          );
                         },
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 22,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Chosir la monnaie",
-                          style: TextStyle(color: (Colors.black), fontSize: 18),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: FutureBuilder(
-                        future: _monnaieList,
-                        builder: (_, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Chargement...',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            );
-                          }
-
-                          if (snapshot.hasData) {
-                            dynamic jsonString =
-                                utf8.decode(snapshot.data.bodyBytes);
-                            dynamic responseData = json.decode(jsonString);
-
-                            if (responseData is List) {
-                              List<Monnaie> speList = responseData
-                                  .map((e) => Monnaie.fromMap(e))
-                                  .toList();
-
-                              if (speList.isEmpty) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun monnaie trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return DropdownButtonFormField<String>(
-                                isExpanded: true,
-                                items: speList
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e.idMonnaie,
-                                        child: Text(e.libelle!),
-                                      ),
-                                    )
-                                    .toList(),
-                                value: monnaieValue,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    monnaieValue = newValue;
-                                    if (newValue != null) {
-                                      monnaie = speList.firstWhere(
-                                        (element) =>
-                                            element.idMonnaie == newValue,
-                                      );
-                                    }
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  labelText: 'Sélectionner la monnaie',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              // Handle case when response data is not a list
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Aucun monnaie trouvé',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-                          } else {
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucun monnaie trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 22,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Prix intrant",
-                          style: TextStyle(color: (Colors.black), fontSize: 18),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Veuillez remplir les champs";
-                          }
-                          return null;
-                        },
-                        controller: _prixController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          ThousandsFormatter(),
-                        ],
-                        decoration: InputDecoration(
-                          hintText: "Prix intrant",
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -529,32 +367,226 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                         },
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 22,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Prix intrant",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 22,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Choisir la monnaie",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: photo != null
-                            ? GestureDetector(
-                                onTap: _showImageSourceDialog,
-                                child: Image.file(
-                                  photo!,
-                                  fit: BoxFit.fitWidth,
-                                  height: 150,
-                                  width: 300,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
                                 ),
-                              )
-                            : SizedBox(
-                                child: IconButton(
-                                  onPressed: _showImageSourceDialog,
-                                  icon: const Icon(
-                                    Icons.add_a_photo_rounded,
-                                    size: 60,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Veuillez remplir les champs";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _prixController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    ThousandsFormatter(),
+                                  ],
+                                  decoration: InputDecoration(
+                                    hintText: "Prix intrant",
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
                                   ),
+                                )),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                              ),
+                              child: FutureBuilder(
+                                future: _monnaieList,
+                                builder: (_, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return TextDropdownFormField(
+                                      options: [],
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText: "Chargement..."),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  if (snapshot.hasData) {
+                                    dynamic jsonString =
+                                        utf8.decode(snapshot.data.bodyBytes);
+                                    dynamic responseData =
+                                        json.decode(jsonString);
+
+                                    if (responseData is List) {
+                                      final reponse = responseData;
+                                      final monaieList = reponse
+                                          .map((e) => Monnaie.fromMap(e))
+                                          .where((con) => con.statut == true)
+                                          .toList();
+                                      if (monaieList.isEmpty) {
+                                        return TextDropdownFormField(
+                                          options: [],
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 20),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              suffixIcon: Icon(Icons.search),
+                                              labelText:
+                                                  "Aucune monnaie trouvé"),
+                                          cursorColor: Colors.green,
+                                        );
+                                      }
+
+                                      return DropdownFormField<Monnaie>(
+                                        onEmptyActionPressed:
+                                            (String str) async {},
+                                        dropdownHeight: 200,
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 20),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            suffixIcon: Icon(Icons.search),
+                                            labelText: 'Monnaie'),
+                                        onSaved: (dynamic n) {
+                                          monnaie = n;
+                                          print("onSaved : $monnaie");
+                                        },
+                                        onChanged: (dynamic n) {
+                                          monnaie = n;
+                                          print("selected : $monnaie");
+                                        },
+                                        displayItemFn: (dynamic item) => Text(
+                                          item?.libelle ?? '',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        findFn: (String str) async =>
+                                            monaieList,
+                                        selectedFn:
+                                            (dynamic item1, dynamic item2) {
+                                          if (item1 != null && item2 != null) {
+                                            return item1.idMonnaie ==
+                                                item2.idMonnaie;
+                                          }
+                                          return false;
+                                        },
+                                        filterFn: (dynamic item, String str) =>
+                                            item.libelle!
+                                                .toLowerCase()
+                                                .contains(str.toLowerCase()),
+                                        dropdownItemFn: (dynamic item,
+                                                int position,
+                                                bool focused,
+                                                bool selected,
+                                                Function() onTap) =>
+                                            ListTile(
+                                          title: Text(item.libelle!),
+                                          tileColor: focused
+                                              ? Color.fromARGB(20, 0, 0, 0)
+                                              : Colors.transparent,
+                                          onTap: onTap,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucune monnaie trouvé"),
+                                    cursorColor: Colors.green,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text("Choisir une photo"),
+                    SizedBox(
+                      child: photo != null
+                          ? GestureDetector(
+                              onTap: _showImageSourceDialog,
+                              child: Image.file(
+                                photo!,
+                                fit: BoxFit.fitWidth,
+                                height: 150,
+                                width: 300,
+                              ),
+                            )
+                          : SizedBox(
+                              child: IconButton(
+                                onPressed: _showImageSourceDialog,
+                                icon: const Icon(
+                                  Icons.add_a_photo_rounded,
+                                  size: 60,
                                 ),
                               ),
-                      ),
+                            ),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(

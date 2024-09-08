@@ -13,6 +13,7 @@ import 'package:koumi/widgets/LoadingOverlay.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 class AddMagasinScreen extends StatefulWidget {
   bool? isEditable;
@@ -41,7 +42,6 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
   late Acteur acteur = Acteur();
   String nomMagasin = "";
   String contactMagasin = "";
-  // String niveau3PaysMagasin = "";
   String localiteMagasin = "";
 
   File? photos;
@@ -56,8 +56,6 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
   TextEditingController nomMagasinController = TextEditingController();
   TextEditingController contactMagasinController = TextEditingController();
   TextEditingController localiteMagasinController = TextEditingController();
-  // late ParametreGeneraux para;
-  // List<ParametreGeneraux> paraList = [];
   List<Map<String, dynamic>> regionsData = [];
   bool isLoading = false;
   bool isLoadingLibelle = true;
@@ -112,26 +110,23 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                 photo: widget.photo,
                 acteur: acteur,
                 niveau1Pays: niveau1Pays)
-            .then((value) => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Center(child: Text('Succès')),
-                      content: const Text("Magasin mis à jour avec succès"),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                             Navigator.pop(context, true);
-                            nomMagasinController.clear();
-                            contactMagasinController.clear();
-                            localiteMagasinController.clear();
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                ));
+            .then((value) {
+         Provider.of<MagasinService>(context, listen: false).applyChange();
+          Navigator.pop(context, true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  Text(
+                    "Magasin modifier avec succèss",
+                    style: TextStyle(overflow: TextOverflow.ellipsis),
+                  ),
+                ],
+              ),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        });
       } else {
         await magasinService
             .updateMagasin(
@@ -141,26 +136,23 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                 localiteMagasin: localiteMagasin,
                 acteur: acteur,
                 niveau1Pays: niveau1Pays)
-            .then((value) => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Center(child: Text('Succès')),
-                      content: const Text("Magasin mis à jour avec succès"),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                            nomMagasinController.clear();
-                            contactMagasinController.clear();
-                            localiteMagasinController.clear();
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                ));
+            .then((value) {
+          Provider.of<MagasinService>(context, listen: false).applyChange();
+          Navigator.pop(context, true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  Text(
+                    "Magasin modifier avec succèss",
+                    style: TextStyle(overflow: TextOverflow.ellipsis),
+                  ),
+                ],
+              ),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        });
       }
     } catch (e) {
       debugPrint("Erreur : $e");
@@ -399,15 +391,15 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
   @override
   Widget build(BuildContext context) {
     const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
-const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
+    const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
     return LoadingOverlay(
       isLoading: isLoading,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -528,17 +520,17 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                         builder: (_, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
+                            return TextDropdownFormField(
+                              options: [],
                               decoration: InputDecoration(
-                                labelText: 'En cours de chargement',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Chargement..."),
+                              cursorColor: Colors.green,
                             );
                           }
 
@@ -549,87 +541,89 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
                             if (responseData is List) {
                               final reponse = responseData;
-                              final niveau1List = reponse
+                              final monaieList = reponse
                                   .map((e) => Niveau1Pays.fromMap(e))
                                   .where((con) => con.statutN1 == true)
                                   .toList();
-
-                              if (niveau1List.isEmpty) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
+                              if (monaieList.isEmpty) {
+                                return TextDropdownFormField(
+                                  options: [],
                                   decoration: InputDecoration(
-                                    labelText: 'Aucune région trouvée',
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Aucune région trouvé"),
+                                  cursorColor: Colors.green,
+                                );
+                              }
+
+                              return DropdownFormField<Niveau1Pays>(
+                                onEmptyActionPressed: (String str) async {},
+                                dropdownHeight: 200,
+                                decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                  ),
-                                );
-                              }
-
-                              return DropdownButtonFormField<String>(
-                                isExpanded: true,
-                                items: niveau1List
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e.idNiveau1Pays,
-                                        child: Text(e.nomN1!),
-                                      ),
-                                    )
-                                    .toList(),
-                                value: niveau1Pays.idNiveau1Pays,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    niveau1Pays.idNiveau1Pays = newValue;
-                                    if (newValue != null) {
-                                      niveau1Pays = niveau1List.firstWhere(
-                                        (niveau1Pays) =>
-                                            niveau1Pays.idNiveau1Pays ==
-                                            newValue,
-                                      );
-                                      print("niveau 1 : ${niveau1Pays}");
-                                    }
-                                  });
+                                    suffixIcon: Icon(Icons.search),
+                                    labelText: widget.isEditable == false
+                                        ? 'Selectionner une région'
+                                        : widget.niveau1Pays!.nomN1!),
+                                onSaved: (dynamic n) {
+                                  niveau1Pays = n;
+                                  print("onSaved : $niveau1Pays");
                                 },
-                                decoration: InputDecoration(
-                                  labelText: widget.isEditable! == false
-                                      ? 'Selectionner une région'
-                                      : widget.niveau1Pays!.nomN1,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                                onChanged: (dynamic n) {
+                                  niveau1Pays = n;
+                                  print("selected : $niveau1Pays");
+                                },
+                                displayItemFn: (dynamic item) => Text(
+                                  item?.nomN1 ?? '',
+                                  style: TextStyle(fontSize: 16),
                                 ),
-                              );
-                            } else {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Aucune région trouvé',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                                findFn: (String str) async => monaieList,
+                                selectedFn: (dynamic item1, dynamic item2) {
+                                  if (item1 != null && item2 != null) {
+                                    return item1.idNiveau1Pays ==
+                                        item2.idNiveau1Pays;
+                                  }
+                                  return false;
+                                },
+                                filterFn: (dynamic item, String str) => item
+                                    .nomN1!
+                                    .toLowerCase()
+                                    .contains(str.toLowerCase()),
+                                dropdownItemFn: (dynamic item,
+                                        int position,
+                                        bool focused,
+                                        bool selected,
+                                        Function() onTap) =>
+                                    ListTile(
+                                  title: Text(item.nomN1!),
+                                  tileColor: focused
+                                      ? Color.fromARGB(20, 0, 0, 0)
+                                      : Colors.transparent,
+                                  onTap: onTap,
                                 ),
                               );
                             }
                           }
-                          return DropdownButtonFormField(
-                            items: [],
-                            onChanged: null,
+                          return TextDropdownFormField(
+                            options: [],
                             decoration: InputDecoration(
-                              labelText: 'Aucune région trouvé',
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                suffixIcon: Icon(Icons.search),
+                                labelText: "Aucune région trouvé"),
+                            cursorColor: Colors.green,
                           );
                         },
                       ),
@@ -671,7 +665,7 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                       const SizedBox(
                         height: 10,
                       ),
-
+                      Text("Choisir une photo"),
                       (photos == null)
                           ? IconButton(
                               onPressed: _showImageSourceDialog,
@@ -684,7 +678,6 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
                               width: 200,
                               fit: BoxFit.cover,
                             ),
-                      Text("Choisir une image"),
 
                       const SizedBox(
                         height: 10,

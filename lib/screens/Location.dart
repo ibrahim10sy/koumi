@@ -106,7 +106,7 @@ class _LocationState extends State<Location> {
       });
 
       fetchMaterielByType(detectedCountry != null ? detectedCountry! : "mali");
-    }else if (nomP != null && nomP!.isNotEmpty) {
+    } else if (nomP != null && nomP!.isNotEmpty) {
       debugPrint("yes - fetch by country");
       if (mounted)
         setState(() {
@@ -179,8 +179,7 @@ class _LocationState extends State<Location> {
     return materielListe;
   }
 
-   Future<List<Materiels>> fetchAllByPays(
-      {bool refresh = false}) async {
+  Future<List<Materiels>> fetchAllByPays({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -332,7 +331,7 @@ class _LocationState extends State<Location> {
   @override
   void initState() {
     super.initState();
-   _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
+    _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
     verify();
     final paysProvider = Provider.of<DetectorPays>(context, listen: false);
     paysProvider.hasLocation
@@ -376,8 +375,12 @@ class _LocationState extends State<Location> {
   }
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ListeMaterielByActeur(isRoute: true,)));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListeMaterielByActeur(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -655,7 +658,7 @@ class _LocationState extends State<Location> {
                                           color: d_colorGreen, fontSize: 17),
                                     ),
                                   ),
-                               if (isSearchMode)
+                                if (isSearchMode)
                                   TextButton.icon(
                                     onPressed: () {
                                       if (mounted) {
@@ -669,12 +672,12 @@ class _LocationState extends State<Location> {
                                               null; // Réinitialiser le pays sélectionné
                                           selectedType =
                                               null; // Réinitialiser la catégorie sélectionnée
-                                           materielListeFuture = MaterielService()
-                                    .fetchMateriel(
-                                        detectedCountry != null
-                                            ? detectedCountry!
-                                            : "mali",
-                                        refresh: true);
+                                          materielListeFuture =
+                                              MaterielService().fetchMateriel(
+                                                  detectedCountry != null
+                                                      ? detectedCountry!
+                                                      : "mali",
+                                                  refresh: true);
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -692,8 +695,7 @@ class _LocationState extends State<Location> {
                                   )
                               ]),
                         ),
-                        
-                         Visibility(
+                        Visibility(
                           visible: isSearchMode,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -862,43 +864,14 @@ class _LocationState extends State<Location> {
                                 ),
                                 Expanded(
                                   child: FutureBuilder(
-                                                                future: _typeList,
-                                                                builder: (_, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          icon: Icon(Icons.search),
-                                          contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 0),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(22),
-                                              ),
-                                      suffixIcon: Icon(Icons.search, size: 19),
-                                          labelText: "Chargement..."),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-                                  
-                                  if (snapshot.hasData) {
-                                    dynamic jsonString =
-                                        utf8.decode(snapshot.data.bodyBytes);
-                                    dynamic responseData =
-                                        json.decode(jsonString);
-                                  
-                                    if (responseData is List) {
-                                      final paysList = responseData
-                                          .map((e) => TypeMateriel.fromMap(e))
-                                          .where((con) => con.statutType == true)
-                                          .toList();
-                                      if (paysList.isEmpty) {
+                                    future: _typeList,
+                                    builder: (_, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
                                         return TextDropdownFormField(
                                           options: [],
                                           decoration: InputDecoration(
+                                              icon: Icon(Icons.search),
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 10,
@@ -907,99 +880,145 @@ class _LocationState extends State<Location> {
                                                 borderRadius:
                                                     BorderRadius.circular(22),
                                               ),
-                                      suffixIcon: Icon(Icons.search, size: 19),
-                                              labelText:
-                                                  " Aucune type trouvé"),
+                                              suffixIcon:
+                                                  Icon(Icons.search, size: 19),
+                                              labelText: "Chargement..."),
                                           cursorColor: Colors.green,
                                         );
                                       }
-                                  
-                                      return DropdownFormField<TypeMateriel>(
-                                        onEmptyActionPressed:
-                                            (String str) async {},
-                                        dropdownHeight: 200,
-                                        decoration: InputDecoration(
-                                           contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 0),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(22),
-                                              ),
-                                      suffixIcon: Icon(Icons.search, size: 19),
-                                            labelText: " Filtrer par type"),
-                                        onSaved: (dynamic cat) {
-                                          selectedType = cat;
-                                          print("onSaved : $cat");
-                                        },
-                                        onChanged: (dynamic cat) {
-                                          setState(() {
-                                            selectedType = cat;
-                                            page = 0;
-                                            hasMore = true;
-                                            fetchMaterielByType(
-                                                detectedCountry != null
-                                                    ? detectedCountry!
-                                                    : "mali",
-                                                refresh: true);
-                                            if (page == 0 && isLoading == true) {
-                                              SchedulerBinding.instance
-                                                  .addPostFrameCallback((_) {
-                                                scrollableController1.jumpTo(0.0);
-                                              });
-                                            }
-                                          });
-                                        },
-                                        displayItemFn: (dynamic item) => Text(
-                                          item?.nom! ?? '',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        findFn: (String str) async => paysList,
-                                        selectedFn:
-                                            (dynamic item1, dynamic item2) {
-                                          if (item1 != null && item2 != null) {
-                                            return item1.idTypeMateriel ==
-                                                item2.idTypeMateriel;
+
+                                      if (snapshot.hasData) {
+                                        dynamic jsonString = utf8
+                                            .decode(snapshot.data.bodyBytes);
+                                        dynamic responseData =
+                                            json.decode(jsonString);
+
+                                        if (responseData is List) {
+                                          final paysList = responseData
+                                              .map((e) =>
+                                                  TypeMateriel.fromMap(e))
+                                              .where((con) =>
+                                                  con.statutType == true)
+                                              .toList();
+                                          if (paysList.isEmpty) {
+                                            return TextDropdownFormField(
+                                              options: [],
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            22),
+                                                  ),
+                                                  suffixIcon: Icon(Icons.search,
+                                                      size: 19),
+                                                  labelText:
+                                                      " Aucune type trouvé"),
+                                              cursorColor: Colors.green,
+                                            );
                                           }
-                                          return false;
-                                        },
-                                        filterFn: (dynamic item, String str) =>
-                                            item.nom!
-                                                .toLowerCase()
-                                                .contains(str.toLowerCase()),
-                                        dropdownItemFn: (dynamic item,
-                                                int position,
-                                                bool focused,
-                                                bool selected,
-                                                Function() onTap) =>
-                                            ListTile(
-                                          title: Text(item.nom!),
-                                          tileColor: focused
-                                              ? Color.fromARGB(20, 0, 0, 0)
-                                              : Colors.transparent,
-                                          onTap: onTap,
-                                        ),
+
+                                          return DropdownFormField<
+                                              TypeMateriel>(
+                                            onEmptyActionPressed:
+                                                (String str) async {},
+                                            dropdownHeight: 200,
+                                            decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 0),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                                suffixIcon: Icon(Icons.search,
+                                                    size: 19),
+                                                labelText: " Filtrer par type"),
+                                            onSaved: (dynamic cat) {
+                                              selectedType = cat;
+                                              print("onSaved : $cat");
+                                            },
+                                            onChanged: (dynamic cat) {
+                                              setState(() {
+                                                selectedType = cat;
+                                                page = 0;
+                                                hasMore = true;
+                                                fetchMaterielByType(
+                                                    detectedCountry != null
+                                                        ? detectedCountry!
+                                                        : "mali",
+                                                    refresh: true);
+                                                if (page == 0 &&
+                                                    isLoading == true) {
+                                                  SchedulerBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) {
+                                                    scrollableController1
+                                                        .jumpTo(0.0);
+                                                  });
+                                                }
+                                              });
+                                            },
+                                            displayItemFn: (dynamic item) =>
+                                                Text(
+                                              item?.nom! ?? '',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            findFn: (String str) async =>
+                                                paysList,
+                                            selectedFn:
+                                                (dynamic item1, dynamic item2) {
+                                              if (item1 != null &&
+                                                  item2 != null) {
+                                                return item1.idTypeMateriel ==
+                                                    item2.idTypeMateriel;
+                                              }
+                                              return false;
+                                            },
+                                            filterFn:
+                                                (dynamic item, String str) =>
+                                                    item.nom!
+                                                        .toLowerCase()
+                                                        .contains(
+                                                            str.toLowerCase()),
+                                            dropdownItemFn: (dynamic item,
+                                                    int position,
+                                                    bool focused,
+                                                    bool selected,
+                                                    Function() onTap) =>
+                                                ListTile(
+                                              title: Text(item.nom!),
+                                              tileColor: focused
+                                                  ? Color.fromARGB(20, 0, 0, 0)
+                                                  : Colors.transparent,
+                                              onTap: onTap,
+                                            ),
+                                          );
+                                        }
+                                      }
+                                      return TextDropdownFormField(
+                                        options: [],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 0),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                            suffixIcon:
+                                                Icon(Icons.search, size: 19),
+                                            labelText: " Aucune type trouvé"),
+                                        cursorColor: Colors.green,
                                       );
-                                    }
-                                  }
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 0),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(22),
-                                              ),
-                                      suffixIcon: Icon(Icons.search, size: 19),
-                                        labelText: " Aucune type trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                                                },
-                                                              ),
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -1063,12 +1082,13 @@ class _LocationState extends State<Location> {
                                         refresh: true);
                               })
                             : setState(() {
-                               selectedType != null ? 
-                                materielListeFuture1 = MaterielService()
-                                    .fetchMaterielByTypeAndPaysWithPagination(
-                                        selectedType!.idTypeMateriel!,
-                                        refresh: true): materielListeFuture1 = MaterielService()
-                                    .fetchMaterielByPays(nomP!);
+                                selectedType != null
+                                    ? materielListeFuture1 = MaterielService()
+                                        .fetchMaterielByTypeAndPaysWithPagination(
+                                            selectedType!.idTypeMateriel!,
+                                            refresh: true)
+                                    : materielListeFuture1 = MaterielService()
+                                        .fetchMaterielByPays(nomP!);
                               });
                       },
                       child: selectedType == null && nomP == null
@@ -1325,7 +1345,7 @@ class _LocationState extends State<Location> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                          "Matériel etrangère",
+                                                          "Matériel autre pays",
                                                           style: TextStyle(
                                                               fontSize: 16),
                                                         ),
@@ -1729,7 +1749,7 @@ class _LocationState extends State<Location> {
                                                                 const EdgeInsets
                                                                     .all(8.0),
                                                             child: Text(
-                                                              "Matériel etrangère",
+                                                              "Matériel autre pays",
                                                               style: TextStyle(
                                                                   fontSize: 16),
                                                             ),

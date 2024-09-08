@@ -60,8 +60,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     });
   }
 
- 
-
   Future<void> loginUser() async {
     const String baseUrl = '$apiOnlineUrl/acteur/pinLogin';
 
@@ -493,34 +491,21 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               /// reset button
               TextButton(
                 onPressed: () {
-                  // setState(() {
-                  //   enteredPin = '';
-                  //   if (enteredPin.length < 1) {
-                  //     Get.snackbar(
-                  //         "Alerte", "Le champ de saisi est déjà vide !");
-                  //   }
-                  // });
                   Get.to(ForgetPassScreen(),
                       duration: Duration(seconds: 1),
                       transition: Transition.leftToRight);
                 },
                 child: const Text(
-                  'Réinitialiser le code ',
+                  "Mot de passe oublié ",
                   style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
+                    fontSize: 16,
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
                   ),
                 ),
               ),
-
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 30,
-                // decoration: const BoxDecoration(
-                //   color: Color.fromARGB(255, 240, 178, 107),
-                // ),
+              SizedBox(
+                height: 35,
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -544,7 +529,8 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                         child: const Text(
                           "S'inscrire",
                           style: TextStyle(
-                              color: const Color.fromARGB(255, 3, 100, 179),
+                              decoration: TextDecoration.underline,
+                              color: Colors.blue,
                               fontSize: 22,
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.bold),

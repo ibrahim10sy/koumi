@@ -254,8 +254,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
     return intrantListe;
   }
 
-  Future<List<Intrant>> fetchIntrantByCategorie(
-      {bool refresh = false}) async {
+  Future<List<Intrant>> fetchIntrantByCategorie({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -690,7 +689,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                   // detectedCountry != null
                                                   //     ? detectedCountry!
                                                   //     : "Mali"
-                                                      ); // Recharger les stocks
+                                                  ); // Recharger les stocks
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1111,7 +1110,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                     // detectedCountry != null
                                     //     ? detectedCountry!
                                     //     : "Mali"
-                                        );
+                                    );
                               });
                         debugPrint("refresh page ${page}");
                       },
@@ -1364,7 +1363,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1784,7 +1783,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),

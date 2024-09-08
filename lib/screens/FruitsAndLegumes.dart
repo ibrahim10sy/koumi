@@ -120,8 +120,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
         page++;
       });
 
-      fetchStock()
-          .then((value) {
+      fetchStock().then((value) {
         setState(() {
           // Rafraîchir les données ici
           debugPrint("page inc all ${page}");
@@ -147,8 +146,8 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
         });
 
       fetchStockByCategorie(
-        // detectedCountry != null ? detectedCountry! : "Mali"
-        )
+              // detectedCountry != null ? detectedCountry! : "Mali"
+              )
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
@@ -174,10 +173,10 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
   Future<List<Stock>> getAllStock() async {
     if (selectedCat != null) {
       stockListe = await StockService().fetchStockByCategorieAndFiliere(
-          selectedCat!.idCategorieProduit!,
-          libelle,
-          // detectedCountry != null ? detectedCountry! : "mali"
-          );
+        selectedCat!.idCategorieProduit!,
+        libelle,
+        // detectedCountry != null ? detectedCountry! : "mali"
+      );
     } else if (nomP != null && nomP!.isNotEmpty) {
       stockListe =
           await StockService().fetchStockByPaysAndFiliere(libelle, nomP!);
@@ -239,8 +238,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
     return stockListe;
   }
 
-  Future<List<Stock>> fetchStockByCategorie(
-      {bool refresh = false}) async {
+  Future<List<Stock>> fetchStockByCategorie({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -425,8 +423,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
     _catList = http.get(Uri.parse(
         '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
     stockListeFuture1 = getAllStock();
-    stockListeFuture =
-        fetchStock();
+    stockListeFuture = fetchStock();
     // stockListeFuture =
     //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
   }
@@ -442,8 +439,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        stockListeFuture =
-            fetchStock();
+        stockListeFuture = fetchStock();
         // stockListeFuture =
         //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
       });
@@ -1177,23 +1173,23 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                 nomP == null
                                     ? stockListeFuture1 = StockService()
                                         .fetchStockByCategorieAndFiliere(
-                                            selectedCat!.idCategorieProduit!,
-                                            libelle,
-                                            // detectedCountry != null
-                                            //     ? detectedCountry!
-                                            //     : "Mali"
-                                                )
+                                        selectedCat!.idCategorieProduit!,
+                                        libelle,
+                                        // detectedCountry != null
+                                        //     ? detectedCountry!
+                                        //     : "Mali"
+                                      )
                                     : stockListeFuture1 = StockService()
                                         .fetchStockByPaysAndFiliere(
                                             libelle, nomP!);
                               })
                             : setState(() {
                                 stockListeFuture = fetchStock();
-                            // : setState(() {
-                            //     stockListeFuture = fetchStock(
-                            //         detectedCountry != null
-                            //             ? detectedCountry!
-                            //             : "Mali");
+                                // : setState(() {
+                                //     stockListeFuture = fetchStock(
+                                //         detectedCountry != null
+                                //             ? detectedCountry!
+                                //             : "Mali");
                               });
                         debugPrint("refresh page ${page}");
                       },
@@ -1450,7 +1446,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1873,7 +1869,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: Text(
-                                                      "Produits etrangère",
+                                                      "Produits autre pays",
                                                       style: TextStyle(
                                                           fontSize: 16),
                                                     ),

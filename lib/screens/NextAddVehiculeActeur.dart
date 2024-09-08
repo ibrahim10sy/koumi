@@ -275,7 +275,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Chosir la monnaie",
+                            "Choisir la monnaie",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
@@ -643,6 +643,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                       Column(
                         children: destinationPrixFields,
                       ),
+                      Text("Choisir une photo"),
                       SizedBox(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),

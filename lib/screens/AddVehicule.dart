@@ -161,6 +161,150 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
+                     SizedBox(
+                        height: 5,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 22,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Type de véhicule",
+                            style:
+                                TextStyle(color: (Colors.black), fontSize: 18),
+                          ),
+                        ),
+                      ), 
+                       Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        child: FutureBuilder(
+                                future: _typeList,
+                                builder: (_, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return TextDropdownFormField(
+                                      options: [],
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText: "Chargement..."),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  if (snapshot.hasData) {
+                                    dynamic jsonString =
+                                        utf8.decode(snapshot.data.bodyBytes);
+                                    dynamic responseData =
+                                        json.decode(jsonString);
+
+                                    if (responseData is List) {
+                                      final reponse = responseData;
+                                      final monaieList = reponse
+                                          .map((e) => TypeVoiture.fromMap(e))
+                                          .where(
+                                              (con) => con.statutType == true)
+                                          .toList();
+                                      if (monaieList.isEmpty) {
+                                        return TextDropdownFormField(
+                                          options: [],
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 20),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              suffixIcon: Icon(Icons.search),
+                                              labelText: "Aucun type trouvé"),
+                                          cursorColor: Colors.green,
+                                        );
+                                      }
+
+                                      return DropdownFormField<TypeVoiture>(
+                                        onEmptyActionPressed:
+                                            (String str) async {},
+                                        dropdownHeight: 200,
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 20),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            suffixIcon: Icon(Icons.search),
+                                            labelText: 'Sélectionner un type' ),
+                                        onSaved: (dynamic n) {
+                                          typeVoiture = n;
+                                          print("onSaved : $typeVoiture");
+                                        },
+                                        onChanged: (dynamic n) {
+                                          typeVoiture = n;
+                                          print("selected : $typeVoiture");
+                                        },
+                                        displayItemFn: (dynamic item) => Text(
+                                          item?.nom ?? '',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        findFn: (String str) async =>
+                                            monaieList,
+                                        selectedFn:
+                                            (dynamic item1, dynamic item2) {
+                                          if (item1 != null && item2 != null) {
+                                            return item1.idTypeVoiture ==
+                                                item2.idTypeVoiture;
+                                          }
+                                          return false;
+                                        },
+                                        filterFn: (dynamic item, String str) =>
+                                            item.nom!
+                                                .toLowerCase()
+                                                .contains(str.toLowerCase()),
+                                        dropdownItemFn: (dynamic item,
+                                                int position,
+                                                bool focused,
+                                                bool selected,
+                                                Function() onTap) =>
+                                            ListTile(
+                                          title: Text(item.nom!),
+                                          tileColor: focused
+                                              ? Color.fromARGB(20, 0, 0, 0)
+                                              : Colors.transparent,
+                                          onTap: onTap,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucun type trouvé"),
+                                    cursorColor: Colors.green,
+                                  );
+                                },
+                              ),
+                      ),
                       SizedBox(
                         height: 5,
                       ),
@@ -240,137 +384,8 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 22,
-                        ),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Type de véhicule",
-                            style:
-                                TextStyle(color: (Colors.black), fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _typeList,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              // dynamic responseData =
-                              //     json.decode(snapshot.data.body);
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final vehiculeList = reponse
-                                    .map((e) => TypeVoiture.fromMap(e))
-                                    .where((con) => con.statutType == true)
-                                    .toList();
-
-                                if (vehiculeList.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          'Aucun type de véhicule trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  items: vehiculeList
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idTypeVoiture,
-                                          child: Text(e.nom!),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: typeValue,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      typeValue = newValue;
-                                      if (newValue != null) {
-                                        typeVoiture = vehiculeList.firstWhere(
-                                          (element) =>
-                                              element.idTypeVoiture == newValue,
-                                        );
-                                      }
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        'Sélectionner un type de véhicule',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun type de véhicule trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucun type de véhicule trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                     
+            
                       SizedBox(
                         height: 5,
                       ),

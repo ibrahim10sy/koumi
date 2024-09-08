@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
-import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -276,7 +275,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Chosir la monnaie",
+                            "Choisir la monnaie",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),

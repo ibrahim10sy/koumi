@@ -85,8 +85,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
     debugPrint("no");
   }
 
-  Future<List<Intrant>> fetchIntrantByCategorie(
-      {bool refresh = false}) async {
+  Future<List<Intrant>> fetchIntrantByCategorie({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -1115,7 +1114,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                     // detectedCountry != null
                                     //     ? detectedCountry!
                                     //     : "Mali"
-                                        );
+                                    );
                               });
                       },
                       child: selectedCat == null && nomP == null
@@ -1369,7 +1368,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1776,7 +1775,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),

@@ -101,8 +101,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<List<Stock>> getAllStocks() async {
-    stockListe = await StockService()
-        .fetchStock();
+    stockListe = await StockService().fetchStock();
     return stockListe;
   }
   // Future<List<Stock>> getAllStocks() async {
@@ -122,8 +121,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           page++;
         });
       debugPrint("yes - fetch all stocks by pays");
-      fetchStock()
-          .then((value) {
+      fetchStock().then((value) {
         setState(() {
           debugPrint("page inc all ${page}");
         });
@@ -191,8 +189,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     debugPrint("no");
   }
 
-  Future<List<Stock>> fetchStock(
-      {bool refresh = false}) async {
+  Future<List<Stock>> fetchStock({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -464,7 +461,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
     final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MyProductScreen(isRoute: true,)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyProductScreen(
+                  isRoute: true,
+                )));
     log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
@@ -492,7 +493,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1062,15 +1062,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 StockService().fetchStockByPays(nomP!);
                       })
                     : setState(() {
-                        stockListeFuture = StockService().fetchStock(
-                          );
+                        stockListeFuture = StockService().fetchStock();
                       });
-                    // : setState(() {
-                    //     stockListeFuture = StockService().fetchStock(
-                    //         detectedCountry != null
-                    //             ? detectedCountry!
-                    //             : "Mali");
-                    //   });
+                // : setState(() {
+                //     stockListeFuture = StockService().fetchStock(
+                //         detectedCountry != null
+                //             ? detectedCountry!
+                //             : "Mali");
+                //   });
               },
               child: selectedCat == null && nomP == null
                   ? SingleChildScrollView(
@@ -1366,7 +1365,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Text(
-                                                "Produits etrangère",
+                                                "Produits autre pays",
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                             ),
@@ -1843,7 +1842,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Text(
-                                                    "Produits etrangère",
+                                                    "Produits autre pays",
                                                     style:
                                                         TextStyle(fontSize: 16),
                                                   ),
@@ -2215,5 +2214,4 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
     );
   }
-
 }

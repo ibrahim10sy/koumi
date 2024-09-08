@@ -1299,7 +1299,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                          "Produits etrangère",
+                                                          "Produits autre pays",
                                                           style: TextStyle(
                                                               fontSize: 16),
                                                         ),
@@ -1719,7 +1719,7 @@ class _IntrantScreenState extends State<IntrantScreen> {
                                                                 const EdgeInsets
                                                                     .all(8.0),
                                                             child: Text(
-                                                              "Produits etrangère",
+                                                              "Produits autre pays",
                                                               style: TextStyle(
                                                                   fontSize: 16),
                                                             ),

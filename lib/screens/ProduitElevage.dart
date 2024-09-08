@@ -99,8 +99,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
         page++;
       });
 
-      fetchStock()
-          .then((value) {
+      fetchStock().then((value) {
         setState(() {
           // Rafraîchir les données ici
           debugPrint("page inc all ${page}");
@@ -149,8 +148,8 @@ class _ProduitElevageState extends State<ProduitElevage> {
         });
 
       fetchStockByCategorie(
-        // detectedCountry != null ? detectedCountry! : "Mali"
-        )
+              // detectedCountry != null ? detectedCountry! : "Mali"
+              )
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
@@ -176,10 +175,10 @@ class _ProduitElevageState extends State<ProduitElevage> {
   Future<List<Stock>> getAllStock() async {
     if (selectedCat != null) {
       stockListe = await StockService().fetchStockByCategorieAndFiliere(
-          selectedCat!.idCategorieProduit!,
-          libelle,
-          // detectedCountry != null ? detectedCountry! : "mali"
-          );
+        selectedCat!.idCategorieProduit!,
+        libelle,
+        // detectedCountry != null ? detectedCountry! : "mali"
+      );
     } else if (nomP != null && nomP!.isNotEmpty) {
       stockListe =
           await StockService().fetchStockByPaysAndFiliere(libelle, nomP!);
@@ -188,8 +187,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
     return stockListe;
   }
 
-  Future<List<Stock>> fetchStockByCategorie(
-      {bool refresh = false}) async {
+  Future<List<Stock>> fetchStockByCategorie({bool refresh = false}) async {
     if (isLoading == true) return [];
 
     setState(() {
@@ -435,8 +433,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
     _catList = http.get(Uri.parse(
         '$apiOnlineUrl/Categorie/allCategorieByLibelleFiliere/$libelle'));
     stockListeFuture1 = getAllStock();
-    stockListeFuture =
-        fetchStock();
+    stockListeFuture = fetchStock();
     // stockListeFuture =
     //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
   }
@@ -466,8 +463,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        stockListeFuture =
-            fetchStock();
+        stockListeFuture = fetchStock();
         // stockListeFuture =
         //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali");
       });
@@ -761,7 +757,8 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                               null; // Réinitialiser le pays sélectionné
                                           selectedCat =
                                               null; // Réinitialiser la catégorie sélectionnée
-                                          stockListeFuture = fetchStock(); // Recharger les stocks
+                                          stockListeFuture =
+                                              fetchStock(); // Recharger les stocks
                                           // stockListeFuture = fetchStock(
                                           //     detectedCountry != null
                                           //         ? detectedCountry!
@@ -1172,23 +1169,23 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                 nomP == null || nomP!.isEmpty
                                     ? stockListeFuture1 = StockService()
                                         .fetchStockByCategorieAndFiliere(
-                                            selectedCat!.idCategorieProduit!,
-                                            libelle,
-                                            // detectedCountry != null
-                                            //     ? detectedCountry!
-                                            //     : "Mali"
-                                                )
+                                        selectedCat!.idCategorieProduit!,
+                                        libelle,
+                                        // detectedCountry != null
+                                        //     ? detectedCountry!
+                                        //     : "Mali"
+                                      )
                                     : stockListeFuture1 = StockService()
                                         .fetchStockByPaysAndFiliere(
                                             libelle, nomP!);
                               })
                             : setState(() {
                                 stockListeFuture = fetchStock();
-                            // : setState(() {
-                            //     stockListeFuture = fetchStock(
-                            //         detectedCountry != null
-                            //             ? detectedCountry!
-                            //             : "Mali");
+                                // : setState(() {
+                                //     stockListeFuture = fetchStock(
+                                //         detectedCountry != null
+                                //             ? detectedCountry!
+                                //             : "Mali");
                               });
                         debugPrint("refresh page ${page}");
                       },
@@ -1456,9 +1453,8 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
-                                                            
                                                             fontSize: 16),
                                                       ),
                                                     ),
@@ -1884,9 +1880,8 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits etrangère",
+                                                        "Produits autre pays",
                                                         style: TextStyle(
-                                                            
                                                             fontSize: 16),
                                                       ),
                                                     ),

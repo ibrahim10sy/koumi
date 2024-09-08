@@ -100,13 +100,15 @@ class _AddMaterielState extends State<AddMateriel> {
     fetchLibelleNiveau3Pays();
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
 
-    _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
+    // _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
 
-    _categorieList = http.get(Uri.parse(
-        '$apiOnlineUrl/Categorie/allCategorieByFiliere/${filiere.idFiliere}'));
+    // _categorieList = http.get(Uri.parse(
+    //     '$apiOnlineUrl/Categorie/allCategorieByFiliere/${filiere.idFiliere}'));
 
-    _speculationList = http.get(Uri.parse(
-        '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${categorieProduit.idCategorieProduit}'));
+    // _speculationList = http.get(Uri.parse(
+    //     '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${categorieProduit.idCategorieProduit}'));
+    _speculationList =
+        http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
 
     _niveau3List = http.get(Uri.parse(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
@@ -225,6 +227,286 @@ class _AddMaterielState extends State<AddMateriel> {
                     child: Column(
                       children: [
                         SizedBox(height: 10),
+                        // if (widget.isEquipement!)
+                        //   Padding(
+                        //     padding: EdgeInsets.symmetric(
+                        //       horizontal: 22,
+                        //     ),
+                        //     child: Align(
+                        //       alignment: Alignment.topLeft,
+                        //       child: Text(
+                        //         "Choisir une filière",
+                        //         style: TextStyle(
+                        //             color: (Colors.black), fontSize: 18),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // if (widget.isEquipement!)
+                        //   Padding(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         vertical: 10, horizontal: 20),
+                        //     child: FutureBuilder(
+                        //       future: _filiereList,
+                        //       builder: (_, snapshot) {
+                        //         if (snapshot.connectionState ==
+                        //             ConnectionState.waiting) {
+                        //           return DropdownButtonFormField(
+                        //             items: [],
+                        //             onChanged: null,
+                        //             decoration: InputDecoration(
+                        //               labelText: 'Chargement...',
+                        //               contentPadding:
+                        //                   const EdgeInsets.symmetric(
+                        //                       vertical: 10, horizontal: 20),
+                        //               border: OutlineInputBorder(
+                        //                 borderRadius: BorderRadius.circular(8),
+                        //               ),
+                        //             ),
+                        //           );
+                        //         }
+
+                        //         if (snapshot.hasData) {
+                        //           dynamic jsonString =
+                        //               utf8.decode(snapshot.data.bodyBytes);
+                        //           dynamic responseData =
+                        //               json.decode(jsonString);
+
+                        //           // Vérifier si responseData est une liste
+                        //           if (responseData is List) {
+                        //             final reponse = responseData;
+                        //             final filiereList = reponse
+                        //                 .map((e) => Filiere.fromMap(e))
+                        //                 .where(
+                        //                     (con) => con.statutFiliere == true)
+                        //                 .toList();
+
+                        //             if (filiereList.isEmpty) {
+                        //               return DropdownButtonFormField(
+                        //                 items: [],
+                        //                 onChanged: null,
+                        //                 decoration: InputDecoration(
+                        //                   labelText: 'Aucun filière trouvé',
+                        //                   contentPadding:
+                        //                       const EdgeInsets.symmetric(
+                        //                           vertical: 10, horizontal: 20),
+                        //                   border: OutlineInputBorder(
+                        //                     borderRadius:
+                        //                         BorderRadius.circular(8),
+                        //                   ),
+                        //                 ),
+                        //               );
+                        //             }
+
+                        //             return DropdownButtonFormField<String>(
+                        //               isExpanded: true,
+                        //               items: filiereList
+                        //                   .map(
+                        //                     (e) => DropdownMenuItem(
+                        //                       value: e.idFiliere,
+                        //                       child: Text(e.libelleFiliere!),
+                        //                     ),
+                        //                   )
+                        //                   .toList(),
+                        //               value: filiereValue,
+                        //               onChanged: (newValue) {
+                        //                 setState(() {
+                        //                   catValue = null;
+                        //                   filiereValue = newValue;
+                        //                   if (newValue != null) {
+                        //                     filiere = filiereList.firstWhere(
+                        //                       (element) =>
+                        //                           element.idFiliere == newValue,
+                        //                     );
+                        //                     debugPrint("valeur : $newValue");
+                        //                     _categorieList = http.get(Uri.parse(
+                        //                         '$apiOnlineUrl/Categorie/allCategorieByFiliere/${newValue}'));
+                        //                   }
+                        //                 });
+                        //               },
+                        //               decoration: InputDecoration(
+                        //                 labelText: 'Sélectionner un filiere',
+                        //                 contentPadding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10, horizontal: 20),
+                        //                 border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(8),
+                        //                 ),
+                        //               ),
+                        //             );
+                        //           } else {
+                        //             return DropdownButtonFormField(
+                        //               items: [],
+                        //               onChanged: null,
+                        //               decoration: InputDecoration(
+                        //                 labelText: 'Aucun filière trouvé',
+                        //                 contentPadding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10, horizontal: 20),
+                        //                 border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(8),
+                        //                 ),
+                        //               ),
+                        //             );
+                        //           }
+                        //         }
+                        //         return DropdownButtonFormField(
+                        //           items: [],
+                        //           onChanged: null,
+                        //           decoration: InputDecoration(
+                        //             labelText: 'Aucun filière trouvé',
+                        //             contentPadding: const EdgeInsets.symmetric(
+                        //                 vertical: 10, horizontal: 20),
+                        //             border: OutlineInputBorder(
+                        //               borderRadius: BorderRadius.circular(8),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //     ),
+                        //   ),
+                        // if (widget.isEquipement!)
+                        //   Padding(
+                        //     padding: EdgeInsets.symmetric(
+                        //       horizontal: 22,
+                        //     ),
+                        //     child: Align(
+                        //       alignment: Alignment.topLeft,
+                        //       child: Text(
+                        //         "Choisir une categorie",
+                        //         style: TextStyle(
+                        //             color: (Colors.black), fontSize: 18),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // if (widget.isEquipement!)
+                        //   Padding(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         vertical: 10, horizontal: 20),
+                        //     child: FutureBuilder(
+                        //       future: _categorieList,
+                        //       builder: (_, snapshot) {
+                        //         if (snapshot.connectionState ==
+                        //             ConnectionState.waiting) {
+                        //           return DropdownButtonFormField(
+                        //             items: [],
+                        //             onChanged: null,
+                        //             decoration: InputDecoration(
+                        //               labelText: 'Chargement...',
+                        //               contentPadding:
+                        //                   const EdgeInsets.symmetric(
+                        //                       vertical: 10, horizontal: 20),
+                        //               border: OutlineInputBorder(
+                        //                 borderRadius: BorderRadius.circular(8),
+                        //               ),
+                        //             ),
+                        //           );
+                        //         }
+
+                        //         if (snapshot.hasData) {
+                        //           dynamic jsonString =
+                        //               utf8.decode(snapshot.data.bodyBytes);
+                        //           dynamic responseData =
+                        //               json.decode(jsonString);
+
+                        //           // Vérifier si responseData est une liste
+                        //           if (responseData is List) {
+                        //             final reponse = responseData;
+                        //             final catList = reponse
+                        //                 .map((e) => CategorieProduit.fromMap(e))
+                        //                 .where((con) =>
+                        //                     con.statutCategorie == true)
+                        //                 .toList();
+
+                        //             if (catList.isEmpty) {
+                        //               return DropdownButtonFormField(
+                        //                 items: [],
+                        //                 onChanged: null,
+                        //                 decoration: InputDecoration(
+                        //                   labelText: 'Aucune categorie trouvé',
+                        //                   contentPadding:
+                        //                       const EdgeInsets.symmetric(
+                        //                           vertical: 10, horizontal: 20),
+                        //                   border: OutlineInputBorder(
+                        //                     borderRadius:
+                        //                         BorderRadius.circular(8),
+                        //                   ),
+                        //                 ),
+                        //               );
+                        //             }
+
+                        //             return DropdownButtonFormField<String>(
+                        //               isExpanded: true,
+                        //               items: catList
+                        //                   .map(
+                        //                     (e) => DropdownMenuItem(
+                        //                       value: e.idCategorieProduit,
+                        //                       child: Text(e.libelleCategorie!),
+                        //                     ),
+                        //                   )
+                        //                   .toList(),
+                        //               value: catValue,
+                        //               onChanged: (newValue) {
+                        //                 setState(() {
+                        //                   speValue = null;
+                        //                   catValue = newValue;
+                        //                   if (newValue != null) {
+                        //                     categorieProduit =
+                        //                         catList.firstWhere(
+                        //                       (element) =>
+                        //                           element.idCategorieProduit ==
+                        //                           newValue,
+                        //                     );
+                        //                     debugPrint("valeur : $newValue");
+                        //                     _speculationList = http.get(Uri.parse(
+                        //                         '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${newValue}'));
+                        //                   }
+                        //                 });
+                        //               },
+                        //               decoration: InputDecoration(
+                        //                 labelText: 'Sélectionner une catégorie',
+                        //                 contentPadding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10, horizontal: 20),
+                        //                 border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(8),
+                        //                 ),
+                        //               ),
+                        //             );
+                        //           } else {
+                        //             return DropdownButtonFormField(
+                        //               items: [],
+                        //               onChanged: null,
+                        //               decoration: InputDecoration(
+                        //                 labelText: 'Aucune catégorie trouvé',
+                        //                 contentPadding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10, horizontal: 20),
+                        //                 border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(8),
+                        //                 ),
+                        //               ),
+                        //             );
+                        //           }
+                        //         }
+                        //         return DropdownButtonFormField(
+                        //           items: [],
+                        //           onChanged: null,
+                        //           decoration: InputDecoration(
+                        //             labelText: 'Aucune catégorie trouvé',
+                        //             contentPadding: const EdgeInsets.symmetric(
+                        //                 vertical: 10, horizontal: 20),
+                        //             border: OutlineInputBorder(
+                        //               borderRadius: BorderRadius.circular(8),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //     ),
+                        //   ),
                         if (widget.isEquipement!)
                           Padding(
                             padding: EdgeInsets.symmetric(
@@ -233,7 +515,7 @@ class _AddMaterielState extends State<AddMateriel> {
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                "Chosir une filière",
+                                "Choisir une speculation",
                                 style: TextStyle(
                                     color: (Colors.black), fontSize: 18),
                               ),
@@ -244,22 +526,23 @@ class _AddMaterielState extends State<AddMateriel> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
                             child: FutureBuilder(
-                              future: _filiereList,
+                              future: _speculationList,
                               builder: (_, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
+                                  return TextDropdownFormField(
+                                    options: [],
                                     decoration: InputDecoration(
-                                      labelText: 'Chargement...',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Chargement..."),
+                                    cursorColor: Colors.green,
                                   );
                                 }
 
@@ -269,302 +552,17 @@ class _AddMaterielState extends State<AddMateriel> {
                                   dynamic responseData =
                                       json.decode(jsonString);
 
-                                  // Vérifier si responseData est une liste
                                   if (responseData is List) {
                                     final reponse = responseData;
-                                    final filiereList = reponse
-                                        .map((e) => Filiere.fromMap(e))
-                                        .where(
-                                            (con) => con.statutFiliere == true)
-                                        .toList();
-
-                                    if (filiereList.isEmpty) {
-                                      return DropdownButtonFormField(
-                                        items: [],
-                                        onChanged: null,
-                                        decoration: InputDecoration(
-                                          labelText: 'Aucun filière trouvé',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                      );
-                                    }
-
-                                    return DropdownButtonFormField<String>(
-                                      isExpanded: true,
-                                      items: filiereList
-                                          .map(
-                                            (e) => DropdownMenuItem(
-                                              value: e.idFiliere,
-                                              child: Text(e.libelleFiliere!),
-                                            ),
-                                          )
-                                          .toList(),
-                                      value: filiereValue,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          catValue = null;
-                                          filiereValue = newValue;
-                                          if (newValue != null) {
-                                            filiere = filiereList.firstWhere(
-                                              (element) =>
-                                                  element.idFiliere == newValue,
-                                            );
-                                            debugPrint("valeur : $newValue");
-                                            _categorieList = http.get(Uri.parse(
-                                                '$apiOnlineUrl/Categorie/allCategorieByFiliere/${newValue}'));
-                                          }
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        labelText: 'Sélectionner un filiere',
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
-                                      decoration: InputDecoration(
-                                        labelText: 'Aucun filière trouvé',
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucun filière trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        if (widget.isEquipement!)
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 22,
-                            ),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Chosir une categorie",
-                                style: TextStyle(
-                                    color: (Colors.black), fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        if (widget.isEquipement!)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child: FutureBuilder(
-                              future: _categorieList,
-                              builder: (_, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Chargement...',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                if (snapshot.hasData) {
-                                  dynamic jsonString =
-                                      utf8.decode(snapshot.data.bodyBytes);
-                                  dynamic responseData =
-                                      json.decode(jsonString);
-
-                                  // Vérifier si responseData est une liste
-                                  if (responseData is List) {
-                                    final reponse = responseData;
-                                    final catList = reponse
-                                        .map((e) => CategorieProduit.fromMap(e))
+                                    final monaieList = reponse
+                                        .map((e) => Speculation.fromMap(e))
                                         .where((con) =>
-                                            con.statutCategorie == true)
+                                            con.statutSpeculation == true)
                                         .toList();
-
-                                    if (catList.isEmpty) {
-                                      return DropdownButtonFormField(
-                                        items: [],
-                                        onChanged: null,
+                                    if (monaieList.isEmpty) {
+                                      return TextDropdownFormField(
+                                        options: [],
                                         decoration: InputDecoration(
-                                          labelText: 'Aucune categorie trouvé',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                      );
-                                    }
-
-                                    return DropdownButtonFormField<String>(
-                                      isExpanded: true,
-                                      items: catList
-                                          .map(
-                                            (e) => DropdownMenuItem(
-                                              value: e.idCategorieProduit,
-                                              child: Text(e.libelleCategorie!),
-                                            ),
-                                          )
-                                          .toList(),
-                                      value: catValue,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          speValue = null;
-                                          catValue = newValue;
-                                          if (newValue != null) {
-                                            categorieProduit =
-                                                catList.firstWhere(
-                                              (element) =>
-                                                  element.idCategorieProduit ==
-                                                  newValue,
-                                            );
-                                            debugPrint("valeur : $newValue");
-                                            _speculationList = http.get(Uri.parse(
-                                                '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${newValue}'));
-                                          }
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        labelText: 'Sélectionner une catégorie',
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
-                                      decoration: InputDecoration(
-                                        labelText: 'Aucune catégorie trouvé',
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucune catégorie trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        if (widget.isEquipement!)
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 22,
-                            ),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Chosir une speculation",
-                                style: TextStyle(
-                                    color: (Colors.black), fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        if (widget.isEquipement!)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child: FutureBuilder(
-                                future: _speculationList,
-                                builder: (_, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
-                                      decoration: InputDecoration(
-                                        labelText: 'Chargement...',
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  }
-
-                                  if (snapshot.hasData) {
-                                    dynamic jsonString =
-                                        utf8.decode(snapshot.data.bodyBytes);
-                                    dynamic responseData =
-                                        json.decode(jsonString);
-
-                                    if (responseData is List) {
-                                      final reponse = responseData;
-                                      final speList = reponse
-                                          .map((e) => Speculation.fromMap(e))
-                                          .where((cat) =>
-                                              cat.statutSpeculation == true)
-                                          .toList();
-
-                                      if (speList.isEmpty) {
-                                        return DropdownButtonFormField(
-                                          items: [],
-                                          onChanged: null,
-                                          decoration: InputDecoration(
-                                            labelText:
-                                                'Aucune speculation trouvé',
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     vertical: 10,
@@ -573,78 +571,209 @@ class _AddMaterielState extends State<AddMateriel> {
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                             ),
-                                          ),
-                                        );
-                                      }
-
-                                      return DropdownButtonFormField<String>(
-                                        isExpanded: true,
-                                        items: speList
-                                            .map(
-                                              (e) => DropdownMenuItem(
-                                                value: e.idSpeculation,
-                                                child: Text(e.nomSpeculation!),
-                                              ),
-                                            )
-                                            .toList(),
-                                        value: speValue,
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            speValue = newValue;
-                                            if (newValue != null) {
-                                              speculation = speList.firstWhere(
-                                                (element) =>
-                                                    element.idSpeculation ==
-                                                    newValue,
-                                              );
-                                            }
-                                          });
-                                        },
-                                        decoration: InputDecoration(
-                                          labelText:
-                                              'Sélectionner une speculation',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return DropdownButtonFormField(
-                                        items: [],
-                                        onChanged: null,
-                                        decoration: InputDecoration(
-                                          labelText:
-                                              'Aucune speculation trouvé',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
+                                            suffixIcon: Icon(Icons.search),
+                                            labelText:
+                                                "Aucune spéculation trouvé"),
+                                        cursorColor: Colors.green,
                                       );
                                     }
+
+                                    return DropdownFormField<Speculation>(
+                                      onEmptyActionPressed:
+                                          (String str) async {},
+                                      dropdownHeight: 200,
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText:
+                                              'Selectionner une spécumation'),
+                                      onSaved: (dynamic n) {
+                                        speculation = n;
+                                        print("onSaved : $speculation");
+                                      },
+                                      onChanged: (dynamic n) {
+                                        speculation = n;
+                                        print("selected : $speculation");
+                                      },
+                                      displayItemFn: (dynamic item) => Text(
+                                        item?.nomSpeculation ?? '',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      findFn: (String str) async => monaieList,
+                                      selectedFn:
+                                          (dynamic item1, dynamic item2) {
+                                        if (item1 != null && item2 != null) {
+                                          return item1.idSpeculation ==
+                                              item2.idSpeculation;
+                                        }
+                                        return false;
+                                      },
+                                      filterFn: (dynamic item, String str) =>
+                                          item.nomSpeculation!
+                                              .toLowerCase()
+                                              .contains(str.toLowerCase()),
+                                      dropdownItemFn: (dynamic item,
+                                              int position,
+                                              bool focused,
+                                              bool selected,
+                                              Function() onTap) =>
+                                          ListTile(
+                                        title: Text(item.nomSpeculation!),
+                                        tileColor: focused
+                                            ? Color.fromARGB(20, 0, 0, 0)
+                                            : Colors.transparent,
+                                        onTap: onTap,
+                                      ),
+                                    );
                                   }
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucune speculation trouvé',
+                                }
+                                return TextDropdownFormField(
+                                  options: [],
+                                  decoration: InputDecoration(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               vertical: 10, horizontal: 20),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                    ),
-                                  );
-                                }),
+                                      suffixIcon: Icon(Icons.search),
+                                      labelText: "Aucune spéculation trouvé"),
+                                  cursorColor: Colors.green,
+                                );
+                              },
+                            ),
                           ),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //       vertical: 10, horizontal: 20),
+                        //   child: FutureBuilder(
+                        //       future: _speculationList,
+                        //       builder: (_, snapshot) {
+                        //         if (snapshot.connectionState ==
+                        //             ConnectionState.waiting) {
+                        //           return DropdownButtonFormField(
+                        //             items: [],
+                        //             onChanged: null,
+                        //             decoration: InputDecoration(
+                        //               labelText: 'Chargement...',
+                        //               contentPadding:
+                        //                   const EdgeInsets.symmetric(
+                        //                       vertical: 10, horizontal: 20),
+                        //               border: OutlineInputBorder(
+                        //                 borderRadius:
+                        //                     BorderRadius.circular(8),
+                        //               ),
+                        //             ),
+                        //           );
+                        //         }
+
+                        //         if (snapshot.hasData) {
+                        //           dynamic jsonString =
+                        //               utf8.decode(snapshot.data.bodyBytes);
+                        //           dynamic responseData =
+                        //               json.decode(jsonString);
+
+                        //           if (responseData is List) {
+                        //             final reponse = responseData;
+                        //             final speList = reponse
+                        //                 .map((e) => Speculation.fromMap(e))
+                        //                 .where((cat) =>
+                        //                     cat.statutSpeculation == true)
+                        //                 .toList();
+
+                        //             if (speList.isEmpty) {
+                        //               return DropdownButtonFormField(
+                        //                 items: [],
+                        //                 onChanged: null,
+                        //                 decoration: InputDecoration(
+                        //                   labelText:
+                        //                       'Aucune speculation trouvé',
+                        //                   contentPadding:
+                        //                       const EdgeInsets.symmetric(
+                        //                           vertical: 10,
+                        //                           horizontal: 20),
+                        //                   border: OutlineInputBorder(
+                        //                     borderRadius:
+                        //                         BorderRadius.circular(8),
+                        //                   ),
+                        //                 ),
+                        //               );
+                        //             }
+
+                        //             return DropdownButtonFormField<String>(
+                        //               isExpanded: true,
+                        //               items: speList
+                        //                   .map(
+                        //                     (e) => DropdownMenuItem(
+                        //                       value: e.idSpeculation,
+                        //                       child: Text(e.nomSpeculation!),
+                        //                     ),
+                        //                   )
+                        //                   .toList(),
+                        //               value: speValue,
+                        //               onChanged: (newValue) {
+                        //                 setState(() {
+                        //                   speValue = newValue;
+                        //                   if (newValue != null) {
+                        //                     speculation = speList.firstWhere(
+                        //                       (element) =>
+                        //                           element.idSpeculation ==
+                        //                           newValue,
+                        //                     );
+                        //                   }
+                        //                 });
+                        //               },
+                        //               decoration: InputDecoration(
+                        //                 labelText:
+                        //                     'Sélectionner une speculation',
+                        //                 contentPadding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10, horizontal: 20),
+                        //                 border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(8),
+                        //                 ),
+                        //               ),
+                        //             );
+                        //           } else {
+                        //             return DropdownButtonFormField(
+                        //               items: [],
+                        //               onChanged: null,
+                        //               decoration: InputDecoration(
+                        //                 labelText:
+                        //                     'Aucune speculation trouvé',
+                        //                 contentPadding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10, horizontal: 20),
+                        //                 border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(8),
+                        //                 ),
+                        //               ),
+                        //             );
+                        //           }
+                        //         }
+                        //         return DropdownButtonFormField(
+                        //           items: [],
+                        //           onChanged: null,
+                        //           decoration: InputDecoration(
+                        //             labelText: 'Aucune speculation trouvé',
+                        //             contentPadding:
+                        //                 const EdgeInsets.symmetric(
+                        //                     vertical: 10, horizontal: 20),
+                        //             border: OutlineInputBorder(
+                        //               borderRadius: BorderRadius.circular(8),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       }),
+                        // ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 22,
@@ -672,6 +801,187 @@ class _AddMaterielState extends State<AddMateriel> {
                             maxLines: null,
                             decoration: InputDecoration(
                               hintText: "Nom materiel",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 22,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Type de matériel",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: FutureBuilder(
+                                future: _typeList,
+                                builder: (_, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return TextDropdownFormField(
+                                      options: [],
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 20),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          suffixIcon: Icon(Icons.search),
+                                          labelText: "Chargement..."),
+                                      cursorColor: Colors.green,
+                                    );
+                                  }
+
+                                  if (snapshot.hasData) {
+                                    dynamic jsonString =
+                                        utf8.decode(snapshot.data.bodyBytes);
+                                    dynamic responseData =
+                                        json.decode(jsonString);
+
+                                    if (responseData is List) {
+                                      final reponse = responseData;
+                                      final monaieList = reponse
+                                          .map((e) => TypeMateriel.fromMap(e))
+                                          .where(
+                                              (con) => con.statutType == true)
+                                          .toList();
+                                      if (monaieList.isEmpty) {
+                                        return TextDropdownFormField(
+                                          options: [],
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 20),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              suffixIcon: Icon(Icons.search),
+                                              labelText: "Aucun type trouvé"),
+                                          cursorColor: Colors.green,
+                                        );
+                                      }
+
+                                      return DropdownFormField<TypeMateriel>(
+                                        onEmptyActionPressed:
+                                            (String str) async {},
+                                        dropdownHeight: 200,
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 20),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            suffixIcon: Icon(Icons.search),
+                                            labelText: 'Sélectionner un type de matériel',),
+                                        onSaved: (dynamic n) {
+                                          typeMateriel = n;
+                                          print("onSaved : $typeMateriel");
+                                        },
+                                        onChanged: (dynamic n) {
+                                          typeMateriel = n;
+                                          print("selected : $typeMateriel");
+                                        },
+                                        displayItemFn: (dynamic item) => Text(
+                                          item?.nom ?? '',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        findFn: (String str) async =>
+                                            monaieList,
+                                        selectedFn:
+                                            (dynamic item1, dynamic item2) {
+                                          if (item1 != null && item2 != null) {
+                                            return item1.idTypeMateriel ==
+                                                item2.idTypeMateriel;
+                                          }
+                                          return false;
+                                        },
+                                        filterFn: (dynamic item, String str) =>
+                                            item.nom!
+                                                .toLowerCase()
+                                                .contains(str.toLowerCase()),
+                                        dropdownItemFn: (dynamic item,
+                                                int position,
+                                                bool focused,
+                                                bool selected,
+                                                Function() onTap) =>
+                                            ListTile(
+                                          title: Text(item.nom!),
+                                          tileColor: focused
+                                              ? Color.fromARGB(20, 0, 0, 0)
+                                              : Colors.transparent,
+                                          onTap: onTap,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  return TextDropdownFormField(
+                                    options: [],
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        labelText: "Aucun type trouvé"),
+                                    cursorColor: Colors.green,
+                                  );
+                                },
+                              ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 22,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Etat matériel",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Veuillez remplir les champs";
+                              }
+                              return null;
+                            },
+                            controller: _etatController,
+                            decoration: InputDecoration(
+                              hintText: "Etat du matériel",
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 20),
                               border: OutlineInputBorder(
@@ -797,7 +1107,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                               BorderRadius.circular(8),
                                         ),
                                         suffixIcon: Icon(Icons.search),
-                                        labelText: "Rechercher une localité"),
+                                        labelText: "Selectionner une localité"),
                                     onSaved: (dynamic n) {
                                       niveau3 = n?.nomN3;
                                       print("onSaved : $niveau3");
@@ -855,228 +1165,197 @@ class _AddMaterielState extends State<AddMateriel> {
                         SizedBox(
                           height: 5,
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 22,
-                          ),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Type de matériel",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            widget.isEquipement!
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 22,
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        "Prix du matériel",
+                                        style: TextStyle(
+                                            color: (Colors.black),
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 22,
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        "Prix par heure",
+                                        style: TextStyle(
+                                            color: (Colors.black),
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 22,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Choisir la monnaie",
+                                  style: TextStyle(
+                                      color: (Colors.black), fontSize: 18),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                            future: _typeList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Veuillez remplir les champs";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _prixController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    ThousandsFormatter(),
+                                  ],
                                   decoration: InputDecoration(
-                                    labelText: 'Chargement...',
+                                    hintText: widget.isEquipement!
+                                        ? "Prix du matériel"
+                                        : "Prix par heure",
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                );
-                              }
+                                ),
+                              ),
+                              SizedBox(width:10),
+                              Expanded(
+                                child: FutureBuilder(
+                                  future: _monnaieList,
+                                  builder: (_, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return TextDropdownFormField(
+                                        options: [],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 20),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            suffixIcon: Icon(Icons.search),
+                                            labelText: "Chargement..."),
+                                        cursorColor: Colors.green,
+                                      );
+                                    }
 
-                              if (snapshot.hasData) {
-                                // dynamic responseData =
-                                //     json.decode(snapshot.data.body);
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
+                                    if (snapshot.hasData) {
+                                      dynamic jsonString =
+                                          utf8.decode(snapshot.data.bodyBytes);
+                                      dynamic responseData =
+                                          json.decode(jsonString);
 
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final materielList = reponse
-                                      .map((e) => TypeMateriel.fromMap(e))
-                                      .where((con) => con.statutType == true)
-                                      .toList();
-
-                                  if (materielList.isEmpty) {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
-                                      decoration: InputDecoration(
-                                        labelText:
-                                            'Aucun type de matériel trouvé',
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  }
-
-                                  return DropdownButtonFormField<String>(
-                                    isExpanded: true,
-                                    items: materielList
-                                        .map(
-                                          (e) => DropdownMenuItem(
-                                            value: e.idTypeMateriel,
-                                            child: Text(e.nom!),
-                                          ),
-                                        )
-                                        .toList(),
-                                    value: typeValue,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        typeValue = newValue;
-                                        if (newValue != null) {
-                                          typeMateriel =
-                                              materielList.firstWhere(
-                                            (element) =>
-                                                element.idTypeMateriel ==
-                                                newValue,
+                                      if (responseData is List) {
+                                        final reponse = responseData;
+                                        final monaieList = reponse
+                                            .map((e) => Monnaie.fromMap(e))
+                                            .where((con) => con.statut == true)
+                                            .toList();
+                                        if (monaieList.isEmpty) {
+                                          return TextDropdownFormField(
+                                            options: [],
+                                            decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 20),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                suffixIcon: Icon(Icons.search),
+                                                labelText:
+                                                    "Aucune monnaie trouvé"),
+                                            cursorColor: Colors.green,
                                           );
                                         }
-                                      });
-                                    },
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          'Sélectionner un type de matériel',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          'Aucun type de matériel trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Aucun type de matériel trouvé',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 22,
-                          ),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Etat matériel",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Veuillez remplir les champs";
-                              }
-                              return null;
-                            },
-                            controller: _etatController,
-                            decoration: InputDecoration(
-                              hintText: "Etat du matériel",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 22,
-                          ),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Chosir la monnaie",
-                              style: TextStyle(
-                                  color: (Colors.black), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                            future: _monnaieList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Chargement..."),
-                                  cursorColor: Colors.green,
-                                );
-                              }
 
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final monaieList = reponse
-                                      .map((e) => Monnaie.fromMap(e))
-                                      .where((con) => con.statut == true)
-                                      .toList();
-                                  if (monaieList.isEmpty) {
+                                        return DropdownFormField<Monnaie>(
+                                          onEmptyActionPressed:
+                                              (String str) async {},
+                                          dropdownHeight: 200,
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 20),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              suffixIcon: Icon(Icons.search),
+                                              labelText: 'Monnaie'),
+                                          onSaved: (dynamic n) {
+                                            monnaie = n;
+                                            print("onSaved : $monnaie");
+                                          },
+                                          onChanged: (dynamic n) {
+                                            monnaie = n;
+                                            print("selected : $monnaie");
+                                          },
+                                          displayItemFn: (dynamic item) => Text(
+                                            item?.libelle ?? '',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          findFn: (String str) async =>
+                                              monaieList,
+                                          selectedFn:
+                                              (dynamic item1, dynamic item2) {
+                                            if (item1 != null &&
+                                                item2 != null) {
+                                              return item1.idMonnaie ==
+                                                  item2.idMonnaie;
+                                            }
+                                            return false;
+                                          },
+                                          filterFn:
+                                              (dynamic item, String str) => item
+                                                  .libelle!
+                                                  .toLowerCase()
+                                                  .contains(str.toLowerCase()),
+                                          dropdownItemFn: (dynamic item,
+                                                  int position,
+                                                  bool focused,
+                                                  bool selected,
+                                                  Function() onTap) =>
+                                              ListTile(
+                                            title: Text(item.libelle!),
+                                            tileColor: focused
+                                                ? Color.fromARGB(20, 0, 0, 0)
+                                                : Colors.transparent,
+                                            onTap: onTap,
+                                          ),
+                                        );
+                                      }
+                                    }
                                     return TextDropdownFormField(
                                       options: [],
                                       decoration: InputDecoration(
@@ -1091,153 +1370,33 @@ class _AddMaterielState extends State<AddMateriel> {
                                           labelText: "Aucune monnaie trouvé"),
                                       cursorColor: Colors.green,
                                     );
-                                  }
-
-                                  return DropdownFormField<Monnaie>(
-                                    onEmptyActionPressed: (String str) async {},
-                                    dropdownHeight: 200,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Rechercher une monnaie"),
-                                    onSaved: (dynamic n) {
-                                      monnaie = n;
-                                      print("onSaved : $monnaie");
-                                    },
-                                    onChanged: (dynamic n) {
-                                      monnaie = n;
-                                      print("selected : $monnaie");
-                                    },
-                                    displayItemFn: (dynamic item) => Text(
-                                      item?.libelle ?? '',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    findFn: (String str) async => monaieList,
-                                    selectedFn: (dynamic item1, dynamic item2) {
-                                      if (item1 != null && item2 != null) {
-                                        return item1.idMonnaie ==
-                                            item2.idMonnaie;
-                                      }
-                                      return false;
-                                    },
-                                    filterFn: (dynamic item, String str) => item
-                                        .libelle!
-                                        .toLowerCase()
-                                        .contains(str.toLowerCase()),
-                                    dropdownItemFn: (dynamic item,
-                                            int position,
-                                            bool focused,
-                                            bool selected,
-                                            Function() onTap) =>
-                                        ListTile(
-                                      title: Text(item.libelle!),
-                                      tileColor: focused
-                                          ? Color.fromARGB(20, 0, 0, 0)
-                                          : Colors.transparent,
-                                      onTap: onTap,
-                                    ),
-                                  );
-                                }
-                              }
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Aucune monnaie trouvé"),
-                                cursorColor: Colors.green,
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        widget.isEquipement!
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 22,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Prix du matériel",
-                                    style: TextStyle(
-                                        color: (Colors.black), fontSize: 18),
-                                  ),
-                                ),
-                              )
-                            : Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 22,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Prix par heure",
-                                    style: TextStyle(
-                                        color: (Colors.black), fontSize: 18),
-                                  ),
+                                  },
                                 ),
                               ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Veuillez remplir les champs";
-                              }
-                              return null;
-                            },
-                            controller: _prixController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              ThousandsFormatter(),
                             ],
-                            decoration: InputDecoration(
-                              hintText: "Prix par heure",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
                           ),
                         ),
+                        Text("Choisir une photo"),
                         SizedBox(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: photo != null
-                                ? GestureDetector(
-                                    onTap: _showImageSourceDialog,
-                                    child: Image.file(
-                                      photo!,
-                                      fit: BoxFit.fitWidth,
-                                      height: 140,
-                                      width: 280,
-                                    ),
-                                  )
-                                : SizedBox(
-                                    child: IconButton(
-                                      onPressed: _showImageSourceDialog,
-                                      icon: const Icon(
-                                        Icons.add_a_photo_rounded,
-                                        size: 50,
-                                      ),
+                          child: photo != null
+                              ? GestureDetector(
+                                  onTap: _showImageSourceDialog,
+                                  child: Image.file(
+                                    photo!,
+                                    fit: BoxFit.fitWidth,
+                                    height: 140,
+                                    width: 280,
+                                  ),
+                                )
+                              : SizedBox(
+                                  child: IconButton(
+                                    onPressed: _showImageSourceDialog,
+                                    icon: const Icon(
+                                      Icons.add_a_photo_rounded,
+                                      size: 50,
                                     ),
                                   ),
-                          ),
+                                ),
                         ),
                         const SizedBox(height: 20),
                         if (widget.isEquipement!)
