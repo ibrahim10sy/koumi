@@ -15,6 +15,7 @@ import 'package:koumi/models/Pays.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/screens/RegisterEndScreen.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
+import 'package:koumi/service/TypeActeurService.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:path/path.dart';
@@ -22,6 +23,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
+import 'package:profile_photo/profile_photo.dart';
 
 class RegisterNextScreen extends StatefulWidget {
   String nomActeur, telephone, whatsAppActeur;
@@ -38,6 +40,8 @@ class RegisterNextScreen extends StatefulWidget {
   @override
   State<RegisterNextScreen> createState() => _RegisterNextScreenState();
 }
+
+const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _RegisterNextScreenState extends State<RegisterNextScreen> {
   PhoneCountryData? _initialCountryData;
@@ -76,11 +80,14 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
   TextEditingController maillonController = TextEditingController();
   TextEditingController paysController = TextEditingController();
   TextEditingController adresseController = TextEditingController();
+  TextEditingController imageController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
   String selectedCountry = "";
   late Future _niveau3List;
+  late Future _typeList;
   String niveau3 = '';
   String? n3Value;
-
+  late TextEditingController _searchController;
   Future<void> _getCurrentUserLocation() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.low);
@@ -121,7 +128,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
   Future<File?> getImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) return null;
-
+    imageController.text = image.name;
     return File(image.path);
   }
 
@@ -131,6 +138,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
       setState(() {
         this.image1 = image;
         image1Src = image.path;
+        imageController.text = image.path;
       });
     }
   }
@@ -143,7 +151,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
         return SizedBox(
           height: 150,
           child: AlertDialog(
-            title: Text("Photo d'identité"),
+            title: Text("Photo de profil"),
             content: Wrap(
               alignment: WrapAlignment.center,
               children: [
@@ -182,15 +190,17 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
 
   List<TypeActeur> selectedTypes = [];
   List<Niveau3Pays> filteredList = [];
-  TextEditingController _searchController = TextEditingController();
+  List<TypeActeur> options = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _searchController.addListener(_onSearchChanged);
+    _searchController = TextEditingController();
+    // _loadTypeActeurs();
     _niveau3List = http.get(Uri.parse(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${widget.pays}'));
+    _typeList = http.get(Uri.parse('$apiOnlineUrl/typeActeur/read'));
 
     debugPrint(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${widget.pays}');
@@ -198,22 +208,249 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
         "Nom complet : ${widget.nomActeur}, Téléphone : ${widget.telephone},  WA : ${widget.whatsAppActeur}, Pays : ${widget.pays} ");
   }
 
+  // void _loadTypeActeurs() async {
+  //   await fetchTypeActeurs();
+  //   setState(() {}); // Update UI after fetching data
+  // }
+
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onSearchChanged() {
-    setState(() {
-      // Filtrer la liste des localités
-      filteredList = filteredList
-          .where((element) => element.nomN3
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()))
-          .toList();
-    });
+  void _showMultiSelectDialog() {
+    final BuildContext context = this.context;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Sélectionner un type d\'acteur'),
+          content: MultiSelectDropDown.network(
+            networkConfig: NetworkConfig(
+              url: '$apiOnlineUrl/typeActeur/read',
+              method: RequestMethod.get,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            ),
+            searchEnabled: true,
+            searchLabel: 'Rechercher...',
+            searchBackgroundColor: Colors.blueGrey[50],
+            chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+            responseParser: (response) {
+              typeActeur = (response as List<dynamic>)
+                  .where((data) =>
+                      (data['libelle']).trim().toLowerCase() != 'admin')
+                  .map((e) {
+                return TypeActeur(
+                  idTypeActeur: e['idTypeActeur'] as String,
+                  libelle: e['libelle'] as String,
+                  statutTypeActeur: e['statutTypeActeur'] as bool,
+                );
+              }).toList();
+
+              // Filtrer les types avec un libellé différent de "admin" et statutTypeActeur true
+              final filteredTypes = typeActeur
+                  .where((typeActeur) =>
+                      typeActeur.libelle != "admin" &&
+                      typeActeur.libelle != "Admin" &&
+                      typeActeur.statutTypeActeur == true)
+                  .toList();
+
+              // Créer des ValueItems pour les types filtrés
+              final List<ValueItem<TypeActeur>> valueItems =
+                  filteredTypes.map((typeActeur) {
+                return ValueItem<TypeActeur>(
+                  label: typeActeur.libelle!,
+                  value: typeActeur,
+                );
+              }).toList();
+
+              return Future<List<ValueItem<TypeActeur>>>.value(valueItems);
+            },
+            controller: _controllerTypeActeur,
+            hint: 'Sélectionner un type d\'acteur',
+            fieldBackgroundColor: Color.fromARGB(255, 219, 219, 219),
+            onOptionSelected: (options) {
+              if (mounted) {
+                setState(() {
+                  typeLibelle.clear();
+                  typeLibelle
+                      .addAll(options.map((data) => data.label).toList());
+                  selectedTypes =
+                      options.map<TypeActeur>((item) => item.value!).toList();
+                  print("Types sélectionnés : $selectedTypes");
+                  print("Libellé sélectionné ${typeLibelle.toString()}");
+                });
+              }
+            },
+            responseErrorBuilder: ((context, body) {
+              return const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text('Aucun type disponible'),
+              );
+            }),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Fermer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showMultiSelectDialogt() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un type...',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _typeList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<TypeActeur> typeListe = responseData
+                          .map((e) => TypeActeur.fromMap(e))
+                          .where((con) => con.statutTypeActeur == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucun type trouvé")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<TypeActeur> filteredSearch = typeListe
+                          .where((typeActeur) =>
+                              typeActeur.libelle!
+                                  .toLowerCase()
+                                  .contains(searchText) &&
+                              typeActeur.libelle!.toLowerCase() != 'admin')
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucun type trouvé',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final typeActeur = filteredSearch[index];
+                                  final isSelected =
+                                      selectedTypes.contains(typeActeur);
+
+                                  return ListTile(
+                                    title: Text(
+                                      typeActeur.libelle!,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    trailing: isSelected
+                                        ? const Icon(
+                                            Icons.check_box_outlined,
+                                            color: d_colorOr,
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      setState(() {
+                                        isSelected
+                                            ? selectedTypes.remove(typeActeur)
+                                            : selectedTypes.add(typeActeur);
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    List<String> typeLibelle =
+                        selectedTypes.map((e) => e.libelle!).toList();
+                    typeController.text = typeLibelle.join(', ');
+                    _searchController.clear();
+                    print('Options sélectionnées : $selectedTypes');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -267,51 +504,29 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                 MainAxisAlignment.start, // Alignement vertical en haut
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // SizedBox(
+              //   height: 120,
+              //   width: double.infinity,
+              //   child: GestureDetector(
+              //     onTap: _showImageSourceDialog,
+              //     child: (image1 == null)
+              //         ?
+              //         : ClipRRect(
+              //             borderRadius: BorderRadius.circular(8),
+              //             child: Image.file(
+              //               image1!,
+              //               height: 100,
+              //               width: 200,
+              //               fit: BoxFit.cover,
+              //             ),
+              //           ),
+              //   ),
+              // ),
               SizedBox(
-                height: 15,
-              ),
-              SizedBox(
-                height: 100,
-                width: 200, // Spécifiez une largeur fixe pour le conteneur
-                child: (image1 == null)
-                    ? Center(child: Image.asset('assets/images/logo-pr.png'))
-                    : SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: Image.file(
-                          image1!,
-                          height: 100,
-                          width: 200,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 42,
-                width: MediaQuery.of(context).size.width * 0.9,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFF8A00),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextButton(
-                  onPressed: () {
-                    _showImageSourceDialog();
-                  },
-                  child: Center(
-                    child: Text(
-                      "Choisir un logo",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                  height: 130,
+                  width: double.infinity,
+                  child:
+                      Center(child: Image.asset('assets/images/logo-pr.png'))),
               Form(
                   key: _formKey,
                   child: Column(
@@ -327,86 +542,24 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
-                      MultiSelectDropDown.network(
-                        networkConfig: NetworkConfig(
-                          url: '$apiOnlineUrl/typeActeur/read',
-                          method: RequestMethod.get,
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
+                      GestureDetector(
+                        onTap: _showMultiSelectDialogt,
+                        child: TextFormField(
+                          onTap: _showMultiSelectDialogt,
+                          controller: typeController,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down,
+                                color: Colors.blueGrey[400]),
+                            hintText: "Sélectionner un type acteur",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                         ),
-                        searchEnabled: true,
-                        searchLabel: 'Rechercher...',
-                        searchBackgroundColor: Colors.blueGrey[50],
-                        chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                        responseParser: (response) {
-                          typeActeur = (response as List<dynamic>)
-                              .where((data) =>
-                                  (data['libelle']).trim().toLowerCase() !=
-                                  'admin')
-                              .map((e) {
-                            return TypeActeur(
-                              idTypeActeur: e['idTypeActeur'] as String,
-                              libelle: e['libelle'] as String,
-                              statutTypeActeur: e['statutTypeActeur'] as bool,
-                              // Assurez-vous de correspondre aux clés JSON avec les noms de propriétés de votre classe TypeActeur
-                              // Ajoutez d'autres champs si nécessaire
-                            );
-                          }).toList();
-
-                          // Filtrer les types avec un libellé différent de "admin" et dont le statutTypeActeur est true
-                          final filteredTypes = typeActeur
-                              .where((typeActeur) =>
-                                  typeActeur.libelle != "admin" ||
-                                  typeActeur.libelle != "Admin" &&
-                                      typeActeur.statutTypeActeur == true)
-                              .toList();
-
-                          // Créer des ValueItems pour les types filtrés
-                          final List<ValueItem<TypeActeur>> valueItems =
-                              filteredTypes.map((typeActeur) {
-                            return ValueItem<TypeActeur>(
-                              label: typeActeur.libelle!,
-                              value: typeActeur,
-                            );
-                          }).toList();
-
-                          return Future<List<ValueItem<TypeActeur>>>.value(
-                              valueItems);
-                        },
-
-                        controller: _controllerTypeActeur,
-
-                        // dropdownHeight: 320,
-                        hint: 'Sélectionner un type d\'acteur',
-                        fieldBackgroundColor:
-                            Color.fromARGB(255, 219, 219, 219),
-                        onOptionSelected: (options) {
-                          if (mounted) {
-                            setState(() {
-                              typeLibelle.clear();
-                              typeLibelle.addAll(
-                                  options.map((data) => data.label).toList());
-                              selectedTypes = options
-                                  .map<TypeActeur>((item) => item.value!)
-                                  .toList();
-                              print("Types sélectionnés : $selectedTypes");
-
-                              print(
-                                  "Libellé sélectionné ${typeLibelle.toString()}");
-                            });
-                            // Fermer automatiquement le dialogue
-                          }
-                          // FocusScope.of(context).unfocus();
-                        },
-                        responseErrorBuilder: ((context, body) {
-                          return const Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text('Aucun type disponible'),
-                          );
-                        }),
-                        // Exemple de personnalisation des styles
                       ),
+
                       const SizedBox(
                         height: 10,
                       ),
@@ -417,9 +570,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
-                      // Center(
-                      //   child: Text(_errorMessage),
-                      // ),
+
                       TextFormField(
                         controller: emailController,
                         decoration: InputDecoration(
@@ -431,15 +582,6 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           ),
                         ),
                         keyboardType: TextInputType.emailAddress,
-                        // validator: (val) {
-                        //   if (val == null || val.isEmpty) {
-                        //     return "Veillez entrez votre email";
-                        //   } else if (_errorMessage == "Email non valide") {
-                        //     return "Veillez entrez une email valide";
-                        //   } else {
-                        //     return null;
-                        //   }
-                        // },
                         onChanged: (val) {
                           validateEmail(val);
                         },
@@ -599,13 +741,45 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                         },
                         onSaved: (val) => adresse = val!,
                       ),
-                      // fin  adresse fullname
-
-                      // fin  adresse email
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 10.0),
+                      //   child: Text(
+                      //     "Photo de profil (optionnel)",
+                      //     style: TextStyle(color: (Colors.black), fontSize: 18),
+                      //   ),
+                      // ),
+                      // TextFormField(
+                      //   controller: imageController,
+                      //   onTap: _showImageSourceDialog,
+                      //   readOnly: true,
+                      //   decoration: InputDecoration(
+                      //     hintText: "Télécharger une image",
+                      //     contentPadding: const EdgeInsets.symmetric(
+                      //         vertical: 10, horizontal: 20),
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //     prefixIcon: Icon(Icons.upload),
+                      //     // Show clear button when an image is selected
+                      //     suffixIcon: imageController.text.isNotEmpty
+                      //         ? IconButton(
+                      //             icon: Icon(Icons.clear),
+                      //             onPressed: () {
+                      //               setState(() {
+                      //                 imageController.clear();
+                      //                 image1 = null;
+                      //               });
+                      //             },
+                      //           )
+                      //         : null,
+                      //   ),
+                      // ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
-
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
@@ -637,9 +811,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                                     widget.whatsAppActeur,
                                                 localistaion: niveau3,
                                                 pays: widget.pays,
-                                                typeActeur:
-                                                    selectedTypes, // Passer les types d'acteurs sélectionnés ici
-                                                image1: image1,
+                                                typeActeur: selectedTypes,
                                               )));
                                 } else {
                                   // Afficher un message indiquant que l'utilisateur doit sélectionner au moins un type d'acteur

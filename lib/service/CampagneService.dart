@@ -63,7 +63,7 @@ class CampagneService extends ChangeNotifier {
       campagneList = body.map((item) => Campagne.fromMap(item)).toList();
       debugPrint(response.body);
       return campagneList;
-    } else {
+    } else { 
       campagneList = [];
       print('Échec de la requête campagne avec le code d\'état: ${response.statusCode}');
       throw Exception(jsonDecode(utf8.decode(response.bodyBytes))["message"]);

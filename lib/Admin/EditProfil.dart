@@ -16,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfil extends StatefulWidget {
   // Acteur? acteurs;
@@ -39,11 +40,14 @@ class _EditProfilState extends State<EditProfil> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   MultiSelectController _controllerTypeActeur = MultiSelectController();
+  late TextEditingController _searchController;
+  TextEditingController typeSController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
 
   MultiSelectController _controllerSpeculation = MultiSelectController();
   List<TypeActeur> typeActeur = [];
   final _tokenTextController = TextEditingController();
-
+  List<Speculation> optionS = [];
   bool isEditing = false;
   bool _isLoading = false;
   bool _obscureText = true;
@@ -59,6 +63,8 @@ class _EditProfilState extends State<EditProfil> {
   List<String> typeLibelle = [];
   List<String> libelleSpeculation = [];
   List<Speculation> listeSpeculations = [];
+  late Future _typeListe;
+  late Future _typeList;
 
   Future<File> saveImagePermanently(String imagePath) async {
     try {
@@ -162,10 +168,12 @@ class _EditProfilState extends State<EditProfil> {
       print("share speculation acteur ${liste2.toString()}");
       selectedSpec = liste2;
       libelleSpeculation = selectedSpec.map((e) => e.nomSpeculation!).toList();
+      typeSController.text = libelleSpeculation.map((e) => e).join(',');
       print("speculation acteur selected Spec share: ${selectedSpec}");
 
       selectedTypes = liste1;
       typeLibelle = selectedTypes.map((e) => e.libelle!).toList();
+      typeController.text = typeLibelle.map((e) => e).join(',');
       print("type acteur selected Types share : ${selectedTypes}");
       print("type libelle share: ${typeLibelle}");
       // Utilisez typeActeurList et speculationsList comme nécessaire
@@ -192,6 +200,11 @@ class _EditProfilState extends State<EditProfil> {
       print("email : ${acteur!.emailActeur}");
     }
 
+    _searchController = TextEditingController();
+    _typeListe =
+        http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
+    _typeList = http.get(Uri.parse('$apiOnlineUrl/typeActeur/read'));
+
     print("niveau 3 : ${acteur!.niveau3PaysActeur!}");
 
     retrieveData();
@@ -201,7 +214,302 @@ class _EditProfilState extends State<EditProfil> {
   void dispose() {
     _controllerTypeActeur.dispose();
     _controllerSpeculation.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _showMultiSelectDialogS() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une spéculation...',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _typeListe,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Speculation> typeListe = responseData
+                          .map((e) => Speculation.fromMap(e))
+                          .where((con) => con.statutSpeculation == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucun type trouvé")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Speculation> filteredSearch = typeListe
+                          .where((type) => type.nomSpeculation!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune spéculation trouvé',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      selectedSpec.contains(type);
+
+                                  return ListTile(
+                                    title: Text(
+                                      type.nomSpeculation!,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    trailing: isSelected
+                                        ? const Icon(
+                                            Icons.check_box_outlined,
+                                            color: d_colorOr,
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      setState(() {
+                                        isSelected
+                                            ? selectedSpec.remove(type)
+                                            : selectedSpec.add(type);
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    List<String> typeLibelle =
+                        selectedSpec.map((e) => e.nomSpeculation!).toList();
+                    typeSController.text = typeLibelle.join(', ');
+                    _searchController.clear();
+                    print('Options sélectionnées : $selectedSpec');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showMultiSelectDialogt() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un type...',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _typeList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<TypeActeur> typeListe = responseData
+                          .map((e) => TypeActeur.fromMap(e))
+                          .where((con) => con.statutTypeActeur == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucun type trouvé")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<TypeActeur> filteredSearch = typeListe
+                          .where((typeActeur) =>
+                              typeActeur.libelle!
+                                  .toLowerCase()
+                                  .contains(searchText) &&
+                              typeActeur.libelle!.toLowerCase() != 'admin')
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucun type trouvé',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final typeActeur = filteredSearch[index];
+                                  final isSelected =
+                                      selectedTypes.contains(typeActeur);
+
+                                  return ListTile(
+                                    title: Text(
+                                      typeActeur.libelle!,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    trailing: isSelected
+                                        ? const Icon(
+                                            Icons.check_box_outlined,
+                                            color: d_colorOr,
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      setState(() {
+                                        isSelected
+                                            ? selectedTypes.remove(typeActeur)
+                                            : selectedTypes.add(typeActeur);
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    List<String> typeLibelle =
+                        selectedTypes.map((e) => e.libelle!).toList();
+                    typeController.text = typeLibelle.join(', ');
+                    _searchController.clear();
+                    print('Options sélectionnées : $selectedTypes');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -309,80 +617,22 @@ class _EditProfilState extends State<EditProfil> {
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: MultiSelectDropDown.network(
-                  networkConfig: NetworkConfig(
-                    url: '$apiOnlineUrl/typeActeur/read',
-                    method: RequestMethod.get,
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
+                child: GestureDetector(
+                  onTap: _showMultiSelectDialogt,
+                  child: TextFormField(
+                    onTap: _showMultiSelectDialogt,
+                    controller: typeController,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                      hintText: "Sélectionner un type acteur",
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                  // searchEnabled: true,
-                  // searchLabel: 'Rechercher...',
-                  searchBackgroundColor: Colors.blueGrey[50],
-                  chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                  responseParser: (response) {
-                    typeActeur = (response as List<dynamic>)
-                        .where((data) =>
-                            (data['libelle']).trim().toLowerCase() != 'admin')
-                        .map((e) {
-                      return TypeActeur(
-                        idTypeActeur: e['idTypeActeur'] as String,
-                        libelle: e['libelle'] as String,
-                        statutTypeActeur: e['statutTypeActeur'] as bool,
-                      );
-                    }).toList();
-
-                    // Filtrer les types avec un libellé différent de "admin" et dont le statutTypeActeur est true
-                    final filteredTypes = typeActeur
-                        .where((typeActeur) =>
-                            typeActeur.libelle != "admin" ||
-                            typeActeur.libelle != "Admin" &&
-                                typeActeur.statutTypeActeur == true)
-                        .toList();
-
-                    // Créer des ValueItems pour les types filtrés
-                    final List<ValueItem<TypeActeur>> valueItems =
-                        filteredTypes.map((typeActeur) {
-                      return ValueItem<TypeActeur>(
-                        label: typeActeur.libelle!,
-                        value: typeActeur,
-                      );
-                    }).toList();
-
-                    return Future<List<ValueItem<TypeActeur>>>.value(
-                        valueItems);
-                  },
-
-                  controller: _controllerTypeActeur,
-
-                  dropdownHeight: 320,
-                  hint: typeLibelle.map((e) => e).join(','),
-
-                  fieldBackgroundColor: Color.fromARGB(255, 228, 227, 227),
-
-                  onOptionSelected: (options) {
-                    if (mounted) {
-                      setState(() {
-                        typeLibelle.clear();
-                        typeLibelle
-                            .addAll(options.map((data) => data.label).toList());
-                        selectedTypes = options
-                            .map<TypeActeur>((item) => item.value!)
-                            .toList();
-                        print("Types sélectionnés : $selectedTypes");
-
-                        print("Libellé sélectionné ${typeLibelle.toString()}");
-                      });
-                    }
-                  },
-                  responseErrorBuilder: ((context, body) {
-                    return const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text('Aucun type disponible'),
-                    );
-                  }),
-                  // Exemple de personnalisation des styles
                 ),
               ),
               SizedBox(
@@ -390,75 +640,22 @@ class _EditProfilState extends State<EditProfil> {
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: MultiSelectDropDown.network(
-                  networkConfig: NetworkConfig(
-                    url:
-                        '$apiOnlineUrl/Speculation/getAllSpeculation', //e40ijxd5k0n0yrzj5f80,
-                    method: RequestMethod.get,
-                    headers: {'Content-Type': 'application/json'},
+                child: GestureDetector(
+                  onTap: _showMultiSelectDialogS,
+                  child: TextFormField(
+                    onTap: _showMultiSelectDialogS,
+                    controller: typeSController,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                      hintText: "Sélectionner une spéculation ",
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                  // searchEnabled: true,
-                  // searchLabel: 'Rechercher...',
-                  searchBackgroundColor: Colors.blueGrey[50],
-                  chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                  responseParser: (response) {
-                    listeSpeculations = (response as List<dynamic>).map((e) {
-                      return Speculation(
-                        idSpeculation: e['idSpeculation'] as String,
-                        nomSpeculation: e['nomSpeculation'] as String,
-                        statutSpeculation: e['statutSpeculation'] as bool,
-                        // Assurez-vous de correspondre aux clés JSON avec les noms de propriétés de votre classe TypeActeur
-                        // Ajoutez d'autres champs si nécessaire
-                      );
-                    }).toList();
-
-                    // Filtrer les types avec un libellé différent de "admin" et dont le statutTypeActeur est true
-                    final filteredTypes = listeSpeculations
-                        .where((speculation) =>
-                            speculation.statutSpeculation == true)
-                        .toList();
-
-                    // Créer des ValueItems pour les types filtrés
-                    final List<ValueItem<Speculation>> valueItems =
-                        filteredTypes.map((speculation) {
-                      return ValueItem<Speculation>(
-                        label: speculation.nomSpeculation!,
-                        value: speculation,
-                      );
-                    }).toList();
-
-                    return Future<List<ValueItem<Speculation>>>.value(
-                        valueItems);
-                  },
-
-                  controller: _controllerSpeculation,
-                  hint: libelleSpeculation.map((e) => e).join(', '),
-
-                  dropdownHeight: 320,
-                  fieldBackgroundColor: Color.fromARGB(255, 228, 227, 227),
-                  onOptionSelected: (options) {
-                    setState(() {
-                      selectedSpec = options
-                          .map<Speculation>((item) => item.value!)
-                          .toList();
-
-                      print("Types sélectionnés : $selectedSpec");
-                      libelleSpeculation.clear();
-                      libelleSpeculation
-                          .addAll(options.map((data) => data.label).toList());
-                      print(
-                          "Spéculation sélectionnée ${libelleSpeculation.toString()}");
-                    });
-                    // Fermer automatiquement le dialogue
-                    // FocusScope.of(context).unfocus();
-                  },
-                  responseErrorBuilder: ((context, body) {
-                    return const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text('Aucune spéculation disponible'),
-                    );
-                  }),
-                  // Exemple de personnalisation des styles
                 ),
               ),
               SizedBox(

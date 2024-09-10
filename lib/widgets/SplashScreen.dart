@@ -24,7 +24,7 @@ class SplashScreen extends StatefulWidget {
 const d_colorPage = Color.fromRGBO(255, 255, 255, 1);
 
 class _SplashScreenState extends State<SplashScreen> {
-  late Acteur acteur;
+  Acteur? acteur;
   late ConnectionVerify connectionVerify;
 
   @override
@@ -210,7 +210,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Vérifie si l'utilisateur est déjà connecté
     if (acteur != null) {
       // Vérifie si l'utilisateur est un administrateur
-      if (acteur.typeActeur!
+      if (acteur!.typeActeur!
           .any((type) => type.libelle == 'admin' || type.libelle == 'Admin')) {
         Timer(const Duration(seconds: 5), () {
           Navigator.of(context).pushReplacement(

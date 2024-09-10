@@ -29,26 +29,26 @@ class ActeurService extends ChangeNotifier {
     required String emailActeur,
     List<TypeActeur>? typeActeur,
     List<Speculation>? speculation,
-    File? photoSiegeActeur,
-    File? logoActeur,
+    // File? photoSiegeActeur,
+    // File? logoActeur,
     required String password,
   }) async {
     try {
       var requete = http.MultipartRequest('POST', Uri.parse('$baseUrl/create'));
 
-      if (photoSiegeActeur != null) {
-        requete.files.add(http.MultipartFile(
-            'image1',
-            photoSiegeActeur.readAsBytes().asStream(),
-            photoSiegeActeur.lengthSync(),
-            filename: basename(photoSiegeActeur.path)));
-      }
+      // if (photoSiegeActeur != null) {
+      //   requete.files.add(http.MultipartFile(
+      //       'image1',
+      //       photoSiegeActeur.readAsBytes().asStream(),
+      //       photoSiegeActeur.lengthSync(),
+      //       filename: basename(photoSiegeActeur.path)));
+      // }
 
-      if (logoActeur != null) {
-        requete.files.add(http.MultipartFile('image2',
-            logoActeur.readAsBytes().asStream(), logoActeur.lengthSync(),
-            filename: basename(logoActeur.path)));
-      }
+      // if (logoActeur != null) {
+      //   requete.files.add(http.MultipartFile('image2',
+      //       logoActeur.readAsBytes().asStream(), logoActeur.lengthSync(),
+      //       filename: basename(logoActeur.path)));
+      // }
 
       //acteur
       requete.fields['acteur'] = jsonEncode({
@@ -63,8 +63,8 @@ class ActeurService extends ChangeNotifier {
         'emailActeur': emailActeur,
         'speculation': speculation,
         'typeActeur': typeActeur, // Convertir chaque objet TypeActeur en map
-        'photoSiegeActeur': "",
-        'logoActeur': "",
+        // 'photoSiegeActeur': "",
+        // 'logoActeur': "",
         'password': password,
       });
 

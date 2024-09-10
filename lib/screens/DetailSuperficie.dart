@@ -33,6 +33,14 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
         backgroundColor: d_colorOr,
         centerTitle: true,
         toolbarHeight: 75,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            )),
         title: Text(
           'Détail',
           style: const TextStyle(
@@ -49,7 +57,7 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           child: Container(
             height: 40,
             width: MediaQuery.of(context).size.width,
@@ -62,6 +70,7 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -82,6 +91,7 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
                 style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),

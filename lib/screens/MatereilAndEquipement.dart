@@ -41,7 +41,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   late Future<List<Materiels>> materielListeFuture;
   late Future<List<Materiels>> materielListeFuture1;
   List<Materiels> materielListe = [];
-  final FocusNode _focusNode = FocusNode();
   late Acteur acteur;
   late List<TypeActeur> typeActeurData = [];
   late String type;
@@ -62,20 +61,19 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   String? nomP;
   late Future _paysList;
 
-  void _scrollListener() {
+   void _scrollListener() {
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
         hasMore &&
-        !isLoading) {
-      // Incrementez la page et récupérez les location généraux
-      setState(() {
-        // Rafraîchir les données ici
-        page++;
-      });
+        !isLoading &&
+        selectedType == null) {
+      if (mounted)
+        setState(() {
+          // Rafraîchir les données ici
+          page++;
+        });
       debugPrint("yes - fetch all materiel by pays");
-
-      fetchMateriel(detectedCountry != null ? detectedCountry! : "Mali",
-              refresh: true)
+      fetchMateriel(detectedCountry != null ? detectedCountry! : "mali")
           .then((value) {
         setState(() {
           // Rafraîchir les données ici
@@ -86,26 +84,18 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     debugPrint("no");
   }
 
-  void _scrollListener1() {
+   void _scrollListener1() {
     if (scrollableController1.position.pixels >=
             scrollableController1.position.maxScrollExtent - 200 &&
         hasMore &&
         !isLoading &&
         selectedType != null) {
-      // if (selectedCat != null) {
-      // Incrementez la page et récupérez les stocks par catégorie
-      debugPrint("yes - fetch by type and pays");
+      if (mounted) debugPrint("yes - fetch by type and pays");
       setState(() {
-        // Rafraîchir les données ici
         page++;
       });
 
-      fetchMaterielByType(detectedCountry != null ? detectedCountry! : "Mali")
-          .then((value) {
-        setState(() {
-          // Rafraîchir les données ici
-        });
-      });
+      fetchMaterielByType(detectedCountry != null ? detectedCountry! : "mali");
     } else if (nomP != null && nomP!.isNotEmpty) {
       debugPrint("yes - fetch by country");
       if (mounted)
@@ -121,6 +111,42 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     }
     debugPrint("no");
   }
+
+  // void _scrollListener1() {
+  //   if (scrollableController1.position.pixels >=
+  //           scrollableController1.position.maxScrollExtent - 200 &&
+  //       hasMore &&
+  //       !isLoading &&
+  //       selectedType != null) {
+  //     // if (selectedCat != null) {
+  //     // Incrementez la page et récupérez les stocks par catégorie
+  //     debugPrint("yes - fetch by type and pays");
+  //     setState(() {
+  //       // Rafraîchir les données ici
+  //       page++;
+  //     });
+
+  //     fetchMaterielByType(detectedCountry != null ? detectedCountry! : "Mali")
+  //         .then((value) {
+  //       setState(() {
+  //         // Rafraîchir les données ici
+  //       });
+  //     });
+  //   } else if (nomP != null && nomP!.isNotEmpty) {
+  //     debugPrint("yes - fetch by country");
+  //     if (mounted)
+  //       setState(() {
+  //         page++;
+  //       });
+
+  //     fetchAllByPays().then((value) {
+  //       setState(() {
+  //         debugPrint("page pour pays ${nomP} inc all ${page}");
+  //       });
+  //     });
+  //   }
+  //   debugPrint("no");
+  // }
 
   Future<List<Materiels>> fetchAllByPays({bool refresh = false}) async {
     if (isLoading == true) return [];
@@ -322,7 +348,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
           detectedCountry != null ? detectedCountry! : "Mali", libelleFiliere,
           refresh: true);
     }
-
     return materielListe;
   }
 
@@ -334,7 +359,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
             Provider.of<DetectorPays>(context, listen: false).detectedCountry!
         : detectedCountry = "Mali";
     _searchController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+   WidgetsBinding.instance.addPostFrameCallback((_) {
       //code will run when widget rendering complete
       scrollableController.addListener(_scrollListener);
     });
@@ -342,6 +367,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
       //code will run when widget rendering complete
       scrollableController1.addListener(_scrollListener1);
     });
+
     _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
     verify();
@@ -349,19 +375,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     super.initState();
   }
 
-  void _updateMode(int index) {
-    if (mounted) {
-      setState(() {
-        isSearchMode = index == 0;
-        if (!isSearchMode) {
-          _searchController.clear();
-          _searchController.dispose();
-          _searchController = TextEditingController();
-        }
-      });
-    }
-  }
-
+ 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -371,7 +385,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   void dispose() {
     scrollableController.dispose();
     scrollableController1.dispose();
-
     _searchController.dispose();
     super.dispose();
   }
@@ -991,10 +1004,8 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                         setState(() {
                           page = 0;
                           isLoading = false;
-                          // Rafraîchir les données ici
                         });
                         debugPrint("refresh page ${page}");
-                        // selectedType != null ?StockService().fetchStockByCategorieWithPagination(selectedCat!.idCategorieProduit!) :
                         selectedType == null || nomP == null
                             ? setState(() {
                                 materielListeFuture = MaterielService()
@@ -1131,19 +1142,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                   children: [
                                                     if (produitsLocaux
                                                         .isNotEmpty) ...[
-                                                      // Padding(
-                                                      //   padding:
-                                                      //       const EdgeInsets
-                                                      //           .all(8.0),
-                                                      //   child: Text(
-                                                      //     "Matériels locaux",
-                                                      //     style: TextStyle(
-                                                      //         fontWeight:
-                                                      //             FontWeight
-                                                      //                 .bold,
-                                                      //         fontSize: 18),
-                                                      //   ),
-                                                      // ),
+                                                     
                                                       GridView.builder(
                                                         shrinkWrap: true,
                                                         physics:
@@ -1165,13 +1164,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                   .length) {
                                                             return GestureDetector(
                                                               onTap: () {
-                                                                // Navigator.push(
-                                                                //     context,
-                                                                //     MaterialPageRoute(
-                                                                //         builder: (context) =>
-                                                                //             DetailMateriel(
-                                                                //                 materiel:
-                                                                //                     filteredSearch[index])));
+                                                               
                                                                 _getResultFromNextScreen3(
                                                                     context,
                                                                     produitsLocaux[
@@ -1294,7 +1287,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                          "Produits autre pays",
+                                                          "Matériel autre pays",
                                                           style: TextStyle(
                                                               fontSize: 16),
                                                         ),
@@ -1320,13 +1313,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                   .length) {
                                                             return GestureDetector(
                                                               onTap: () {
-                                                                // Navigator.push(
-                                                                //     context,
-                                                                //     MaterialPageRoute(
-                                                                //         builder: (context) =>
-                                                                //             DetailMateriel(
-                                                                //                 materiel:
-                                                                //                     filteredSearch[index])));
+                                                               
                                                                 _getResultFromNextScreen3(
                                                                     context,
                                                                     produitsEtrangers[
@@ -1527,6 +1514,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                 .toLowerCase();
                                             return nomCat.contains(searchText);
                                           }).toList();
+
                                           return filteredSearch.isEmpty &&
                                                   isLoading == false
                                               ? SingleChildScrollView(
@@ -1563,19 +1551,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                       children: [
                                                         if (produitsLocaux
                                                             .isNotEmpty) ...[
-                                                          // Padding(
-                                                          //   padding:
-                                                          //       const EdgeInsets
-                                                          //           .all(8.0),
-                                                          //   child: Text(
-                                                          //     "Matériels locaux",
-                                                          //     style: TextStyle(
-                                                          //         fontWeight:
-                                                          //             FontWeight
-                                                          //                 .bold,
-                                                          //         fontSize: 18),
-                                                          //   ),
-                                                          // ),
+                                                         
                                                           GridView.builder(
                                                             shrinkWrap: true,
                                                             physics:
@@ -1601,13 +1577,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       .length) {
                                                                 return GestureDetector(
                                                                   onTap: () {
-                                                                    // Navigator.push(
-                                                                    //     context,
-                                                                    //     MaterialPageRoute(
-                                                                    //         builder: (context) =>
-                                                                    //             DetailMateriel(
-                                                                    //                 materiel:
-                                                                    //                     filteredSearch[index])));
+                                                                  
                                                                     _getResultFromNextScreen3(
                                                                         context,
                                                                         produitsLocaux[
@@ -1718,7 +1688,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                 const EdgeInsets
                                                                     .all(8.0),
                                                             child: Text(
-                                                              "Produits autre pays",
+                                                              "Matériel autre pays",
                                                               style: TextStyle(
                                                                   fontSize: 16),
                                                             ),
@@ -1748,13 +1718,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       .length) {
                                                                 return GestureDetector(
                                                                   onTap: () {
-                                                                    // Navigator.push(
-                                                                    //     context,
-                                                                    //     MaterialPageRoute(
-                                                                    //         builder: (context) =>
-                                                                    //             DetailMateriel(
-                                                                    //                 materiel:
-                                                                    //                     filteredSearch[index])));
+                                                                   
                                                                     _getResultFromNextScreen3(
                                                                         context,
                                                                         produitsEtrangers[

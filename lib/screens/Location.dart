@@ -57,8 +57,6 @@ class _LocationState extends State<Location> {
   bool isFilterMode = false;
   CountryProvider? countryProvider;
   String? detectedCountry;
-  //   List<ParametreGeneraux> paraList = [];
-  // late ParametreGeneraux para = ParametreGeneraux();
 
   ScrollController scrollableController = ScrollController();
   ScrollController scrollableController1 = ScrollController();
@@ -101,7 +99,6 @@ class _LocationState extends State<Location> {
         selectedType != null) {
       if (mounted) debugPrint("yes - fetch by type and pays");
       setState(() {
-        // Rafraîchir les données ici
         page++;
       });
 
@@ -407,38 +404,13 @@ class _LocationState extends State<Location> {
     }
   }
 
-  void _updateMode(int index) {
-    if (mounted) {
-      setState(() {
-        isSearchMode = index == 0;
-        if (!isSearchMode) {
-          _searchController.clear();
-          _searchController.dispose();
-          _searchController = TextEditingController();
-        }
-      });
-    }
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
   }
 
-  void _selectMode(String mode) {
-    setState(() {
-      if (mode == 'Rechercher') {
-        isSearchMode = true;
-        isFilterMode = false;
-      } else if (mode == 'Filtrer') {
-        isSearchMode = false;
-        isFilterMode = true;
-      } else if (mode == 'Fermer') {
-        isSearchMode = false;
-        isFilterMode = false;
-      }
-    });
-  }
+ 
 
   @override
   void dispose() {

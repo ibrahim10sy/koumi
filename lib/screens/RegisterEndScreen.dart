@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -16,18 +17,19 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterEndScreen extends StatefulWidget {
   String nomActeur, email, adresse, localistaion;
   String telephoneActeur, numeroWhatsApp, pays;
-  File? image1;
+  // File? image1;
   late List<TypeActeur>? typeActeur;
   //  late List<TypeActeur> idTypeActeur;
 
   RegisterEndScreen(
       {super.key,
       required this.nomActeur,
-      this.image1,
+      // this.image1,
       required this.email,
       required this.telephoneActeur,
       this.typeActeur,
@@ -40,6 +42,8 @@ class RegisterEndScreen extends StatefulWidget {
   State<RegisterEndScreen> createState() => _RegisterEndScreenState();
 }
 
+const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
+
 class _RegisterEndScreenState extends State<RegisterEndScreen> {
   bool isLoading = false;
   String errorMessage = "";
@@ -48,9 +52,10 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   //  final MultiSelectController _controllerCategorie = MultiSelectController();
-
+  TextEditingController imageController = TextEditingController();
   final MultiSelectController _controllerCategorie = MultiSelectController();
   final MultiSelectController _controllerSpeculation = MultiSelectController();
+  TextEditingController typeController = TextEditingController();
 
   String password = "";
   String confirmPassword = "";
@@ -66,14 +71,15 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
 
   List<Speculation> selectedSpec = [];
   String responses = "";
-
+  late Future _typeList;
   List<String> idsCategorieProduit = [];
   String idsCategorieProduitAsString = "";
-
+  late TextEditingController _searchController;
   String? image2Src;
   File? image2;
 
   String url = "";
+  List<Speculation> options = [];
 
   Future<File> saveImagePermanently(String imagePath) async {
     final directory = await getApplicationDocumentsDirectory();
@@ -86,7 +92,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
   Future<File?> getImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) return null;
-
+    imageController.text = image.name;
     return File(image.path);
   }
 
@@ -96,6 +102,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
       setState(() {
         this.image2 = image;
         image2Src = image.path;
+        imageController.text = image.path;
       });
     }
   }
@@ -108,7 +115,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
         return SizedBox(
           height: 150,
           child: AlertDialog(
-            title: Text("Photo d'identité"),
+            title: Text("Photo du siège"),
             content: Wrap(
               alignment: WrapAlignment.center,
               children: [
@@ -176,9 +183,153 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
     prefs.setStringList('acteurs', acteurs);
   }
 
- 
+  void _showMultiSelectDialogt() async {
+    final BuildContext context = this.context;
 
-  registerUser(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une spéculation...',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _typeList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Speculation> typeListe = responseData
+                          .map((e) => Speculation.fromMap(e))
+                          .where((con) => con.statutSpeculation == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucun type trouvé")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Speculation> filteredSearch = typeListe
+                          .where((type) => type.nomSpeculation!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune spéculation trouvé',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      selectedSpec.contains(type);
+
+                                  return ListTile(
+                                    title: Text(
+                                      type.nomSpeculation!,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    trailing: isSelected
+                                        ? const Icon(
+                                            Icons.check_box_outlined,
+                                            color: d_colorOr,
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      setState(() {
+                                        isSelected
+                                            ? selectedSpec.remove(type)
+                                            : selectedSpec.add(type);
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    List<String> typeLibelle =
+                        selectedSpec.map((e) => e.nomSpeculation!).toList();
+                    typeController.text = typeLibelle.join(', ');
+                    _searchController.clear();
+                    print('Options sélectionnées : $selectedSpec');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> registerUser(BuildContext context) async {
     final nomActeur = widget.nomActeur;
     final emailActeur = widget.email;
     final adresse = widget.adresse;
@@ -187,493 +338,115 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
 
+    // Vérification des mots de passe
     if (password != confirmPassword) {
-      // Gérez le cas où l'email ou le mot de passe est vide.
-      const String errorMessage = "Les mot de passe ne correspondent pas ";
-      // Gérez le cas où l'email ou le mot de passe est vide.
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Center(
-                child: Text(
-                  'Erreur',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                )),
-            content: const Text(errorMessage),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          'Les mots de passe ne correspondent pas',
+          style: TextStyle(color: Colors.white),
+        ),
+      ));
       return;
     }
-    // Utilize your backend service to send the request
+
     ActeurService acteurService = ActeurService();
-    // Si widget.typeActeur est bien une liste de TypeActeur
+
     try {
-      // String type = typeActeurList.toString();
-      if (widget.image1 != null && image2 != null) {
-        await acteurService
-            .creerActeur(
-            logoActeur: widget.image1,
-            photoSiegeActeur: image2,
-            nomActeur: nomActeur,
-            adresseActeur: adresse,
-            telephoneActeur: widget.telephoneActeur,
-            whatsAppActeur: widget.numeroWhatsApp,
-            niveau3PaysActeur: widget.pays,
-            localiteActeur: localisation,
-            emailActeur: emailActeur,
-            typeActeur: widget
-                .typeActeur, // Convertir les IDs en chaînes de caractères
-            password: password,
-            speculation: selectedSpec)
-            .then((value) => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Center(child: Text('Succès')),
-              content: const Text("Inscription réussi avec succès"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Get.back();
-                    Get.offAll(LoginSuccessScreen());
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        ))
-            .catchError((error) => {
-          if (error is Exception)
-            {
-              exception = error.toString(),
-              if (exception.toString().contains(
-                  'Un compte avec le même numéro de téléphone existe déjà'))
-                {
-                setState(() {
-                  errorMessage =
-                  'Un compte avec le même numéro de téléphone existe déjà';
-                })
+      // Création de l'acteur
+      await acteurService.creerActeur(
+        nomActeur: nomActeur,
+        adresseActeur: adresse,
+        telephoneActeur: widget.telephoneActeur,
+        whatsAppActeur: widget.numeroWhatsApp,
+        niveau3PaysActeur: widget.pays,
+        localiteActeur: localisation,
+        emailActeur: emailActeur,
+        typeActeur: typeActeur,
+        password: password,
+        speculation: selectedSpec,
+      );
 
-                }
-               else  if (exception.toString().contains(
-    'https://api.greenapi.com')) {
-    showDialog(
-    context: context,
-    builder: (BuildContext context) {
-    return AlertDialog(
-    title: const Center(child: Text('Succès')),
-    content: const Text("Inscription réussi avec succès 1"),
-    actions: <Widget>[
-    TextButton(
-    onPressed: () {
-    Get.back();
-    Get.offAll(LoginSuccessScreen());
-    },
-    child: const Text('OK'),
-    ),
-    ],
-    );
-    },
-    )
-    }
-              else
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même email et numéro de téléphone  existe déjà';
-                  })
-                }
-            },
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Erreur lors de l'inscription"),
-                content: Text(errorMessage,
-                    style: TextStyle(
-                      color: Colors.black87,
-                    )),
-                actions: [
-                  TextButton(
-                    child: Text("OK"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              );
-            },
-          )
-        });
-      } else if (widget.image1 != null) {
-        await acteurService
-            .creerActeur(
-            logoActeur: widget.image1,
-            nomActeur: nomActeur,
-            adresseActeur: adresse,
-            telephoneActeur: widget.telephoneActeur,
-            whatsAppActeur: widget.numeroWhatsApp,
-            niveau3PaysActeur: widget.pays,
-            localiteActeur: localisation,
-            emailActeur: emailActeur,
-            typeActeur: widget
-                .typeActeur, // Convertir les IDs en chaînes de caractères
-            password: password,
-            speculation: selectedSpec)
-            .then((value) => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Center(child: Text('Succès')),
-              content: const Text("Inscription réussi avec succès"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Get.back();
-                    Get.offAll(LoginSuccessScreen());
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        ))
-            .catchError((error) => {
-          if (error is Exception)
-            {
-              exception = error.toString(),
-              if (exception.toString().contains(
-                  'Un compte avec le même numéro de téléphone existe déjà'))
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même numéro de téléphone existe déjà';
-                  })
-                }
-              else  if (exception.toString().contains(
-    'https://api.greenapi.com')) {
-    showDialog(
-    context: context,
-    builder: (BuildContext context) {
-    return AlertDialog(
-    title: const Center(child: Text('Succès')),
-    content: const Text("Inscription réussi avec succès 1"),
-    actions: <Widget>[
-    TextButton(
-    onPressed: () {
-    Get.back();
-    Get.offAll(LoginSuccessScreen());
-    },
-    child: const Text('OK'),
-    ),
-    ],
-    );
-    },
-    )
-    }
-              else
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même email et numéro de téléphone  existe déjà';
-                  })
-                }
-            },
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Erreur lors de l'inscription"),
-                content: Text(errorMessage,
-                    style: TextStyle(
-                      color: Colors.black87,
-                    )),
-                actions: [
-                  TextButton(
-                    child: Text("OK"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              );
-            },
-          )
-        });
-      } else if (image2 != null) {
-        await acteurService
-            .creerActeur(
-            photoSiegeActeur: image2,
-            nomActeur: nomActeur,
-            adresseActeur: adresse,
-            telephoneActeur: widget.telephoneActeur,
-            whatsAppActeur: widget.numeroWhatsApp,
-            niveau3PaysActeur: widget.pays,
-            localiteActeur: localisation,
-            emailActeur: emailActeur,
-            typeActeur: widget
-                .typeActeur, // Convertir les IDs en chaînes de caractères
-            password: password,
-            speculation: selectedSpec)
-            .then((value) => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Center(child: Text('Succès')),
-              content: const Text("Inscription réussi avec succès"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Get.back();
-                    Get.offAll(LoginSuccessScreen());
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        ))
-            .catchError((error) => {
-          if (error is Exception)
-            {
-              exception = error.toString(),
-              if (exception.toString().contains(
-                  'Un compte avec le même numéro de téléphone existe déjà'))
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même numéro de téléphone existe déjà';
-                  })
-                }
-               else  if (exception.toString().contains(
-    'https://api.greenapi.com')) {
-    showDialog(
-    context: context,
-    builder: (BuildContext context) {
-    return AlertDialog(
-    title: const Center(child: Text('Succès')),
-    content: const Text("Inscription réussi avec succès 1"),
-    actions: <Widget>[
-    TextButton(
-    onPressed: () {
-    Get.back();
-    Get.offAll(LoginSuccessScreen());
-    },
-    child: const Text('OK'),
-    ),
-    ],
-    );
-    },
-    )
-    }
-              else
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même email et numéro de téléphone  existe déjà';
-                  })
-                }
-            },
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Erreur lors de l'inscription"),
-                content: Text(errorMessage,
-                    style: TextStyle(
-                      color: Colors.black87,
-                    )),
-                actions: [
-                  TextButton(
-                    child: Text("OK"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              );
-            },
-          )
-        });
-      } else {
-        await acteurService
-            .creerActeur(
-          nomActeur: nomActeur,
-          adresseActeur: adresse,
-          telephoneActeur: widget.telephoneActeur,
-          whatsAppActeur: widget.numeroWhatsApp,
-          niveau3PaysActeur: widget.pays,
-          localiteActeur: localisation,
-          emailActeur: emailActeur,
-          typeActeur: typeActeur,
-          password: password,
-          speculation: selectedSpec,
-        )
-            .then((value) => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Center(child: Text('Succès')),
-              content: const Text("Inscription réussi avec succès"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                          const LoginSuccessScreen()),
-                    );
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        ))
-            .catchError((error) => {
-          if (error is Exception)
-            {
-              exception = error.toString(),
-              if (exception.toString().contains(
-                  'Un compte avec le même numéro de téléphone existe déjà'))
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même numéro de téléphone existe déjà';
-                  })
-                }
-               else  if (exception.toString().contains(
-    'https://api.greenapi.com')) {
-    showDialog(
-    context: context,
-    builder: (BuildContext context) {
-    return AlertDialog(
-    title: const Center(child: Text('Succès')),
-    content: const Text("Inscription réussi avec succès 1"),
-    actions: <Widget>[
-    TextButton(
-    onPressed: () {
-    Get.back();
-    Get.offAll(LoginSuccessScreen());
-    },
-    child: const Text('OK'),
-    ),
-    ],
-    );
-    },
-    )
-    }
-              else
-                {
-                  setState(() {
-
-                  errorMessage =
-                  'Un compte avec le même email et numéro de téléphone  existe déjà';
-                  })
-                }
-            },
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Erreur lors de l'inscription"),
-                content: Text(errorMessage,
-                    style: TextStyle(
-                      color: Colors.black87,
-                    )),
-                actions: [
-                  TextButton(
-                    child: Text("OK"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              );
-            },
-          )
-        });
-      }
-      // print("Demande envoyée avec succès: ${updatedDemande.toString()}");
-      debugPrint("yes ");
-      // Navigate to the next page if necessary
+      // Affichage de la boîte de dialogue de succès
+      showSuccessDialog(context, "Inscription réussie avec succès");
     } catch (error) {
-      String errorMessage = "";
-      if (error is Exception) {
-        final exception = error;
-        if (exception.toString().contains(
-            'Un compte avec le même numéro de téléphone existe déjà')) {
-          setState(() {
+      String errorMessage;
 
-          errorMessage =
-          'Un compte avec le même numéro de téléphone existe déjà';
-          });
-        } else  if (exception.toString().contains(
-            'https://api.greenapi.com')) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Center(child: Text('Succès')),
-                content: const Text("Inscription réussi avec succès 1"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                      Get.offAll(LoginSuccessScreen());
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-        else {
-          setState(() {
-
-            errorMessage =
-            'Une erreur s\'est produite. vérifier les informations du compte puis réessayer';
-          });
-        }
-        print(errorMessage);
+      // Gestion des erreurs spécifiques
+      if (error
+          .toString()
+          .contains('Un compte avec le même numéro de téléphone existe déjà')) {
+        errorMessage = 'Un compte avec le même numéro de téléphone existe déjà';
+      } else if (error.toString().contains('https://api.greenapi.com')) {
+        // Si une condition spécifique doit entraîner un succès malgré l'exception
+        showSuccessDialog(context, "Inscription réussie avec succès ");
+        return;
+      } else if (error
+          .toString()
+          .contains('Un compte avec le même email et numéro de téléphone')) {
+        errorMessage =
+            'Un compte avec le même email et numéro de téléphone existe déjà';
+      } else {
+        errorMessage =
+            'Une erreur s\'est produite. Vérifiez les informations du compte puis réessayez';
       }
 
-      debugPrint("no " + errorMessage);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
+      // Affichage de la boîte de dialogue d'erreur
+      showErrorDialog(context, errorMessage);
+    }
+  }
+
+  void showSuccessDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(child: Text('Succès')),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Get.back();
+                Get.offAll(LoginSuccessScreen());
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showErrorDialog(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
           title: Text("Erreur lors de l'inscription"),
-          content: Text(errorMessage,
-              style: TextStyle(
-                color: Colors.black87,
-              )),
+          content: Text(
+            errorMessage,
+            style: TextStyle(color: Colors.black87),
+          ),
           actions: [
             TextButton(
               child: Text("OK"),
               onPressed: () => Navigator.pop(context),
             ),
           ],
-        ),
-      );
-    }
+        );
+      },
+    );
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _searchController = TextEditingController();
+    _typeList =
+        http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
+
     debugPrint("Adresse : " +
         widget.adresse +
         " Type : ${widget.typeActeur}" +
@@ -685,6 +458,12 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
         widget.numeroWhatsApp +
         "Email :" +
         widget.email);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -728,49 +507,32 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+                // SizedBox(
+                //   height: 120,
+                //   width: double.infinity,
+                //   child: GestureDetector(
+                //     onTap: _showImageSourceDialog,
+                //     child: (image2 == null)
+                //         ? Center(
+                //             child: Image.asset('assets/images/logo-pr.png'))
+                //         : ClipRRect(
+                //             borderRadius: BorderRadius.circular(8),
+                //             child: Image.file(
+                //               image2!,
+                //               height: 100,
+                //               width: 200,
+                //               fit: BoxFit.cover,
+                //             ),
+                //           ),
+                //   ),
+                // ),
                 SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  height: 100,
-                  width: 200, // Spécifiez une largeur fixe pour le conteneur
-                  child: (image2 == null)
-                      ? Center(child: Image.asset('assets/images/logo-pr.png'))
-                      : SizedBox(
-                          height: 50,
-                          child: Image.file(
-                            image2!,
-                            height: 100,
-                            width: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 42,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFF8A00),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      _showImageSourceDialog();
-                    },
+                    height: 130,
+                    width: double.infinity,
                     child: Center(
-                      child: Text(
-                        "Choisir la photo du siège",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                        child: Image.asset('assets/images/logo-pr.png'))),
+                SizedBox(
+                  height: 20,
                 ),
                 Form(
                     key: _formKey,
@@ -780,99 +542,74 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-
-                        const SizedBox(
-                          height: 5,
-                        ),
-
-                        // Deuxième widget MultiSelectDropDown pour sélectionner les spéculations
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 10.0),
+                        //   child: Text(
+                        //     "Photo du siège (optionnel)",
+                        //     style:
+                        //         TextStyle(color: (Colors.black), fontSize: 18),
+                        //   ),
+                        // ),
+                        // TextFormField(
+                        //   controller: imageController,
+                        //   onTap: _showImageSourceDialog,
+                        //   readOnly: true,
+                        //   decoration: InputDecoration(
+                        //     hintText: "Télécharger une image",
+                        //     contentPadding: const EdgeInsets.symmetric(
+                        //         vertical: 10, horizontal: 20),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //     ),
+                        //     prefixIcon: Icon(Icons.upload),
+                        //     // Show clear button when an image is selected
+                        //     suffixIcon: imageController.text.isNotEmpty
+                        //         ? IconButton(
+                        //             icon: Icon(Icons.clear),
+                        //             onPressed: () {
+                        //               setState(() {
+                        //                 imageController.clear();
+                        //                 image2 = null;
+                        //               });
+                        //             },
+                        //           )
+                        //         : null,
+                        //   ),
+                        // ),
+                        // const SizedBox(
+                        //   height: 5,
+                        // ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Spéculation",
+                            "Spéculation (Multi-selection)",
                             style: TextStyle(color: Colors.black, fontSize: 18),
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        MultiSelectDropDown.network(
-                          networkConfig: NetworkConfig(
-                            url:
-                                '$apiOnlineUrl/Speculation/getAllSpeculation', //e40ijxd5k0n0yrzj5f80,
-                            method: RequestMethod.get,
-                            headers: {'Content-Type': 'application/json'},
+                        GestureDetector(
+                          onTap: _showMultiSelectDialogt,
+                          child: TextFormField(
+                            onTap: _showMultiSelectDialogt,
+                            controller: typeController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une spéculation ",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           ),
-                          searchEnabled: true,
-                          searchLabel: 'Rechercher...',
-                          searchBackgroundColor: Colors.blueGrey[50],
-                          chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                          responseParser: (response) {
-                            listeSpeculations =
-                                (response as List<dynamic>).map((e) {
-                              return Speculation(
-                                idSpeculation: e['idSpeculation'] as String,
-                                nomSpeculation: e['nomSpeculation'] as String,
-                                statutSpeculation:
-                                    e['statutSpeculation'] as bool,
-                              );
-                            }).toList();
-
-                            // Filtrer les types avec un libellé différent de "admin" et dont le statutTypeActeur est true
-                            final filteredTypes = listeSpeculations
-                                .where((speculation) =>
-                                    speculation.statutSpeculation == true)
-                                .toList();
-
-                            // Créer des ValueItems pour les types filtrés
-                            final List<ValueItem<Speculation>> valueItems =
-                                filteredTypes.map((speculation) {
-                              return ValueItem<Speculation>(
-                                label: speculation.nomSpeculation!,
-                                value: speculation,
-                              );
-                            }).toList();
-
-                            return Future<List<ValueItem<Speculation>>>.value(
-                                valueItems);
-                          },
-
-                          controller: _controllerSpeculation,
-                          hint: 'Sélectionner une spéculation',
-                          dropdownHeight: 320,
-                          fieldBackgroundColor:
-                              Color.fromARGB(255, 219, 219, 219),
-                          onOptionSelected: (options) {
-                            setState(() {
-                              selectedSpec = options
-                                  .map<Speculation>((item) => item.value!)
-                                  .toList();
-                              print("Types sélectionnés : $selectedSpec");
-                              libelleSpeculation.clear();
-                              libelleSpeculation.addAll(
-                                  options.map((data) => data.label).toList());
-                              print(
-                                  "Spéculation sélectionnée ${libelleSpeculation.toString()}");
-                            });
-                            // Fermer automatiquement le dialogue
-                            // FocusScope.of(context).unfocus();
-                          },
-                          responseErrorBuilder: ((context, body) {
-                            return const Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text('Aucune spéculation disponible'),
-                            );
-                          }),
-                          // Exemple de personnalisation des styles
                         ),
-
-                        // fin  filiere
                         const SizedBox(
                           height: 10,
                         ),
-                        // debut mot de passe
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Mot de passe",
+                            "Mot de passe (6 chiffres)",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
@@ -929,7 +666,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Confirm mot de passe",
+                            "Confirmer mot de passe",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
@@ -1004,8 +741,10 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                         "123456") {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
+                                    backgroundColor: Colors.red,
                                     content: Text(
-                                        'Mot de passe faible, veuillez saisir un mot de passe sécurisé.'),
+                                        'Mot de passe faible, veuillez saisir un mot de passe sécurisé.',
+                                        style: TextStyle(color: Colors.white)),
                                   ));
                                 } else {
                                   _handleButtonPress(context);
@@ -1041,3 +780,476 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
     );
   }
 }
+
+// registerUser(BuildContext context) async {
+//     final nomActeur = widget.nomActeur;
+//     final emailActeur = widget.email;
+//     final adresse = widget.adresse;
+//     final localisation = widget.localistaion;
+//     final typeActeur = widget.typeActeur;
+//     final password = passwordController.text;
+//     final confirmPassword = confirmPasswordController.text;
+
+//     if (password != confirmPassword) {
+//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+//         backgroundColor: Colors.red,
+//         content: Text('Les mot de passe ne correspondent pas ',
+//             style: TextStyle(color: Colors.white)),
+//       ));
+//       return;
+//     }
+//     // Utilize your backend service to send the request
+//     ActeurService acteurService = ActeurService();
+//     // Si widget.typeActeur est bien une liste de TypeActeur
+//     try {
+//       // String type = typeActeurList.toString();
+//       if (widget.image1 != null && image2 != null) {
+//         await acteurService
+//             .creerActeur(
+//                 logoActeur: widget.image1,
+//                 photoSiegeActeur: image2,
+//                 nomActeur: nomActeur,
+//                 adresseActeur: adresse,
+//                 telephoneActeur: widget.telephoneActeur,
+//                 whatsAppActeur: widget.numeroWhatsApp,
+//                 niveau3PaysActeur: widget.pays,
+//                 localiteActeur: localisation,
+//                 emailActeur: emailActeur,
+//                 typeActeur: widget
+//                     .typeActeur, // Convertir les IDs en chaînes de caractères
+//                 password: password,
+//                 speculation: selectedSpec)
+//             .then((value) => showDialog(
+//                   context: context,
+//                   builder: (BuildContext context) {
+//                     return AlertDialog(
+//                       title: const Center(child: Text('Succès')),
+//                       content: const Text("Inscription réussi avec succès"),
+//                       actions: <Widget>[
+//                         TextButton(
+//                           onPressed: () {
+//                             Get.back();
+//                             Get.offAll(LoginSuccessScreen());
+//                           },
+//                           child: const Text('OK'),
+//                         ),
+//                       ],
+//                     );
+//                   },
+//                 ))
+//             .catchError((error) => {
+//                   if (error is Exception)
+//                     {
+//                       exception = error.toString(),
+//                       if (exception.toString().contains(
+//                           'Un compte avec le même numéro de téléphone existe déjà'))
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même numéro de téléphone existe déjà';
+//                           })
+//                         }
+//                       else if (exception
+//                           .toString()
+//                           .contains('https://api.greenapi.com'))
+//                         {
+//                           showDialog(
+//                             context: context,
+//                             builder: (BuildContext context) {
+//                               return AlertDialog(
+//                                 title: const Center(child: Text('Succès')),
+//                                 content: const Text(
+//                                     "Inscription réussi avec succès 1"),
+//                                 actions: <Widget>[
+//                                   TextButton(
+//                                     onPressed: () {
+//                                       Get.back();
+//                                       Get.offAll(LoginSuccessScreen());
+//                                     },
+//                                     child: const Text('OK'),
+//                                   ),
+//                                 ],
+//                               );
+//                             },
+//                           )
+//                         }
+//                       else
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même email et numéro de téléphone  existe déjà';
+//                           })
+//                         }
+//                     },
+//                   showDialog(
+//                     context: context,
+//                     builder: (BuildContext context) {
+//                       return AlertDialog(
+//                         title: Text("Erreur lors de l'inscription"),
+//                         content: Text(errorMessage,
+//                             style: TextStyle(
+//                               color: Colors.black87,
+//                             )),
+//                         actions: [
+//                           TextButton(
+//                             child: Text("OK"),
+//                             onPressed: () => Navigator.pop(context),
+//                           ),
+//                         ],
+//                       );
+//                     },
+//                   )
+//                 });
+//       } else if (widget.image1 != null) {
+//         await acteurService
+//             .creerActeur(
+//                 logoActeur: widget.image1,
+//                 nomActeur: nomActeur,
+//                 adresseActeur: adresse,
+//                 telephoneActeur: widget.telephoneActeur,
+//                 whatsAppActeur: widget.numeroWhatsApp,
+//                 niveau3PaysActeur: widget.pays,
+//                 localiteActeur: localisation,
+//                 emailActeur: emailActeur,
+//                 typeActeur: widget
+//                     .typeActeur, // Convertir les IDs en chaînes de caractères
+//                 password: password,
+//                 speculation: selectedSpec)
+//             .then((value) => showDialog(
+//                   context: context,
+//                   builder: (BuildContext context) {
+//                     return AlertDialog(
+//                       title: const Center(child: Text('Succès')),
+//                       content: const Text("Inscription réussi avec succès"),
+//                       actions: <Widget>[
+//                         TextButton(
+//                           onPressed: () {
+//                             Get.back();
+//                             Get.offAll(LoginSuccessScreen());
+//                           },
+//                           child: const Text('OK'),
+//                         ),
+//                       ],
+//                     );
+//                   },
+//                 ))
+//             .catchError((error) => {
+//                   if (error is Exception)
+//                     {
+//                       exception = error.toString(),
+//                       if (exception.toString().contains(
+//                           'Un compte avec le même numéro de téléphone existe déjà'))
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même numéro de téléphone existe déjà';
+//                           })
+//                         }
+//                       else if (exception
+//                           .toString()
+//                           .contains('https://api.greenapi.com'))
+//                         {
+//                           showDialog(
+//                             context: context,
+//                             builder: (BuildContext context) {
+//                               return AlertDialog(
+//                                 title: const Center(child: Text('Succès')),
+//                                 content: const Text(
+//                                     "Inscription réussi avec succès 1"),
+//                                 actions: <Widget>[
+//                                   TextButton(
+//                                     onPressed: () {
+//                                       Get.back();
+//                                       Get.offAll(LoginSuccessScreen());
+//                                     },
+//                                     child: const Text('OK'),
+//                                   ),
+//                                 ],
+//                               );
+//                             },
+//                           )
+//                         }
+//                       else
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même email et numéro de téléphone  existe déjà';
+//                           })
+//                         }
+//                     },
+//                   showDialog(
+//                     context: context,
+//                     builder: (BuildContext context) {
+//                       return AlertDialog(
+//                         title: Text("Erreur lors de l'inscription"),
+//                         content: Text(errorMessage,
+//                             style: TextStyle(
+//                               color: Colors.black87,
+//                             )),
+//                         actions: [
+//                           TextButton(
+//                             child: Text("OK"),
+//                             onPressed: () => Navigator.pop(context),
+//                           ),
+//                         ],
+//                       );
+//                     },
+//                   )
+//                 });
+//       } else if (image2 != null) {
+//         await acteurService
+//             .creerActeur(
+//                 photoSiegeActeur: image2,
+//                 nomActeur: nomActeur,
+//                 adresseActeur: adresse,
+//                 telephoneActeur: widget.telephoneActeur,
+//                 whatsAppActeur: widget.numeroWhatsApp,
+//                 niveau3PaysActeur: widget.pays,
+//                 localiteActeur: localisation,
+//                 emailActeur: emailActeur,
+//                 typeActeur: widget
+//                     .typeActeur, // Convertir les IDs en chaînes de caractères
+//                 password: password,
+//                 speculation: selectedSpec)
+//             .then((value) => showDialog(
+//                   context: context,
+//                   builder: (BuildContext context) {
+//                     return AlertDialog(
+//                       title: const Center(child: Text('Succès')),
+//                       content: const Text("Inscription réussi avec succès"),
+//                       actions: <Widget>[
+//                         TextButton(
+//                           onPressed: () {
+//                             Get.back();
+//                             Get.offAll(LoginSuccessScreen());
+//                           },
+//                           child: const Text('OK'),
+//                         ),
+//                       ],
+//                     );
+//                   },
+//                 ))
+//             .catchError((error) => {
+//                   if (error is Exception)
+//                     {
+//                       exception = error.toString(),
+//                       if (exception.toString().contains(
+//                           'Un compte avec le même numéro de téléphone existe déjà'))
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même numéro de téléphone existe déjà';
+//                           })
+//                         }
+//                       else if (exception
+//                           .toString()
+//                           .contains('https://api.greenapi.com'))
+//                         {
+//                           showDialog(
+//                             context: context,
+//                             builder: (BuildContext context) {
+//                               return AlertDialog(
+//                                 title: const Center(child: Text('Succès')),
+//                                 content: const Text(
+//                                     "Inscription réussi avec succès 1"),
+//                                 actions: <Widget>[
+//                                   TextButton(
+//                                     onPressed: () {
+//                                       Get.back();
+//                                       Get.offAll(LoginSuccessScreen());
+//                                     },
+//                                     child: const Text('OK'),
+//                                   ),
+//                                 ],
+//                               );
+//                             },
+//                           )
+//                         }
+//                       else
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même email et numéro de téléphone  existe déjà';
+//                           })
+//                         }
+//                     },
+//                   showDialog(
+//                     context: context,
+//                     builder: (BuildContext context) {
+//                       return AlertDialog(
+//                         title: Text("Erreur lors de l'inscription"),
+//                         content: Text(errorMessage,
+//                             style: TextStyle(
+//                               color: Colors.black87,
+//                             )),
+//                         actions: [
+//                           TextButton(
+//                             child: Text("OK"),
+//                             onPressed: () => Navigator.pop(context),
+//                           ),
+//                         ],
+//                       );
+//                     },
+//                   )
+//                 });
+//       } else {
+//         await acteurService
+//             .creerActeur(
+//               nomActeur: nomActeur,
+//               adresseActeur: adresse,
+//               telephoneActeur: widget.telephoneActeur,
+//               whatsAppActeur: widget.numeroWhatsApp,
+//               niveau3PaysActeur: widget.pays,
+//               localiteActeur: localisation,
+//               emailActeur: emailActeur,
+//               typeActeur: typeActeur,
+//               password: password,
+//               speculation: selectedSpec,
+//             )
+//             .then((value) => showDialog(
+//                   context: context,
+//                   builder: (BuildContext context) {
+//                     return AlertDialog(
+//                       title: const Center(child: Text('Succès')),
+//                       content: const Text("Inscription réussi avec succès"),
+//                       actions: <Widget>[
+//                         TextButton(
+//                           onPressed: () {
+//                             Navigator.of(context).pop();
+//                             Navigator.push(
+//                               context,
+//                               MaterialPageRoute(
+//                                   builder: (context) =>
+//                                       const LoginSuccessScreen()),
+//                             );
+//                           },
+//                           child: const Text('OK'),
+//                         ),
+//                       ],
+//                     );
+//                   },
+//                 ))
+//             .catchError((error) => {
+//                   if (error is Exception)
+//                     {
+//                       exception = error.toString(),
+//                       if (exception.toString().contains(
+//                           'Un compte avec le même numéro de téléphone existe déjà'))
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même numéro de téléphone existe déjà';
+//                           })
+//                         }
+//                       else if (exception
+//                           .toString()
+//                           .contains('https://api.greenapi.com'))
+//                         {
+//                           showDialog(
+//                             context: context,
+//                             builder: (BuildContext context) {
+//                               return AlertDialog(
+//                                 title: const Center(child: Text('Succès')),
+//                                 content: const Text(
+//                                     "Inscription réussi avec succès 1"),
+//                                 actions: <Widget>[
+//                                   TextButton(
+//                                     onPressed: () {
+//                                       Get.back();
+//                                       Get.offAll(LoginSuccessScreen());
+//                                     },
+//                                     child: const Text('OK'),
+//                                   ),
+//                                 ],
+//                               );
+//                             },
+//                           )
+//                         }
+//                       else
+//                         {
+//                           setState(() {
+//                             errorMessage =
+//                                 'Un compte avec le même email et numéro de téléphone  existe déjà';
+//                           })
+//                         }
+//                     },
+//                   showDialog(
+//                     context: context,
+//                     builder: (BuildContext context) {
+//                       return AlertDialog(
+//                         title: Text("Erreur lors de l'inscription"),
+//                         content: Text(errorMessage,
+//                             style: TextStyle(
+//                               color: Colors.black87,
+//                             )),
+//                         actions: [
+//                           TextButton(
+//                             child: Text("OK"),
+//                             onPressed: () => Navigator.pop(context),
+//                           ),
+//                         ],
+//                       );
+//                     },
+//                   )
+//                 });
+//       }
+//       // print("Demande envoyée avec succès: ${updatedDemande.toString()}");
+//       debugPrint("yes ");
+//       // Navigate to the next page if necessary
+//     } catch (error) {
+//       String errorMessage = "";
+//       if (error is Exception) {
+//         final exception = error;
+//         if (exception.toString().contains(
+//             'Un compte avec le même numéro de téléphone existe déjà')) {
+//           setState(() {
+//             errorMessage =
+//                 'Un compte avec le même numéro de téléphone existe déjà';
+//           });
+//         } else if (exception.toString().contains('https://api.greenapi.com')) {
+//           showDialog(
+//             context: context,
+//             builder: (BuildContext context) {
+//               return AlertDialog(
+//                 title: const Center(child: Text('Succès')),
+//                 content: const Text("Inscription réussi avec succès 1"),
+//                 actions: <Widget>[
+//                   TextButton(
+//                     onPressed: () {
+//                       Get.back();
+//                       Get.offAll(LoginSuccessScreen());
+//                     },
+//                     child: const Text('OK'),
+//                   ),
+//                 ],
+//               );
+//             },
+//           );
+//         } else {
+//           setState(() {
+//             errorMessage =
+//                 'Une erreur s\'est produite. vérifier les informations du compte puis réessayer';
+//           });
+//         }
+//         print(errorMessage);
+//       }
+
+//       debugPrint("no " + errorMessage);
+//       showDialog(
+//         context: context,
+//         builder: (context) => AlertDialog(
+//           title: Text("Erreur lors de l'inscription"),
+//           content: Text(errorMessage,
+//               style: TextStyle(
+//                 color: Colors.black87,
+//               )),
+//           actions: [
+//             TextButton(
+//               child: Text("OK"),
+//               onPressed: () => Navigator.pop(context),
+//             ),
+//           ],
+//         ),
+//       );
+//     }
+//   }

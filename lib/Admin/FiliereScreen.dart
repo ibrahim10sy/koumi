@@ -89,52 +89,7 @@ class _FiliereScreenState extends State<FiliereScreen> {
             fontSize: 20,
           ),
         ),
-        actions: [
-          // PopupMenuButton<String>(
-          //   padding: EdgeInsets.zero,
-          //   itemBuilder: (context) => <PopupMenuEntry<String>>[
-          //     PopupMenuItem<String>(
-          //       child: ListTile(
-          //         leading: const Icon(
-          //           Icons.add,
-          //           color: Colors.green,
-          //         ),
-          //         title: const Text(
-          //           "Ajouter filière",
-          //           style: TextStyle(
-          //             color: Colors.green,
-          //             fontWeight: FontWeight.bold,
-          //           ),
-          //         ),
-          //         onTap: () async {
-          //           Navigator.of(context).pop();
-          //           // _showDialog();
-          //           _showBottomSheet();
-          //         },
-          //       ),
-          //     ),
-          //     PopupMenuItem<String>(
-          //       child: ListTile(
-          //         leading: Icon(
-          //           Icons.add,
-          //           color: Colors.orange[400],
-          //         ),
-          //         title: Text(
-          //           "Ajouter catégorie",
-          //           style: TextStyle(
-          //             color: Colors.orange[400],
-          //             fontWeight: FontWeight.bold,
-          //           ),
-          //         ),
-          //         onTap: () async {
-          //           Navigator.of(context).pop();
-          //           _showBottomSheet1();
-          //         },
-          //       ),
-          //     ),
-          //   ],
-          // )
-        ],
+       
       ),
       body: Container(
         child: NestedScrollView(

@@ -24,6 +24,8 @@ class _CampagnePageState extends State<CampagnePage> {
   TextEditingController descriptionController = TextEditingController();
   late TextEditingController _searchController;
   late Acteur acteur;
+  bool isSearchMode = false;
+  late ScrollController _scrollController;
   // double? si = fontSized;
 
   late Future<List<Campagne>> _liste;
@@ -36,6 +38,7 @@ class _CampagnePageState extends State<CampagnePage> {
 
   @override
   void initState() {
+      _scrollController = ScrollController();
     _searchController = TextEditingController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _liste = getCampListe();
@@ -44,6 +47,7 @@ class _CampagnePageState extends State<CampagnePage> {
 
   @override
   void dispose() {
+     _scrollController.dispose();
     _searchController
         .dispose(); // Disposez le TextEditingController lorsque vous n'en avez plus besoin
     super.dispose();
@@ -73,412 +77,454 @@ class _CampagnePageState extends State<CampagnePage> {
                   _liste = getCampListe();
                 });
               },
-              icon: Icon(Icons.refresh)),
-          PopupMenuButton<String>(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.add,
-                    color: Colors.green,
-                  ),
-                  title: const Text(
-                    "Ajouter campagne",
-                    style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                        overflow: TextOverflow.ellipsis),
-                  ),
-                  onTap: () async {
-                    _showDialog();
-                  },
-                ),
-              ),
-            ],
-          )
+              icon: Icon(Icons.refresh,
+                color: Colors.white,)),
+         
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey[50], // Couleur d'arrière-plan
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
+      body: Container(
+        child: NestedScrollView(
+           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                child: Column(
                   children: [
-                    Icon(Icons.search,
-                        color: Colors.blueGrey[400]), // Couleur de l'icône
-                    SizedBox(
-                        width:
-                            10), // Espacement entre l'icône et le champ de recherche
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Rechercher',
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              color: Colors
-                                  .blueGrey[400]), // Couleur du texte d'aide
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                                _showDialog();
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.add,
+                                  color: d_colorGreen,
+                                ),
+                                SizedBox(
+                                    width: 8), // Space between icon and text
+                                Text(
+                                  'Ajouter',
+                                  style: TextStyle(
+                                    color: d_colorGreen,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                isSearchMode = !isSearchMode;
+                                _searchController.clear();
+                              });
+                            },
+                            icon: Icon(
+                              isSearchMode ? Icons.close : Icons.search,
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                            ),
+                            label: Text(
+                              isSearchMode ? 'Fermer' : 'Rechercher...',
+                              style: TextStyle(
+                                  color:
+                                      isSearchMode ? Colors.red : d_colorGreen,
+                                  fontSize: 17),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    if (isSearchMode)
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.blueGrey[50],
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.search, color: Colors.blueGrey[400]),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: TextField(
+                                  controller: _searchController,
+                                  onChanged: (value) {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: 'Rechercher',
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(
+                                      color: Colors.blueGrey[400],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Consumer<CampagneService>(builder: (context, camp, child) {
-              return FutureBuilder(
-                  future: _liste,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.orange,
-                        ),
-                      );
-                    }
-
-                    if (!snapshot.hasData) {
-                      return const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Center(child: Text("Aucun donné trouvé")),
-                      );
-                    } else {
-                      campagneList = snapshot.data!;
-                      String searchText = "";
-                      List<Campagne> filtereSearch =
-                          campagneList.where((search) {
-                        String libelle = search.nomCampagne.toLowerCase();
-                        searchText = _searchController.text.toLowerCase();
-                        return libelle.contains(searchText);
-                      }).toList();
-                      return filtereSearch.isEmpty
-                          ? Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Center(child: Text("Aucune donné trouvé")),
-                            )
-                          : Column(
-                              children: filtereSearch
-                                  .map((e) => Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 15),
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                                offset: const Offset(0, 2),
-                                                blurRadius: 5,
-                                                spreadRadius: 2,
+            ];
+          },
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+               
+                Consumer<CampagneService>(builder: (context, camp, child) {
+                  return FutureBuilder(
+                      future: _liste,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.orange,
+                            ),
+                          );
+                        }
+          
+                        if (!snapshot.hasData) {
+                          return const Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Center(child: Text("Aucun donné trouvé")),
+                          );
+                        } else {
+                          campagneList = snapshot.data!;
+                          String searchText = "";
+                          List<Campagne> filtereSearch =
+                              campagneList.where((search) {
+                            String libelle = search.nomCampagne.toLowerCase();
+                            searchText = _searchController.text.toLowerCase();
+                            return libelle.contains(searchText);
+                          }).toList();
+                          return filtereSearch.isEmpty
+                              ? Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Center(child: Text("Aucune donné trouvé")),
+                                )
+                              : Column(
+                                  children: filtereSearch
+                                      .map((e) => Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 15),
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                    offset: const Offset(0, 2),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2,
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                          child: Column(children: [
-                                            ListTile(
-                                                leading: Image.asset(
-                                                  "assets/images/zone.png",
-                                                  width: 80,
-                                                  height: 80,
-                                                ),
-                                                title: Text(
-                                                    e.nomCampagne.toUpperCase(),
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    )),
-                                                subtitle: Text(e.description,
-                                                    style: const TextStyle(
-                                                      color: Colors.black87,
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontStyle:
-                                                          FontStyle.italic,
-                                                    ))),
-                                            SizedBox(height: 10),
-                                            Container(
-                                              alignment: Alignment.bottomRight,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  _buildEtat(e.statutCampagne),
-                                                  PopupMenuButton<String>(
-                                                    padding: EdgeInsets.zero,
-                                                    itemBuilder: (context) =>
-                                                        <PopupMenuEntry<
-                                                            String>>[
-                                                      PopupMenuItem<String>(
-                                                        child: ListTile(
-                                                          leading:
-                                                              e.statutCampagne ==
-                                                                      false
-                                                                  ? Icon(
-                                                                      Icons
-                                                                          .check,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .disabled_visible,
-                                                                      color: Colors
-                                                                              .orange[
+                                              child: Column(children: [
+                                                ListTile(
+                                                    leading: Image.asset(
+                                                      "assets/images/zone.png",
+                                                      width: 80,
+                                                      height: 80,
+                                                    ),
+                                                    title: Text(
+                                                        e.nomCampagne.toUpperCase(),
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 20,
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                        )),
+                                                    subtitle: Text(e.description,
+                                                        style: const TextStyle(
+                                                          color: Colors.black87,
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                        ))),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                  alignment: Alignment.bottomRight,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      _buildEtat(e.statutCampagne),
+                                                      PopupMenuButton<String>(
+                                                        padding: EdgeInsets.zero,
+                                                        itemBuilder: (context) =>
+                                                            <PopupMenuEntry<
+                                                                String>>[
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading:
+                                                                  e.statutCampagne ==
+                                                                          false
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .check,
+                                                                          color: Colors
+                                                                              .green,
+                                                                        )
+                                                                      : Icon(
+                                                                          Icons
+                                                                              .disabled_visible,
+                                                                          color: Colors
+                                                                                  .orange[
+                                                                              400],
+                                                                        ),
+                                                              title: Text(
+                                                                e.statutCampagne ==
+                                                                        false
+                                                                    ? "Activer"
+                                                                    : "Desactiver",
+                                                                style: TextStyle(
+                                                                  color: e.statutCampagne ==
+                                                                          false
+                                                                      ? Colors.green
+                                                                      : Colors.orange[
                                                                           400],
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                e.statutCampagne ==
+                                                                        false
+                                                                    ? await CampagneService()
+                                                                        .activerCampagne(e
+                                                                            .idCampagne!)
+                                                                        .then(
+                                                                            (value) =>
+                                                                                {
+                                                                                  Provider.of<CampagneService>(context, listen: false).applyChange(),
+                                                                                  Navigator.of(context).pop(),
+                                                                                  setState(() {
+                                                                                    _liste = getCampListe();
+                                                                                  }),
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Activer avec succèss "),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: Duration(seconds: 2),
+                                                                                    ),
+                                                                                  )
+                                                                                })
+                                                                        .catchError(
+                                                                            (onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Une erreur s'est produit"),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: Duration(seconds: 5),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Navigator.of(context).pop(),
+                                                                                })
+                                                                    : await CampagneService()
+                                                                        .desactiverCampagne(e
+                                                                            .idCampagne!)
+                                                                        .then(
+                                                                            (value) =>
+                                                                                {
+                                                                                  Provider.of<CampagneService>(context, listen: false).applyChange(),
+                                                                                  Navigator.of(context).pop(),
+                                                                                  setState(() {
+                                                                                    _liste = getCampListe();
+                                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                                      const SnackBar(
+                                                                                        content: Row(
+                                                                                          children: [
+                                                                                            Text("Desactiver avec succèss "),
+                                                                                          ],
+                                                                                        ),
+                                                                                        duration: Duration(seconds: 2),
+                                                                                      ),
+                                                                                    );
+                                                                                  })
+                                                                                })
+                                                                        .catchError(
+                                                                            (onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Une erreur s'est produit"),
+                                                                                        ],
+                                                                                      ),
+                                                                                      duration: Duration(seconds: 5),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Navigator.of(context).pop(),
+                                                                                });
+          
+                                                                ScaffoldMessenger
+                                                                        .of(context)
+                                                                    .showSnackBar(
+                                                                  const SnackBar(
+                                                                    content: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            "Désactiver avec succèss "),
+                                                                      ],
                                                                     ),
-                                                          title: Text(
-                                                            e.statutCampagne ==
-                                                                    false
-                                                                ? "Activer"
-                                                                : "Desactiver",
-                                                            style: TextStyle(
-                                                              color: e.statutCampagne ==
-                                                                      false
-                                                                  ? Colors.green
-                                                                  : Colors.orange[
-                                                                      400],
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                                    duration:
+                                                                        Duration(
+                                                                            seconds:
+                                                                                2),
+                                                                  ),
+                                                                );
+                                                              },
                                                             ),
                                                           ),
-                                                          onTap: () async {
-                                                            e.statutCampagne ==
-                                                                    false
-                                                                ? await CampagneService()
-                                                                    .activerCampagne(e
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading: const Icon(
+                                                                Icons.edit,
+                                                                color: Colors.green,
+                                                              ),
+                                                              title: const Text(
+                                                                "Modifier",
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors.green,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                // Ouvrir la boîte de dialogue de modification
+                                                                var updatedSousRegion =
+                                                                    await showDialog(
+                                                                  context: context,
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      AlertDialog(
+                                                                          backgroundColor:
+                                                                              Colors
+                                                                                  .white,
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(16),
+                                                                          ),
+                                                                          content: UpdateCampagne(
+                                                                              campagnes:
+                                                                                  e)),
+                                                                );
+          
+                                                                // Si les détails sont modifiés, appliquer les changements
+                                                                if (updatedSousRegion !=
+                                                                    null) {
+                                                                  Provider.of<CampagneService>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .applyChange();
+                                                                  setState(() {
+                                                                    // _liste =
+                                                                    //     updatedSousRegion;
+                                                                    _liste =
+                                                                        getCampListe();
+                                                                  });
+                                                                  // Mettre à jour la liste des sous-régions
+                                                                }
+                                                              },
+                                                            ),
+                                                          ),
+                                                          PopupMenuItem<String>(
+                                                            child: ListTile(
+                                                              leading: const Icon(
+                                                                Icons.delete,
+                                                                color: Colors.red,
+                                                              ),
+                                                              title: const Text(
+                                                                "Supprimer",
+                                                                style: TextStyle(
+                                                                  color: Colors.red,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                await CampagneService()
+                                                                    .deleteCampagne(e
                                                                         .idCampagne!)
                                                                     .then(
-                                                                        (value) =>
+                                                                        (value) => {
+                                                                              Provider.of<CampagneService>(context, listen: false)
+                                                                                  .applyChange(),
+                                                                              Navigator.of(context)
+                                                                                  .pop(),
+                                                                            })
+                                                                    .catchError(
+                                                                        (onError) =>
                                                                             {
-                                                                              Provider.of<CampagneService>(context, listen: false).applyChange(),
-                                                                              Navigator.of(context).pop(),
-                                                                              setState(() {
-                                                                                _liste = getCampListe();
-                                                                              }),
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                              ScaffoldMessenger.of(context)
+                                                                                  .showSnackBar(
                                                                                 const SnackBar(
                                                                                   content: Row(
                                                                                     children: [
-                                                                                      Text("Activer avec succèss "),
+                                                                                      Text("Impossible de supprimer"),
                                                                                     ],
                                                                                   ),
                                                                                   duration: Duration(seconds: 2),
                                                                                 ),
                                                                               )
-                                                                            })
-                                                                    .catchError(
-                                                                        (onError) =>
-                                                                            {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                const SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text("Une erreur s'est produit"),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: Duration(seconds: 5),
-                                                                                ),
-                                                                              ),
-                                                                              Navigator.of(context).pop(),
-                                                                            })
-                                                                : await CampagneService()
-                                                                    .desactiverCampagne(e
-                                                                        .idCampagne!)
-                                                                    .then(
-                                                                        (value) =>
-                                                                            {
-                                                                              Provider.of<CampagneService>(context, listen: false).applyChange(),
-                                                                              Navigator.of(context).pop(),
-                                                                              setState(() {
-                                                                                _liste = getCampListe();
-                                                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                                                  const SnackBar(
-                                                                                    content: Row(
-                                                                                      children: [
-                                                                                        Text("Desactiver avec succèss "),
-                                                                                      ],
-                                                                                    ),
-                                                                                    duration: Duration(seconds: 2),
-                                                                                  ),
-                                                                                );
-                                                                              })
-                                                                            })
-                                                                    .catchError(
-                                                                        (onError) =>
-                                                                            {
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                const SnackBar(
-                                                                                  content: Row(
-                                                                                    children: [
-                                                                                      Text("Une erreur s'est produit"),
-                                                                                    ],
-                                                                                  ),
-                                                                                  duration: Duration(seconds: 5),
-                                                                                ),
-                                                                              ),
-                                                                              Navigator.of(context).pop(),
                                                                             });
-
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Row(
-                                                                  children: [
-                                                                    Text(
-                                                                        "Désactiver avec succèss "),
-                                                                  ],
-                                                                ),
-                                                                duration:
-                                                                    Duration(
-                                                                        seconds:
-                                                                            2),
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                      PopupMenuItem<String>(
-                                                        child: ListTile(
-                                                          leading: const Icon(
-                                                            Icons.edit,
-                                                            color: Colors.green,
-                                                          ),
-                                                          title: const Text(
-                                                            "Modifier",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.green,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              },
                                                             ),
                                                           ),
-                                                          onTap: () async {
-                                                            // Ouvrir la boîte de dialogue de modification
-                                                            var updatedSousRegion =
-                                                                await showDialog(
-                                                              context: context,
-                                                              builder: (BuildContext
-                                                                      context) =>
-                                                                  AlertDialog(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(16),
-                                                                      ),
-                                                                      content: UpdateCampagne(
-                                                                          campagnes:
-                                                                              e)),
-                                                            );
-
-                                                            // Si les détails sont modifiés, appliquer les changements
-                                                            if (updatedSousRegion !=
-                                                                null) {
-                                                              Provider.of<CampagneService>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .applyChange();
-                                                              setState(() {
-                                                                // _liste =
-                                                                //     updatedSousRegion;
-                                                                _liste =
-                                                                    getCampListe();
-                                                              });
-                                                              // Mettre à jour la liste des sous-régions
-                                                            }
-                                                          },
-                                                        ),
-                                                      ),
-                                                      PopupMenuItem<String>(
-                                                        child: ListTile(
-                                                          leading: const Icon(
-                                                            Icons.delete,
-                                                            color: Colors.red,
-                                                          ),
-                                                          title: const Text(
-                                                            "Supprimer",
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          onTap: () async {
-                                                            await CampagneService()
-                                                                .deleteCampagne(e
-                                                                    .idCampagne!)
-                                                                .then(
-                                                                    (value) => {
-                                                                          Provider.of<CampagneService>(context, listen: false)
-                                                                              .applyChange(),
-                                                                          Navigator.of(context)
-                                                                              .pop(),
-                                                                        })
-                                                                .catchError(
-                                                                    (onError) =>
-                                                                        {
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(
-                                                                            const SnackBar(
-                                                                              content: Row(
-                                                                                children: [
-                                                                                  Text("Impossible de supprimer"),
-                                                                                ],
-                                                                              ),
-                                                                              duration: Duration(seconds: 2),
-                                                                            ),
-                                                                          )
-                                                                        });
-                                                          },
-                                                        ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
-                                            )
-                                          ]),
-                                        ),
-                                      ))
-                                  .toList(),
-                            );
-                    }
-                  });
-            })
-          ],
+                                                )
+                                              ]),
+                                            ),
+                                          ))
+                                      .toList(),
+                                );
+                        }
+                      });
+                })
+              ],
+            ),
+          ),
         ),
       ),
     );
