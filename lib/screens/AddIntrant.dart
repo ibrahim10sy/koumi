@@ -31,6 +31,8 @@ class _AddIntrantState extends State<AddIntrant> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _quantiteController = TextEditingController();
   TextEditingController _uniteController = TextEditingController();
+  TextEditingController catController = TextEditingController();
+
   DateTime selectedDate = DateTime.now();
   bool _isLoading = false;
   final formkey = GlobalKey<FormState>();
@@ -38,38 +40,179 @@ class _AddIntrantState extends State<AddIntrant> {
   String? imageSrc;
   File? photo;
   List<CategorieProduit> categorieList = [];
-  // List<Speculation> speculationList = [];
+  // List<categorie> categorieList = [];
   String? filiereValue;
   late Future _filiereList;
   late Filiere filiere = Filiere();
   String? catValue;
   late Future _categorieList;
-
-  // late ParametreGeneraux para = ParametreGeneraux();
-  // List<ParametreGeneraux> paraList = [];
+  late TextEditingController _searchController;
   late CategorieProduit categorieProduit = CategorieProduit();
   late Future<List<CategorieProduit>> _liste;
-
-  // void verifyParam() {
-  //   paraList = Provider.of<ParametreGenerauxProvider>(context, listen: false)
-  //       .parametreList!;
-
-  //   if (paraList.isNotEmpty) {
-  //     para = paraList[0];
-  //   } else {
-  //     // Gérer le cas où la liste est null ou vide, par exemple :
-  //     // Afficher un message d'erreur, initialiser 'para' à une valeur par défaut, etc.
-  //   }
-  // }
 
   @override
   void initState() {
     super.initState();
     // verifyParam();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-
+    _searchController = TextEditingController();
     _categorieList =
         http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
+  }
+
+  void _showCategorie() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une categorie',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _categorieList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<CategorieProduit> typeListe = responseData
+                          .map((e) => CategorieProduit.fromMap(e))
+                          .where((con) => con.statutCategorie == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child:
+                              Center(child: Text("Aucune categorie trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<CategorieProduit> filteredSearch = typeListe
+                          .where((type) => type.libelleCategorie!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune categorie trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = catController.text ==
+                                      type.libelleCategorie;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelleCategorie!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            categorieProduit = type;
+                                            catController.text =
+                                                type.libelleCategorie!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $categorieProduit');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -99,7 +242,7 @@ class _AddIntrantState extends State<AddIntrant> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Form(
                   key: formkey,
@@ -119,115 +262,23 @@ class _AddIntrantState extends State<AddIntrant> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
-                      child: FutureBuilder(
-                        future: _categorieList,
-                        builder: (_, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Chargement..."),
-                              cursorColor: Colors.green,
-                            );
-                          }
-
-                          if (snapshot.hasData) {
-                            dynamic jsonString =
-                                utf8.decode(snapshot.data.bodyBytes);
-                            dynamic responseData = json.decode(jsonString);
-
-                            if (responseData is List) {
-                              final reponse = responseData;
-                              final monaieList = reponse
-                                  .map((e) => CategorieProduit.fromMap(e))
-                                  .where((con) => con.statutCategorie == true)
-                                  .toList();
-                              if (monaieList.isEmpty) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Aucune catégorie trouvé"),
-                                  cursorColor: Colors.green,
-                                );
-                              }
-
-                              return DropdownFormField<CategorieProduit>(
-                                onEmptyActionPressed: (String str) async {},
-                                dropdownHeight: 200,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: 'Sélectionner une catégorie'),
-                                onSaved: (dynamic n) {
-                                  categorieProduit = n;
-                                  print("onSaved : $categorieProduit");
-                                },
-                                onChanged: (dynamic n) {
-                                  categorieProduit = n;
-                                  print("selected : $categorieProduit");
-                                },
-                                displayItemFn: (dynamic item) => Text(
-                                  item?.libelleCategorie ?? '',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                findFn: (String str) async => monaieList,
-                                selectedFn: (dynamic item1, dynamic item2) {
-                                  if (item1 != null && item2 != null) {
-                                    return item1.idCategorieProduit ==
-                                        item2.idCategorieProduit;
-                                  }
-                                  return false;
-                                },
-                                filterFn: (dynamic item, String str) => item
-                                    .libelleCategorie!
-                                    .toLowerCase()
-                                    .contains(str.toLowerCase()),
-                                dropdownItemFn: (dynamic item,
-                                        int position,
-                                        bool focused,
-                                        bool selected,
-                                        Function() onTap) =>
-                                    ListTile(
-                                  title: Text(item.libelleCategorie!),
-                                  tileColor: focused
-                                      ? Color.fromARGB(20, 0, 0, 0)
-                                      : Colors.transparent,
-                                  onTap: onTap,
-                                ),
-                              );
-                            }
-                          }
-                          return TextDropdownFormField(
-                            options: [],
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                suffixIcon: Icon(Icons.search),
-                                labelText: "Aucune catégorie trouvé"),
-                            cursorColor: Colors.green,
-                          );
-                        },
+                      child: GestureDetector(
+                        onTap: _showCategorie,
+                        child: TextFormField(
+                          onTap: _showCategorie,
+                          controller: catController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down,
+                                color: Colors.blueGrey[400]),
+                            hintText: "Sélectionner une catégorie",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Padding(
@@ -300,78 +351,92 @@ class _AddIntrantState extends State<AddIntrant> {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 22,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Quantité",
-                          style: TextStyle(color: (Colors.black), fontSize: 18),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Veuillez remplir les champs";
-                          }
-                          return null;
-                        },
-                        controller: _quantiteController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: InputDecoration(
-                          hintText: "Quantité intant",
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 22,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Quantié disponible",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
                           ),
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 22,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Unité",
+                              style: TextStyle(
+                                  color: (Colors.black), fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 5),
                     Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 22,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Unité",
-                          style: TextStyle(color: (Colors.black), fontSize: 18),
-                        ),
-                      ),
-                    ),
-                    Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Veuillez remplir les champs";
-                          }
-                          return null;
-                        },
-                        controller: _uniteController,
-                        decoration: InputDecoration(
-                          hintText: "Unité",
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                        horizontal: 20,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Veuillez remplir les champs";
+                                }
+                                return null;
+                              },
+                              controller: _quantiteController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: InputDecoration(
+                                hintText: "Quantité intant",
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Veuillez remplir les champs";
+                                }
+                                return null;
+                              },
+                              controller: _uniteController,
+                              decoration: InputDecoration(
+                                hintText: "Unité",
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     ElevatedButton(
                         onPressed: () async {
                           final String nom = _nomController.text;
@@ -395,6 +460,7 @@ class _AddIntrantState extends State<AddIntrant> {
                                   _descriptionController.clear(),
                                   _quantiteController.clear(),
                                   _uniteController.clear(),
+                                  catController.clear(),
                                   setState(() {
                                     filiereValue = null;
                                     catValue = null;

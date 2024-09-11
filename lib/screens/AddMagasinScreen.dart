@@ -38,6 +38,8 @@ class AddMagasinScreen extends StatefulWidget {
   State<AddMagasinScreen> createState() => _AddMagasinScreenState();
 }
 
+const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
+
 class _AddMagasinScreenState extends State<AddMagasinScreen> {
   late Acteur acteur = Acteur();
   String nomMagasin = "";
@@ -56,7 +58,9 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
   TextEditingController nomMagasinController = TextEditingController();
   TextEditingController contactMagasinController = TextEditingController();
   TextEditingController localiteMagasinController = TextEditingController();
+  TextEditingController localiteController = TextEditingController();
   List<Map<String, dynamic>> regionsData = [];
+  TextEditingController? _searchController;
   bool isLoading = false;
   bool isLoadingLibelle = true;
 
@@ -111,7 +115,7 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                 acteur: acteur,
                 niveau1Pays: niveau1Pays)
             .then((value) {
-         Provider.of<MagasinService>(context, listen: false).applyChange();
+          Provider.of<MagasinService>(context, listen: false).applyChange();
           Navigator.pop(context, true);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -370,7 +374,8 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
       nomMagasinController.text = widget.nomMagasin!;
       contactMagasinController.text = widget.contactMagasin!;
       localiteMagasinController.text = widget.localiteMagasin!;
-      // photos = widget.photo!;
+      localiteController.text = widget.niveau1Pays!.nomN1!;
+
       niveau1Pays = widget.niveau1Pays!;
       niveauPaysValue = widget.niveau1Pays!.idNiveau1Pays;
       debugPrint("Id Magasin " +
@@ -378,6 +383,7 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
           "bool" +
           widget.isEditable!.toString());
     }
+    _searchController = TextEditingController();
     debugPrint("bool" + widget.isEditable!.toString());
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     niveau1PaysList = http.get(Uri.parse(
@@ -387,11 +393,164 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
     fetchLibelleNiveau1Pays();
   }
 
-// hh
+  @override
+  void dispose() {
+    _searchController?.dispose();
+    super.dispose();
+  }
+
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: niveau1PaysList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau1Pays> typeListe = responseData
+                          .map((e) => Niveau1Pays.fromMap(e))
+                          .where((con) => con.statutN1 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController!.text.toLowerCase();
+                      List<Niveau1Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN1!.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      niveau1Pays.idNiveau1Pays ==
+                                          type.idNiveau1Pays;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomN1!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau1Pays = type;
+                                            localiteController.text =
+                                                type.nomN1!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController!.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController!.clear();
+
+                    localiteController.text = niveau1Pays.nomN1!;
+                    print('Options sélectionnées : $niveau1Pays');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
-    const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
     return LoadingOverlay(
       isLoading: isLoading,
       child: Scaffold(
@@ -421,17 +580,19 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      // Nom magasin
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 22, vertical: 5),
                         child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Nom Magasin *",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            )),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Nom Magasin",
+                            style:
+                                TextStyle(color: (Colors.black), fontSize: 18),
+                          ),
+                        ),
                       ),
+
                       TextFormField(
                         controller: nomMagasinController,
                         decoration: InputDecoration(
@@ -454,18 +615,19 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                       ),
                       // fin  nom magasin
                       const SizedBox(height: 10),
-
-                      //Contact magasin
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 22, vertical: 5),
                         child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Contact Magasin *",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            )),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Contact Magasin ",
+                            style:
+                                TextStyle(color: (Colors.black), fontSize: 18),
+                          ),
+                        ),
                       ),
+
                       TextFormField(
                         controller: contactMagasinController,
                         decoration: InputDecoration(
@@ -488,157 +650,48 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                       ),
                       // fin contact magasin
                       const SizedBox(height: 10),
-
-                      //Contact magasin
-                      isLoadingLibelle
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Chargement...",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    libelleNiveau1Pays != null
-                                        ? libelleNiveau1Pays!.toString()
-                                        : "Region *",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  )),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 22, vertical: 5),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Localité Magasin ",
+                            style:
+                                TextStyle(color: (Colors.black), fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _showLocalite,
+                        child: TextFormField(
+                          onTap: _showLocalite,
+                          controller: localiteController,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down,
+                                color: Colors.blueGrey[400]),
+                            hintText: "Sélectionner une localité",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                      FutureBuilder(
-                        future: niveau1PaysList,
-                        builder: (_, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Chargement..."),
-                              cursorColor: Colors.green,
-                            );
-                          }
-
-                          if (snapshot.hasData) {
-                            dynamic jsonString =
-                                utf8.decode(snapshot.data.bodyBytes);
-                            dynamic responseData = json.decode(jsonString);
-
-                            if (responseData is List) {
-                              final reponse = responseData;
-                              final monaieList = reponse
-                                  .map((e) => Niveau1Pays.fromMap(e))
-                                  .where((con) => con.statutN1 == true)
-                                  .toList();
-                              if (monaieList.isEmpty) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Aucune région trouvé"),
-                                  cursorColor: Colors.green,
-                                );
-                              }
-
-                              return DropdownFormField<Niveau1Pays>(
-                                onEmptyActionPressed: (String str) async {},
-                                dropdownHeight: 200,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: widget.isEditable == false
-                                        ? 'Selectionner une région'
-                                        : widget.niveau1Pays!.nomN1!),
-                                onSaved: (dynamic n) {
-                                  niveau1Pays = n;
-                                  print("onSaved : $niveau1Pays");
-                                },
-                                onChanged: (dynamic n) {
-                                  niveau1Pays = n;
-                                  print("selected : $niveau1Pays");
-                                },
-                                displayItemFn: (dynamic item) => Text(
-                                  item?.nomN1 ?? '',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                findFn: (String str) async => monaieList,
-                                selectedFn: (dynamic item1, dynamic item2) {
-                                  if (item1 != null && item2 != null) {
-                                    return item1.idNiveau1Pays ==
-                                        item2.idNiveau1Pays;
-                                  }
-                                  return false;
-                                },
-                                filterFn: (dynamic item, String str) => item
-                                    .nomN1!
-                                    .toLowerCase()
-                                    .contains(str.toLowerCase()),
-                                dropdownItemFn: (dynamic item,
-                                        int position,
-                                        bool focused,
-                                        bool selected,
-                                        Function() onTap) =>
-                                    ListTile(
-                                  title: Text(item.nomN1!),
-                                  tileColor: focused
-                                      ? Color.fromARGB(20, 0, 0, 0)
-                                      : Colors.transparent,
-                                  onTap: onTap,
-                                ),
-                              );
-                            }
-                          }
-                          return TextDropdownFormField(
-                            options: [],
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                suffixIcon: Icon(Icons.search),
-                                labelText: "Aucune région trouvé"),
-                            cursorColor: Colors.green,
-                          );
-                        },
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 10),
 
-                      //Contact localiteMagasin
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 22, vertical: 5),
                         child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Adresse Magasin *",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            )),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Adresse Magasin ",
+                            style:
+                                TextStyle(color: (Colors.black), fontSize: 18),
+                          ),
+                        ),
                       ),
                       TextFormField(
                         controller: localiteMagasinController,

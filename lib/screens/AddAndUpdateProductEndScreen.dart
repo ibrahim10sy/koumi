@@ -52,6 +52,8 @@ class AddAndUpdateProductEndSreen extends StatefulWidget {
       _AddAndUpdateProductEndSreenState();
 }
 
+const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
+
 class _AddAndUpdateProductEndSreenState
     extends State<AddAndUpdateProductEndSreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -86,6 +88,7 @@ class _AddAndUpdateProductEndSreenState
   String? id = "";
   String? email = "";
   bool isExist = false;
+  late TextEditingController _searchController;
 
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -137,6 +140,11 @@ class _AddAndUpdateProductEndSreenState
     }
   }
 
+@override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
   // Fonction pour traiter les données du QR code scanné
   Future<void> processScannedQRCode(Stock scannedData) async {
     // Ici, vous pouvez décoder les données du QR code et effectuer les actions nécessaires
@@ -240,6 +248,7 @@ class _AddAndUpdateProductEndSreenState
   @override
   void initState() {
     verify();
+    _searchController = TextEditingController();
     magasinListe = http
         .get(Uri.parse('$apiOnlineUrl/Magasin/getAllMagasinByActeur/${id}'));
     // _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
@@ -262,23 +271,170 @@ class _AddAndUpdateProductEndSreenState
     if (widget.isEditable! == true) {
       unite = widget.unite!;
 
+      speculationController.text = widget.stock!.speculation!.nomSpeculation!;
       _typeController.text = widget.stock!.typeProduit!;
       _descriptionController.text = widget.stock!.descriptionStock!;
       debugPrint("id : $id,  forme : ${widget.forme}");
       magasin = widget.stock!.magasin!;
       magasinValue = widget.stock!.magasin!.idMagasin;
       speculation = widget.stock!.speculation!;
-      speValue = widget.stock!.speculation!.idSpeculation;
-      catValue =
-          widget.stock!.speculation!.categorieProduit!.idCategorieProduit;
-      filiereValue =
-          widget.stock!.speculation!.categorieProduit!.filiere!.idFiliere!;
+     
       unite = widget.stock!.unite!;
       uniteValue = widget.stock!.unite!.idUnite;
       zoneProduction = widget.stock!.zoneProduction!;
       zoneValue = widget.stock!.zoneProduction!.idZoneProduction;
       super.initState();
     }
+  }
+
+  void _showSpeculation() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une speculation',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _speculationList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Speculation> typeListe = responseData
+                          .map((e) => Speculation.fromMap(e))
+                          .where((con) => con.statutSpeculation == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child:
+                              Center(child: Text("Aucune speculation trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Speculation> filteredSearch = typeListe
+                          .where((type) => type.nomSpeculation!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune speculation trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      speculationController.text ==
+                                          type.nomSpeculation;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomSpeculation!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            speculation = type;
+                                            speculationController.text =
+                                                type.nomSpeculation!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $speculation');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   Future<void> _getResultFromZonePage(BuildContext context) async {
@@ -353,121 +509,23 @@ class _AddAndUpdateProductEndSreenState
                             ),
                           ),
                         ),
-                        FutureBuilder(
-                          future: _speculationList,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
-                                cursorColor: Colors.green,
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final monaieList = reponse
-                                    .map((e) => Speculation.fromMap(e))
-                                    .where(
-                                        (con) => con.statutSpeculation == true)
-                                    .toList();
-                                if (monaieList.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune spéculation trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Speculation>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: widget.isEditable == false
-                                          ? 'Selectionner une spécumation'
-                                          : widget.stock!.speculation!
-                                              .nomSpeculation!),
-                                  onSaved: (dynamic n) {
-                                    speculation = n;
-                                    print("onSaved : $speculation");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    speculation = n;
-                                    print("selected : $speculation");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.nomSpeculation ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => monaieList,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idSpeculation ==
-                                          item2.idSpeculation;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .nomSpeculation!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.nomSpeculation!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune spéculation trouvé"),
-                              cursorColor: Colors.green,
-                            );
-                          },
+                        GestureDetector(
+                          onTap: _showSpeculation,
+                          child: TextFormField(
+                            onTap: _showSpeculation,
+                            controller: speculationController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une speculation",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 5),
                         Padding(

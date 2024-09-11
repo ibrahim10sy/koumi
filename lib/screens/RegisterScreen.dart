@@ -119,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Brazil': 'Brésil',
     'Brunei': 'Brunéi',
     'Bulgaria': 'Bulgarie',
-    'Burkina Faso': 'Burkina Faso',  
+    'Burkina Faso': 'Burkina Faso',
     'Burundi': 'Burundi',
     'Cabo Verde': 'Cap-Vert',
     'Cambodia': 'Cambodge',
@@ -291,7 +291,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Zambia': 'Zambie',
     'Zimbabwe': 'Zimbabwe',
   };
- 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -437,10 +437,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        // debut fullname
+                        const SizedBox(height: 15),
+
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -469,9 +467,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           onSaved: (val) => nomActeur = val!,
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        const SizedBox(height: 15),
                         // fin  adresse fullname
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
@@ -537,7 +533,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 "wa updated with country change $processedNumberWA");
                           },
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -606,46 +602,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                         ),
 
-                        //end select type acteur
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                print("pays: $selectedCountry");
-                                print(
-                                    "tel :${processedNumberTel} , wa ${processedNumberWA}");
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            RegisterNextScreen(
-                                              nomActeur:
-                                                  nomActeurController.text,
-                                              whatsAppActeur: processedNumberWA,
-                                              telephone: processedNumberTel,
-                                              pays: selectedCountry!,
-                                            )));
-                              }
-                            },
-                            child: Text(
-                              " Suivant ",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                        SizedBox(
+                          height: 80,
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  print("pays: $selectedCountry");
+                                  print(
+                                      "tel :${processedNumberTel} , wa ${processedNumberWA}");
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RegisterNextScreen(
+                                                nomActeur:
+                                                    nomActeurController.text,
+                                                whatsAppActeur:
+                                                    processedNumberWA,
+                                                telephone: processedNumberTel,
+                                                pays: selectedCountry!,
+                                              )));
+                                }
+                              },
+                              child: Text(
+                                " Suivant ",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color(0xFFFF8A00), // Orange color code
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(
+                                    0xFFFF8A00), // Orange color code
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                minimumSize: Size(250, 40),
                               ),
-                              minimumSize: Size(250, 40),
                             ),
                           ),
                         ),

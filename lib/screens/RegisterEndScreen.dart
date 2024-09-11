@@ -262,30 +262,35 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                   final isSelected =
                                       selectedSpec.contains(type);
 
-                                  return ListTile(
-                                    title: Text(
-                                      type.nomSpeculation!,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: 16,
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomSpeculation!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            isSelected
+                                                ? selectedSpec.remove(type)
+                                                : selectedSpec.add(type);
+                                          });
+                                        },
                                       ),
-                                    ),
-                                    trailing: isSelected
-                                        ? const Icon(
-                                            Icons.check_box_outlined,
-                                            color: d_colorOr,
-                                          )
-                                        : null,
-                                    onTap: () {
-                                      setState(() {
-                                        isSelected
-                                            ? selectedSpec.remove(type)
-                                            : selectedSpec.add(type);
-                                      });
-                                    },
+                                      Divider()
+                                    ],
                                   );
                                 },
                               ),
@@ -526,22 +531,14 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                 //           ),
                 //   ),
                 // ),
-                SizedBox(
-                    height: 130,
-                    width: double.infinity,
-                    child: Center(
-                        child: Image.asset('assets/images/logo-pr.png'))),
-                SizedBox(
-                  height: 20,
+                const SizedBox(
+                  height: 75,
                 ),
                 Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
                         // Padding(
                         //   padding: const EdgeInsets.only(left: 10.0),
                         //   child: Text(
@@ -603,9 +600,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 15),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -656,13 +651,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           },
                           onSaved: (val) => password = val!,
                         ),
-                        // fin mot de pass
-
-                        // confirm password
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        // debut mot de passe
+                        const SizedBox(height: 15),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -718,55 +707,57 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
 
                         // fin confirm password
 
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                if (selectedSpec.isEmpty) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                        'Veuillez sélectionner au moins une speculation.'),
-                                  ));
-                                } else if (passwordController.text
-                                            .toString()
-                                            .trim() ==
-                                        "123456" ||
-                                    confirmPasswordController.text
-                                            .toString()
-                                            .trim() ==
-                                        "123456") {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    backgroundColor: Colors.red,
-                                    content: Text(
-                                        'Mot de passe faible, veuillez saisir un mot de passe sécurisé.',
-                                        style: TextStyle(color: Colors.white)),
-                                  ));
-                                } else {
-                                  _handleButtonPress(context);
+                        const SizedBox(height: 35),
+                        SizedBox(
+                          height: 60,
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  if (selectedSpec.isEmpty) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                          'Veuillez sélectionner au moins une speculation.'),
+                                    ));
+                                  } else if (passwordController.text
+                                              .toString()
+                                              .trim() ==
+                                          "123456" ||
+                                      confirmPasswordController.text
+                                              .toString()
+                                              .trim() ==
+                                          "123456") {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                          'Mot de passe faible, veuillez saisir un mot de passe sécurisé.',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ));
+                                  } else {
+                                    _handleButtonPress(context);
+                                  }
                                 }
-                              }
-                              // Handle button press action here
-                            },
-                            child: Text(
-                              " Enregister ",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                // Handle button press action here
+                              },
+                              child: Text(
+                                " Enregister ",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color(0xFFFF8A00), // Orange color code
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(
+                                    0xFFFF8A00), // Orange color code
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                minimumSize: Size(250, 40),
                               ),
-                              minimumSize: Size(250, 40),
                             ),
                           ),
                         ),

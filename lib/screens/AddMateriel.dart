@@ -37,7 +37,13 @@ class _AddMaterielState extends State<AddMateriel> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _etatController = TextEditingController();
   TextEditingController _prixController = TextEditingController();
+  TextEditingController _monnaieController = TextEditingController();
+    TextEditingController localisationController = TextEditingController();
+    TextEditingController speculationController = TextEditingController();
+    TextEditingController typeController = TextEditingController();
+
   final formkey = GlobalKey<FormState>();
+  late TextEditingController _searchController;
   String? monnaieValue;
   late Future _monnaieList;
   late Monnaie monnaie = Monnaie();
@@ -56,8 +62,6 @@ class _AddMaterielState extends State<AddMateriel> {
   String? catValue;
   String? filiereValue;
   late Future _speculationList;
-  late Future _categorieList;
-  late Future _filiereList;
   late Filiere filiere = Filiere();
   late Speculation speculation = Speculation();
   late CategorieProduit categorieProduit = CategorieProduit();
@@ -99,7 +103,7 @@ class _AddMaterielState extends State<AddMateriel> {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     fetchLibelleNiveau3Pays();
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
-
+     _searchController = TextEditingController();
     // _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
 
     // _categorieList = http.get(Uri.parse(
@@ -196,6 +200,12 @@ class _AddMaterielState extends State<AddMateriel> {
     });
   }
 
+ @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
@@ -227,286 +237,7 @@ class _AddMaterielState extends State<AddMateriel> {
                     child: Column(
                       children: [
                         SizedBox(height: 10),
-                        // if (widget.isEquipement!)
-                        //   Padding(
-                        //     padding: EdgeInsets.symmetric(
-                        //       horizontal: 22,
-                        //     ),
-                        //     child: Align(
-                        //       alignment: Alignment.topLeft,
-                        //       child: Text(
-                        //         "Choisir une filière",
-                        //         style: TextStyle(
-                        //             color: (Colors.black), fontSize: 18),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // if (widget.isEquipement!)
-                        //   Padding(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         vertical: 10, horizontal: 20),
-                        //     child: FutureBuilder(
-                        //       future: _filiereList,
-                        //       builder: (_, snapshot) {
-                        //         if (snapshot.connectionState ==
-                        //             ConnectionState.waiting) {
-                        //           return DropdownButtonFormField(
-                        //             items: [],
-                        //             onChanged: null,
-                        //             decoration: InputDecoration(
-                        //               labelText: 'Chargement...',
-                        //               contentPadding:
-                        //                   const EdgeInsets.symmetric(
-                        //                       vertical: 10, horizontal: 20),
-                        //               border: OutlineInputBorder(
-                        //                 borderRadius: BorderRadius.circular(8),
-                        //               ),
-                        //             ),
-                        //           );
-                        //         }
-
-                        //         if (snapshot.hasData) {
-                        //           dynamic jsonString =
-                        //               utf8.decode(snapshot.data.bodyBytes);
-                        //           dynamic responseData =
-                        //               json.decode(jsonString);
-
-                        //           // Vérifier si responseData est une liste
-                        //           if (responseData is List) {
-                        //             final reponse = responseData;
-                        //             final filiereList = reponse
-                        //                 .map((e) => Filiere.fromMap(e))
-                        //                 .where(
-                        //                     (con) => con.statutFiliere == true)
-                        //                 .toList();
-
-                        //             if (filiereList.isEmpty) {
-                        //               return DropdownButtonFormField(
-                        //                 items: [],
-                        //                 onChanged: null,
-                        //                 decoration: InputDecoration(
-                        //                   labelText: 'Aucun filière trouvé',
-                        //                   contentPadding:
-                        //                       const EdgeInsets.symmetric(
-                        //                           vertical: 10, horizontal: 20),
-                        //                   border: OutlineInputBorder(
-                        //                     borderRadius:
-                        //                         BorderRadius.circular(8),
-                        //                   ),
-                        //                 ),
-                        //               );
-                        //             }
-
-                        //             return DropdownButtonFormField<String>(
-                        //               isExpanded: true,
-                        //               items: filiereList
-                        //                   .map(
-                        //                     (e) => DropdownMenuItem(
-                        //                       value: e.idFiliere,
-                        //                       child: Text(e.libelleFiliere!),
-                        //                     ),
-                        //                   )
-                        //                   .toList(),
-                        //               value: filiereValue,
-                        //               onChanged: (newValue) {
-                        //                 setState(() {
-                        //                   catValue = null;
-                        //                   filiereValue = newValue;
-                        //                   if (newValue != null) {
-                        //                     filiere = filiereList.firstWhere(
-                        //                       (element) =>
-                        //                           element.idFiliere == newValue,
-                        //                     );
-                        //                     debugPrint("valeur : $newValue");
-                        //                     _categorieList = http.get(Uri.parse(
-                        //                         '$apiOnlineUrl/Categorie/allCategorieByFiliere/${newValue}'));
-                        //                   }
-                        //                 });
-                        //               },
-                        //               decoration: InputDecoration(
-                        //                 labelText: 'Sélectionner un filiere',
-                        //                 contentPadding:
-                        //                     const EdgeInsets.symmetric(
-                        //                         vertical: 10, horizontal: 20),
-                        //                 border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(8),
-                        //                 ),
-                        //               ),
-                        //             );
-                        //           } else {
-                        //             return DropdownButtonFormField(
-                        //               items: [],
-                        //               onChanged: null,
-                        //               decoration: InputDecoration(
-                        //                 labelText: 'Aucun filière trouvé',
-                        //                 contentPadding:
-                        //                     const EdgeInsets.symmetric(
-                        //                         vertical: 10, horizontal: 20),
-                        //                 border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(8),
-                        //                 ),
-                        //               ),
-                        //             );
-                        //           }
-                        //         }
-                        //         return DropdownButtonFormField(
-                        //           items: [],
-                        //           onChanged: null,
-                        //           decoration: InputDecoration(
-                        //             labelText: 'Aucun filière trouvé',
-                        //             contentPadding: const EdgeInsets.symmetric(
-                        //                 vertical: 10, horizontal: 20),
-                        //             border: OutlineInputBorder(
-                        //               borderRadius: BorderRadius.circular(8),
-                        //             ),
-                        //           ),
-                        //         );
-                        //       },
-                        //     ),
-                        //   ),
-                        // if (widget.isEquipement!)
-                        //   Padding(
-                        //     padding: EdgeInsets.symmetric(
-                        //       horizontal: 22,
-                        //     ),
-                        //     child: Align(
-                        //       alignment: Alignment.topLeft,
-                        //       child: Text(
-                        //         "Choisir une categorie",
-                        //         style: TextStyle(
-                        //             color: (Colors.black), fontSize: 18),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // if (widget.isEquipement!)
-                        //   Padding(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         vertical: 10, horizontal: 20),
-                        //     child: FutureBuilder(
-                        //       future: _categorieList,
-                        //       builder: (_, snapshot) {
-                        //         if (snapshot.connectionState ==
-                        //             ConnectionState.waiting) {
-                        //           return DropdownButtonFormField(
-                        //             items: [],
-                        //             onChanged: null,
-                        //             decoration: InputDecoration(
-                        //               labelText: 'Chargement...',
-                        //               contentPadding:
-                        //                   const EdgeInsets.symmetric(
-                        //                       vertical: 10, horizontal: 20),
-                        //               border: OutlineInputBorder(
-                        //                 borderRadius: BorderRadius.circular(8),
-                        //               ),
-                        //             ),
-                        //           );
-                        //         }
-
-                        //         if (snapshot.hasData) {
-                        //           dynamic jsonString =
-                        //               utf8.decode(snapshot.data.bodyBytes);
-                        //           dynamic responseData =
-                        //               json.decode(jsonString);
-
-                        //           // Vérifier si responseData est une liste
-                        //           if (responseData is List) {
-                        //             final reponse = responseData;
-                        //             final catList = reponse
-                        //                 .map((e) => CategorieProduit.fromMap(e))
-                        //                 .where((con) =>
-                        //                     con.statutCategorie == true)
-                        //                 .toList();
-
-                        //             if (catList.isEmpty) {
-                        //               return DropdownButtonFormField(
-                        //                 items: [],
-                        //                 onChanged: null,
-                        //                 decoration: InputDecoration(
-                        //                   labelText: 'Aucune categorie trouvé',
-                        //                   contentPadding:
-                        //                       const EdgeInsets.symmetric(
-                        //                           vertical: 10, horizontal: 20),
-                        //                   border: OutlineInputBorder(
-                        //                     borderRadius:
-                        //                         BorderRadius.circular(8),
-                        //                   ),
-                        //                 ),
-                        //               );
-                        //             }
-
-                        //             return DropdownButtonFormField<String>(
-                        //               isExpanded: true,
-                        //               items: catList
-                        //                   .map(
-                        //                     (e) => DropdownMenuItem(
-                        //                       value: e.idCategorieProduit,
-                        //                       child: Text(e.libelleCategorie!),
-                        //                     ),
-                        //                   )
-                        //                   .toList(),
-                        //               value: catValue,
-                        //               onChanged: (newValue) {
-                        //                 setState(() {
-                        //                   speValue = null;
-                        //                   catValue = newValue;
-                        //                   if (newValue != null) {
-                        //                     categorieProduit =
-                        //                         catList.firstWhere(
-                        //                       (element) =>
-                        //                           element.idCategorieProduit ==
-                        //                           newValue,
-                        //                     );
-                        //                     debugPrint("valeur : $newValue");
-                        //                     _speculationList = http.get(Uri.parse(
-                        //                         '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${newValue}'));
-                        //                   }
-                        //                 });
-                        //               },
-                        //               decoration: InputDecoration(
-                        //                 labelText: 'Sélectionner une catégorie',
-                        //                 contentPadding:
-                        //                     const EdgeInsets.symmetric(
-                        //                         vertical: 10, horizontal: 20),
-                        //                 border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(8),
-                        //                 ),
-                        //               ),
-                        //             );
-                        //           } else {
-                        //             return DropdownButtonFormField(
-                        //               items: [],
-                        //               onChanged: null,
-                        //               decoration: InputDecoration(
-                        //                 labelText: 'Aucune catégorie trouvé',
-                        //                 contentPadding:
-                        //                     const EdgeInsets.symmetric(
-                        //                         vertical: 10, horizontal: 20),
-                        //                 border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(8),
-                        //                 ),
-                        //               ),
-                        //             );
-                        //           }
-                        //         }
-                        //         return DropdownButtonFormField(
-                        //           items: [],
-                        //           onChanged: null,
-                        //           decoration: InputDecoration(
-                        //             labelText: 'Aucune catégorie trouvé',
-                        //             contentPadding: const EdgeInsets.symmetric(
-                        //                 vertical: 10, horizontal: 20),
-                        //             border: OutlineInputBorder(
-                        //               borderRadius: BorderRadius.circular(8),
-                        //             ),
-                        //           ),
-                        //         );
-                        //       },
-                        //     ),
-                        //   ),
+                        
                         if (widget.isEquipement!)
                           Padding(
                             padding: EdgeInsets.symmetric(
@@ -525,255 +256,26 @@ class _AddMaterielState extends State<AddMateriel> {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
-                            child: FutureBuilder(
-                              future: _speculationList,
-                              builder: (_, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Chargement..."),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                if (snapshot.hasData) {
-                                  dynamic jsonString =
-                                      utf8.decode(snapshot.data.bodyBytes);
-                                  dynamic responseData =
-                                      json.decode(jsonString);
-
-                                  if (responseData is List) {
-                                    final reponse = responseData;
-                                    final monaieList = reponse
-                                        .map((e) => Speculation.fromMap(e))
-                                        .where((con) =>
-                                            con.statutSpeculation == true)
-                                        .toList();
-                                    if (monaieList.isEmpty) {
-                                      return TextDropdownFormField(
-                                        options: [],
-                                        decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 20),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            suffixIcon: Icon(Icons.search),
-                                            labelText:
-                                                "Aucune spéculation trouvé"),
-                                        cursorColor: Colors.green,
-                                      );
-                                    }
-
-                                    return DropdownFormField<Speculation>(
-                                      onEmptyActionPressed:
-                                          (String str) async {},
-                                      dropdownHeight: 200,
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText:
-                                              'Selectionner une spécumation'),
-                                      onSaved: (dynamic n) {
-                                        speculation = n;
-                                        print("onSaved : $speculation");
-                                      },
-                                      onChanged: (dynamic n) {
-                                        speculation = n;
-                                        print("selected : $speculation");
-                                      },
-                                      displayItemFn: (dynamic item) => Text(
-                                        item?.nomSpeculation ?? '',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      findFn: (String str) async => monaieList,
-                                      selectedFn:
-                                          (dynamic item1, dynamic item2) {
-                                        if (item1 != null && item2 != null) {
-                                          return item1.idSpeculation ==
-                                              item2.idSpeculation;
-                                        }
-                                        return false;
-                                      },
-                                      filterFn: (dynamic item, String str) =>
-                                          item.nomSpeculation!
-                                              .toLowerCase()
-                                              .contains(str.toLowerCase()),
-                                      dropdownItemFn: (dynamic item,
-                                              int position,
-                                              bool focused,
-                                              bool selected,
-                                              Function() onTap) =>
-                                          ListTile(
-                                        title: Text(item.nomSpeculation!),
-                                        tileColor: focused
-                                            ? Color.fromARGB(20, 0, 0, 0)
-                                            : Colors.transparent,
-                                        onTap: onTap,
-                                      ),
-                                    );
-                                  }
-                                }
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Aucune spéculation trouvé"),
-                                  cursorColor: Colors.green,
-                                );
-                              },
+                            child:  GestureDetector(
+                          onTap: _showSpeculation,
+                          child: TextFormField(
+                            onTap: _showSpeculation,
+                            controller: speculationController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une speculation",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(
-                        //       vertical: 10, horizontal: 20),
-                        //   child: FutureBuilder(
-                        //       future: _speculationList,
-                        //       builder: (_, snapshot) {
-                        //         if (snapshot.connectionState ==
-                        //             ConnectionState.waiting) {
-                        //           return DropdownButtonFormField(
-                        //             items: [],
-                        //             onChanged: null,
-                        //             decoration: InputDecoration(
-                        //               labelText: 'Chargement...',
-                        //               contentPadding:
-                        //                   const EdgeInsets.symmetric(
-                        //                       vertical: 10, horizontal: 20),
-                        //               border: OutlineInputBorder(
-                        //                 borderRadius:
-                        //                     BorderRadius.circular(8),
-                        //               ),
-                        //             ),
-                        //           );
-                        //         }
-
-                        //         if (snapshot.hasData) {
-                        //           dynamic jsonString =
-                        //               utf8.decode(snapshot.data.bodyBytes);
-                        //           dynamic responseData =
-                        //               json.decode(jsonString);
-
-                        //           if (responseData is List) {
-                        //             final reponse = responseData;
-                        //             final speList = reponse
-                        //                 .map((e) => Speculation.fromMap(e))
-                        //                 .where((cat) =>
-                        //                     cat.statutSpeculation == true)
-                        //                 .toList();
-
-                        //             if (speList.isEmpty) {
-                        //               return DropdownButtonFormField(
-                        //                 items: [],
-                        //                 onChanged: null,
-                        //                 decoration: InputDecoration(
-                        //                   labelText:
-                        //                       'Aucune speculation trouvé',
-                        //                   contentPadding:
-                        //                       const EdgeInsets.symmetric(
-                        //                           vertical: 10,
-                        //                           horizontal: 20),
-                        //                   border: OutlineInputBorder(
-                        //                     borderRadius:
-                        //                         BorderRadius.circular(8),
-                        //                   ),
-                        //                 ),
-                        //               );
-                        //             }
-
-                        //             return DropdownButtonFormField<String>(
-                        //               isExpanded: true,
-                        //               items: speList
-                        //                   .map(
-                        //                     (e) => DropdownMenuItem(
-                        //                       value: e.idSpeculation,
-                        //                       child: Text(e.nomSpeculation!),
-                        //                     ),
-                        //                   )
-                        //                   .toList(),
-                        //               value: speValue,
-                        //               onChanged: (newValue) {
-                        //                 setState(() {
-                        //                   speValue = newValue;
-                        //                   if (newValue != null) {
-                        //                     speculation = speList.firstWhere(
-                        //                       (element) =>
-                        //                           element.idSpeculation ==
-                        //                           newValue,
-                        //                     );
-                        //                   }
-                        //                 });
-                        //               },
-                        //               decoration: InputDecoration(
-                        //                 labelText:
-                        //                     'Sélectionner une speculation',
-                        //                 contentPadding:
-                        //                     const EdgeInsets.symmetric(
-                        //                         vertical: 10, horizontal: 20),
-                        //                 border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(8),
-                        //                 ),
-                        //               ),
-                        //             );
-                        //           } else {
-                        //             return DropdownButtonFormField(
-                        //               items: [],
-                        //               onChanged: null,
-                        //               decoration: InputDecoration(
-                        //                 labelText:
-                        //                     'Aucune speculation trouvé',
-                        //                 contentPadding:
-                        //                     const EdgeInsets.symmetric(
-                        //                         vertical: 10, horizontal: 20),
-                        //                 border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(8),
-                        //                 ),
-                        //               ),
-                        //             );
-                        //           }
-                        //         }
-                        //         return DropdownButtonFormField(
-                        //           items: [],
-                        //           onChanged: null,
-                        //           decoration: InputDecoration(
-                        //             labelText: 'Aucune speculation trouvé',
-                        //             contentPadding:
-                        //                 const EdgeInsets.symmetric(
-                        //                     vertical: 10, horizontal: 20),
-                        //             border: OutlineInputBorder(
-                        //               borderRadius: BorderRadius.circular(8),
-                        //             ),
-                        //           ),
-                        //         );
-                        //       }),
-                        // ),
+                        ),
+                          ),
+                       
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 22,
@@ -828,130 +330,23 @@ class _AddMaterielState extends State<AddMateriel> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                                future: _typeList,
-                                builder: (_, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText: "Chargement..."),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-
-                                  if (snapshot.hasData) {
-                                    dynamic jsonString =
-                                        utf8.decode(snapshot.data.bodyBytes);
-                                    dynamic responseData =
-                                        json.decode(jsonString);
-
-                                    if (responseData is List) {
-                                      final reponse = responseData;
-                                      final monaieList = reponse
-                                          .map((e) => TypeMateriel.fromMap(e))
-                                          .where(
-                                              (con) => con.statutType == true)
-                                          .toList();
-                                      if (monaieList.isEmpty) {
-                                        return TextDropdownFormField(
-                                          options: [],
-                                          decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 20),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              suffixIcon: Icon(Icons.search),
-                                              labelText: "Aucun type trouvé"),
-                                          cursorColor: Colors.green,
-                                        );
-                                      }
-
-                                      return DropdownFormField<TypeMateriel>(
-                                        onEmptyActionPressed:
-                                            (String str) async {},
-                                        dropdownHeight: 200,
-                                        decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 20),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            suffixIcon: Icon(Icons.search),
-                                            labelText: 'Sélectionner un type de matériel',),
-                                        onSaved: (dynamic n) {
-                                          typeMateriel = n;
-                                          print("onSaved : $typeMateriel");
-                                        },
-                                        onChanged: (dynamic n) {
-                                          typeMateriel = n;
-                                          print("selected : $typeMateriel");
-                                        },
-                                        displayItemFn: (dynamic item) => Text(
-                                          item?.nom ?? '',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        findFn: (String str) async =>
-                                            monaieList,
-                                        selectedFn:
-                                            (dynamic item1, dynamic item2) {
-                                          if (item1 != null && item2 != null) {
-                                            return item1.idTypeMateriel ==
-                                                item2.idTypeMateriel;
-                                          }
-                                          return false;
-                                        },
-                                        filterFn: (dynamic item, String str) =>
-                                            item.nom!
-                                                .toLowerCase()
-                                                .contains(str.toLowerCase()),
-                                        dropdownItemFn: (dynamic item,
-                                                int position,
-                                                bool focused,
-                                                bool selected,
-                                                Function() onTap) =>
-                                            ListTile(
-                                          title: Text(item.nom!),
-                                          tileColor: focused
-                                              ? Color.fromARGB(20, 0, 0, 0)
-                                              : Colors.transparent,
-                                          onTap: onTap,
-                                        ),
-                                      );
-                                    }
-                                  }
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucun type trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                },
+                          child:  GestureDetector(
+                          onTap: _showType,
+                          child: TextFormField(
+                            onTap: _showType,
+                            controller: _monnaieController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner un type ",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
+                            ),
+                          ),
+                        )
                         ),
                         SizedBox(
                           height: 5,
@@ -1047,120 +442,23 @@ class _AddMaterielState extends State<AddMateriel> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                            future: _niveau3List,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Chargement..."),
-                                  cursorColor: Colors.green,
-                                );
-                              }
-
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final niveau3List = reponse
-                                      .map((e) => Niveau3Pays.fromMap(e))
-                                      .where((con) => con.statutN3 == true)
-                                      .toList();
-                                  if (niveau3List.isEmpty) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText: "Aucune localité trouvé"),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-
-                                  return DropdownFormField<Niveau3Pays>(
-                                    onEmptyActionPressed: (String str) async {},
-                                    dropdownHeight: 200,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Selectionner une localité"),
-                                    onSaved: (dynamic n) {
-                                      niveau3 = n?.nomN3;
-                                      print("onSaved : $niveau3");
-                                    },
-                                    onChanged: (dynamic n) {
-                                      niveau3 = n?.nomN3;
-                                      print("selected : $niveau3");
-                                    },
-                                    displayItemFn: (dynamic item) => Text(
-                                      item?.nomN3 ?? '',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    findFn: (String str) async => niveau3List,
-                                    selectedFn: (dynamic item1, dynamic item2) {
-                                      if (item1 != null && item2 != null) {
-                                        return item1.idNiveau3Pays ==
-                                            item2.idNiveau3Pays;
-                                      }
-                                      return false;
-                                    },
-                                    filterFn: (dynamic item, String str) => item
-                                        .nomN3!
-                                        .toLowerCase()
-                                        .contains(str.toLowerCase()),
-                                    dropdownItemFn: (dynamic item,
-                                            int position,
-                                            bool focused,
-                                            bool selected,
-                                            Function() onTap) =>
-                                        ListTile(
-                                      title: Text(item.nomN3!),
-                                      tileColor: focused
-                                          ? Color.fromARGB(20, 0, 0, 0)
-                                          : Colors.transparent,
-                                      onTap: onTap,
-                                    ),
-                                  );
-                                }
-                              }
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Aucune localité trouvé"),
-                                cursorColor: Colors.green,
-                              );
-                            },
+                          child: GestureDetector(
+                        onTap: _showLocalite,
+                        child: TextFormField(
+                          onTap: _showLocalite,
+                          controller: localisationController,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down,
+                                color: Colors.blueGrey[400]),
+                            hintText: "Sélectionner une localité",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
+                        ),
+                      ),
                         ),
                         SizedBox(
                           height: 5,
@@ -1245,133 +543,23 @@ class _AddMaterielState extends State<AddMateriel> {
                               ),
                               SizedBox(width:10),
                               Expanded(
-                                child: FutureBuilder(
-                                  future: _monnaieList,
-                                  builder: (_, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return TextDropdownFormField(
-                                        options: [],
-                                        decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 20),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            suffixIcon: Icon(Icons.search),
-                                            labelText: "Chargement..."),
-                                        cursorColor: Colors.green,
-                                      );
-                                    }
-
-                                    if (snapshot.hasData) {
-                                      dynamic jsonString =
-                                          utf8.decode(snapshot.data.bodyBytes);
-                                      dynamic responseData =
-                                          json.decode(jsonString);
-
-                                      if (responseData is List) {
-                                        final reponse = responseData;
-                                        final monaieList = reponse
-                                            .map((e) => Monnaie.fromMap(e))
-                                            .where((con) => con.statut == true)
-                                            .toList();
-                                        if (monaieList.isEmpty) {
-                                          return TextDropdownFormField(
-                                            options: [],
-                                            decoration: InputDecoration(
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10,
-                                                        horizontal: 20),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                suffixIcon: Icon(Icons.search),
-                                                labelText:
-                                                    "Aucune monnaie trouvé"),
-                                            cursorColor: Colors.green,
-                                          );
-                                        }
-
-                                        return DropdownFormField<Monnaie>(
-                                          onEmptyActionPressed:
-                                              (String str) async {},
-                                          dropdownHeight: 200,
-                                          decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 20),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              suffixIcon: Icon(Icons.search),
-                                              labelText: 'Monnaie'),
-                                          onSaved: (dynamic n) {
-                                            monnaie = n;
-                                            print("onSaved : $monnaie");
-                                          },
-                                          onChanged: (dynamic n) {
-                                            monnaie = n;
-                                            print("selected : $monnaie");
-                                          },
-                                          displayItemFn: (dynamic item) => Text(
-                                            item?.libelle ?? '',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                          findFn: (String str) async =>
-                                              monaieList,
-                                          selectedFn:
-                                              (dynamic item1, dynamic item2) {
-                                            if (item1 != null &&
-                                                item2 != null) {
-                                              return item1.idMonnaie ==
-                                                  item2.idMonnaie;
-                                            }
-                                            return false;
-                                          },
-                                          filterFn:
-                                              (dynamic item, String str) => item
-                                                  .libelle!
-                                                  .toLowerCase()
-                                                  .contains(str.toLowerCase()),
-                                          dropdownItemFn: (dynamic item,
-                                                  int position,
-                                                  bool focused,
-                                                  bool selected,
-                                                  Function() onTap) =>
-                                              ListTile(
-                                            title: Text(item.libelle!),
-                                            tileColor: focused
-                                                ? Color.fromARGB(20, 0, 0, 0)
-                                                : Colors.transparent,
-                                            onTap: onTap,
-                                          ),
-                                        );
-                                      }
-                                    }
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText: "Aucune monnaie trouvé"),
-                                      cursorColor: Colors.green,
-                                    );
-                                  },
-                                ),
+                                child: GestureDetector(
+                          onTap: _showMonnaie,
+                          child: TextFormField(
+                            onTap: _showMonnaie,
+                            controller: _monnaieController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Monnaie",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        )
                               ),
                             ],
                           ),
@@ -1588,7 +776,7 @@ class _AddMaterielState extends State<AddMateriel> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    Colors.orange, // Orange color code
+                                    d_colorOr, // Orange color code
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -1759,6 +947,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                                 _etatController.clear(),
                                                 _nomController.clear(),
                                                 _descriptionController.clear(),
+
                                                 setState(() {
                                                   _isLoading = false;
                                                   n3Value = null;
@@ -1791,7 +980,7 @@ class _AddMaterielState extends State<AddMateriel> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    Colors.orange, // Orange color code
+                                    d_colorOr, // Orange color code
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -1813,12 +1002,729 @@ class _AddMaterielState extends State<AddMateriel> {
         ));
   }
 
-  //  static Future<Iterable<String>> search(String query) async {
-  //   if (query == '') {
-  //     return const Iterable<String>.empty();
-  //   }
-  //   return AutoComplet.getAgriculturalInputs().where((String option) {
-  //     return option.toLowerCase().contains(query.toLowerCase());
-  //   });
-  // }
+ 
+  void _showMonnaie() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un monnaie ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _monnaieList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Monnaie> typeListe = responseData
+                          .map((e) => Monnaie.fromMap(e))
+                          .where((con) => con.statut == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune monnaie trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Monnaie> filteredSearch = typeListe
+                          .where((type) =>
+                              type.libelle!.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune monnaie trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = monnaie == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelle!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            monnaie = type;
+                                            _monnaieController.text =
+                                                type.libelle!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    _monnaieController.text = monnaie.libelle!;
+                    print('Options sélectionnées : $monnaie');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+   void _showSpeculation() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une speculation',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _speculationList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Speculation> typeListe = responseData
+                          .map((e) => Speculation.fromMap(e))
+                          .where((con) => con.statutSpeculation == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child:
+                              Center(child: Text("Aucune speculation trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Speculation> filteredSearch = typeListe
+                          .where((type) => type.nomSpeculation!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune speculation trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      speculationController.text ==
+                                          type.nomSpeculation;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomSpeculation!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            speculation = type;
+                                            speculationController.text =
+                                                type.nomSpeculation!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $speculation');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+   void _showType() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un type',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _typeList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<TypeMateriel> typeListe = responseData
+                          .map((e) => TypeMateriel.fromMap(e))
+                          .where((con) => con.statutType == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child:
+                              Center(child: Text("Aucune type Mmteriel trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<TypeMateriel> filteredSearch = typeListe
+                          .where((type) => type.nom!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune type materiel trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      typeController.text ==
+                                          type.nom!;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nom!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            typeMateriel = type;
+                                            typeController.text =
+                                                type.nom!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $typeMateriel');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      localisationController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            localisationController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
 }
+
+
+// Expanded(
+//                                 child: FutureBuilder(
+//                                   future: _monnaieList,
+//                                   builder: (_, snapshot) {
+//                                     if (snapshot.connectionState ==
+//                                         ConnectionState.waiting) {
+//                                       return TextDropdownFormField(
+//                                         options: [],
+//                                         decoration: InputDecoration(
+//                                             contentPadding:
+//                                                 const EdgeInsets.symmetric(
+//                                                     vertical: 10,
+//                                                     horizontal: 20),
+//                                             border: OutlineInputBorder(
+//                                               borderRadius:
+//                                                   BorderRadius.circular(8),
+//                                             ),
+//                                             suffixIcon: Icon(Icons.search),
+//                                             labelText: "Chargement..."),
+//                                         cursorColor: Colors.green,
+//                                       );
+//                                     }
+
+//                                     if (snapshot.hasData) {
+//                                       dynamic jsonString =
+//                                           utf8.decode(snapshot.data.bodyBytes);
+//                                       dynamic responseData =
+//                                           json.decode(jsonString);
+
+//                                       if (responseData is List) {
+//                                         final reponse = responseData;
+//                                         final monaieList = reponse
+//                                             .map((e) => Monnaie.fromMap(e))
+//                                             .where((con) => con.statut == true)
+//                                             .toList();
+//                                         if (monaieList.isEmpty) {
+//                                           return TextDropdownFormField(
+//                                             options: [],
+//                                             decoration: InputDecoration(
+//                                                 contentPadding:
+//                                                     const EdgeInsets.symmetric(
+//                                                         vertical: 10,
+//                                                         horizontal: 20),
+//                                                 border: OutlineInputBorder(
+//                                                   borderRadius:
+//                                                       BorderRadius.circular(8),
+//                                                 ),
+//                                                 suffixIcon: Icon(Icons.search),
+//                                                 labelText:
+//                                                     "Aucune monnaie trouvé"),
+//                                             cursorColor: Colors.green,
+//                                           );
+//                                         }
+
+//                                         return DropdownFormField<Monnaie>(
+//                                           onEmptyActionPressed:
+//                                               (String str) async {},
+//                                           dropdownHeight: 200,
+//                                           decoration: InputDecoration(
+//                                               contentPadding:
+//                                                   const EdgeInsets.symmetric(
+//                                                       vertical: 10,
+//                                                       horizontal: 20),
+//                                               border: OutlineInputBorder(
+//                                                 borderRadius:
+//                                                     BorderRadius.circular(8),
+//                                               ),
+//                                               suffixIcon: Icon(Icons.search),
+//                                               labelText: 'Monnaie'),
+//                                           onSaved: (dynamic n) {
+//                                             monnaie = n;
+//                                             print("onSaved : $monnaie");
+//                                           },
+//                                           onChanged: (dynamic n) {
+//                                             monnaie = n;
+//                                             print("selected : $monnaie");
+//                                           },
+//                                           displayItemFn: (dynamic item) => Text(
+//                                             item?.libelle ?? '',
+//                                             style: TextStyle(fontSize: 16),
+//                                           ),
+//                                           findFn: (String str) async =>
+//                                               monaieList,
+//                                           selectedFn:
+//                                               (dynamic item1, dynamic item2) {
+//                                             if (item1 != null &&
+//                                                 item2 != null) {
+//                                               return item1.idMonnaie ==
+//                                                   item2.idMonnaie;
+//                                             }
+//                                             return false;
+//                                           },
+//                                           filterFn:
+//                                               (dynamic item, String str) => item
+//                                                   .libelle!
+//                                                   .toLowerCase()
+//                                                   .contains(str.toLowerCase()),
+//                                           dropdownItemFn: (dynamic item,
+//                                                   int position,
+//                                                   bool focused,
+//                                                   bool selected,
+//                                                   Function() onTap) =>
+//                                               ListTile(
+//                                             title: Text(item.libelle!),
+//                                             tileColor: focused
+//                                                 ? Color.fromARGB(20, 0, 0, 0)
+//                                                 : Colors.transparent,
+//                                             onTap: onTap,
+//                                           ),
+//                                         );
+//                                       }
+//                                     }
+//                                     return TextDropdownFormField(
+//                                       options: [],
+//                                       decoration: InputDecoration(
+//                                           contentPadding:
+//                                               const EdgeInsets.symmetric(
+//                                                   vertical: 10, horizontal: 20),
+//                                           border: OutlineInputBorder(
+//                                             borderRadius:
+//                                                 BorderRadius.circular(8),
+//                                           ),
+//                                           suffixIcon: Icon(Icons.search),
+//                                           labelText: "Aucune monnaie trouvé"),
+//                                       cursorColor: Colors.green,
+//                                     );
+//                                   },
+//                                 ),
+//                               ),

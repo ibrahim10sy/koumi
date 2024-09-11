@@ -178,6 +178,44 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
     });
   }
 
+  Future<void> _getResultFromNextScreen1(
+      BuildContext context, Magasin m) async {
+    final result = await Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: animation,
+              child: AddMagasinScreen(
+                idMagasin: m.idMagasin,
+                isEditable: true,
+                nomMagasin: m.nomMagasin,
+                contactMagasin: m.contactMagasin,
+                localiteMagasin: m.localiteMagasin,
+                niveau1Pays: m.niveau1Pays!,
+                // photo: filteredMagasins[index]['photo']!,
+              ),
+            ),
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        },
+        transitionDuration:
+            const Duration(milliseconds: 500), // Durée de la transition
+      ),
+    );
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {
+        magasinListeFuture = MagasinService().fetchAllMagasin();
+      });
+    }
+  }
+
   @override
   void dispose() {
     // if (isSearchMode) {
@@ -559,10 +597,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                           ),
                                                         ),
                                                       ),
-                                                      //  _buildItem(
-                                                      //         "Localité :", filtereSearch[index].localiteMagasin!),
-                                                      //  _buildItem(
-                                                      //     "Acteur :", e.acteur!.typeActeur!.map((e) => e.libelle!).join(','))
+                                                      
                                                       Padding(
                                                         padding:
                                                             const EdgeInsets
@@ -607,7 +642,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                             Icons
                                                                                 .disabled_visible,
                                                                             color:
-                                                                                Colors.orange[400]),
+                                                                                d_colorOr),
                                                                     title: Text(
                                                                       filtereSearch[index].statutMagasin ==
                                                                               false
@@ -618,7 +653,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                         color: filtereSearch[index].statutMagasin ==
                                                                                 false
                                                                             ? Colors.green
-                                                                            : Colors.red,
+                                                                            : d_colorOr,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                       ),
@@ -685,7 +720,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                       leading:
                                                                           Icon(
                                                                         Icons
-                                                                            .disabled_visible,
+                                                                            .edit,
                                                                         color: Colors
                                                                             .green[400],
                                                                       ),
@@ -704,39 +739,9 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                                           () async {
                                                                         Navigator.of(context)
                                                                             .pop();
-                                                                        Navigator
-                                                                            .push(
-                                                                          context,
-                                                                          PageRouteBuilder(
-                                                                            pageBuilder: (context,
-                                                                                animation,
-                                                                                secondaryAnimation) {
-                                                                              return FadeTransition(
-                                                                                opacity: animation,
-                                                                                child: ScaleTransition(
-                                                                                  scale: animation,
-                                                                                  child: AddMagasinScreen(
-                                                                                    idMagasin: filtereSearch[index].idMagasin,
-                                                                                    isEditable: true,
-                                                                                    nomMagasin: filtereSearch[index].nomMagasin,
-                                                                                    contactMagasin: filtereSearch[index].contactMagasin,
-                                                                                    localiteMagasin: filtereSearch[index].localiteMagasin,
-                                                                                    niveau1Pays: filtereSearch[index].niveau1Pays!,
-                                                                                    // photo: filteredMagasins[index]['photo']!,
-                                                                                  ),
-                                                                                ),
-                                                                              );
-                                                                            },
-                                                                            transitionsBuilder: (context,
-                                                                                animation,
-                                                                                secondaryAnimation,
-                                                                                child) {
-                                                                              return child;
-                                                                            },
-                                                                            transitionDuration:
-                                                                                const Duration(milliseconds: 500), // Durée de la transition
-                                                                          ),
-                                                                        );
+                                                                        _getResultFromNextScreen1(
+                                                                            context,
+                                                                            filtereSearch[index]);
                                                                       },
                                                                     ),
                                                                   ),
@@ -821,7 +826,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                           child: const Center(
                                                         child:
                                                             CircularProgressIndicator(
-                                                          color: Colors.orange,
+                                                          color: d_colorOr,
                                                         ),
                                                       )),
                                                     )

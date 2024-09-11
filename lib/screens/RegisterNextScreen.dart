@@ -208,98 +208,153 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
         "Nom complet : ${widget.nomActeur}, Téléphone : ${widget.telephone},  WA : ${widget.whatsAppActeur}, Pays : ${widget.pays} ");
   }
 
-  // void _loadTypeActeurs() async {
-  //   await fetchTypeActeurs();
-  //   setState(() {}); // Update UI after fetching data
-  // }
-
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  void _showMultiSelectDialog() {
+  void _showLocalite() async {
     final BuildContext context = this.context;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Sélectionner un type d\'acteur'),
-          content: MultiSelectDropDown.network(
-            networkConfig: NetworkConfig(
-              url: '$apiOnlineUrl/typeActeur/read',
-              method: RequestMethod.get,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            ),
-            searchEnabled: true,
-            searchLabel: 'Rechercher...',
-            searchBackgroundColor: Colors.blueGrey[50],
-            chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-            responseParser: (response) {
-              typeActeur = (response as List<dynamic>)
-                  .where((data) =>
-                      (data['libelle']).trim().toLowerCase() != 'admin')
-                  .map((e) {
-                return TypeActeur(
-                  idTypeActeur: e['idTypeActeur'] as String,
-                  libelle: e['libelle'] as String,
-                  statutTypeActeur: e['statutTypeActeur'] as bool,
-                );
-              }).toList();
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              // Filtrer les types avec un libellé différent de "admin" et statutTypeActeur true
-              final filteredTypes = typeActeur
-                  .where((typeActeur) =>
-                      typeActeur.libelle != "admin" &&
-                      typeActeur.libelle != "Admin" &&
-                      typeActeur.statutTypeActeur == true)
-                  .toList();
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
 
-              // Créer des ValueItems pour les types filtrés
-              final List<ValueItem<TypeActeur>> valueItems =
-                  filteredTypes.map((typeActeur) {
-                return ValueItem<TypeActeur>(
-                  label: typeActeur.libelle!,
-                  value: typeActeur,
-                );
-              }).toList();
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
 
-              return Future<List<ValueItem<TypeActeur>>>.value(valueItems);
-            },
-            controller: _controllerTypeActeur,
-            hint: 'Sélectionner un type d\'acteur',
-            fieldBackgroundColor: Color.fromARGB(255, 219, 219, 219),
-            onOptionSelected: (options) {
-              if (mounted) {
-                setState(() {
-                  typeLibelle.clear();
-                  typeLibelle
-                      .addAll(options.map((data) => data.label).toList());
-                  selectedTypes =
-                      options.map<TypeActeur>((item) => item.value!).toList();
-                  print("Types sélectionnés : $selectedTypes");
-                  print("Libellé sélectionné ${typeLibelle.toString()}");
-                });
-              }
-            },
-            responseErrorBuilder: ((context, body) {
-              return const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text('Aucun type disponible'),
-              );
-            }),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Fermer'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      localisationController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            localisationController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -322,7 +377,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                     if (mounted) setState(() {});
                   },
                   decoration: InputDecoration(
-                    hintText: 'Rechercher un type...',
+                    hintText: 'Rechercher un type',
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.grey[300]!,
@@ -386,30 +441,36 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                   final isSelected =
                                       selectedTypes.contains(typeActeur);
 
-                                  return ListTile(
-                                    title: Text(
-                                      typeActeur.libelle!,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: 16,
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          typeActeur.libelle!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            isSelected
+                                                ? selectedTypes
+                                                    .remove(typeActeur)
+                                                : selectedTypes.add(typeActeur);
+                                          });
+                                        },
                                       ),
-                                    ),
-                                    trailing: isSelected
-                                        ? const Icon(
-                                            Icons.check_box_outlined,
-                                            color: d_colorOr,
-                                          )
-                                        : null,
-                                    onTap: () {
-                                      setState(() {
-                                        isSelected
-                                            ? selectedTypes.remove(typeActeur)
-                                            : selectedTypes.add(typeActeur);
-                                      });
-                                    },
+                                      Divider()
+                                    ],
                                   );
                                 },
                               ),
@@ -500,41 +561,23 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.start, // Alignement vertical en haut
+            // mainAxisAlignment:
+            //     MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // SizedBox(
-              //   height: 120,
-              //   width: double.infinity,
-              //   child: GestureDetector(
-              //     onTap: _showImageSourceDialog,
-              //     child: (image1 == null)
-              //         ?
-              //         : ClipRRect(
-              //             borderRadius: BorderRadius.circular(8),
-              //             child: Image.file(
-              //               image1!,
-              //               height: 100,
-              //               width: 200,
-              //               fit: BoxFit.cover,
-              //             ),
-              //           ),
-              //   ),
-              // ),
-              SizedBox(
-                  height: 130,
-                  width: double.infinity,
-                  child:
-                      Center(child: Image.asset('assets/images/logo-pr.png'))),
+              //     height: 130,
+              //     width: double.infinity,
+              //     child:
+              //         Center(child: Image.asset('assets/images/logo-pr.png'))),
+              const SizedBox(
+                height: 70,
+              ),
               Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -559,10 +602,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           ),
                         ),
                       ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -587,11 +627,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                         },
                         onSaved: (val) => email = val!,
                       ),
-                      // fin  adresse email
-                      const SizedBox(
-                        height: 10,
-                      ),
-
+                      const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -599,121 +635,24 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
-                      FutureBuilder(
-                        future: _niveau3List,
-                        builder: (_, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Chargement..."),
-                              cursorColor: Colors.green,
-                            );
-                          }
-
-                          if (snapshot.hasData) {
-                            dynamic jsonString =
-                                utf8.decode(snapshot.data.bodyBytes);
-                            dynamic responseData = json.decode(jsonString);
-
-                            if (responseData is List) {
-                              final reponse = responseData;
-                              final niveau3List = reponse
-                                  .map((e) => Niveau3Pays.fromMap(e))
-                                  .where((con) => con.statutN3 == true)
-                                  .toList();
-                              if (niveau3List.isEmpty) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Aucune localité trouvé"),
-                                  cursorColor: Colors.green,
-                                );
-                              }
-
-                              return DropdownFormField<Niveau3Pays>(
-                                onEmptyActionPressed: (String str) async {},
-                                dropdownHeight: 200,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Rechercher une localité"),
-                                onSaved: (dynamic n) {
-                                  niveau3 = n?.nomN3;
-                                  print("onSaved : $niveau3");
-                                },
-                                onChanged: (dynamic n) {
-                                  niveau3 = n?.nomN3;
-                                  print("selected : $niveau3");
-                                },
-                                displayItemFn: (dynamic item) => Text(
-                                  item?.nomN3 ?? '',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                findFn: (String str) async => niveau3List,
-                                selectedFn: (dynamic item1, dynamic item2) {
-                                  if (item1 != null && item2 != null) {
-                                    return item1.idNiveau3Pays ==
-                                        item2.idNiveau3Pays;
-                                  }
-                                  return false;
-                                },
-                                filterFn: (dynamic item, String str) => item
-                                    .nomN3!
-                                    .toLowerCase()
-                                    .contains(str.toLowerCase()),
-                                dropdownItemFn: (dynamic item,
-                                        int position,
-                                        bool focused,
-                                        bool selected,
-                                        Function() onTap) =>
-                                    ListTile(
-                                  title: Text(item.nomN3!),
-                                  tileColor: focused
-                                      ? Color.fromARGB(20, 0, 0, 0)
-                                      : Colors.transparent,
-                                  onTap: onTap,
-                                ),
-                              );
-                            }
-                          }
-                          return TextDropdownFormField(
-                            options: [],
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                suffixIcon: Icon(Icons.search),
-                                labelText: "Aucune localité trouvé"),
-                            cursorColor: Colors.green,
-                          );
-                        },
+                      GestureDetector(
+                        onTap: _showLocalite,
+                        child: TextFormField(
+                          onTap: _showLocalite,
+                          controller: localisationController,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down,
+                                color: Colors.blueGrey[400]),
+                            hintText: "Sélectionner une localité",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
-
+                      const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -777,68 +716,73 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                       //         : null,
                       //   ),
                       // ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle button press action here
-                            if (_formKey.currentState!.validate()) {
-                              if (niveau3.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "Veuillez sélectionner une localité"),
-                                    duration: Duration(seconds: 5),
-                                  ),
-                                );
-                              } else {
-                                // Vérifier si au moins un type d'acteur est sélectionné
-                                if (selectedTypes.isNotEmpty) {
-                                  // Naviguer vers l'écran suivant en passant les types d'acteurs sélectionnés
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RegisterEndScreen(
-                                                nomActeur: widget.nomActeur,
-                                                email: emailController.text,
-                                                telephoneActeur:
-                                                    widget.telephone,
-                                                adresse: adresseController.text,
-                                                numeroWhatsApp:
-                                                    widget.whatsAppActeur,
-                                                localistaion: niveau3,
-                                                pays: widget.pays,
-                                                typeActeur: selectedTypes,
-                                              )));
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
+                      const SizedBox(height: 25),
+                      SizedBox(
+                        height: 60,
+                        child: Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Handle button press action here
+                              if (_formKey.currentState!.validate()) {
+                                if (niveau3.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Veuillez sélectionner une localité"),
+                                      duration: Duration(seconds: 5),
+                                    ),
+                                  );
                                 } else {
-                                  // Afficher un message indiquant que l'utilisateur doit sélectionner au moins un type d'acteur
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                        'Veuillez sélectionner au moins un type d\'acteur.'),
-                                  ));
+                                  // Vérifier si au moins un type d'acteur est sélectionné
+                                  if (selectedTypes.isNotEmpty) {
+                                    // Naviguer vers l'écran suivant en passant les types d'acteurs sélectionnés
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RegisterEndScreen(
+                                                  nomActeur: widget.nomActeur,
+                                                  email: emailController.text,
+                                                  telephoneActeur:
+                                                      widget.telephone,
+                                                  adresse:
+                                                      adresseController.text,
+                                                  numeroWhatsApp:
+                                                      widget.whatsAppActeur,
+                                                  localistaion: niveau3,
+                                                  pays: widget.pays,
+                                                  typeActeur: selectedTypes,
+                                                )));
+                                  } else {
+                                    // Afficher un message indiquant que l'utilisateur doit sélectionner au moins un type d'acteur
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                          'Veuillez sélectionner au moins un type d\'acteur.'),
+                                    ));
+                                  }
                                 }
                               }
-                            }
-                          },
-                          child: Text(
-                            " Suivant ",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                            },
+                            child: Text(
+                              " Suivant ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFFFF8A00), // Orange color code
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color(0xFFFF8A00), // Orange color code
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              minimumSize: Size(250, 40),
                             ),
-                            minimumSize: Size(250, 40),
                           ),
                         ),
                       ),
