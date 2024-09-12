@@ -11,6 +11,7 @@ import 'package:koumi/Admin/CodePays.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
+import 'package:koumi/models/Forme.dart';
 import 'package:koumi/models/Intrant.dart';
 import 'package:koumi/models/Monnaie.dart';
 import 'package:koumi/models/TypeActeur.dart';
@@ -45,6 +46,9 @@ class _DetailIntrantState extends State<DetailIntrant> {
   TextEditingController _prixController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _uniteController = TextEditingController();
+  TextEditingController _monnaieController = TextEditingController();
+  TextEditingController _formController = TextEditingController();
+
   String? monnaieValue;
   late Future _monnaieList;
   late Monnaie monnaie = Monnaie();
@@ -55,14 +59,15 @@ class _DetailIntrantState extends State<DetailIntrant> {
   late String type;
   String? imageSrc;
   File? photo;
-  // List<ParametreGeneraux> paraList = [];
-  // late ParametreGeneraux para = ParametreGeneraux();
   late ValueNotifier<bool> isDialOpenNotifier;
   late Intrant intrants;
   bool isExist = false;
   String? email = "";
   bool isLoadingLibelle = true;
   late Future<Map<String, String>> rates;
+  late Future _formeList;
+  late Forme forme;
+  late TextEditingController _searchController;
 
   Future<List<Device>> getDeviceListe(String id) async {
     return await DeviceService().fetchDeviceByIdMonnaie(id);
@@ -126,7 +131,8 @@ class _DetailIntrantState extends State<DetailIntrant> {
   void initState() {
     super.initState();
     verify();
-
+    _formeList = http.get(Uri.parse('$apiOnlineUrl/formeproduit/getAllForme/'));
+    _searchController = TextEditingController();
     intrants = widget.intrant;
     _loadNbVue();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -143,10 +149,19 @@ class _DetailIntrantState extends State<DetailIntrant> {
     _prixController.text = intrants.prixIntrant.toString();
     _dateController.text = intrants.dateExpiration!;
     _uniteController.text = intrants.unite!;
+    _monnaieController.text = intrants.monnaie!.libelle!;
+    _formController.text = intrants.forme!.libelleForme!;
+    forme = intrants.forme!;
     monnaie = intrants.monnaie!;
     monnaieValue = intrants.monnaie!.idMonnaie;
     isDialOpenNotifier = ValueNotifier<bool>(false);
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadNbVue() async {
@@ -301,6 +316,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                 photoIntrant: photo,
                 unite: unite,
                 acteur: acteur,
+                forme: forme,
                 monnaie: monnaie)
             .then((value) => {
                   Provider.of<IntrantService>(context, listen: false)
@@ -316,7 +332,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                         dateAjout: intrants.dateAjout,
                         dateExpiration: date,
                         categorieProduit: intrants.categorieProduit,
-                        forme: intrants.forme,
+                        forme: forme,
                         unite: unite,
                         acteur: acteur,
                         monnaie: monnaie);
@@ -350,6 +366,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                 dateExpiration: date,
                 unite: unite,
                 acteur: acteur,
+                forme: forme,
                 monnaie: monnaie)
             .then((value) => {
                   Provider.of<IntrantService>(context, listen: false)
@@ -365,7 +382,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                         dateAjout: intrants.dateAjout,
                         dateExpiration: date,
                         categorieProduit: intrants.categorieProduit,
-                        forme: intrants.forme,
+                        forme: forme,
                         unite: unite,
                         photoIntrant: intrants.photoIntrant,
                         acteur: acteur,
@@ -477,12 +494,13 @@ class _DetailIntrantState extends State<DetailIntrant> {
                                 ),
                               ),
                       ]
-                    :[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CodePays().getFlagsApp(intrants.acteur!.niveau3PaysActeur!),
-                    )
-                  ] ),
+                    : [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CodePays()
+                              .getFlagsApp(intrants.acteur!.niveau3PaysActeur!),
+                        )
+                      ]),
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -573,7 +591,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                     children: [
                       SpeedDialChild(
                         child: FaIcon(FontAwesomeIcons.whatsapp),
-                        label: 'Par wathsApp',
+                        label: 'Par whatsApp',
                         labelStyle: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
@@ -729,6 +747,46 @@ class _DetailIntrantState extends State<DetailIntrant> {
       _buildEditableDetailItem('Description', _descriptionController),
       _buildEditableDetailItem('Date péremption ', _dateController),
       _buildEditableDetailItem('Quantité ', _quantiteController),
+      _buildEditableDetailItem('Unité ', _uniteController),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Forme",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 18),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+              child: GestureDetector(
+                onTap: _showForme,
+                child: TextFormField(
+                  onTap: _showForme,
+                  controller: _formController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.arrow_drop_down,
+                        color: Colors.blueGrey[400]),
+                  ),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Colors.black54,
+                  ),
+                  enabled: _isEditing,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       _buildEditableDetailItem('Prix intrant ', _prixController),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -746,87 +804,24 @@ class _DetailIntrantState extends State<DetailIntrant> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: FutureBuilder(
-                future: _monnaieList,
-                builder: (_, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return DropdownButtonFormField(
-                      items: [],
-                      onChanged: null,
-                      decoration: InputDecoration(
-                        labelText: 'Chargement...',
-                      ),
-                    );
-                  }
-
-                  if (snapshot.hasData) {
-                    dynamic jsonString = utf8.decode(snapshot.data.bodyBytes);
-                    dynamic responseData = json.decode(jsonString);
-
-                    if (responseData is List) {
-                      List<Monnaie> speList =
-                          responseData.map((e) => Monnaie.fromMap(e)).toList();
-
-                      if (speList.isEmpty) {
-                        return DropdownButtonFormField(
-                          items: [],
-                          onChanged: null,
-                          decoration: InputDecoration(
-                            labelText: 'Aucun monnaie trouvé',
-                          ),
-                        );
-                      }
-
-                      return DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        items: speList
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e.idMonnaie,
-                                child: Text(e.sigle!),
-                              ),
-                            )
-                            .toList(),
-                        value: monnaieValue,
-                        onChanged: (newValue) {
-                          setState(() {
-                            monnaieValue = newValue;
-                            if (newValue != null) {
-                              monnaie = speList.firstWhere(
-                                (element) => element.idMonnaie == newValue,
-                              );
-                            }
-                          });
-                        },
-                        decoration: InputDecoration(
-                            // labelText: 'Sélectionner la monnaie',
-                            // contentPadding: const EdgeInsets.symmetric(
-                            //     vertical: 10, horizontal: 20),
-                            // border: OutlineInputBorder(
-                            //   borderRadius: BorderRadius.circular(8),
-                            // ),
-                            ),
-                      );
-                    } else {
-                      return DropdownButtonFormField(
-                        items: [],
-                        onChanged: null,
-                        decoration: InputDecoration(
-                          labelText: 'Aucun monnaie trouvé',
-                        ),
-                      );
-                    }
-                  } else {
-                    return DropdownButtonFormField(
-                      items: [],
-                      onChanged: null,
-                      decoration: InputDecoration(
-                        labelText: 'Aucun monnaie trouvé',
-                      ),
-                    );
-                  }
-                },
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+              child: GestureDetector(
+                onTap: _showMonnaie,
+                child: TextFormField(
+                  onTap: _showMonnaie,
+                  controller: _monnaieController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.arrow_drop_down,
+                        color: Colors.blueGrey[400]),
+                  ),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Colors.black54,
+                  ),
+                  enabled: _isEditing,
+                ),
               ),
             ),
           ),
@@ -991,6 +986,302 @@ class _DetailIntrantState extends State<DetailIntrant> {
           )
         ],
       ),
+    );
+  }
+
+  void _showMonnaie() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un monnaie ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _monnaieList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Monnaie> typeListe = responseData
+                          .map((e) => Monnaie.fromMap(e))
+                          .where((con) => con.statut == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune monnaie trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Monnaie> filteredSearch = typeListe
+                          .where((type) =>
+                              type.libelle!.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune monnaie trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = monnaie == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelle!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            monnaie = type;
+                                            _monnaieController.text =
+                                                type.libelle!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    _monnaieController.text = monnaie.libelle!;
+                    print('Options sélectionnées : $monnaie');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showForme() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une forme',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _formeList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Forme> typeListe = responseData
+                          .map((e) => Forme.fromMap(e))
+                          .where((con) => con.statutForme == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune forme trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Forme> filteredSearch = typeListe
+                          .where((type) => type.libelleForme!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune forme trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      _formController.text == type.libelleForme;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelleForme!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            forme = type;
+                                            _formController.text =
+                                                forme.libelleForme!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _formController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _formController.clear();
+                    _formController.text = forme.libelleForme!;
+                    print('Options sélectionnées : $forme');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

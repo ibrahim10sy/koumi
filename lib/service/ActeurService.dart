@@ -114,6 +114,7 @@ class ActeurService extends ChangeNotifier {
     String? emailActeur,
     List<TypeActeur>? typeActeur,
     List<Speculation>? speculation,
+    File? photoSiegeActeur,
     File? logoActeur,
   }) async {
     try {
@@ -121,8 +122,15 @@ class ActeurService extends ChangeNotifier {
         'PUT',
         Uri.parse('$baseUrl/update/$idActeur'),
       );
+      
+      if (photoSiegeActeur != null) {
+        request.files.add(http.MultipartFile(
+            'image1',
+            photoSiegeActeur.readAsBytes().asStream(),
+            photoSiegeActeur.lengthSync(),
+            filename: basename(photoSiegeActeur.path)));
+      }
 
-      // Ajout du fichier image, s'il est présent
       if (logoActeur != null) {
         request.files.add(
           http.MultipartFile(
@@ -149,7 +157,8 @@ class ActeurService extends ChangeNotifier {
           'speculation': speculation.map((e) => e.toMap()).toList(),
         if (typeActeur != null)
           'typeActeur': typeActeur.map((e) => e.toMap()).toList(),
-        'logoActeur': "", // Ajoutez la logique si nécessaire
+        'photoSiegeActeur': "", 
+        'logoActeur': "", 
       });
 
       // Envoie de la requête

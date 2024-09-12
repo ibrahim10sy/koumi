@@ -46,10 +46,13 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
   TextEditingController _etatController = TextEditingController();
-  TextEditingController _prixController = TextEditingController();
+  TextEditingController _monnaieController = TextEditingController();
   TextEditingController newDestinationController = TextEditingController();
   TextEditingController newPrixController = TextEditingController();
+  TextEditingController _localiteController = TextEditingController();
   List<Widget> destinationPrixFields = [];
+
+  late TextEditingController _searchController;
   List<TextEditingController> destinationControllers = [];
   List<TextEditingController> prixControllers = [];
   String? monnaieValue;
@@ -63,7 +66,6 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
   bool _isLoading = false;
   late Future _niveau3List;
   String? n3Value;
-  // List<String>? n3Value = [];
   String niveau3 = '';
   List<String> selectedDestinations = [];
   bool isLoadingLibelle = true;
@@ -126,6 +128,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     prixParDestinations = {};
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
@@ -156,6 +159,12 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
     if (image == null) return null;
 
     return File(image.path);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _showImageSourceDialog() async {
@@ -227,6 +236,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: 10),
               Form(
                   key: formkey,
                   child: Column(
@@ -282,120 +292,25 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _monnaieList,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
-                                cursorColor: Colors.green,
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final monaieList = reponse
-                                    .map((e) => Monnaie.fromMap(e))
-                                    .where((con) => con.statut == true)
-                                    .toList();
-                                if (monaieList.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune monnaie trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Monnaie>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Rechercher une monnaie"),
-                                  onSaved: (dynamic n) {
-                                    monnaie = n;
-                                    print("onSaved : $monnaie");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    monnaie = n;
-                                    print("selected : $monnaie");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.libelle ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => monaieList,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idMonnaie == item2.idMonnaie;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .libelle!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.libelle!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: GestureDetector(
+                            onTap: _showMonnaie,
+                            child: TextFormField(
+                              onTap: _showMonnaie,
+                              controller: _monnaieController,
                               decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune monnaie trouvé"),
-                              cursorColor: Colors.green,
-                            );
-                          },
-                        ),
-                      ),
+                                suffixIcon: Icon(Icons.arrow_drop_down,
+                                    color: Colors.blueGrey[400]),
+                                hintText: "Sélectionner une monnaie",
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          )),
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
@@ -421,7 +336,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                     color: d_colorOr,
                                   ),
                                   label: Text(
-                                    'Ajouter',
+                                    'Ajouter les prix',
                                     style: TextStyle(
                                         color: d_colorOr, fontSize: 17),
                                   ),
@@ -437,177 +352,31 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                   child: Row(
                                     children: [
                                       Expanded(
-                                        child: FutureBuilder(
-                                          future: _niveau3List,
-                                          builder: (_, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return TextDropdownFormField(
-                                                options: [],
-                                                decoration: InputDecoration(
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .symmetric(
-                                                            vertical: 10,
-                                                            horizontal: 0),
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                    ),
-                                                    suffixIcon:
-                                                        Icon(Icons.search),
-                                                    labelText: "Chargement..."),
-                                                cursorColor: Colors.green,
-                                              );
-                                            }
-
-                                            if (snapshot.hasData) {
-                                              dynamic jsonString = utf8.decode(
-                                                  snapshot.data.bodyBytes);
-                                              dynamic responseData =
-                                                  json.decode(jsonString);
-
-                                              if (responseData is List) {
-                                                final reponse = responseData;
-                                                final niveau3List = reponse
-                                                    .map((e) =>
-                                                        Niveau3Pays.fromMap(e))
-                                                    .where((con) =>
-                                                        con.statutN3 == true)
-                                                    .toList();
-                                                if (niveau3List.isEmpty) {
-                                                  return TextDropdownFormField(
-                                                    options: [],
-                                                    decoration: InputDecoration(
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                vertical: 10,
-                                                                horizontal: 0),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(8),
-                                                        ),
-                                                        suffixIcon:
-                                                            Icon(Icons.search),
-                                                        labelText:
-                                                            " Aucune destination trouvé"),
-                                                    cursorColor: Colors.green,
-                                                  );
-                                                }
-
-                                                return DropdownFormField<
-                                                    Niveau3Pays>(
-                                                  onEmptyActionPressed:
-                                                      (String str) async {},
-                                                  dropdownHeight: 200,
-                                                  decoration: InputDecoration(
-                                                      contentPadding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                              vertical: 10,
-                                                              horizontal: 0),
-                                                      border:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                      ),
-                                                      suffixIcon: Icon(
-                                                          Icons.search,
-                                                          size: 19),
-                                                      labelText:
-                                                          " Destination"),
-                                                  onSaved: (dynamic n) {
-                                                    niveau3 = n?.nomN3;
-                                                    print("onSaved : $niveau3");
-                                                  },
-                                                  onChanged: (dynamic n) {
-                                                    setState(() {
-                                                      String
-                                                          selectedDestinationName =
-                                                          niveau3List
-                                                              .firstWhere((element) =>
-                                                                  element
-                                                                      .idNiveau3Pays ==
-                                                                  n.idNiveau3Pays)
-                                                              .nomN3;
-                                                      selectedDestinations.add(
-                                                          selectedDestinationName);
-                                                      print(
-                                                          "niveau 3 : $selectedDestinationsList");
-                                                      print(
-                                                          "niveau 3 nom  : $selectedDestinations");
-                                                    });
-                                                  },
-                                                  displayItemFn:
-                                                      (dynamic item) => Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 15),
-                                                    child: Text(
-                                                      item?.nomN3 ?? '',
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ),
-                                                  findFn: (String str) async =>
-                                                      niveau3List,
-                                                  selectedFn: (dynamic item1,
-                                                      dynamic item2) {
-                                                    if (item1 != null &&
-                                                        item2 != null) {
-                                                      return item1
-                                                              .idNiveau3Pays ==
-                                                          item2.idNiveau3Pays;
-                                                    }
-                                                    return false;
-                                                  },
-                                                  filterFn: (dynamic item,
-                                                          String str) =>
-                                                      item.nomN3!
-                                                          .toLowerCase()
-                                                          .contains(str
-                                                              .toLowerCase()),
-                                                  dropdownItemFn: (dynamic item,
-                                                          int position,
-                                                          bool focused,
-                                                          bool selected,
-                                                          Function() onTap) =>
-                                                      ListTile(
-                                                    title: Text(item.nomN3!),
-                                                    tileColor: focused
-                                                        ? Color.fromARGB(
-                                                            20, 0, 0, 0)
-                                                        : Colors.transparent,
-                                                    onTap: onTap,
-                                                  ),
-                                                );
-                                              }
-                                            }
-                                            return TextDropdownFormField(
-                                              options: [],
-                                              decoration: InputDecoration(
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 10,
-                                                          horizontal: 20),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  suffixIcon:
-                                                      Icon(Icons.search),
-                                                  labelText:
-                                                      "Aucune destination trouvé"),
-                                              cursorColor: Colors.green,
-                                            );
-                                          },
+                                        child: GestureDetector(
+                                          onTap: () => _showLocalite(
+                                              index), // Pass the index here
+                                          child: TextFormField(
+                                            onTap: () => _showLocalite(
+                                                index), // Pass the index here
+                                            controller:
+                                                destinationControllers[index],
+                                            decoration: InputDecoration(
+                                              suffixIcon: Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.blueGrey[400],
+                                              ),
+                                              hintText: "Destination",
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                                horizontal: 20,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 10),
@@ -729,7 +498,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                             Navigator.pop(context, true),
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                              const SnackBar(
+                                               const SnackBar(
                                                 content: Row(
                                                   children: [
                                                     Text(
@@ -844,6 +613,316 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showMonnaie() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un monnaie ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _monnaieList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Monnaie> typeListe = responseData
+                          .map((e) => Monnaie.fromMap(e))
+                          .where((con) => con.statut == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune monnaie trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Monnaie> filteredSearch = typeListe
+                          .where((type) =>
+                              type.libelle!.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune monnaie trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = monnaie == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelle!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            monnaie = type;
+                                            _monnaieController.text =
+                                                type.libelle!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    _monnaieController.text = monnaie.libelle!;
+                    print('Options sélectionnées : $monnaie');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalite(int index) async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, i) {
+                                  final type = filteredSearch[i].nomN3;
+                                  final isSelected =
+                                      selectedDestinations.contains(type);
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+
+                                            if (index >= 0 &&
+                                                index <
+                                                    destinationControllers
+                                                        .length) {
+                                              isSelected
+                                                  ? selectedDestinations
+                                                      .remove(type)
+                                                  : selectedDestinations
+                                                      .add(type);
+                                              destinationControllers[index]
+                                                  .text = type;
+                                            } else {
+                                              print(
+                                                  'Index hors limites : $index');
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    // selectedDestinations.remove(niveau3);
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    // selectedDestinations.add(niveau3);
+                    print('Options sélectionnées : $selectedDestinations');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

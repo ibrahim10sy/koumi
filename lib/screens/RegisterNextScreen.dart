@@ -477,7 +477,6 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                             );
                     }
                   }
-
                   return const SizedBox(height: 8);
                 },
               ),

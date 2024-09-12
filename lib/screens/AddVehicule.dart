@@ -27,12 +27,15 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _AddVehiculeState extends State<AddVehicule> {
+  
   TextEditingController _nomController = TextEditingController();
   TextEditingController _localiteController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _nbKilometrageController = TextEditingController();
   TextEditingController _capaciteController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
 
+  late TextEditingController _searchController;
   String? typeValue;
   String? n3Value;
   late Future _typeList;
@@ -91,9 +94,16 @@ class _AddVehiculeState extends State<AddVehicule> {
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeVoiture/read'));
     _niveau3List = http.get(Uri.parse(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
-
+ _searchController = TextEditingController();
     fetchLibelleNiveau3Pays();
   }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -178,133 +188,26 @@ class _AddVehiculeState extends State<AddVehicule> {
                         ),
                       ), 
                        Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                                future: _typeList,
-                                builder: (_, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText: "Chargement..."),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-
-                                  if (snapshot.hasData) {
-                                    dynamic jsonString =
-                                        utf8.decode(snapshot.data.bodyBytes);
-                                    dynamic responseData =
-                                        json.decode(jsonString);
-
-                                    if (responseData is List) {
-                                      final reponse = responseData;
-                                      final monaieList = reponse
-                                          .map((e) => TypeVoiture.fromMap(e))
-                                          .where(
-                                              (con) => con.statutType == true)
-                                          .toList();
-                                      if (monaieList.isEmpty) {
-                                        return TextDropdownFormField(
-                                          options: [],
-                                          decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 20),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              suffixIcon: Icon(Icons.search),
-                                              labelText: "Aucun type trouvé"),
-                                          cursorColor: Colors.green,
-                                        );
-                                      }
-
-                                      return DropdownFormField<TypeVoiture>(
-                                        onEmptyActionPressed:
-                                            (String str) async {},
-                                        dropdownHeight: 200,
-                                        decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 20),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            suffixIcon: Icon(Icons.search),
-                                            labelText: 'Sélectionner un type' ),
-                                        onSaved: (dynamic n) {
-                                          typeVoiture = n;
-                                          print("onSaved : $typeVoiture");
-                                        },
-                                        onChanged: (dynamic n) {
-                                          typeVoiture = n;
-                                          print("selected : $typeVoiture");
-                                        },
-                                        displayItemFn: (dynamic item) => Text(
-                                          item?.nom ?? '',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        findFn: (String str) async =>
-                                            monaieList,
-                                        selectedFn:
-                                            (dynamic item1, dynamic item2) {
-                                          if (item1 != null && item2 != null) {
-                                            return item1.idTypeVoiture ==
-                                                item2.idTypeVoiture;
-                                          }
-                                          return false;
-                                        },
-                                        filterFn: (dynamic item, String str) =>
-                                            item.nom!
-                                                .toLowerCase()
-                                                .contains(str.toLowerCase()),
-                                        dropdownItemFn: (dynamic item,
-                                                int position,
-                                                bool focused,
-                                                bool selected,
-                                                Function() onTap) =>
-                                            ListTile(
-                                          title: Text(item.nom!),
-                                          tileColor: focused
-                                              ? Color.fromARGB(20, 0, 0, 0)
-                                              : Colors.transparent,
-                                          onTap: onTap,
-                                        ),
-                                      );
-                                    }
-                                  }
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucun type trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                },
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child:  GestureDetector(
+                          onTap: _showType,
+                          child: TextFormField(
+                            onTap: _showType,
+                            controller: typeController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner un type ",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                      ),
+                            ),
+                          ),
+                        )
+                        ),
                       SizedBox(
                         height: 5,
                       ),
@@ -403,121 +306,26 @@ class _AddVehiculeState extends State<AddVehicule> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _niveau3List,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
-                                cursorColor: Colors.green,
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final niveau3List = reponse
-                                    .map((e) => Niveau3Pays.fromMap(e))
-                                    .where((con) => con.statutN3 == true)
-                                    .toList();
-                                if (niveau3List.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune localité trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Niveau3Pays>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Rechercher une localité"),
-                                  onSaved: (dynamic n) {
-                                    niveau3 = n?.nomN3;
-                                    print("onSaved : $niveau3");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    niveau3 = n?.nomN3;
-                                    print("selected : $niveau3");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.nomN3 ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => niveau3List,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idNiveau3Pays ==
-                                          item2.idNiveau3Pays;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .nomN3!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.nomN3!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune localité trouvé"),
-                              cursorColor: Colors.green,
-                            );
-                          },
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: GestureDetector(
+                        onTap: _showLocalite,
+                        child: TextFormField(
+                          onTap: _showLocalite,
+                          controller: _localiteController,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down,
+                                color: Colors.blueGrey[400]),
+                            hintText: "Sélectionner une localité",
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                         ),
                       ),
+                        ),
                       SizedBox(
                         height: 5,
                       ),
@@ -574,6 +382,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                                                   .text))).then((value) => {
                                     _nomController.clear(),
                                     _descriptionController.clear(),
+                                    typeController.clear(),
                                     _localiteController.clear(),
                                     _nbKilometrageController.clear(),
                                     _capaciteController.clear(),
@@ -606,6 +415,303 @@ class _AddVehiculeState extends State<AddVehicule> {
           ),
         ),
       ),
+    );
+  }
+
+
+   void _showType() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un type',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _typeList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<TypeVoiture> typeListe = responseData
+                          .map((e) => TypeVoiture.fromMap(e))
+                          .where((con) => con.statutType == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child:
+                              Center(child: Text("Aucune type Mmteriel trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<TypeVoiture> filteredSearch = typeListe
+                          .where((type) => type.nom!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune type materiel trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      typeController.text ==
+                                          type.nom!;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nom!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            typeVoiture = type;
+                                            typeController.text =
+                                                type.nom!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $typeVoiture');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      _localiteController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            _localiteController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

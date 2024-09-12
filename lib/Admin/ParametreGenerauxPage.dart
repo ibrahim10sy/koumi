@@ -716,7 +716,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Expanded(
-                                          child: Text("WathsApp",
+                                          child: Text("whatsApp",
                                               style: TextStyle(
                                                 color: Colors.black87,
                                                 fontSize: 17,

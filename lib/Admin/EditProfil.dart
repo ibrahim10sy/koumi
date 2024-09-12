@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
+import 'package:koumi/models/Niveau3Pays.dart';
 import 'package:koumi/models/Speculation.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
@@ -55,6 +56,8 @@ class _EditProfilState extends State<EditProfil> {
   String? imageSrc;
   String? id;
   File? photo;
+  File? image1;
+  String? image1Src;
   late List<TypeActeur> typeActeurData = [];
   late String type;
   List<TypeActeur> selectedTypes = [];
@@ -65,6 +68,8 @@ class _EditProfilState extends State<EditProfil> {
   List<Speculation> listeSpeculations = [];
   late Future _typeListe;
   late Future _typeList;
+  String niveau3 = '';
+  late Future _niveau3List;
 
   Future<File> saveImagePermanently(String imagePath) async {
     try {
@@ -102,13 +107,91 @@ class _EditProfilState extends State<EditProfil> {
     }
   }
 
+  Future<File> saveImagePermanently1(String imagePath) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final name = path.basename(imagePath);
+      final image = File('${directory.path}/$name');
+      return File(imagePath).copy(image.path);
+    } catch (e) {
+      // Gérer l'exception
+      print('Erreur lors de la sauvegarde de l\'image : $e');
+      rethrow;
+    }
+  }
+
+  Future<File?> getImage1(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return null;
+      return File(image.path);
+    } catch (e) {
+      // Gérer l'exception
+      print('Erreur lors de la sélection de l\'image : $e');
+      return null;
+    }
+  }
+
+  Future<void> _pickImage1(ImageSource source) async {
+    final image = await getImage(source);
+    if (image != null) {
+      setState(() {
+        image1 = image;
+        image1Src = image.path;
+      });
+      await saveImagePermanently(image.path);
+    }
+  }
+
+  Future<void> _showImageSourceDialog1() async {
+    final BuildContext context = this.context;
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Photo du siège"),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context); // Fermer le dialogue
+                  _pickImage(ImageSource.camera);
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.camera_alt, size: 40),
+                    Text('Camera'),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 40),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context); // Fermer le dialogue
+                  _pickImage(ImageSource.gallery);
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.image, size: 40),
+                    Text('Galerie photo'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _showImageSourceDialog() async {
     final BuildContext context = this.context;
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Photo d'identité"),
+          title: Text("Photo de profil"),
           content: Wrap(
             alignment: WrapAlignment.center,
             children: [
@@ -187,6 +270,9 @@ class _EditProfilState extends State<EditProfil> {
     super.initState();
     // acteur = widget.acteurs!;
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+    _niveau3List = http.get(Uri.parse(
+        '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur!.niveau3PaysActeur}'));
+
     id = acteur!.idActeur!;
     debugPrint("init  id $id ${acteur.toString()}");
     nomActeurController.text = acteur!.nomActeur!;
@@ -216,6 +302,152 @@ class _EditProfilState extends State<EditProfil> {
     _controllerSpeculation.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      localisationController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            localisationController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   void _showMultiSelectDialogS() async {
@@ -536,58 +768,158 @@ class _EditProfilState extends State<EditProfil> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Row(
-                children: [
-                  SizedBox(width: 15),
-                  SizedBox(height: 10),
-                  photo != null
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Image.file(
-                              photo!,
-                              height: 100,
-                              width: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ))
-                      : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: acteur!.logoActeur == null ||
-                                  acteur!.logoActeur!.isEmpty
-                              ? ProfilePhoto(
-                                  totalWidth: 100,
-                                  cornerRadius: 100,
-                                  color: Colors.black,
-                                  image: const AssetImage(
-                                      'assets/images/profil.jpg'),
-                                )
-                              : ProfilePhoto(
-                                  totalWidth: 100,
-                                  cornerRadius: 100,
-                                  color: Colors.black,
-                                  image: NetworkImage(
-                                      "https://koumi.ml/api-koumi/acteur/${acteur!.idActeur}/image"),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    photo != null
+                        ? Image.file(
+                            photo!,
+                            height: 90,
+                            width: 90,
+                            fit: BoxFit.cover,
+                          )
+                        : acteur!.logoActeur == null ||
+                                acteur!.logoActeur!.isEmpty
+                            ? Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                height: 90,
+                                width: 90,
+                                child: IconButton(
+                                  onPressed: () {
+                                     _showImageSourceDialog();
+                                  },
+                                  icon: Icon(
+                                    Icons.camera_enhance_outlined,
+                                    size: 40, // Taille de l'icône augmentée
+                                    color: Colors.blueGrey[
+                                        700], // Couleur de l'icône ajustée
+                                  ),
                                 ),
-                        ),
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey[50],
+                                  borderRadius: BorderRadius.circular(25),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 3,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 3), // Effet d'ombre
+                                    ),
+                                  ],
+                                ),
+                              ) : ProfilePhoto(
+                                totalWidth: 90,
+                                cornerRadius: 90,
+                                color: Colors.black,
+                                image: NetworkImage(
+                                    "$apiOnlineUrl/acteur/${acteur!.idActeur}/image"),
+                              )
+                          ,
+                    SizedBox(width: 50),
+                    image1 != null
+                        ? Image.file(
+                            photo!,
+                            height: 90,
+                            width: 90,
+                            fit: BoxFit.cover,
+                          )
+                        : acteur!.photoSiegeActeur == null ||
+                                acteur!.photoSiegeActeur!.isEmpty
+                            ? Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                height: 90,
+                                width: 90,
+                                child: IconButton(
+                                  onPressed: () {
+                                     _showImageSourceDialog1();
+                                  },
+                                  icon: Icon(
+                                    Icons.camera_enhance_outlined,
+                                    size: 40, // Taille de l'icône augmentée
+                                    color: Colors.blueGrey[
+                                        700], // Couleur de l'icône ajustée
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey[50],
+                                  borderRadius: BorderRadius.circular(25),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 3,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 3), // Effet d'ombre
+                                    ),
+                                  ],
+                                ),
+                              ): ProfilePhoto(
+                                totalWidth: 90,
+                                cornerRadius: 90,
+                                color: Colors.black,
+                                image: NetworkImage(
+                                    "$apiOnlineUrl/acteur/${acteur!.idActeur}/siege"),
+                              )
+                          ,
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   TextButton(
-                      onPressed: () {
-                        _showImageSourceDialog();
-                      },
-                      // onHover : true,
-                      child: Text(
-                        "Changer le logo",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: d_colorOr,
-                            fontWeight: FontWeight.w900),
-                      ))
+                    onPressed: () {
+                      _showImageSourceDialog();
+                    },
+                    child: Text(
+                      "Photo de profil",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: d_colorOr,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      // backgroundColor: d_colorOr, // Couleur au survol
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: d_colorOr), // Bordure colorée
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  TextButton(
+                    onPressed: () {
+                      _showImageSourceDialog1();
+                    },
+                    child: Text(
+                      "Photo du siège",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: d_colorOr,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      // backgroundColor: d_colorOr, // Couleur au survol
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: d_colorOr), // Bordure colorée
+                      ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -693,7 +1025,7 @@ class _EditProfilState extends State<EditProfil> {
                 child: TextFormField(
                   controller: whatsAppController,
                   decoration: InputDecoration(
-                    labelText: "Numéro wathsApp",
+                    labelText: "Numéro whatsApp",
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
                     // hintText: "Entrez votre prenom et nom",
@@ -744,26 +1076,22 @@ class _EditProfilState extends State<EditProfil> {
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: TextFormField(
-                  controller: localisationController,
-                  decoration: InputDecoration(
-                    labelText: "Localité",
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    // hintText: "Entrez votre prenom et nom",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                child: GestureDetector(
+                  onTap: _showLocalite,
+                  child: TextFormField(
+                    onTap: _showLocalite,
+                    controller: localisationController,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                      hintText: "Sélectionner une localité",
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
-                  keyboardType: TextInputType.text,
-                  validator: (val) {
-                    if (val == null || val.isEmpty) {
-                      return "Veillez entrez votre prenom et nom";
-                    } else {
-                      return null;
-                    }
-                  },
-                  // onSaved: (val) => nomActeur = val!,
                 ),
               ),
               SizedBox(

@@ -13,6 +13,7 @@ import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Device.dart';
 import 'package:koumi/models/Materiels.dart';
 import 'package:koumi/models/Monnaie.dart';
+import 'package:koumi/models/Niveau3Pays.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/service/DeviceService.dart';
@@ -43,6 +44,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _etatController = TextEditingController();
   TextEditingController _prixController = TextEditingController();
+   TextEditingController _monnaieController = TextEditingController();
   String? monnaieValue;
   late Future _monnaieList;
   late Monnaie monnaie = Monnaie();
@@ -64,7 +66,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
   String? email = "";
   bool isLoadingLibelle = true;
   late Future<Map<String, String>> rates;
-
+  late TextEditingController _searchController;
   void verify() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
@@ -331,6 +333,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
     verify();
     _niveau3List = http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/read'));
     materiels = widget.materiel;
+     _searchController = TextEditingController();
     _loadNbVue();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await updateViews(materiels);
@@ -344,11 +347,18 @@ class _DetailMaterielState extends State<DetailMateriel> {
     _descriptionController.text = materiels.description!;
     _etatController.text = materiels.etatMateriel!;
     _localiteController.text = materiels.localisation!;
+    _monnaieController.text = materiels.monnaie!.libelle!;
     _prixController.text = materiels.prixParHeure.toString();
     monnaie = materiels.monnaie!;
     monnaieValue = materiels.monnaie!.idMonnaie;
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
     isDialOpenNotifier = ValueNotifier<bool>(false);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadNbVue() async {
@@ -515,7 +525,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
                   children: [
                     SpeedDialChild(
                       child: FaIcon(FontAwesomeIcons.whatsapp),
-                      label: 'Par wathsApp',
+                      label: 'Par whatsApp',
                       labelStyle: TextStyle(
                         color: Colors.black,
                         fontSize: 15,
@@ -581,14 +591,11 @@ class _DetailMaterielState extends State<DetailMateriel> {
         _buildItem('Type matériel: ', materiels.typeMateriel!.nom!),
         _buildItem('Localité : ', materiels.localisation!),
         _buildItem('Etat du matériel : ', materiels.etatMateriel!),
-      
-      (widget.isEquipement ?? false) ?
-      
-          _buildItem('Prix du matériel : ',
-              "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}")
-        :
-          _buildItem('Prix par heure : ',
-              "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}"),
+        (widget.isEquipement ?? false)
+            ? _buildItem('Prix du matériel : ',
+                "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}")
+            : _buildItem('Prix par heure : ',
+                "${materiels.prixParHeure.toString()} ${materiels.monnaie!.libelle}"),
         FutureBuilder<Map<String, String>>(
           future: rates,
           builder: (context, snapshot) {
@@ -686,124 +693,87 @@ class _DetailMaterielState extends State<DetailMateriel> {
     return Column(
       children: [
         _buildEditableDetailItem('Nom du matériel: ', _nomController),
-        _buildEditableDetailItem('Localité : ', _localiteController),
         _buildEditableDetailItem('Etat du matériel : ', _etatController),
-        _buildEditableDetailItem('Prix par heure : ', _prixController),
         _buildEditableDetailItem('Description : ', _descriptionController),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                "Monnaie",
-                style: const TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                    fontStyle: FontStyle.italic,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 18),
-              ),
+         Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Localité",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 18),
             ),
-            Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: FutureBuilder(
-                  future: _monnaieList,
-                  builder: (_, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return DropdownButtonFormField(
-                        items: [],
-                        onChanged: null,
-                        decoration: InputDecoration(
-                          labelText: 'Chargement...',
-                          // contentPadding: const EdgeInsets.symmetric(
-                          //     vertical: 10, horizontal: 20),
-                          // border: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(8),
-                          // ),
-                        ),
-                      );
-                    }
-
-                    if (snapshot.hasData) {
-                      dynamic jsonString = utf8.decode(snapshot.data.bodyBytes);
-                      dynamic responseData = json.decode(jsonString);
-
-                      if (responseData is List) {
-                        List<Monnaie> speList = responseData
-                            .map((e) => Monnaie.fromMap(e))
-                            .toList();
-
-                        if (speList.isEmpty) {
-                          return DropdownButtonFormField(
-                            items: [],
-                            onChanged: null,
-                            decoration: InputDecoration(
-                              labelText: 'Aucun monnaie trouvé',
-                              // contentPadding: const EdgeInsets.symmetric(
-                              //     vertical: 10, horizontal: 20),
-                              // border: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(8),
-                              // ),
-                            ),
-                          );
-                        }
-
-                        return DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          items: speList
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e.idMonnaie,
-                                  child: Text(e.sigle!),
-                                ),
-                              )
-                              .toList(),
-                          value: monnaieValue,
-                          onChanged: (newValue) {
-                            setState(() {
-                              monnaieValue = newValue;
-                              if (newValue != null) {
-                                monnaie = speList.firstWhere(
-                                  (element) => element.idMonnaie == newValue,
-                                );
-                              }
-                            });
-                          },
-                          decoration: InputDecoration(
-                              // labelText: 'Sélectionner la monnaie',
-                              // contentPadding: const EdgeInsets.symmetric(
-                              //     vertical: 10, horizontal: 20),
-                              // border: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(8),
-                              // ),
-                              ),
-                        );
-                      } else {
-                        return DropdownButtonFormField(
-                          items: [],
-                          onChanged: null,
-                          decoration: InputDecoration(
-                            labelText: 'Aucun monnaie trouvé',
-                          ),
-                        );
-                      }
-                    } else {
-                      return DropdownButtonFormField(
-                        items: [],
-                        onChanged: null,
-                        decoration: InputDecoration(
-                          labelText: 'Aucun monnaie trouvé',
-                        ),
-                      );
-                    }
-                  },
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+              child: GestureDetector(
+                onTap: _showLocalite,
+                child: TextFormField(
+                  onTap: _showLocalite,
+                  controller: _localiteController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.arrow_drop_down,
+                        color: Colors.blueGrey[400]),
+                  ),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Colors.black54,
+                  ),
+                  enabled: _isEditing,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+        _buildEditableDetailItem('Prix par heure : ', _prixController),
+        Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              "Monnaie",
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 18),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+              child: GestureDetector(
+                onTap: _showMonnaie,
+                child: TextFormField(
+                  onTap: _showMonnaie,
+                  controller: _monnaieController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.arrow_drop_down,
+                        color: Colors.blueGrey[400]),
+                  ),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Colors.black54,
+                  ),
+                  enabled: _isEditing,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       ],
     );
   }
@@ -921,4 +891,298 @@ class _DetailMaterielState extends State<DetailMateriel> {
       ),
     );
   }
+
+  void _showMonnaie() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un monnaie ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _monnaieList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Monnaie> typeListe = responseData
+                          .map((e) => Monnaie.fromMap(e))
+                          .where((con) => con.statut == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune monnaie trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Monnaie> filteredSearch = typeListe
+                          .where((type) =>
+                              type.libelle!.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune monnaie trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = monnaie == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelle!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            monnaie = type;
+                                            _monnaieController.text =
+                                                type.libelle!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    _monnaieController.text = monnaie.libelle!;
+                    print('Options sélectionnées : $monnaie');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+  
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      _localiteController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            _localiteController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
 }

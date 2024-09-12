@@ -334,7 +334,7 @@ class _AddMaterielState extends State<AddMateriel> {
                           onTap: _showType,
                           child: TextFormField(
                             onTap: _showType,
-                            controller: _monnaieController,
+                            controller: typeController,
                             decoration: InputDecoration(
                               suffixIcon: Icon(Icons.arrow_drop_down,
                                   color: Colors.blueGrey[400]),

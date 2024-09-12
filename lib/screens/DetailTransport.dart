@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:pattern_formatter/pattern_formatter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,6 +64,7 @@ class _DetailTransportState extends State<DetailTransport> {
   TextEditingController _capaciteController = TextEditingController();
   TextEditingController _etatController = TextEditingController();
   TextEditingController _localiteController = TextEditingController();
+  TextEditingController _monnaieController = TextEditingController();
   List<TextEditingController> _destinationControllers = [];
   List<TextEditingController> _prixControllers = [];
   List<TextEditingController> destinationControllers = [];
@@ -78,7 +81,7 @@ class _DetailTransportState extends State<DetailTransport> {
   Map<String, int> newPrixParDestinations = {};
   List<String?> selectedDestinationsList = [];
   late Future<Map<String, Map<String, String>>> rates;
-
+  late TextEditingController _searchController;
   bool isExist = false;
   String? email = "";
   bool isLoadingLibelle = true;
@@ -225,7 +228,9 @@ class _DetailTransportState extends State<DetailTransport> {
     _etatController.text = vehicules.etatVehicule.toString();
     _localiteController.text = vehicules.localisation;
     _descriptionController.text = vehicules.description!;
+    _monnaieController.text = vehicules.monnaie!.libelle!;
     _nbKiloController.text = vehicules.nbKilometrage.toString();
+    _searchController = TextEditingController();
     vehicules.prixParDestination.forEach((destination, prix) {
       TextEditingController destinationController =
           TextEditingController(text: destination);
@@ -420,7 +425,7 @@ class _DetailTransportState extends State<DetailTransport> {
                       prixParDestination: newPrixParDestinations,
                       etatVehicule: etat,
                       codeVehicule: vehicules.codeVehicule,
-                      description: vehicules.description,
+                      description: description,
                       nbKilometrage: nb,
                       localisation: localite,
                       typeVoiture: typeVoiture,
@@ -432,7 +437,20 @@ class _DetailTransportState extends State<DetailTransport> {
                     _isLoading = false;
                   }),
                   Provider.of<VehiculeService>(context, listen: false)
-                      .applyChange()
+                      .applyChange(),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Row(
+                        children: [
+                          Text(
+                            "vehicule modifier avec succèss",
+                            style: TextStyle(overflow: TextOverflow.ellipsis),
+                          ),
+                        ],
+                      ),
+                      duration: Duration(seconds: 5),
+                    ),
+                  )
                 })
             .catchError((onError) => {print(onError.toString())});
       } else {
@@ -470,7 +488,20 @@ class _DetailTransportState extends State<DetailTransport> {
                     _isLoading = false;
                   }),
                   Provider.of<VehiculeService>(context, listen: false)
-                      .applyChange()
+                      .applyChange(),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Row(
+                        children: [
+                          Text(
+                            "vehicule modifier avec succèss",
+                            style: TextStyle(overflow: TextOverflow.ellipsis),
+                          ),
+                        ],
+                      ),
+                      duration: Duration(seconds: 5),
+                    ),
+                  )
                 })
             .catchError((onError) => {print(onError.toString())});
       }
@@ -619,7 +650,7 @@ class _DetailTransportState extends State<DetailTransport> {
                   children: [
                     SpeedDialChild(
                       child: FaIcon(FontAwesomeIcons.whatsapp),
-                      label: 'Par wathsApp',
+                      label: 'Par whatsApp',
                       labelStyle: TextStyle(
                         color: Colors.black,
                         fontSize: 15,
@@ -681,14 +712,49 @@ class _DetailTransportState extends State<DetailTransport> {
       children: [
         _buildEditableDetailItem('Nom du véhicule : ', _nomController),
         _buildEditableDetailItem('Capacité : ', _capaciteController),
-        _buildEditableDetailItem('Localisation : ', _localiteController),
         _buildEditableDetailItem('Etat du véhicule : ', _etatController),
         _buildEditableDetailItem('Description : ', _descriptionController),
         _buildEditableDetailItem('Nombre kilometrage : ', _nbKiloController),
-        _buildDestinationPriceFields(),
-        // SizedBox(
-        //   height: 15,
-        // ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                "Localité",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 18),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: GestureDetector(
+                  onTap: _showLocalite,
+                  child: TextFormField(
+                    onTap: _showLocalite,
+                    controller: _localiteController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                    ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black54,
+                    ),
+                    enabled: _isEditing,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -706,98 +772,30 @@ class _DetailTransportState extends State<DetailTransport> {
             Expanded(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: FutureBuilder(
-                  future: _monnaieList,
-                  builder: (_, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return DropdownButtonFormField(
-                        items: [],
-                        onChanged: null,
-                        decoration: InputDecoration(
-                          labelText: 'Chargement...',
-                        ),
-                      );
-                    }
-
-                    if (snapshot.hasData) {
-                      dynamic jsonString = utf8.decode(snapshot.data.bodyBytes);
-                      dynamic responseData = json.decode(jsonString);
-
-                      if (responseData is List) {
-                        List<Monnaie> speList = responseData
-                            .map((e) => Monnaie.fromMap(e))
-                            .toList();
-
-                        if (speList.isEmpty) {
-                          return DropdownButtonFormField(
-                            items: [],
-                            onChanged: null,
-                            decoration: InputDecoration(
-                              labelText: 'Aucun monnaie trouvé',
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          );
-                        }
-
-                        return DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          items: speList
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e.idMonnaie,
-                                  child: Text(e.sigle!),
-                                ),
-                              )
-                              .toList(),
-                          value: monnaieValue,
-                          onChanged: (newValue) {
-                            setState(() {
-                              monnaieValue = newValue;
-                              if (newValue != null) {
-                                monnaie = speList.firstWhere(
-                                  (element) => element.idMonnaie == newValue,
-                                );
-                              }
-                            });
-                          },
-                          decoration: InputDecoration(
-                              // labelText: 'Sélectionner la monnaie',
-                              // contentPadding: const EdgeInsets.symmetric(
-                              //     vertical: 10, horizontal: 20),
-                              // border: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(8),
-                              // ),
-                              ),
-                        );
-                      } else {
-                        return DropdownButtonFormField(
-                          items: [],
-                          onChanged: null,
-                          decoration: InputDecoration(
-                            labelText: 'Aucun monnaie trouvé',
-                          ),
-                        );
-                      }
-                    } else {
-                      return DropdownButtonFormField(
-                        items: [],
-                        onChanged: null,
-                        decoration: InputDecoration(
-                          labelText: 'Aucun monnaie trouvé',
-                        ),
-                      );
-                    }
-                  },
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: GestureDetector(
+                  onTap: _showMonnaie,
+                  child: TextFormField(
+                    onTap: _showMonnaie,
+                    controller: _monnaieController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                    ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black54,
+                    ),
+                    enabled: _isEditing,
+                  ),
                 ),
               ),
             ),
           ],
         ),
+        _buildDestinationPriceFields(),
         SizedBox(
           height: 15,
         ),
@@ -812,8 +810,8 @@ class _DetailTransportState extends State<DetailTransport> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Ajouter prix",
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    "Ajouter d'autres prix",
+                    style: TextStyle(color: d_colorOr, fontSize: 17),
                   ),
                   IconButton(
                     onPressed: () {
@@ -836,166 +834,28 @@ class _DetailTransportState extends State<DetailTransport> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: FutureBuilder(
-                            future: _niveau3List,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Chargement...',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 20,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                              if (snapshot.hasError) {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Chargement...',
-                                    labelStyle: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: 15),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 20,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                              if (snapshot.hasData) {
-                                // dynamic responseData = json
-                                //     .decode(snapshot.data.body);
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final niveau3List = reponse
-                                      .map((e) => Niveau3Pays.fromMap(e))
-                                      .where((con) => con.statutN3 == true)
-                                      .toList();
-
-                                  if (niveau3List.isEmpty) {
-                                    return DropdownButtonFormField(
-                                      items: [],
-                                      onChanged: null,
-                                      decoration: InputDecoration(
-                                        labelText: 'Destination',
-                                        labelStyle: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 15),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                          vertical: 10,
-                                          horizontal: 20,
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    );
-                                  }
-
-                                  return DropdownButtonFormField<String>(
-                                    isExpanded: true,
-                                    items: niveau3List
-                                        .map((e) => DropdownMenuItem(
-                                              value: e.idNiveau3Pays,
-                                              child: Text(e.nomN3,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize:
-                                                          14)), // réduire la taille du texte
-                                            ))
-                                        .toList(),
-                                    value: selectedDestinationsList[index],
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        selectedDestinationsList[index] =
-                                            newValue;
-                                        String selectedDestinationName =
-                                            niveau3List
-                                                .firstWhere((element) =>
-                                                    element.idNiveau3Pays ==
-                                                    newValue)
-                                                .nomN3;
-                                        selectedDestinations.add(
-                                            selectedDestinationName); // Ajouter le nom de la destination à la liste
-                                        print(
-                                            "niveau 3 : $selectedDestinationsList");
-                                        print(
-                                            "niveau 3 nom  : $selectedDestinations");
-                                      });
-                                    },
-                                    decoration: InputDecoration(
-                                      labelText: 'Destination',
-                                      labelStyle: TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: 15),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal:
-                                                  6), // réduire le padding
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Destination',
-                                      labelStyle: TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: 15),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Destination',
-                                  labelStyle: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontSize: 15),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                          child: GestureDetector(
+                            onTap: () =>
+                                _showLocalites(index), // Pass the index here
+                            child: TextFormField(
+                              onTap: () =>
+                                  _showLocalites(index), // Pass the index here
+                              controller: destinationControllers[index],
+                              decoration: InputDecoration(
+                                suffixIcon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400],
                                 ),
-                              );
-                            },
+                                hintText: "Destination",
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 20,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: 10),
@@ -1003,8 +863,8 @@ class _DetailTransportState extends State<DetailTransport> {
                           child: TextFormField(
                             controller: prixControllers[index],
                             keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly,
+                            inputFormatters: [
+                              ThousandsFormatter(),
                             ],
                             decoration: InputDecoration(
                               hintText: "Prix",
@@ -1017,12 +877,12 @@ class _DetailTransportState extends State<DetailTransport> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -1380,6 +1240,462 @@ class _DetailTransportState extends State<DetailTransport> {
           canTapOnHeader: true,
         )
       ],
+    );
+  }
+
+  void _showMonnaie() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un monnaie ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _monnaieList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Monnaie> typeListe = responseData
+                          .map((e) => Monnaie.fromMap(e))
+                          .where((con) => con.statut == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune monnaie trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Monnaie> filteredSearch = typeListe
+                          .where((type) =>
+                              type.libelle!.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune monnaie trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = monnaie == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.libelle!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            monnaie = type;
+                                            _monnaieController.text =
+                                                type.libelle!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _monnaieController.clear();
+                    _monnaieController.text = monnaie.libelle!;
+                    print('Options sélectionnées : $monnaie');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      _localiteController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            _localiteController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalites(int index) async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, i) {
+                                  final type = filteredSearch[i].nomN3;
+                                  final isSelected =
+                                      selectedDestinations.contains(type);
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+
+                                            if (index >= 0 &&
+                                                index <
+                                                    destinationControllers
+                                                        .length) {
+                                              isSelected
+                                                  ? selectedDestinations
+                                                      .remove(type)
+                                                  : selectedDestinations
+                                                      .add(type);
+                                              destinationControllers[index]
+                                                  .text = type;
+                                            } else {
+                                              print(
+                                                  'Index hors limites : $index');
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    // selectedDestinations.remove(niveau3);
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    // selectedDestinations.add(niveau3);
+                    print('Options sélectionnées : $selectedDestinations');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

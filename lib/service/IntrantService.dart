@@ -86,6 +86,7 @@ class IntrantService extends ChangeNotifier {
     File? photoIntrant,
     required String unite,
     required Acteur acteur,
+     required Forme forme,
     required Monnaie monnaie,
   }) async {
     try {
@@ -108,6 +109,7 @@ class IntrantService extends ChangeNotifier {
         'photoIntrant': "",
         'unite': unite,
         'acteur': acteur.toMap(),
+         'forme' : forme.toMap(),
         'monnaie': monnaie.toMap()
       });
 
