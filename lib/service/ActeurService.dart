@@ -26,31 +26,14 @@ class ActeurService extends ChangeNotifier {
     String? longitude,
     String? niveau3PaysActeur,
     required String localiteActeur,
-    required String emailActeur,
+    String? emailActeur,
     List<TypeActeur>? typeActeur,
     List<Speculation>? speculation,
-    // File? photoSiegeActeur,
-    // File? logoActeur,
     required String password,
   }) async {
     try {
       var requete = http.MultipartRequest('POST', Uri.parse('$baseUrl/create'));
-
-      // if (photoSiegeActeur != null) {
-      //   requete.files.add(http.MultipartFile(
-      //       'image1',
-      //       photoSiegeActeur.readAsBytes().asStream(),
-      //       photoSiegeActeur.lengthSync(),
-      //       filename: basename(photoSiegeActeur.path)));
-      // }
-
-      // if (logoActeur != null) {
-      //   requete.files.add(http.MultipartFile('image2',
-      //       logoActeur.readAsBytes().asStream(), logoActeur.lengthSync(),
-      //       filename: basename(logoActeur.path)));
-      // }
-
-      //acteur
+      
       requete.fields['acteur'] = jsonEncode({
         'nomActeur': nomActeur,
         'adresseActeur': adresseActeur,
@@ -61,10 +44,8 @@ class ActeurService extends ChangeNotifier {
         'niveau3PaysActeur': niveau3PaysActeur,
         'localiteActeur': localiteActeur,
         'emailActeur': emailActeur,
-        'speculation': speculation,
-        'typeActeur': typeActeur, // Convertir chaque objet TypeActeur en map
-        // 'photoSiegeActeur': "",
-        // 'logoActeur': "",
+        'speculation': speculation!.map((e) => e.toMap()).toList(),
+        'typeActeur': typeActeur!.map((e) => e.toMap()).toList(),
         'password': password,
       });
 
@@ -79,7 +60,7 @@ class ActeurService extends ChangeNotifier {
 
         debugPrint('acteur service ${donneesResponse.toString()}');
       } else {
-        print("et code ${response.statusCode}");
+        print("et code ${response.statusCode} , ${response.toString()}");
         final errorMessage =
             json.decode(utf8.decode(responsed.bodyBytes))['message'];
         throw Exception('Erreur service :  ${errorMessage}');
@@ -87,16 +68,6 @@ class ActeurService extends ChangeNotifier {
     } catch (e) {
       String errorMessage =
           'Une erreur s\'est produite lors de l\'ajout de acteur';
-      if (e is Exception) {
-        final exception = e;
-        if (exception.toString().contains(
-            'Un compte avec le même numéro de téléphone existe déjà')) {
-          errorMessage =
-              'Un compte avec le même numéro de téléphone existe déjà';
-        } else {
-          errorMessage = 'Un compte avec le même email existe déjà';
-        }
-      }
       print('service : ${e.toString()}');
       throw Exception(errorMessage);
     }
@@ -122,7 +93,7 @@ class ActeurService extends ChangeNotifier {
         'PUT',
         Uri.parse('$baseUrl/update/$idActeur'),
       );
-      
+
       if (photoSiegeActeur != null) {
         request.files.add(http.MultipartFile(
             'image1',
@@ -142,7 +113,6 @@ class ActeurService extends ChangeNotifier {
         );
       }
 
-      // Préparez les données de l'acteur sous forme de chaîne JSON
       request.fields['acteur'] = jsonEncode({
         'idActeur': idActeur,
         'adresseActeur': adresseActeur,
@@ -157,8 +127,8 @@ class ActeurService extends ChangeNotifier {
           'speculation': speculation.map((e) => e.toMap()).toList(),
         if (typeActeur != null)
           'typeActeur': typeActeur.map((e) => e.toMap()).toList(),
-        'photoSiegeActeur': "", 
-        'logoActeur': "", 
+        'photoSiegeActeur': "",
+        'logoActeur': "",
       });
 
       // Envoie de la requête

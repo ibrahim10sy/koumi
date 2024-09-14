@@ -73,7 +73,7 @@ class _ProfilAState extends State<ProfilA> {
                         return Column(
                           children: [
                             ListTile(
-                                leading: ac.logoActeur == null ||
+                                leading : ac.logoActeur == null ||
                                         ac.logoActeur!.isEmpty
                                     ? ProfilePhoto(
                                         totalWidth: 50,
@@ -152,7 +152,7 @@ class _ProfilAState extends State<ProfilA> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     EditProfil(
-                                                        // acteurs: ac,
+                                                       
                                                         )),
                                           );
                                         },

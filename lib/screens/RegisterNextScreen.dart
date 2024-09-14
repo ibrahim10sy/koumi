@@ -584,6 +584,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
+                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: _showMultiSelectDialogt,
                         child: TextFormField(
@@ -601,7 +602,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -609,7 +610,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
-
+                      const SizedBox(height: 15),
                       TextFormField(
                         controller: emailController,
                         decoration: InputDecoration(
@@ -626,7 +627,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                         },
                         onSaved: (val) => email = val!,
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -634,6 +635,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
+                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: _showLocalite,
                         child: TextFormField(
@@ -651,7 +653,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -659,6 +661,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
+                      const SizedBox(height: 15),
                       TextFormField(
                         controller: adresseController,
                         decoration: InputDecoration(
@@ -679,45 +682,6 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                         },
                         onSaved: (val) => adresse = val!,
                       ),
-                      // const SizedBox(
-                      //   height: 10,
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 10.0),
-                      //   child: Text(
-                      //     "Photo de profil (optionnel)",
-                      //     style: TextStyle(color: (Colors.black), fontSize: 18),
-                      //   ),
-                      // ),
-                      // TextFormField(
-                      //   controller: imageController,
-                      //   onTap: _showImageSourceDialog,
-                      //   readOnly: true,
-                      //   decoration: InputDecoration(
-                      //     hintText: "Télécharger une image",
-                      //     contentPadding: const EdgeInsets.symmetric(
-                      //         vertical: 10, horizontal: 20),
-                      //     border: OutlineInputBorder(
-                      //       borderRadius: BorderRadius.circular(8),
-                      //     ),
-                      //     prefixIcon: Icon(Icons.upload),
-                      //     // Show clear button when an image is selected
-                      //     suffixIcon: imageController.text.isNotEmpty
-                      //         ? IconButton(
-                      //             icon: Icon(Icons.clear),
-                      //             onPressed: () {
-                      //               setState(() {
-                      //                 imageController.clear();
-                      //                 image1 = null;
-                      //               });
-                      //             },
-                      //           )
-                      //         : null,
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
                       const SizedBox(height: 25),
                       SizedBox(
                         height: 60,

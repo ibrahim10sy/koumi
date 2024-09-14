@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/CategorieProduit.dart';
 
-
 class Speculation {
   String? idSpeculation;
   final String? codeSpeculation;
@@ -14,22 +13,18 @@ class Speculation {
   final String? dateAjout;
   final String? dateModif;
   final String? personneModif;
-  final Acteur? acteur;
-  
+
   Speculation({
-     this.idSpeculation,
-     this.codeSpeculation,
-     this.nomSpeculation,
-     this.descriptionSpeculation,
-     this.statutSpeculation,
-     this.categorieProduit,
+    this.idSpeculation,
+    this.codeSpeculation,
+    this.nomSpeculation,
+    this.descriptionSpeculation,
+    this.statutSpeculation,
+    this.categorieProduit,
     this.dateAjout,
     this.dateModif,
     this.personneModif,
-    this.acteur,
   });
-  
-  
 
   Speculation copyWith({
     String? idSpeculation,
@@ -41,20 +36,18 @@ class Speculation {
     String? dateAjout,
     String? dateModif,
     String? personneModif,
-    Acteur? acteur,
   }) {
     return Speculation(
-      idSpeculation: idSpeculation ?? this.idSpeculation,
-      codeSpeculation: codeSpeculation ?? this.codeSpeculation,
-      nomSpeculation: nomSpeculation ?? this.nomSpeculation,
-      descriptionSpeculation: descriptionSpeculation ?? this.descriptionSpeculation,
-      statutSpeculation: statutSpeculation ?? this.statutSpeculation,
-      categorieProduit: categorieProduit ?? this.categorieProduit,
-      dateAjout: dateAjout ?? this.dateAjout,
-      dateModif: dateModif ?? this.dateModif,
-      personneModif: personneModif ?? this.personneModif,
-      acteur: acteur ?? this.acteur,
-    );
+        idSpeculation: idSpeculation ?? this.idSpeculation,
+        codeSpeculation: codeSpeculation ?? this.codeSpeculation,
+        nomSpeculation: nomSpeculation ?? this.nomSpeculation,
+        descriptionSpeculation:
+            descriptionSpeculation ?? this.descriptionSpeculation,
+        statutSpeculation: statutSpeculation ?? this.statutSpeculation,
+        categorieProduit: categorieProduit ?? this.categorieProduit,
+        dateAjout: dateAjout ?? this.dateAjout,
+        dateModif: dateModif ?? this.dateModif,
+        personneModif: personneModif ?? this.personneModif);
   }
 
   Map<String, dynamic> toMap() {
@@ -68,7 +61,6 @@ class Speculation {
       'dateAjout': dateAjout,
       'dateModif': dateModif,
       'personneModif': personneModif,
-      'acteur': acteur?.toMap(),
     };
   }
 
@@ -79,16 +71,19 @@ class Speculation {
       nomSpeculation: map['nomSpeculation'] as String,
       descriptionSpeculation: map['descriptionSpeculation'] as String,
       statutSpeculation: map['statutSpeculation'] as bool,
-      categorieProduit: map['categorieProduit'] != null  ? CategorieProduit.fromMap(map['categorieProduit'] as Map<String,dynamic>) : null,
+      categorieProduit: map['categorieProduit'] != null
+          ? CategorieProduit.fromMap(
+              map['categorieProduit'] as Map<String, dynamic>)
+          : null,
       dateAjout: map['dateAjout'] != null ? map['dateAjout'] as String : null,
       dateModif: map['dateModif'] != null ? map['dateModif'] as String : null,
-      personneModif: map['personneModif'] != null ? map['personneModif'] as String : null,
-      acteur: map['acteur'] != null ? Acteur.fromMap(map['acteur'] as Map<String,dynamic>) : null,
+      personneModif:
+          map['personneModif'] != null ? map['personneModif'] as String : null,
     );
   }
 
   // String toJson() => json.encode(toMap());
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "idSpeculation": idSpeculation,
         "codeSpeculation": codeSpeculation,
         "nomSpeculation": nomSpeculation,
@@ -98,43 +93,42 @@ class Speculation {
         "dateAjout": dateAjout,
         "dateModif": dateModif,
         "personneModif": personneModif,
-    };
+      };
 
-  factory Speculation.fromJson(String source) => Speculation.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Speculation.fromJson(String source) =>
+      Speculation.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'Speculation(idSpeculation: $idSpeculation, codeSpeculation: $codeSpeculation, nomSpeculation: $nomSpeculation, descriptionSpeculation: $descriptionSpeculation, statutSpeculation: $statutSpeculation, categorieProduit: $categorieProduit, dateAjout: $dateAjout, dateModif: $dateModif, personneModif: $personneModif, acteur: $acteur)';
+    return 'Speculation(idSpeculation: $idSpeculation, codeSpeculation: $codeSpeculation, nomSpeculation: $nomSpeculation, descriptionSpeculation: $descriptionSpeculation, statutSpeculation: $statutSpeculation, categorieProduit: $categorieProduit, dateAjout: $dateAjout, dateModif: $dateModif, personneModif: $personneModif)';
   }
 
   @override
   bool operator ==(covariant Speculation other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.idSpeculation == idSpeculation &&
-      other.codeSpeculation == codeSpeculation &&
-      other.nomSpeculation == nomSpeculation &&
-      other.descriptionSpeculation == descriptionSpeculation &&
-      other.statutSpeculation == statutSpeculation &&
-      other.categorieProduit == categorieProduit &&
-      other.dateAjout == dateAjout &&
-      other.dateModif == dateModif &&
-      other.personneModif == personneModif &&
-      other.acteur == acteur;
+
+    return other.idSpeculation == idSpeculation &&
+        other.codeSpeculation == codeSpeculation &&
+        other.nomSpeculation == nomSpeculation &&
+        other.descriptionSpeculation == descriptionSpeculation &&
+        other.statutSpeculation == statutSpeculation &&
+        other.categorieProduit == categorieProduit &&
+        other.dateAjout == dateAjout &&
+        other.dateModif == dateModif &&
+        other.personneModif == personneModif;
+ 
   }
 
   @override
   int get hashCode {
     return idSpeculation.hashCode ^
-      codeSpeculation.hashCode ^
-      nomSpeculation.hashCode ^
-      descriptionSpeculation.hashCode ^
-      statutSpeculation.hashCode ^
-      categorieProduit.hashCode ^
-      dateAjout.hashCode ^
-      dateModif.hashCode ^
-      personneModif.hashCode ^
-      acteur.hashCode;
+        codeSpeculation.hashCode ^
+        nomSpeculation.hashCode ^
+        descriptionSpeculation.hashCode ^
+        statutSpeculation.hashCode ^
+        categorieProduit.hashCode ^
+        dateAjout.hashCode ^
+        dateModif.hashCode ^
+        personneModif.hashCode;
   }
 }

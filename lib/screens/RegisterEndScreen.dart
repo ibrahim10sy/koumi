@@ -376,26 +376,22 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
       showSuccessDialog(context, "Inscription réussie avec succès");
     } catch (error) {
       String errorMessage;
-
-      // Gestion des erreurs spécifiques
       if (error
           .toString()
           .contains('Un compte avec le même numéro de téléphone existe déjà')) {
         errorMessage = 'Un compte avec le même numéro de téléphone existe déjà';
+      } else if (error
+          .toString()
+          .contains('Un compte avec le même email existe déjà')) {
+        errorMessage = 'Un compte avec le même email existe déjà';
       } else if (error.toString().contains('https://api.greenapi.com')) {
         // Si une condition spécifique doit entraîner un succès malgré l'exception
         showSuccessDialog(context, "Inscription réussie avec succès ");
         return;
-      } else if (error
-          .toString()
-          .contains('Un compte avec le même email et numéro de téléphone')) {
-        errorMessage =
-            'Un compte avec le même email et numéro de téléphone existe déjà';
       } else {
         errorMessage =
             'Une erreur s\'est produite. Vérifiez les informations du compte puis réessayez';
       }
-
       // Affichage de la boîte de dialogue d'erreur
       showErrorDialog(context, errorMessage);
     }
@@ -539,43 +535,6 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 10.0),
-                        //   child: Text(
-                        //     "Photo du siège (optionnel)",
-                        //     style:
-                        //         TextStyle(color: (Colors.black), fontSize: 18),
-                        //   ),
-                        // ),
-                        // TextFormField(
-                        //   controller: imageController,
-                        //   onTap: _showImageSourceDialog,
-                        //   readOnly: true,
-                        //   decoration: InputDecoration(
-                        //     hintText: "Télécharger une image",
-                        //     contentPadding: const EdgeInsets.symmetric(
-                        //         vertical: 10, horizontal: 20),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(8),
-                        //     ),
-                        //     prefixIcon: Icon(Icons.upload),
-                        //     // Show clear button when an image is selected
-                        //     suffixIcon: imageController.text.isNotEmpty
-                        //         ? IconButton(
-                        //             icon: Icon(Icons.clear),
-                        //             onPressed: () {
-                        //               setState(() {
-                        //                 imageController.clear();
-                        //                 image2 = null;
-                        //               });
-                        //             },
-                        //           )
-                        //         : null,
-                        //   ),
-                        // ),
-                        // const SizedBox(
-                        //   height: 5,
-                        // ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -583,6 +542,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                             style: TextStyle(color: Colors.black, fontSize: 18),
                           ),
                         ),
+                        const SizedBox(height: 15),
                         GestureDetector(
                           onTap: _showMultiSelectDialogt,
                           child: TextFormField(
@@ -600,7 +560,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -609,7 +569,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
                         ),
-                        // debut  mot de pass
+                        const SizedBox(height: 15),
                         TextFormField(
                           controller: passwordController,
                           decoration: InputDecoration(
@@ -651,7 +611,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           },
                           onSaved: (val) => password = val!,
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -660,7 +620,7 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
                         ),
-                        // debut  mot de pass
+                        const SizedBox(height: 15),
                         TextFormField(
                           controller: confirmPasswordController,
                           decoration: InputDecoration(

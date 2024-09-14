@@ -133,7 +133,7 @@ class _EditProfilState extends State<EditProfil> {
   }
 
   Future<void> _pickImage1(ImageSource source) async {
-    final image = await getImage(source);
+    final image = await getImage1(source);
     if (image != null) {
       setState(() {
         image1 = image;
@@ -156,7 +156,7 @@ class _EditProfilState extends State<EditProfil> {
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context); // Fermer le dialogue
-                  _pickImage(ImageSource.camera);
+                  _pickImage1(ImageSource.camera);
                 },
                 child: Column(
                   children: [
@@ -168,8 +168,8 @@ class _EditProfilState extends State<EditProfil> {
               const SizedBox(width: 40),
               GestureDetector(
                 onTap: () {
-                  Navigator.pop(context); // Fermer le dialogue
-                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                  _pickImage1(ImageSource.gallery);
                 },
                 child: Column(
                   children: [
@@ -790,7 +790,7 @@ class _EditProfilState extends State<EditProfil> {
                                 width: 90,
                                 child: IconButton(
                                   onPressed: () {
-                                     _showImageSourceDialog();
+                                    _showImageSourceDialog();
                                   },
                                   icon: Icon(
                                     Icons.camera_enhance_outlined,
@@ -811,18 +811,18 @@ class _EditProfilState extends State<EditProfil> {
                                     ),
                                   ],
                                 ),
-                              ) : ProfilePhoto(
+                              )
+                            : ProfilePhoto(
                                 totalWidth: 90,
                                 cornerRadius: 90,
                                 color: Colors.black,
                                 image: NetworkImage(
                                     "$apiOnlineUrl/acteur/${acteur!.idActeur}/image"),
-                              )
-                          ,
+                              ),
                     SizedBox(width: 50),
                     image1 != null
                         ? Image.file(
-                            photo!,
+                            image1!,
                             height: 90,
                             width: 90,
                             fit: BoxFit.cover,
@@ -836,7 +836,7 @@ class _EditProfilState extends State<EditProfil> {
                                 width: 90,
                                 child: IconButton(
                                   onPressed: () {
-                                     _showImageSourceDialog1();
+                                    _showImageSourceDialog1();
                                   },
                                   icon: Icon(
                                     Icons.camera_enhance_outlined,
@@ -857,14 +857,14 @@ class _EditProfilState extends State<EditProfil> {
                                     ),
                                   ],
                                 ),
-                              ): ProfilePhoto(
+                              )
+                            : ProfilePhoto(
                                 totalWidth: 90,
                                 cornerRadius: 90,
                                 color: Colors.black,
                                 image: NetworkImage(
                                     "$apiOnlineUrl/acteur/${acteur!.idActeur}/siege"),
-                              )
-                          ,
+                              ),
                   ],
                 ),
               ),
@@ -955,9 +955,9 @@ class _EditProfilState extends State<EditProfil> {
                     onTap: _showMultiSelectDialogt,
                     controller: typeController,
                     decoration: InputDecoration(
+                      labelText: "Type acteur",
                       suffixIcon: Icon(Icons.arrow_drop_down,
                           color: Colors.blueGrey[400]),
-                      hintText: "Sélectionner un type acteur",
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
                       border: OutlineInputBorder(
@@ -978,9 +978,9 @@ class _EditProfilState extends State<EditProfil> {
                     onTap: _showMultiSelectDialogS,
                     controller: typeSController,
                     decoration: InputDecoration(
+                      labelText: "Spéculation",
                       suffixIcon: Icon(Icons.arrow_drop_down,
                           color: Colors.blueGrey[400]),
-                      hintText: "Sélectionner une spéculation ",
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
                       border: OutlineInputBorder(
@@ -1084,7 +1084,7 @@ class _EditProfilState extends State<EditProfil> {
                     decoration: InputDecoration(
                       suffixIcon: Icon(Icons.arrow_drop_down,
                           color: Colors.blueGrey[400]),
-                      hintText: "Sélectionner une localité",
+                      labelText: "Localité",
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
                       border: OutlineInputBorder(
@@ -1161,7 +1161,8 @@ class _EditProfilState extends State<EditProfil> {
                         _isLoading = true;
                       });
 
-                      final response = await ActeurService().updateActeur(
+                      final response = await ActeurService()
+                          .updateActeur(
                         context: context,
                         idActeur: idActeur,
                         nomActeur: nomActeur,
@@ -1173,21 +1174,23 @@ class _EditProfilState extends State<EditProfil> {
                         niveau3PaysActeur: niveau3PaysActeur,
                         typeActeur: selectedTypes,
                         speculation: selectedSpec,
+                        photoSiegeActeur: image1,
                         logoActeur: photo,
-                      );
+                      )
+                          .then((_) {
+                        debugPrint("profil modifier avec succèss");
 
-                      debugPrint("profil modifier avec succèss");
-
-                      setState(() {
-                        _isLoading = false;
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Profil modifié avec succès"),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
                       });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Profil modifié avec succès"),
-                          duration: Duration(seconds: 5),
-                        ),
-                      );
                     } catch (e) {
                       debugPrint(
                           "Erreur lors de la mise à jour de l'acteur: ${e.toString()}");
