@@ -121,6 +121,10 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         final emailActeur = responseBody['emailActeur'];
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
+        // final photoSiegeActeur = responseBody['photoSiegeActeur'];
+        // final logoActeur = responseBody['logoActeur'];
+        // prefs.setString('photoSiegeActeur', photoSiegeActeur);
+        // prefs.setString('logoActeur', logoActeur);
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
         prefs.setString('emailActeur', emailActeur);

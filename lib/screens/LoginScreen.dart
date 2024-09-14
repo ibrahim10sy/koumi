@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final Uri apiUrl =
         Uri.parse('$baseUrl?emailActeur=$emailActeur&password=$password');
-
+      print('$baseUrl?emailActeur=$emailActeur&password=$password');
     try {
       final response = await http.get(
         apiUrl,
@@ -108,7 +108,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
-
+      //  final photoSiegeActeur = responseBody['photoSiegeActeur'];
+      //   final logoActeur = responseBody['logoActeur'];
+      //   prefs.setString('photoSiegeActeur', photoSiegeActeur);
+      //   prefs.setString('logoActeur', logoActeur);
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
         //  prefs.setString('resetToken', responseBody['resetToken']);
@@ -354,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final Uri apiUrl =
         Uri.parse('$baseUrl?emailActeur=$emailActeur&password=$password');
-
+      print('$baseUrl?emailActeur=$emailActeur&password=$password');
     try {
       final response = await http.get(
         apiUrl,
@@ -380,7 +383,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
-
+        // final photoSiegeActeur = responseBody['photoSiegeActeur'];
+        // final logoActeur = responseBody['logoActeur'];
+        // prefs.setString('photoSiegeActeur', photoSiegeActeur);
+        // prefs.setString('logoActeur', logoActeur);
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
         //  prefs.setString('resetToken', responseBody['resetToken']);
@@ -763,12 +769,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            // // Handle button press action here
-                            // if(light){
-                            // loginUser();
-                            // }else{
-                            //   loginUserWithoutSavedData();
-                            // }
+                           
                             _handleButtonPress();
                           },
                           style: ElevatedButton.styleFrom(

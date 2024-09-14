@@ -285,7 +285,8 @@ class _EditProfilState extends State<EditProfil> {
       emailController.text = acteur!.emailActeur!;
       print("email : ${acteur!.emailActeur}");
     }
-
+    print("logo acteur : ${acteur!.logoActeur}");
+    print("siege  photoSiegeActeur: ${acteur!.photoSiegeActeur}");
     _searchController = TextEditingController();
     _typeListe =
         http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
@@ -781,9 +782,19 @@ class _EditProfilState extends State<EditProfil> {
                             width: 90,
                             fit: BoxFit.cover,
                           )
-                        : acteur!.logoActeur == null ||
-                                acteur!.logoActeur!.isEmpty
-                            ? Container(
+                        : FadeInImage(
+                            image: NetworkImage(
+                              "$apiOnlineUrl/acteur/${acteur!.idActeur}/image",
+                            ),
+                            placeholder:
+                                AssetImage('assets/images/default_image.png'),
+                            placeholderFit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.cover,
+                            imageErrorBuilder: (context, error, stackTrace) {
+                              // Widget affiché en cas d'erreur
+                              return Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 height: 90,
@@ -811,14 +822,9 @@ class _EditProfilState extends State<EditProfil> {
                                     ),
                                   ],
                                 ),
-                              )
-                            : ProfilePhoto(
-                                totalWidth: 90,
-                                cornerRadius: 90,
-                                color: Colors.black,
-                                image: NetworkImage(
-                                    "$apiOnlineUrl/acteur/${acteur!.idActeur}/image"),
-                              ),
+                              );
+                            },
+                          ),
                     SizedBox(width: 50),
                     image1 != null
                         ? Image.file(
@@ -827,9 +833,19 @@ class _EditProfilState extends State<EditProfil> {
                             width: 90,
                             fit: BoxFit.cover,
                           )
-                        : acteur!.photoSiegeActeur == null ||
-                                acteur!.photoSiegeActeur!.isEmpty
-                            ? Container(
+                        : FadeInImage(
+                            image: NetworkImage(
+                              "$apiOnlineUrl/acteur/${acteur!.idActeur}/siege",
+                            ),
+                            placeholder:
+                                AssetImage('assets/images/default_image.png'),
+                            placeholderFit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.cover,
+                            imageErrorBuilder: (context, error, stackTrace) {
+                              // Widget affiché en cas d'erreur
+                              return Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 height: 90,
@@ -857,14 +873,9 @@ class _EditProfilState extends State<EditProfil> {
                                     ),
                                   ],
                                 ),
-                              )
-                            : ProfilePhoto(
-                                totalWidth: 90,
-                                cornerRadius: 90,
-                                color: Colors.black,
-                                image: NetworkImage(
-                                    "$apiOnlineUrl/acteur/${acteur!.idActeur}/siege"),
-                              ),
+                              );
+                            },
+                          ),
                   ],
                 ),
               ),
@@ -1183,7 +1194,7 @@ class _EditProfilState extends State<EditProfil> {
                         setState(() {
                           _isLoading = false;
                         });
-                        Navigator.of(context).pop();
+                        // Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Profil modifié avec succès"),

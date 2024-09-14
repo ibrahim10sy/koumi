@@ -2,6 +2,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:koumi/Admin/NotificationPage.dart';
+import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/MessageWa.dart';
 import 'package:koumi/models/TypeActeur.dart';
@@ -12,6 +13,7 @@ import 'package:koumi/service/MessageService.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -34,9 +36,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
   bool isExist = false;
 
   void verify() async {
-     await Provider.of<ActeurProvider>(context, listen: false)
-      .initializeActeurFromSharedPreferences();
-      
+    await Provider.of<ActeurProvider>(context, listen: false)
+        .initializeActeurFromSharedPreferences();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {
@@ -60,7 +62,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     // Vérifiez si acteur est non nul avant de l'attribuer à la variable locale
     // if (Provider.of<ActeurProvider>(context, listen: false).acteur != null) {
     verify();
-
   }
 
   @override
@@ -129,20 +130,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   type = typeActeurData.map((data) => data.libelle).join(', ');
                   return ListTile(
                     tileColor: Color.fromRGBO(255, 255, 255, 1),
-                    leading: ac.logoActeur == null || ac.logoActeur!.isEmpty
-                        ? ProfilePhoto(
-                            totalWidth: 50,
-                            cornerRadius: 50,
-                            color: Colors.black,
-                            image: const AssetImage('assets/images/profil.jpg'),
-                          )
-                        : ProfilePhoto(
-                            totalWidth: 50,
-                            cornerRadius: 50,
-                            color: Colors.black,
-                            image: NetworkImage(
-                                "https://koumi.ml/api-koumi/acteur/${ac.idActeur}/image"),
-                          ),
+                    leading: ClipOval(
+                      child: FadeInImage(
+                        image: NetworkImage(
+                          "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
+                        ),
+                        placeholder: AssetImage('assets/images/profil.jpg'),
+                        placeholderFit: BoxFit.cover,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        imageErrorBuilder: (context, error, stackTrace) {
+                          // Widget affiché en cas d'erreur
+                          return Image.asset(
+                            'assets/images/profil.jpg',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
                     title: Text(
                       ac.nomActeur!.toUpperCase(),
                       overflow: TextOverflow.ellipsis,
@@ -171,7 +179,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return Text("0",
-                                    style: TextStyle(
+                                    style: TextStyle( 
                                       color: Colors.white,
                                       fontSize: 17,
                                       fontWeight: FontWeight.w800,
@@ -213,5 +221,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
               ),
             ),
           );
+  }
+
+   Widget _buildShimmerEffect() {
+    return ClipOval(
+      child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+    );
   }
 }

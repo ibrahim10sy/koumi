@@ -5,6 +5,7 @@ import 'package:koumi/Admin/Parametre.dart';
 import 'package:koumi/Admin/ParametreGenerauxPage.dart';
 import 'package:koumi/Admin/TypeActeurPage.dart';
 import 'package:koumi/Admin/Zone.dart';
+import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/models/ZoneProduction.dart';
@@ -73,22 +74,29 @@ class _ProfilAState extends State<ProfilA> {
                         return Column(
                           children: [
                             ListTile(
-                                leading : ac.logoActeur == null ||
-                                        ac.logoActeur!.isEmpty
-                                    ? ProfilePhoto(
-                                        totalWidth: 50,
-                                        cornerRadius: 50,
-                                        color: Colors.black,
-                                        image: const AssetImage(
-                                            'assets/images/profil.jpg'),
-                                      )
-                                    : ProfilePhoto(
-                                        totalWidth: 50,
-                                        cornerRadius: 50,
-                                        color: Colors.black,
-                                        image: NetworkImage(
-                                            "https://koumi.ml/api-koumi/acteur/${ac.idActeur}/image"),
-                                      ),
+                                leading: ClipOval(
+                                  child: FadeInImage(
+                                    image: NetworkImage(
+                                      "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
+                                    ),
+                                    placeholder:
+                                        AssetImage('assets/images/profil.jpg'),
+                                    placeholderFit: BoxFit.cover,
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                    imageErrorBuilder:
+                                        (context, error, stackTrace) {
+                                      // Widget affiché en cas d'erreur
+                                      return Image.asset(
+                                        'assets/images/profil.jpg',
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                ),
                                 title: Text(
                                   ac.nomActeur!.toUpperCase(),
                                   style: const TextStyle(
@@ -151,9 +159,7 @@ class _ProfilAState extends State<ProfilA> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    EditProfil(
-                                                       
-                                                        )),
+                                                    EditProfil()),
                                           );
                                         },
                                         child: Row(

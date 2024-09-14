@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:koumi/Admin/EditProfil.dart';
 import 'package:koumi/Admin/ParametreGenerauxPage.dart';
 import 'package:koumi/Admin/Zone.dart';
+import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/TypeActeur.dart';
 import 'package:koumi/models/TypeVoiture.dart';
@@ -182,22 +183,29 @@ class _ProfilState extends State<Profil> {
                                 return Column(
                                   children: [
                                     ListTile(
-                                        leading: ac.logoActeur == null ||
-                                                ac.logoActeur!.isEmpty
-                                            ? ProfilePhoto(
-                                                totalWidth: 50,
-                                                cornerRadius: 50,
-                                                color: Colors.black,
-                                                image: const AssetImage(
-                                                    'assets/images/profil.jpg'),
-                                              )
-                                            : ProfilePhoto(
-                                                totalWidth: 50,
-                                                cornerRadius: 50,
-                                                color: Colors.black,
-                                                image: NetworkImage(
-                                                    "https://koumi.ml/api-koumi/acteur/${ac.idActeur}/image"),
-                                              ),
+                                        leading: ClipOval(
+                                          child: FadeInImage(
+                                            image: NetworkImage(
+                                              "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
+                                            ),
+                                            placeholder: AssetImage(
+                                                'assets/images/profil.jpg'),
+                                            placeholderFit: BoxFit.cover,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                            imageErrorBuilder:
+                                                (context, error, stackTrace) {
+                                              // Widget affiché en cas d'erreur
+                                              return Image.asset(
+                                                'assets/images/profil.jpg',
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                        ),
                                         title: Text(
                                           ac.nomActeur!.toUpperCase(),
                                           style: const TextStyle(
