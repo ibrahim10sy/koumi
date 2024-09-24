@@ -254,7 +254,7 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
     List<Widget> cards = [
       _buildAccueilCard("Conseils", "cons1.png", 2),
       _buildAccueilCard("Alertes", "alt21.png", 8),
-      _buildAccueilCard("Commandes", "cm.png", 3),
+      // _buildAccueilCard("Commandes", "cm.png", 3),
       _buildAccueilCard("Magasins", "shop1.png", 4),
       _buildAccueilCard("Intrants agricoles", "int1.png", 1),
       _buildAccueilCard("Produits agricoles", "pro1.png", 9),
@@ -345,10 +345,12 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
             } else if (index == 4) {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => StoreScreen()));
-            } else if (index == 3) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MesCommande()));
-            } else if (index == 2) {
+            }
+            //  else if (index == 3) {
+            //   Navigator.push(context,
+            //       MaterialPageRoute(builder: (context) => const MesCommande()));
+            // } 
+            else if (index == 2) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -408,7 +410,7 @@ class _AcceuilAdminState extends State<AcceuilAdmin> {
         children: [
           const AcceuilAdmin(),
           MyProductScreen(),
-          Panier(),
+          // Panier(),
           const ProfilA()
         ],
       ),

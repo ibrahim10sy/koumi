@@ -82,49 +82,6 @@ class _AccueilState extends State<Accueil> {
    StreamSubscription<Position>? streamSubscription;
 
  
-  // Future<void> getAddressFromLatLang(Position position) async {
-  //   final detectorPays = Provider.of<DetectorPays>(context, listen: false);
-  //   // if (!detectorPays.hasLocation){
-  //      try {
-  //       List<Placemark> placemark = await placemarkFromCoordinates(
-  //           position.latitude, position.longitude);
-  //       if (placemark.isNotEmpty) {
-  //         Placemark place = placemark[0];
-  //         debugPrint("Address ISO dans acceuil: $detectedC");
-  //         address.value =
-  //             'Address dans acceuil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
-
-  //         if (mounted) {
-  //           setState(() {
-  //             detectedC = place.isoCountryCode;
-  //             detectedCountryCode = place.isoCountryCode ?? "ML";
-  //             detectedCountry = place.country ?? "Mali";
-  //             print("pays dans acceuil: ${detectedCountry} code: ${detectedCountryCode}");
-  //             if (detectedCountry != null || detectedCountry!.isNotEmpty) {
-  //               detectorPays.setDetectedCountryAndCode(
-  //                   detectedCountry!, detectedCountryCode!);
-  //               print("pays dans acceuil: $detectedCountry code: $detectedCountryCode");
-  //             } else {
-  //               detectorPays.setDetectedCountryAndCode("Mali", "ML");
-  //               print("Le pays n'a pas pu être détecté dans acceuil.");
-  //             }
-  //           });
-  //         }
-
-  //         debugPrint(
-  //             "Address dans acceuil: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
-  //       } else {
-  //         detectorPays.setDetectedCountryAndCode("Mali", "ML");
-  //         debugPrint(
-  //             "Aucun emplacement trouvé dans  accueil pour les coordonnées fournies.");
-  //       }
-  //     } catch (e) {
-  //       detectorPays.setDetectedCountryAndCode("Mali", "ML");
-  //       debugPrint(
-  //           "Une erreur est survenue lors de la récupération de l'adresse : $e");
-  //     }
-  // }
-
 
   @override
   void initState() {
@@ -147,9 +104,6 @@ class _AccueilState extends State<Accueil> {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       await Geolocator.openLocationSettings();
       return Future.error('Location services are disabled.');
     }

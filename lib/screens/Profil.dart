@@ -21,6 +21,8 @@ import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
+
 class Profil extends StatefulWidget {
   const Profil({super.key});
 
@@ -184,26 +186,23 @@ class _ProfilState extends State<Profil> {
                                   children: [
                                     ListTile(
                                         leading: ClipOval(
-                                          child: FadeInImage(
-                                            image: NetworkImage(
-                                              "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
-                                            ),
-                                            placeholder: AssetImage(
-                                                'assets/images/profil.jpg'),
-                                            placeholderFit: BoxFit.cover,
+                                          child: CachedNetworkImage(
                                             width: 50,
                                             height: 50,
+                                            imageUrl:
+                                                "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
                                             fit: BoxFit.cover,
-                                            imageErrorBuilder:
-                                                (context, error, stackTrace) {
-                                              // Widget affiché en cas d'erreur
-                                              return Image.asset(
-                                                'assets/images/profil.jpg',
-                                                width: 50,
-                                                height: 50,
-                                                fit: BoxFit.cover,
-                                              );
-                                            },
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    'assets/images/profil.jpg'),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Image.asset(
+                                              'assets/images/profil.jpg',
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
                                           ),
                                         ),
                                         title: Text(

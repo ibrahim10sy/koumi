@@ -451,67 +451,7 @@ class _LocationState extends State<Location> {
                 },
                 icon: const Icon(Icons.refresh, color: Colors.white)),
           ],
-          // : [
-          //     IconButton(
-          //         onPressed: () {
-          //           materielListeFuture = getAllMateriel();
-          //         },
-          //         icon: const Icon(Icons.refresh, color: Colors.white)),
-          //     PopupMenuButton<String>(
-          //       padding: EdgeInsets.zero,
-          //       itemBuilder: (context) {
-          //         return <PopupMenuEntry<String>>[
-          //           PopupMenuItem<String>(
-          //             child: ListTile(
-          //               leading: const Icon(
-          //                 Icons.add,
-          //                 color: Colors.green,
-          //               ),
-          //               title: const Text(
-          //                 "Ajouter matériel ",
-          //                 style: TextStyle(
-          //                   color: Colors.green,
-          //                   fontSize: 18,
-          //                   fontWeight: FontWeight.bold,
-          //                 ),
-          //               ),
-          //               onTap: () async {
-          //                 Navigator.of(context).pop();
-          //                 // final result = await Navigator.push(
-          //                 //   context,
-          //                 //   MaterialPageRoute(
-          //                 //     builder: (context) =>
-          //                 //         AddMateriel(isEquipement: false),
-          //                 //   ),
-          //                 // );
-          //                 _getResultFromNextScreen1(context);
-          //               },
-          //             ),
-          //           ),
-          //           PopupMenuItem<String>(
-          //             child: ListTile(
-          //               leading: const Icon(
-          //                 Icons.remove_red_eye,
-          //                 color: Colors.green,
-          //               ),
-          //               title: const Text(
-          //                 "Mes matériels ",
-          //                 style: TextStyle(
-          //                   color: Colors.green,
-          //                   fontSize: 18,
-          //                   fontWeight: FontWeight.bold,
-          //                 ),
-          //               ),
-          //               onTap: () async {
-          //                 Navigator.of(context).pop();
-
-          //               },
-          //             ),
-          //           )
-          //         ];
-          //       },
-          //     )
-          //   ]
+         
         ),
         body: GestureDetector(
           onTap: () {

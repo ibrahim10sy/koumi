@@ -51,8 +51,8 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
   bool isExist = false;
 
   void verify() async {
-     await Provider.of<ActeurProvider>(context, listen: false)
-      .initializeActeurFromSharedPreferences();
+    await Provider.of<ActeurProvider>(context, listen: false)
+        .initializeActeurFromSharedPreferences();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {
@@ -151,24 +151,6 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
     });
   }
 
-  // Future<void> getAddressFromLatLang(Position position) async {
-  //   List<Placemark> placemark =
-  //       await placemarkFromCoordinates(position.latitude, position.longitude);
-  //   Placemark place = placemark[0];
-  //   debugPrint("Address ISO: $detectedC");
-  //   address.value =
-  //       'Address : ${place.locality},${place.country},${place.isoCountryCode} ';
-  //       if(mounted)
-  //   setState(() {
-  //     detectedC = place.isoCountryCode;
-  //     detectedCountryCode = place.isoCountryCode!;
-  //     detectedCountry = place.country!;
-  //   });
-
-  //   debugPrint(
-  //       "Address:   ${place.locality},${place.country},${place.isoCountryCode}");
-  // }
-
   Future<void> getAddressFromLatLang(Position position) async {
     try {
       List<Placemark> placemark =
@@ -245,65 +227,14 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
         8,
         _buildAccueilCard("Intrants agricoles", "int1.png", 15),
       );
-      cards.insert(
-        11,
-        _buildAccueilCard("Commandes", "cm.png", 14),
-      );
+      // cards.insert(
+      //   11,
+      //   _buildAccueilCard("Commandes", "cm.png", 14),
+      // );
     }
-    // if (!isExist) {
-    //   cards.insert(
-    //     2,
-    //     _buildAccueilCard("Semences et plants", "semence.png", 13),
-    //   );
-    //   cards.insert(
-    //     3,
-    //     _buildAccueilCard("Produits phytosanitaires", "physo.png", 12),
-    //   );
-    //   cards.insert(
-    //     4,
-    //     _buildAccueilCard("Engrais et apports", "engrais.png", 11),
-    //   );
-    //   cards.insert(
-    //     5,
-    //     _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 10),
-    //   );
-    //   cards.insert(
-    //     6,
-    //     _buildAccueilCard("Compléments alimentaires", "compl.png", 5),
-    //   );
-    //   cards.insert(
-    //     7,
-    //     _buildAccueilCard("Produits d'élévages", "elevage.png", 7),
-    //   );
-    //   cards.insert(
-    //     12,
-    //     _buildAccueilCard("Produits transformés", "transforme.png", 8),
-    //   );
-    // }
 
     return cards;
   }
-
-  // List<Widget> _buildCards() {
-  //   List<Widget> cards = [
-  //     _buildAccueilCard("Magasins", "shop.png", 6),
-  //     _buildAccueilCard("Commandes", "cm.png", 14),
-  //     _buildAccueilCard("Semences et plants", "semence.png", 13),
-  //     _buildAccueilCard("Produits phytosanitaires", "physo.png", 12),
-  //     _buildAccueilCard("Engrais et apports", "engrais.png", 11),
-  //     _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 10),
-  //     _buildAccueilCard("Produits agricoles", "pro.png", 9),
-  //     _buildAccueilCard("Compléments alimentaires", "compl.png", 5),
-  //     _buildAccueilCard("Produits d'élévages", "elevage.png", 7),
-  //     _buildAccueilCard("Materiels de Locations", "loc.png", 4),
-  //     _buildAccueilCard("Moyens de Transports", "transp.png", 3),
-  //     _buildAccueilCard("Produits transformés", "transforme.png", 8),
-  //     _buildAccueilCard("Météo", "met.png", 2),
-  //     _buildAccueilCard("Conseils", "cons.png", 1)
-  //   ];
-
-  //   return cards;
-  // }
 
   Widget _buildAccueilCard(String titre, String imgLocation, int index) {
     return Padding(
@@ -316,15 +247,14 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
                 MaterialPageRoute(
                     builder: (context) => MaterielAndEquipement()));
           } else if (index == 15) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        IntrantPage()));
-          } else if (index == 14) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MesCommande()));
-          } else if (index == 13) {
+                MaterialPageRoute(builder: (context) => IntrantPage()));
+          }
+          // else if (index == 14) {
+          //   Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => const MesCommande()));
+          // }
+          else if (index == 13) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => SemenceAndPlant()));
           } else if (index == 12) {

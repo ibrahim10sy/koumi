@@ -40,7 +40,7 @@ import 'package:koumi/widgets/DetectorPays.dart';
 import 'package:koumi/widgets/SplashScreen.dart';
 import 'package:provider/provider.dart';
 
-void main() async { 
+void main() async {   
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => CountryProvider()),

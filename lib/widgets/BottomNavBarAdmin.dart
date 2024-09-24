@@ -28,14 +28,14 @@ class _BottomNavBarAdminState extends State<BottomNavBarAdmin> {
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
+    // GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
   ];
 
   List pages = <Widget>[
     const AcceuilAdmin(),
     MyProductScreen(),
-    Panier(),
+    // Panier(),
     ProfilA()
   ];
 
@@ -89,7 +89,7 @@ class _BottomNavBarAdminState extends State<BottomNavBarAdmin> {
               children: [
                 _buildOffstageNavigator(0),
                 _buildOffstageNavigator(1),
-                _buildOffstageNavigator(2),
+                // _buildOffstageNavigator(2),
                 _buildOffstageNavigator(3)
               ],
             );
@@ -109,11 +109,11 @@ class _BottomNavBarAdminState extends State<BottomNavBarAdmin> {
               icon: Icon(Icons.list_alt_sharp),
               label: "Mes Produits",
             ),
-            BottomNavigationBarItem(
-              backgroundColor: Color.fromARGB(255, 250, 250, 250),
-              icon: Icon(Icons.shopping_cart),
-              label: "Panier",
-            ),
+            // BottomNavigationBarItem(
+            //   backgroundColor: Color.fromARGB(255, 250, 250, 250),
+            //   icon: Icon(Icons.shopping_cart),
+            //   label: "Panier",
+            // ),
             BottomNavigationBarItem(
               backgroundColor: Color.fromARGB(255, 250, 250, 250),
               icon: Icon(Icons.person_pin),
@@ -154,32 +154,5 @@ class _BottomNavBarAdminState extends State<BottomNavBarAdmin> {
     );
   }
 
-  // Map<String, WidgetBuilder> _routeBuilders(BuildContext context, int index) {
-  //   return {
-  //     '/': (context) {
-  //       return [
-  //         const AcceuilAdmin(),
-  //         ProduitScreen(),
-  //         Panier(),
-  //         const ProfilA()
-  //       ].elementAt(index);
-  //     },
-  //   };
-  // }
-
-  // Widget _buildOffstageNavigator(int index) {
-  //   var routeBuilders = _routeBuilders(context, index);
-
-  //   return Offstage(
-  //     offstage: activePageIndex != index,
-  //     child: Navigator(
-  //       key: _navigatorKeys[index],
-  //       onGenerateRoute: (routeSettings) {
-  //         return MaterialPageRoute(
-  //           builder: (context) => routeBuilders[routeSettings.name]!(context),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
+ 
 }

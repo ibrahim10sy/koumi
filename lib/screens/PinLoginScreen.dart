@@ -121,12 +121,10 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         final emailActeur = responseBody['emailActeur'];
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
-        // final photoSiegeActeur = responseBody['photoSiegeActeur'];
-        // final logoActeur = responseBody['logoActeur'];
-        // prefs.setString('photoSiegeActeur', photoSiegeActeur);
-        // prefs.setString('logoActeur', logoActeur);
+
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
+        // if(emailActeur != null)
         prefs.setString('emailActeur', emailActeur);
         prefs.setString('adresseActeur', adresseActeur);
         prefs.setString('telephoneActeur', telephoneActeur);
@@ -167,31 +165,31 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
 
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
-          resetToken: responseBody['resetToken'],
-          tokenCreationDate: responseBody['tokenCreationDate'],
+          // resetToken: responseBody['resetToken'],
+          // tokenCreationDate: responseBody['tokenCreationDate'],
           codeActeur: codeActeur,
           nomActeur: responseBody['nomActeur'],
           adresseActeur: responseBody['adresseActeur'],
           telephoneActeur: responseBody['telephoneActeur'],
           whatsAppActeur: responseBody['whatsAppActeur'],
-          latitude: responseBody['latitude'],
-          longitude: responseBody['longitude'],
+          // latitude: responseBody['latitude'],
+          // longitude: responseBody['longitude'],
           photoSiegeActeur: responseBody['photoSiegeActeur'],
           logoActeur: responseBody['logoActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
           password: enteredPin,
           dateAjout: responseBody['dateAjout'],
-          dateModif: responseBody['dateModif'],
+          // dateModif: responseBody['dateModif'],
           personneModif: responseBody['personneModif'],
           localiteActeur: responseBody['localiteActeur'],
           emailActeur: responseBody['emailActeur'],
           statutActeur: responseBody['statutActeur'],
-          isConnected: responseBody['isConnected'],
-          pays: null,
+          // isConnected: responseBody['isConnected'],
+          // pays: null,
           typeActeur: typeActeurList,
           speculation: speculationsList,
         );
-        print('Pays acteur : ${responseBody['pays']}');
+        // print('Pays acteur : ${responseBody['pays']}');
         acteurProvider.setActeur(acteurs);
         print("login acteur :${acteurs.toString()}");
 
@@ -254,22 +252,34 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         errorMessage = responseBody['message'];
         if (errorMessage.contains('Code Pin incorrect')) {
           errorMessage = 'Code Pin incorrect';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text(errorMessage, maxLines: 2)),
+              duration: Duration(seconds: 5),
+            ),
+          );
         } else if (errorMessage.contains(
-            'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !')) {
+            "Connexion échouée : votre compte est désactivé. Veuillez contacter l'administrateur pour la procédure d'activation de votre compte !")) {
           errorMessage =
-              'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !';
+              'votre compte est désactivé. Veuillez contacter l\'administrateur au numéro suivant +223 51554851 pour la procédure d\'activation de votre compte !';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text(errorMessage, maxLines: 2)),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(
+                  child: Text(
+                      "votre compte est désactivé. Veuillez contacter l\'administrateur au numéro suivant +223 51554851 pour la procédure d\'activation de votre compte !",
+                      maxLines: 2)),
+              duration: Duration(seconds: 5),
+            ),
+          );
         }
         print("if : $errorMessage");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(
-                child: Text(
-              errorMessage,
-              maxLines: 2,
-            )),
-            duration: Duration(seconds: 5),
-          ),
-        );
       }
     } catch (e) {
       String errorMessage = "";
@@ -278,19 +288,26 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         final exception = e;
         if (exception.toString().contains('Code Pin incorrect')) {
           errorMessage = 'Code Pin incorrect';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text(errorMessage, maxLines: 2)),
+              duration: Duration(seconds: 5),
+            ),
+          );
         } else if (exception.toString().contains(
-            'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !')) {
+            "Connexion échouée : votre compte est désactivé. Veuillez contacter l'administrateur pour la procédure d'activation de votre compte !")) {
           errorMessage =
               'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text(errorMessage, maxLines: 2)),
+              duration: Duration(seconds: 5),
+            ),
+          );
         }
         print("error : $errorMessage");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text(errorMessage, maxLines: 2)),
-            duration: Duration(seconds: 5),
-          ),
-        );
-        throw Exception(errorMessage);
+
+        throw Exception("throw $errorMessage");
       }
     }
   }

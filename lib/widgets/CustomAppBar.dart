@@ -10,10 +10,10 @@ import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/PinLoginScreen.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/MessageService.dart';
-import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -131,26 +131,25 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   return ListTile(
                     tileColor: Color.fromRGBO(255, 255, 255, 1),
                     leading: ClipOval(
-                      child: FadeInImage(
-                        image: NetworkImage(
-                          "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
-                        ),
-                        placeholder: AssetImage('assets/images/profil.jpg'),
-                        placeholderFit: BoxFit.cover,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                        imageErrorBuilder: (context, error, stackTrace) {
-                          // Widget affiché en cas d'erreur
-                          return Image.asset(
-                            'assets/images/profil.jpg',
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                    ),
+                                          child: CachedNetworkImage(
+                                            width: 50,
+                                            height: 50,
+                                            imageUrl:
+                                                "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    'assets/images/profil.jpg'),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Image.asset(
+                                              'assets/images/profil.jpg',
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          ),
+                                        ),
                     title: Text(
                       ac.nomActeur!.toUpperCase(),
                       overflow: TextOverflow.ellipsis,
@@ -179,7 +178,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return Text("0",
-                                    style: TextStyle( 
+                                    style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 17,
                                       fontWeight: FontWeight.w800,
@@ -223,16 +222,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
           );
   }
 
-   Widget _buildShimmerEffect() {
+  Widget _buildShimmerEffect() {
     return ClipOval(
       child: Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        height: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          height: 16,
+          color: Colors.grey,
+        ),
+      ),
     );
   }
 }

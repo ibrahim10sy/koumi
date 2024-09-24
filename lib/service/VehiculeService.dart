@@ -203,7 +203,8 @@ class VehiculeService extends ChangeNotifier {
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/vehicule/getVehiculesByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
-
+      debugPrint(
+          '$apiOnlineUrl/vehicule/getVehiculesByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
@@ -234,7 +235,6 @@ class VehiculeService extends ChangeNotifier {
     return vehiculeList;
   }
 
-
   Future<List<Vehicule>> fetchVehiculeByPays(String nomPays,
       {bool refresh = false}) async {
     if (isLoading) return [];
@@ -250,7 +250,8 @@ class VehiculeService extends ChangeNotifier {
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/vehicule/getAllByPaysWithPagination?nomPays=$nomPays&page=$page&size=$size'));
-
+      debugPrint(
+          '$apiOnlineUrl/vehicule/getAllByPaysWithPagination?nomPays=$nomPays&page=$page&size=$size');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];

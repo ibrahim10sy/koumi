@@ -187,7 +187,8 @@ class _TransportState extends State<Transport> {
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/vehicule/getAllByPaysWithPagination?nomPays=$nomP&page=$page&size=$size'));
-
+      debugPrint(
+          '$apiOnlineUrl/vehicule/getAllByPaysWithPagination?nomPays=$nomP&page=$page&size=$size');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
@@ -244,7 +245,8 @@ class _TransportState extends State<Transport> {
     try {
       final response = await http.get(Uri.parse(
           '$apiOnlineUrl/vehicule/getVehiculesByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size'));
-
+      debugPrint(
+          '$apiOnlineUrl/vehicule/getVehiculesByPaysWithPagination?niveau3PaysActeur=$niveau3PaysActeur&page=$page&size=$size');
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         final List<dynamic> body = jsonData['content'];
