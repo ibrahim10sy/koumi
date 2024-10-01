@@ -77,7 +77,7 @@ class _ProfilAState extends State<ProfilA> {
                                 leading: ClipOval(
                                             child: FadeInImage(
                                           image: NetworkImage(
-                                            "$apiOnlineUrl/acteur/${acteur!.idActeur}/image",
+                                            "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
                                           ),
                                           placeholder: AssetImage(
                                               'assets/images/profil.jpg'),
@@ -87,7 +87,6 @@ class _ProfilAState extends State<ProfilA> {
                                           fit: BoxFit.cover,
                                           imageErrorBuilder:
                                               (context, error, stackTrace) {
-                                           
                                             return Image.asset(
                                               'assets/images/profil.jpg',
                                               fit: BoxFit.cover,
