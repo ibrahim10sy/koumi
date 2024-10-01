@@ -35,7 +35,7 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 const d_colorPage = Color.fromRGBO(255, 255, 255, 1);
 
 class _ProfilState extends State<Profil> {
-  late Acteur acteur = Acteur();
+  Acteur? acteur = Acteur();
   late List<TypeActeur> typeActeurData = [];
   String type = '';
   late List<ZoneProduction> zoneList = [];
@@ -55,7 +55,7 @@ class _ProfilState extends State<Profil> {
       // Si l'email de l'acteur est présent, exécute checkLoggedIn
 
       acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-      typeActeurData = acteur.typeActeur!;
+      typeActeurData = acteur!.typeActeur!;
       type = typeActeurData.map((data) => data.libelle).join(', ');
       setState(() {
         isExist = true;
@@ -186,25 +186,27 @@ class _ProfilState extends State<Profil> {
                                   children: [
                                     ListTile(
                                         leading: ClipOval(
-                                          child: CachedNetworkImage(
-                                            width: 50,
-                                            height: 50,
-                                            imageUrl:
-                                                "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    'assets/images/profil.jpg'),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
+                                            child: FadeInImage(
+                                          image: NetworkImage(
+                                            "$apiOnlineUrl/acteur/${acteur!.idActeur}/image",
+                                          ),
+                                          placeholder: AssetImage(
+                                              'assets/images/profil.jpg'),
+                                          placeholderFit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                          imageErrorBuilder:
+                                              (context, error, stackTrace) {
+                                           
+                                            return Image.asset(
                                               'assets/images/profil.jpg',
                                               fit: BoxFit.cover,
                                               width: 50,
                                               height: 50,
-                                            ),
-                                          ),
-                                        ),
+                                            );
+                                          },
+                                        )),
                                         title: Text(
                                           ac.nomActeur!.toUpperCase(),
                                           style: const TextStyle(
@@ -512,7 +514,7 @@ class _ProfilState extends State<Profil> {
                                             return FutureBuilder(
                                                 future: zoneService
                                                     .fetchZoneByActeur(
-                                                        acteur.idActeur!),
+                                                        acteur!.idActeur!),
                                                 builder: (context, snapshot) {
                                                   if (snapshot
                                                           .connectionState ==

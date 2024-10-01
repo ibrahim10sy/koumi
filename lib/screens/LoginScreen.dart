@@ -165,8 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
           whatsAppActeur: responseBody['whatsAppActeur'],
           latitude: responseBody['latitude'],
           longitude: responseBody['longitude'],
-          photoSiegeActeur: responseBody['photoSiegeActeur'],
-          logoActeur: responseBody['logoActeur'],
+          // photoSiegeActeur: responseBody['photoSiegeActeur'],
+          // logoActeur: responseBody['logoActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
           password: password,
           dateAjout: responseBody['dateAjout'],
@@ -197,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -205,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -215,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Index pour les véhicules
           // Mise à jour de l'index de navigation
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }  else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
           
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -441,8 +441,8 @@ class _LoginScreenState extends State<LoginScreen> {
           whatsAppActeur: responseBody['whatsAppActeur'],
           latitude: responseBody['latitude'],
           longitude: responseBody['longitude'],
-          photoSiegeActeur: responseBody['photoSiegeActeur'],
-          logoActeur: responseBody['logoActeur'],
+          // photoSiegeActeur: responseBody['photoSiegeActeur'],
+          // logoActeur: responseBody['logoActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
           password: password,
           dateAjout: responseBody['dateAjout'],
@@ -473,7 +473,7 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -481,7 +481,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -490,7 +490,7 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -499,7 +499,7 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
           
-          Timer(const Duration(seconds: 2), () {
+          Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)

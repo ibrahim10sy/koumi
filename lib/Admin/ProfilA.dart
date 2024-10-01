@@ -75,25 +75,27 @@ class _ProfilAState extends State<ProfilA> {
                           children: [
                             ListTile(
                                 leading: ClipOval(
-                                          child: CachedNetworkImage(
-                                            width: 50,
-                                            height: 50,
-                                            imageUrl:
-                                                "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    'assets/images/profil.jpg'),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
+                                            child: FadeInImage(
+                                          image: NetworkImage(
+                                            "$apiOnlineUrl/acteur/${acteur!.idActeur}/image",
+                                          ),
+                                          placeholder: AssetImage(
+                                              'assets/images/profil.jpg'),
+                                          placeholderFit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                          imageErrorBuilder:
+                                              (context, error, stackTrace) {
+                                           
+                                            return Image.asset(
                                               'assets/images/profil.jpg',
                                               fit: BoxFit.cover,
                                               width: 50,
                                               height: 50,
-                                            ),
-                                          ),
-                                        ),
+                                            );
+                                          },
+                                        )),
                                 title: Text(
                                   ac.nomActeur!.toUpperCase(),
                                   style: const TextStyle(

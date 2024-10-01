@@ -90,7 +90,7 @@ class _BottomNavBarAdminState extends State<BottomNavBarAdmin> {
                 _buildOffstageNavigator(0),
                 _buildOffstageNavigator(1),
                 // _buildOffstageNavigator(2),
-                _buildOffstageNavigator(3)
+                _buildOffstageNavigator(2)
               ],
             );
           },

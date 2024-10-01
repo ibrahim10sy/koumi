@@ -14,7 +14,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddZone extends StatefulWidget {
-  const AddZone({super.key});
+   bool? isRoute;
+   AddZone({super.key, this.isRoute});
 
   @override
   State<AddZone> createState() => _AddZoneState();
@@ -204,10 +205,12 @@ class _AddZoneState extends State<AddZone> {
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
-      isLoading: _isLoading,
+      isLoading: !(widget.isRoute ?? false)
+              ? _isLoading : false,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
+        appBar: !(widget.isRoute ?? false)
+              ? AppBar(
           backgroundColor: d_colorOr,
           centerTitle: true,
           toolbarHeight: 75,
@@ -224,7 +227,7 @@ class _AddZoneState extends State<AddZone> {
                 fontSize: 20,
                 overflow: TextOverflow.ellipsis),
           ),
-        ),
+        ) : null,
         body: SingleChildScrollView(
           child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
             Padding(
@@ -271,60 +274,10 @@ class _AddZoneState extends State<AddZone> {
                         ),
                       ),
                     ),
-                    // const SizedBox(height: 10),
-                    // const Text(
-                    //   "Latitude",
-                    //   style: TextStyle(color: (Colors.black), fontSize: 18),
-                    // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       vertical: 10, horizontal: 20),
-                    //   child: TextFormField(
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty) {
-                    //         return "Veuillez remplir les champs";
-                    //       }
-                    //       return null;
-                    //     },
-                    //     controller: latitudeController,
-                    //     decoration: InputDecoration(
-                    //       hintText: "Latitude",
-                    //       contentPadding: const EdgeInsets.symmetric(
-                    //           vertical: 10, horizontal: 20),
-                    //       border: OutlineInputBorder(
-                    //         borderRadius: BorderRadius.circular(8),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 10),
-                    // const Text(
-                    //   "Longitude",
-                    //   style: TextStyle(color: (Colors.black), fontSize: 18),
-                    // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       vertical: 10, horizontal: 20),
-                    //   child: TextFormField(
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty) {
-                    //         return "Veuillez remplir les champs";
-                    //       }
-                    //       return null;
-                    //     },
-                    //     controller: longitudeController,
-                    //     decoration: InputDecoration(
-                    //       hintText: "Longitude",
-                    //       contentPadding: const EdgeInsets.symmetric(
-                    //           vertical: 10, horizontal: 20),
-                    //       border: OutlineInputBorder(
-                    //         borderRadius: BorderRadius.circular(8),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                   
                     const SizedBox(height: 10),
-                    SizedBox(
+                   !(widget.isRoute ?? false)
+              ? SizedBox(
                       height: 60,
                       child: IconButton(
                         onPressed: _showImageSourceDialog,
@@ -333,7 +286,7 @@ class _AddZoneState extends State<AddZone> {
                           size: 60,
                         ),
                       ),
-                    ),
+                    ) : Container(),
                     const SizedBox(height: 20),
                     ElevatedButton.icon(
                         onPressed: () async {

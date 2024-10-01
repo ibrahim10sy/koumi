@@ -115,6 +115,34 @@ class _PanierState extends State<Panier> {
           response.statusCode == 201 ||
           response.statusCode == 202) {
         // Commande ajoutée avec succès
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                   'Commande passée avec succès.',
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Icon(Icons.error_outline, color: Colors.white),
+              ],
+            ),
+            backgroundColor: Colors.greenAccent, // Couleur de fond du SnackBar
+            duration: Duration(seconds: 5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior:
+                SnackBarBehavior.floating, // Flottant pour un style moderne
+            margin: EdgeInsets.all(10), // Espace autour du SnackBar
+          ),
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Commande passée avec succès.'),
@@ -124,13 +152,35 @@ class _PanierState extends State<Panier> {
         print('Commande ajoutée avec succès. ${response.body}');
         return await json.decode(json.encode(response.body));
       } else {
-        // Autre erreur
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Une erreur est survenue. Veuillez réessayer ultérieurement.'),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Une erreur est survenue. Veuillez réessayer ultérieurement.',
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Icon(Icons.error_outline, color: Colors.white),
+              ],
+            ),
+            backgroundColor: Colors.redAccent, // Couleur de fond du SnackBar
+            duration: Duration(seconds: 5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior:
+                SnackBarBehavior.floating, // Flottant pour un style moderne
+            margin: EdgeInsets.all(10), // Espace autour du SnackBar
           ),
         );
+       
         print('Erreur lors de l\'ajout de la commande: ${response.body} et code ${response.statusCode}');
       }
     } catch (e) {

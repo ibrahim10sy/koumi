@@ -528,20 +528,10 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
           leading: IconButton(
-            onPressed: () {
-              // Fonction de retour
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 30,
-            ),
-            iconSize: 30,
-            splashRadius: 20,
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: 40, minHeight: 40),
-          ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back_ios)),
           actions: [
             TextButton(
               onPressed: () {
@@ -692,10 +682,35 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                               if (_formKey.currentState!.validate()) {
                                 if (niveau3.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Veuillez sélectionner une localité"),
+                                    SnackBar(
+                                      content: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              "Veuillez sélectionner une localité",
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          Icon(Icons.error_outline,
+                                              color: Colors.white),
+                                        ],
+                                      ),
+                                      backgroundColor: Colors
+                                          .redAccent, // Couleur de fond du SnackBar
                                       duration: Duration(seconds: 5),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      behavior: SnackBarBehavior
+                                          .floating, // Flottant pour un style moderne
+                                      margin: EdgeInsets.all(
+                                          10), // Espace autour du SnackBar
                                     ),
                                   );
                                 } else {

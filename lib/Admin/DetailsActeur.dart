@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:profile_photo/profile_photo.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:koumi/constants.dart';
+
 class DetailsActeur extends StatefulWidget {
   final Acteur acteur;
   const DetailsActeur({super.key, required this.acteur});
@@ -48,21 +51,26 @@ class _DetailsActeurState extends State<DetailsActeur> {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Center(
-                child: acteurs.logoActeur == null || acteurs.logoActeur!.isEmpty
-                    ? ProfilePhoto(
-                        totalWidth: 185,
-                        cornerRadius: 185,
-                        color: Colors.black,
-                        image: const AssetImage('assets/images/profil.jpg'),
-                      )
-                    : ProfilePhoto(
-                        totalWidth: 185,
-                        cornerRadius: 185,
-                        color: Colors.black,
-                        image: NetworkImage(
-                          'https://koumi.ml/api-koumi/acteur/${acteurs.idActeur}/image',
-                        ),
-                      ),
+                child: ClipOval(
+                                          child: CachedNetworkImage(
+                                            width: 185,
+                                            height: 185,
+                                            imageUrl:
+                                                "$apiOnlineUrl/acteur/${acteurs.idActeur}/image",
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    'assets/images/profil.jpg'),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Image.asset(
+                                              'assets/images/profil.jpg',
+                                              fit: BoxFit.cover,
+                                              width: 185,
+                                              height: 185,
+                                            ),
+                                          ),
+                                        ),
               ),
             ),
             Padding(

@@ -345,13 +345,33 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
 
     // Vérification des mots de passe
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          'Les mots de passe ne correspondent pas',
-          style: TextStyle(color: Colors.white),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  'Les mots de passe ne correspondent pas',
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Icon(Icons.error_outline, color: Colors.white),
+            ],
+          ),
+          backgroundColor: Colors.redAccent, // Couleur de fond du SnackBar
+          duration: Duration(seconds: 5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          behavior: SnackBarBehavior.floating, // Flottant pour un style moderne
+          margin: EdgeInsets.all(10), // Espace autour du SnackBar
         ),
-      ));
+      );
       return;
     }
 
@@ -476,19 +496,9 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
         appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                // Fonction de retour
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-                size: 30,
-              ),
-              iconSize: 30,
-              splashRadius: 20,
-              padding: EdgeInsets.zero,
-              constraints: BoxConstraints(minWidth: 40, minHeight: 40),
-            ),
+              icon: const Icon(Icons.arrow_back_ios)),
             actions: [
               TextButton(
                 onPressed: () {
@@ -688,14 +698,39 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                               .toString()
                                               .trim() ==
                                           "123456") {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      backgroundColor: Colors.red,
-                                      content: Text(
-                                          'Mot de passe faible, veuillez saisir un mot de passe sécurisé.',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ));
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                             'Mot de passe faible, veuillez saisir un mot de passe sécurisé.',
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          Icon(Icons.error_outline,
+                                              color: Colors.white),
+                                        ],
+                                      ),
+                                      backgroundColor: Colors
+                                          .redAccent, // Couleur de fond du SnackBar
+                                      duration: Duration(seconds: 3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      behavior: SnackBarBehavior
+                                          .floating, // Flottant pour un style moderne
+                                      margin: EdgeInsets.all(
+                                          10), // Espace autour du SnackBar
+                                    ),
+                                  );
+                                   
                                   } else {
                                     _handleButtonPress(context);
                                   }

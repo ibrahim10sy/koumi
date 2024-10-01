@@ -131,25 +131,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   return ListTile(
                     tileColor: Color.fromRGBO(255, 255, 255, 1),
                     leading: ClipOval(
-                                          child: CachedNetworkImage(
-                                            width: 50,
-                                            height: 50,
-                                            imageUrl:
-                                                "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    'assets/images/profil.jpg'),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
+                                            child: FadeInImage(
+                                          image: NetworkImage(
+                                            "$apiOnlineUrl/acteur/${acteur!.idActeur}/image",
+                                          ),
+                                          placeholder: AssetImage(
+                                              'assets/images/profil.jpg'),
+                                          placeholderFit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                          imageErrorBuilder:
+                                              (context, error, stackTrace) {
+                                           
+                                            return Image.asset(
                                               'assets/images/profil.jpg',
                                               fit: BoxFit.cover,
                                               width: 50,
                                               height: 50,
-                                            ),
-                                          ),
-                                        ),
+                                            );
+                                          },
+                                        )),
                     title: Text(
                       ac.nomActeur!.toUpperCase(),
                       overflow: TextOverflow.ellipsis,

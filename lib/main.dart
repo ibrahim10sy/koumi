@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/providers/CartProvider.dart';
@@ -40,8 +40,7 @@ import 'package:koumi/widgets/DetectorPays.dart';
 import 'package:koumi/widgets/SplashScreen.dart';
 import 'package:provider/provider.dart';
 
-void main() async {   
-
+void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => CountryProvider()),
     ChangeNotifierProvider(create: (_) => DetectorPays()),
@@ -83,9 +82,8 @@ void main() async {
     ChangeNotifierProvider(create: (context) => FormeService()),
     ChangeNotifierProvider(create: (context) => BottomNavigationService())
   ], child: MyApp()));
-
 }
- 
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -97,7 +95,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,4 +113,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-

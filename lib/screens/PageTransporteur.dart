@@ -5,7 +5,8 @@ import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/service/ActeurService.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:koumi/constants.dart';
 class PageTransporteur extends StatefulWidget {
   const PageTransporteur({super.key});
 
@@ -165,22 +166,26 @@ class _PageTransporteurState extends State<PageTransporteur> {
                                       child: Column(
                                         children: [
                                           ListTile(
-                                              leading: e.logoActeur == null ||
-                                                      e.logoActeur!.isEmpty
-                                                  ? ProfilePhoto(
-                                                      totalWidth: 50,
-                                                      cornerRadius: 50,
-                                                      color: Colors.black,
-                                                      image: const AssetImage(
-                                                          'assets/images/profil.jpg'),
-                                                    )
-                                                  : ProfilePhoto(
-                                                      totalWidth: 50,
-                                                      cornerRadius: 50,
-                                                      color: Colors.black,
-                                                      image: NetworkImage(
-                                                          "https://koumi.ml/api-koumi/acteur/${e.idActeur}/image"),
-                                                    ),
+                                              leading: ClipOval(
+                                          child: CachedNetworkImage(
+                                            width: 50,
+                                            height: 50,
+                                            imageUrl:
+                                                "$apiOnlineUrl/acteur/${e.idActeur}/image",
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    'assets/images/profil.jpg'),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Image.asset(
+                                              'assets/images/profil.jpg',
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          ),
+                                        ),
                                               title: Text(
                                                   e.nomActeur!.toUpperCase(),
                                                   style: const TextStyle(

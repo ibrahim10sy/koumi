@@ -456,86 +456,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                     color: Colors.white,
                   )),
             ]
-            // : (typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("fournisseur") ||
-            //         typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("admin") ||
-            //         typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("fournisseurs"))
-            //     ? [
-            //         IconButton(
-            //             onPressed: () {
-            //               intrantListeFuture = fetchIntrantByCategorie(
-            //                   detectedCountry != null
-            //                       ? detectedCountry!
-            //                       : "Mali");
-            //             },
-            //             icon: const Icon(
-            //               Icons.refresh,
-            //               color: Colors.white,
-            //             )),
-            //         PopupMenuButton<String>(
-            //           padding: EdgeInsets.zero,
-            //           itemBuilder: (context) {
-            //             return <PopupMenuEntry<String>>[
-            //               PopupMenuItem<String>(
-            //                 child: ListTile(
-            //                   leading: const Icon(
-            //                     Icons.add,
-            //                     color: d_colorGreen,
-            //                   ),
-            //                   title: const Text(
-            //                     "Ajouter intrant ",
-            //                     style: TextStyle(
-            //                       color: d_colorGreen,
-            //                       fontSize: 18,
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                   onTap: () async {
-            //                     Navigator.of(context).pop();
-            //                     _getResultFromNextScreen1(context);
-            //                   },
-            //                 ),
-            //               ),
-            //               PopupMenuItem<String>(
-            //                 child: ListTile(
-            //                   leading: const Icon(
-            //                     Icons.remove_red_eye,
-            //                     color: d_colorGreen,
-            //                   ),
-            //                   title: const Text(
-            //                     "Mes intrants ",
-            //                     style: TextStyle(
-            //                       color: d_colorGreen,
-            //                       fontSize: 18,
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                   onTap: () async {
-            //                     Navigator.of(context).pop();
-            //                     _getResultFromNextScreen2(context);
-            //                   },
-            //                 ),
-            //               )
-            //             ];
-            //           },
-            //         )
-            //       ]
-            //     : [
-            //         IconButton(
-            //             onPressed: () {
-            //               intrantListeFuture = fetchIntrantByCategorie(
-            //                   detectedCountry != null
-            //                       ? detectedCountry!
-            //                       : "Mali");
-            //             },
-            //             icon:
-            //                 const Icon(Icons.refresh, color: Colors.white)),
-            //       ]
+          
             ),
         body: GestureDetector(
           onTap: () {
@@ -1181,7 +1102,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                         return filteredSearch.isEmpty &&
                                                 isLoading == false
                                             ? SingleChildScrollView(
-                                                child: Padding(
+                                                child:  Padding(
                                                   padding: EdgeInsets.all(10),
                                                   child: Center(
                                                     child: Column(
@@ -1191,7 +1112,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                         SizedBox(
                                                           height: 10,
                                                         ),
-                                                        Text(
+                                                      const  Text(
                                                           'Aucun produit trouvé',
                                                           style: TextStyle(
                                                             color: Colors.black,
@@ -1228,7 +1149,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                         if (index <
                                                             produitsLocaux
                                                                 .length) {
-                                                          return GestureDetector(
+                                                          return  GestureDetector(
                                                             onTap: () {
                                                               Navigator.push(
                                                                 context,
@@ -1278,7 +1199,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                   ),
                                                                   // SizedBox(height: 8),
                                                                   ListTile(
-                                                                    title: Text(
+                                                                    title:  Text(
                                                                       produitsLocaux[
                                                                               index]
                                                                           .nomIntrant!,
@@ -1954,7 +1875,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
           crossAxisSpacing: 10,
           childAspectRatio: 0.8,
         ),
-        itemCount: 6, // Number of shimmer items to display
+        itemCount: 6,
         itemBuilder: (context, index) {
           return Card(
             margin: EdgeInsets.all(8),
@@ -2011,101 +1932,5 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
     );
   }
 
-  Widget _buildItem(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.italic,
-                // overflow: TextOverflow.ellipsis,
-                fontSize: 16),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 16),
-          )
-        ],
-      ),
-    );
-  }
-
-  DropdownButtonFormField<String> buildDropdown(
-      List<CategorieProduit> typeList) {
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      items: typeList
-          .map((e) => DropdownMenuItem(
-                value: e.idCategorieProduit,
-                child: Text(e.libelleCategorie!),
-              ))
-          .toList(),
-      hint: Text("-- Filtre par catégorie --"),
-      value: catValue,
-      onChanged: (newValue) {
-        setState(() {
-          catValue = newValue;
-          if (newValue != null) {
-            selectedCat = typeList.firstWhere(
-              (element) => element.idCategorieProduit == newValue,
-            );
-          }
-
-          page = 0;
-          hasMore = true;
-          fetchIntrantByCategorieAndFiliere(
-              detectedCountry != null ? detectedCountry! : "Mali",
-              refresh: true);
-          if (page == 0 && isLoading == true) {
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              scrollableController1.jumpTo(0.0);
-            });
-          }
-        });
-      },
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-        ),
-      ),
-    );
-  }
-
-  DropdownButtonFormField buildEmptyDropdown() {
-    return DropdownButtonFormField(
-      items: [],
-      onChanged: null,
-      decoration: InputDecoration(
-        labelText: '-- Aucune catégorie trouvé --',
-        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-        ),
-      ),
-    );
-  }
-
-  DropdownButtonFormField buildLoadingDropdown() {
-    return DropdownButtonFormField(
-      items: [],
-      onChanged: null,
-      decoration: InputDecoration(
-        labelText: 'Chargement...',
-        contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-        ),
-      ),
-    );
-  }
+  
 }

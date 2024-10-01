@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -33,11 +34,11 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
   late String type;
   late TextEditingController _searchController;
   List<Magasin> magasinListe = [];
+  Future? futureList;
   Niveau1Pays? selectedNiveau1Pays;
   String? typeValue;
   late Future _niveau1PaysList;
   late Future<List<Magasin>> magasinListeFuture;
-  late Future<List<Magasin>> magasinListeFuture1;
   bool isExist = false;
   String? email = "";
 
@@ -91,21 +92,20 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
           });
         } else {
           setState(() {
-            List<Magasin> newMagasin =
-                body.map((e) => Magasin.fromMap(e)).toList();
-            magasinListe.addAll(newMagasin);
+            List<Magasin> newMag = body.map((e) => Magasin.fromMap(e)).toList();
+            magasinListe.addAll(newMag);
           });
         }
 
         debugPrint(
-            "response body all magasin by acteur with pagination ${page} par défilement soit ${magasinListe.length}");
+            "response body all intrant by acteur with pagination ${page} par défilement soit ${magasinListe.length}");
       } else {
         print(
             'Échec de la requête avec le code d\'état: ${response.statusCode} |  ${response.body}');
       }
     } catch (e) {
       print(
-          'Une erreur s\'est produite lors de la récupération des magasins: $e');
+          'Une erreur s\'est produite lors de la récupération des intrant: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -139,16 +139,14 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      //write or call your logic
-      //code will run when widget rendering complete
-      scrollableController.addListener(_scrollListener);
-    });
-    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
 
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _searchController = TextEditingController();
     _niveau1PaysList = http.get(Uri.parse('$apiOnlineUrl/niveau1Pays/read'));
-    magasinListeFuture = fetchMagasinByActeur(acteur.idActeur!);
+    futureList = fetchMagasinByActeur(acteur.idActeur!);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollableController.addListener(_scrollListener);
+    });
   }
 
   Future<void> _getResultFromNextScreen2(BuildContext context) async {
@@ -162,21 +160,13 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        magasinListeFuture = fetchMagasinByActeur(acteur.idActeur!);
+        futureList = MagasinService()
+            .fetchMagasinByActeur(acteur.idActeur!, refresh: true);
       });
     }
   }
 
   bool isSearchMode = false;
-  void _selectMode(String mode) {
-    setState(() {
-      if (mode == 'Rechercher') {
-        isSearchMode = true;
-      } else if (mode == 'Fermer') {
-        isSearchMode = false;
-      }
-    });
-  }
 
   Future<void> _getResultFromNextScreen1(
       BuildContext context, Magasin m) async {
@@ -189,13 +179,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
             child: ScaleTransition(
               scale: animation,
               child: AddMagasinScreen(
-                idMagasin: m.idMagasin,
+                magasin: m,
                 isEditable: true,
-                nomMagasin: m.nomMagasin,
-                contactMagasin: m.contactMagasin,
-                localiteMagasin: m.localiteMagasin,
-                niveau1Pays: m.niveau1Pays!,
-                // photo: filteredMagasins[index]['photo']!,
               ),
             ),
           );
@@ -211,17 +196,14 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {
-        magasinListeFuture = MagasinService().fetchAllMagasin();
+        futureList = MagasinService()
+            .fetchMagasinByActeur(acteur.idActeur!, refresh: true);
       });
     }
   }
 
   @override
   void dispose() {
-    // if (isSearchMode) {
-    //   _searchController = TextEditingController();
-    // } else {
-    // }
     _searchController.dispose();
     super.dispose();
   }
@@ -413,9 +395,10 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                       onRefresh: () async {
                         setState(() {
                           page = 0;
-                          // Rafraîchir les données ici
-                          magasinListeFuture = MagasinService()
-                              .fetchMagasinByActeur(acteur.idActeur!);
+
+                          futureList = MagasinService().fetchMagasinByActeur(
+                              acteur.idActeur!,
+                              refresh: true);
                         });
                         debugPrint("refresh page ${page}");
                       },
@@ -423,12 +406,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                         controller: scrollableController,
                         child: Consumer<MagasinService>(
                             builder: (context, magasinService, child) {
-                          return FutureBuilder<List<Magasin>>(
-                              future: magasinListeFuture,
-                              //      selectedNiveau1Pays != null
-                              //             ? magasinService.fetchMagasinByRegionAndActeur(
-                              // acteur.idActeur!, selectedNiveau1Pays!.idNiveau1Pays!)
-                              //             : magasinService.fetchMagasinByActeur(acteur.idActeur!),
+                          return FutureBuilder(
+                              future: futureList,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -439,12 +418,10 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                   return const Padding(
                                     padding: EdgeInsets.all(10),
                                     child: Center(
-                                        child: Text("Aucun donné trouvé")),
+                                        child: Text("Aucun données trouvée")),
                                   );
                                 } else {
                                   magasinListe = snapshot.data!;
-                                  // Vous pouvez afficher une image ou un texte ici
-
                                   String searchText = "";
                                   List<Magasin> filtereSearch =
                                       magasinListe.where((search) {
@@ -597,7 +574,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                                           ),
                                                         ),
                                                       ),
-                                                      
+
                                                       Padding(
                                                         padding:
                                                             const EdgeInsets

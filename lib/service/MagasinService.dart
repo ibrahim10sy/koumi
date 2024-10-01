@@ -27,12 +27,7 @@ class MagasinService extends ChangeNotifier {
       required Acteur acteur,
       required Niveau1Pays niveau1Pays}) async {
     try {
-      //    // Convertir chaque TypeActeur en un objet JSON et les ajouter à une liste JSON
-      // List<String> typeActeurJsonList = typeActeur.map((typeActeur) => typeActeur.toJson()).toList();
-
-      //    // Convertir chaque TypeActeur en un objet JSON et les ajouter à une liste JSON
-      // List<String> typeActeurJsonList = typeActeur.map((typeActeur) => typeActeur.toJson()).toList();
-
+      
       var requete =
           http.MultipartRequest('POST', Uri.parse('$baseUrl/addMagasin'));
 
@@ -93,7 +88,7 @@ class MagasinService extends ChangeNotifier {
         'nomMagasin': nomMagasin,
         'contactMagasin': contactMagasin,
         'localiteMagasin': localiteMagasin,
-        'photo': photo,
+        'photo': "",
         'acteur': acteur.toMap(),
         'niveau1Pays': niveau1Pays.toMap()
       });

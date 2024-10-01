@@ -5,6 +5,7 @@ import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:koumi/Admin/AddZone.dart';
 import 'package:koumi/Admin/Zone.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
@@ -140,11 +141,12 @@ class _AddAndUpdateProductEndSreenState
     }
   }
 
-@override
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
+
   // Fonction pour traiter les données du QR code scanné
   Future<void> processScannedQRCode(Stock scannedData) async {
     // Ici, vous pouvez décoder les données du QR code et effectuer les actions nécessaires
@@ -249,20 +251,15 @@ class _AddAndUpdateProductEndSreenState
   void initState() {
     verify();
     _searchController = TextEditingController();
-    magasinListe = http
-        .get(Uri.parse('$apiOnlineUrl/Magasin/getAllMagasinByActeur/${id}'));
-    // _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
-
-    // _categorieList = http.get(Uri.parse(
-    //     '$apiOnlineUrl/Categorie/allCategorieByFiliere/${filiere.idFiliere}'));
+    magasinListe = http.get(Uri.parse(
+        '$apiOnlineUrl/Magasin/getAllMagasinByActeur/${acteur.idActeur}'));
 
     _speculationList =
         http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
-    // _speculationList = http.get(Uri.parse(
-    //     '$apiOnlineUrl/Speculation/getAllSpeculationByCategorie/${categorieProduit.idCategorieProduit}'));
+
     uniteListe = http.get(Uri.parse('$apiOnlineUrl/Unite/getAllUnite'));
-    zoneListe = http.get(
-        Uri.parse('$apiOnlineUrl/ZoneProduction/getAllZonesByActeurs/${id}'));
+    zoneListe = http.get(Uri.parse(
+        '$apiOnlineUrl/ZoneProduction/getAllZonesByActeurs/${acteur.idActeur}'));
 
     debugPrint(
         "nom : ${widget.nomProduit},   monnaie : ${widget.monnaies},  bool : ${widget.isEditable} ,image : ${widget.image.toString()} , forme: ${widget.forme}, origine : ${widget.origine}, qte : ${widget.quantite}, prix : ${widget.prix}");
@@ -274,17 +271,502 @@ class _AddAndUpdateProductEndSreenState
       speculationController.text = widget.stock!.speculation!.nomSpeculation!;
       _typeController.text = widget.stock!.typeProduit!;
       _descriptionController.text = widget.stock!.descriptionStock!;
+      magasinController.text = widget.stock!.magasin!.nomMagasin!;
+      zoneController.text = widget.stock!.zoneProduction!.nomZoneProduction!;
       debugPrint("id : $id,  forme : ${widget.forme}");
       magasin = widget.stock!.magasin!;
       magasinValue = widget.stock!.magasin!.idMagasin;
       speculation = widget.stock!.speculation!;
-     
+
       unite = widget.stock!.unite!;
       uniteValue = widget.stock!.unite!.idUnite;
       zoneProduction = widget.stock!.zoneProduction!;
       zoneValue = widget.stock!.zoneProduction!.idZoneProduction;
       super.initState();
     }
+  }
+
+  void _showZone() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une zone ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              contentPadding: EdgeInsets.all(20),
+              content: FutureBuilder(
+                future: zoneListe,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<ZoneProduction> typeListe = responseData
+                          .map((e) => ZoneProduction.fromMap(e))
+                          .where((con) => con.statutZone == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+
+                            _showAddZoneDialog().then((value) {
+                              zoneListe = http.get(Uri.parse(
+                                  '$apiOnlineUrl/ZoneProduction/getAllZonesByActeurs/${acteur.idActeur}'));
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            backgroundColor:
+                                d_colorOr, // Style de fond personnalisé
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // Bords arrondis
+                            ),
+                          ),
+                          child: const Text(
+                            "Ajouter une zone",
+                            style: TextStyle(
+                              color: Colors.white, // Couleur du texte
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<ZoneProduction> filteredSearch = typeListe
+                          .where((type) => type.nomZoneProduction!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                _showAddZoneDialog().then((value) {
+                                  zoneListe = http.get(Uri.parse(
+                                      '$apiOnlineUrl/ZoneProduction/getAllZonesByActeurs/${acteur.idActeur}'));
+                                });
+                              },
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                backgroundColor:
+                                    d_colorOr, // Style de fond personnalisé
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      8), // Bords arrondis
+                                ),
+                              ),
+                              child: const Text(
+                                "Ajouter une zone",
+                                style: TextStyle(
+                                  color: Colors.white, // Couleur du texte
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = zoneController.text ==
+                                      type.nomZoneProduction;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomZoneProduction!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            zoneProduction = type;
+                                            zoneValue = type.idZoneProduction;
+                                            zoneController.text =
+                                                type.nomZoneProduction!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Aucune zone trouvée",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                            height: 20), // Ajout d'espace entre les éléments
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+
+                            _showAddZoneDialog().then((value) {
+                              zoneListe = http.get(Uri.parse(
+                                  '$apiOnlineUrl/ZoneProduction/getAllZonesByActeurs/${acteur.idActeur}'));
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            backgroundColor:
+                                d_colorOr, // Style de fond personnalisé
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // Bords arrondis
+                            ),
+                          ),
+                          child: const Text(
+                            "Ajouter une zone",
+                            style: TextStyle(
+                              color: Colors.white, // Couleur du texte
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $zoneProduction');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showMagasin() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un magasin ',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              contentPadding: EdgeInsets.all(20),
+              content: FutureBuilder(
+                future: magasinListe,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Magasin> typeListe = responseData
+                          .map((e) => Magasin.fromMap(e))
+                          .where((con) => con.statutMagasin == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+
+                            _showAddMagasinDialog().then((value) {
+                              magasinListe = http.get(Uri.parse(
+                                  '$apiOnlineUrl/Magasin/getAllMagasinByActeur/${acteur.idActeur}'));
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            backgroundColor:
+                                d_colorOr, // Style de fond personnalisé
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // Bords arrondis
+                            ),
+                          ),
+                          child: const Text(
+                            "Ajouter un magasin",
+                            style: TextStyle(
+                              color: Colors.white, // Couleur du texte
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Magasin> filteredSearch = typeListe
+                          .where((type) => type.nomMagasin!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+
+                                _showAddMagasinDialog().then((value) {
+                                  magasinListe = http.get(Uri.parse(
+                                      '$apiOnlineUrl/Magasin/getAllMagasinByActeur/${acteur.idActeur}'));
+                                });
+                              },
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                backgroundColor:
+                                    d_colorOr, // Style de fond personnalisé
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      8), // Bords arrondis
+                                ),
+                              ),
+                              child: const Text(
+                                "Ajouter un magasin",
+                                style: TextStyle(
+                                  color: Colors.white, // Couleur du texte
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      magasinController.text == type.nomMagasin;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomMagasin!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            magasin = type;
+                                            magasinValue = magasin.idMagasin;
+                                            magasinController.text =
+                                                type.nomMagasin!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Aucun magasin trouvée",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                            height: 20), // Ajout d'espace entre les éléments
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+
+                            _showAddMagasinDialog().then((value) {
+                              magasinListe = http.get(Uri.parse(
+                                  '$apiOnlineUrl/Magasin/getAllMagasinByActeur/${acteur.idActeur}'));
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            backgroundColor:
+                                d_colorOr, // Style de fond personnalisé
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // Bords arrondis
+                            ),
+                          ),
+                          child: const Text(
+                            "Ajouter un magasin",
+                            style: TextStyle(
+                              color: Colors.white, // Couleur du texte
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $magasin');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   void _showSpeculation() async {
@@ -534,141 +1016,29 @@ class _AddAndUpdateProductEndSreenState
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Magasin",
+                              "Magasin ",
                               style: TextStyle(
                                   color: (Colors.black), fontSize: 18),
                             ),
                           ),
                         ),
-                        FutureBuilder(
-                          future: magasinListe,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'En cours de chargement ...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-                            if (snapshot.hasError) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'Chargement...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final magasinListe = reponse
-                                    .map((e) => Magasin.fromMap(e))
-                                    .where((con) => con.statutMagasin == true)
-                                    .toList();
-
-                                if (magasinListe.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText: 'Aucune magasin trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  validator: _validateMagasin,
-                                  items: magasinListe
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idMagasin,
-                                          child: Text(
-                                            e.nomMagasin!,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: magasin.idMagasin,
-                                  onChanged: (newValue) {
-                                    magasin.idMagasin = newValue;
-                                    setState(() {
-                                      if (newValue != null) {
-                                        magasin = magasinListe.firstWhere(
-                                          (magasin) =>
-                                              magasin.idMagasin == newValue,
-                                        );
-                                        magasinValue = newValue;
-                                        print(
-                                            "magasin : ${magasin.nomMagasin} et ${magasinValue}");
-                                      }
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelStyle: TextStyle(
-                                        overflow: TextOverflow.ellipsis),
-                                    labelText: widget.isEditable == false
-                                        ? 'Selectionner un magasin'
-                                        : widget.stock!.magasin!.nomMagasin,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText: 'Aucune magasin trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucune magasin trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                        GestureDetector(
+                          onTap: _showMagasin,
+                          child: TextFormField(
+                            onTap: _showMagasin,
+                            controller: magasinController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner un magasin",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 5),
                         Padding(
@@ -683,126 +1053,23 @@ class _AddAndUpdateProductEndSreenState
                             ),
                           ),
                         ),
-                        FutureBuilder(
-                          future: zoneListe,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return DropdownButtonFormField(
-                                items: [],
-                                onChanged: null,
-                                decoration: InputDecoration(
-                                  labelText: 'En cours de chargement ...',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final zoneListe = reponse
-                                    .map((e) => ZoneProduction.fromMap(e))
-                                    .where((con) => con.statutZone == true)
-                                    .toList();
-
-                                if (zoneListe.isEmpty) {
-                                  return DropdownButtonFormField(
-                                    items: [],
-                                    onChanged: null,
-                                    decoration: InputDecoration(
-                                      labelText:
-                                          'Aucune zone de production trouvé',
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  validator: _validateZone,
-                                  items: zoneListe
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.idZoneProduction,
-                                          child: Text(
-                                            e.nomZoneProduction!,
-                                            style: TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: zoneProduction.idZoneProduction,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      zoneProduction.idZoneProduction =
-                                          newValue;
-                                      if (newValue != null) {
-                                        zoneProduction = zoneListe.firstWhere(
-                                          (zone) =>
-                                              zone.idZoneProduction == newValue,
-                                        );
-                                        zoneValue = newValue;
-                                        print(
-                                            "zone de production : ${zoneProduction} et ${zoneValue}");
-                                      }
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: widget.isEditable == false
-                                        ? 'Selectionner une zone de production'
-                                        : widget.stock!.zoneProduction!
-                                            .nomZoneProduction,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return DropdownButtonFormField(
-                                  items: [],
-                                  onChanged: null,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        'Aucune zone de production trouvé',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return DropdownButtonFormField(
-                              items: [],
-                              onChanged: null,
-                              decoration: InputDecoration(
-                                labelText: 'Aucune zone de production trouvé',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                        GestureDetector(
+                          onTap: _showZone,
+                          child: TextFormField(
+                            onTap: _showZone,
+                            controller: zoneController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une zone",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -923,13 +1190,6 @@ class _AddAndUpdateProductEndSreenState
     );
   }
 
-  String? _validateMagasin(String? value) {
-    if (value == null || value.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _showMagasinDialog());
-      return 'Veuillez sélectionner un magasin';
-    }
-    return null;
-  }
 
   void _showMagasinDialog() {
     showDialog(
@@ -959,6 +1219,57 @@ class _AddAndUpdateProductEndSreenState
     );
   }
 
+  Future<dynamic?> _showAddMagasinDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(child: Text('Ajouter un magasin')),
+          content: AddMagasinScreen(
+            isEditable: false,
+            isRoute: true,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Fermer',
+                style: TextStyle(color: d_colorOr, fontSize: 18),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<dynamic?> _showAddZoneDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(child: Text('Ajouter une zone')),
+          content: AddZone(
+            isRoute: true,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Fermer',
+                style: TextStyle(color: d_colorOr, fontSize: 18),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showMessageDialog() {
     showDialog(
       context: context,
@@ -979,14 +1290,6 @@ class _AddAndUpdateProductEndSreenState
         );
       },
     );
-  }
-
-  String? _validateZone(String? value) {
-    if (value == null || value.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _showZoneDialog());
-      return 'Veuillez sélectionner une zone de production';
-    }
-    return null;
   }
 
   void _showZoneDialog() {

@@ -611,63 +611,43 @@ class _DetailProduitsState extends State<DetailProduits>
                         ),
                       ],
                     ),
-                    // const SizedBox(height: 10),
-                    // Container(
-                    //   height: 70,
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Text("Code Qr: ",
-                    //           style: TextStyle(
-                    //               fontSize: 20, fontStyle: FontStyle.italic)),
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           Navigator.push(context,
-                    //               MaterialPageRoute(builder: (_) {
-                    //             return DetailScreen(); // écran de détail avec l'image agrandie
-                    //           }));
-                    //         },
-                    //         child: Image.asset("assets/images/qr.png"),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    const SizedBox(height: 20),
-                    isExist == true
-                        ? widget.stock.acteur!.idActeur == acteur.idActeur
-                            ? SizedBox()
-                            : Center(
-                                child: SizedBox(
-                                  width: 200,
-                                  height: 48,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // _addToCart(widget.stock);
-                                      if (widget.stock.acteur!.idActeur ==
-                                          acteur.idActeur) {
-                                        Snack.error(
-                                            titre: "Alerte",
-                                            message:
-                                                "Désolé!, Vous ne pouvez pas commander un produit qui vous appartient");
-                                      } else {
-                                        Provider.of<CartProvider>(context,
-                                                listen: false)
-                                            .addToCart(widget.stock, 1, "");
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.orange,
-                                        shape: const StadiumBorder()),
-                                    child: Text(
-                                      "Ajouter au panier",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              )
-                        : SizedBox(),
+                   
+                    // const SizedBox(height: 20),
+                    // isExist == true
+                    //     ? widget.stock.acteur!.idActeur == acteur.idActeur
+                    //         ? SizedBox()
+                    //         : Center(
+                    //             child: SizedBox(
+                    //               width: 200,
+                    //               height: 48,
+                    //               child: ElevatedButton(
+                    //                 onPressed: () {
+                    //                   // _addToCart(widget.stock);
+                    //                   if (widget.stock.acteur!.idActeur ==
+                    //                       acteur.idActeur) {
+                    //                     Snack.error(
+                    //                         titre: "Alerte",
+                    //                         message:
+                    //                             "Désolé!, Vous ne pouvez pas commander un produit qui vous appartient");
+                    //                   } else {
+                    //                     Provider.of<CartProvider>(context,
+                    //                             listen: false)
+                    //                         .addToCart(widget.stock, 1, "");
+                    //                   }
+                    //                 },
+                    //                 style: ElevatedButton.styleFrom(
+                    //                     foregroundColor: Colors.orange,
+                    //                     shape: const StadiumBorder()),
+                    //                 child: Text(
+                    //                   "Ajouter au panier",
+                    //                   style: TextStyle(
+                    //                       fontSize: 16,
+                    //                       fontWeight: FontWeight.bold),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           )
+                    //     : SizedBox(),
                     const SizedBox(height: 10),
                   ],
                 ),

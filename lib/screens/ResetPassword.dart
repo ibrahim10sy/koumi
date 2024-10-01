@@ -221,11 +221,37 @@ class _ResetPasswordState extends State<ResetPassword> {
                             final codePin = initialPasswordController.text;
 
                             if (password != confirmer) {
+                             
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      "Les mots de passe ne sont pas identiques"),
+                                SnackBar(
+                                  content: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "Les mots de passe ne sont pas identiques",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(Icons.error_outline,
+                                          color: Colors.white),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors
+                                      .redAccent, // Couleur de fond du SnackBar
                                   duration: Duration(seconds: 5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  behavior: SnackBarBehavior
+                                      .floating, // Flottant pour un style moderne
+                                  margin: EdgeInsets.all(
+                                      10), // Espace autour du SnackBar
                                 ),
                               );
                               return;

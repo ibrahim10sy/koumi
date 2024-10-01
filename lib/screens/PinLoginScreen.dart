@@ -107,50 +107,49 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           'Content-Type': 'application/json',
         },
       );
-
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final responseBody = json.decode(utf8.decode(response.bodyBytes));
+
         // Sauvegarder les données de l'utilisateur dans shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('codeActeur', codeActeur!);
+        prefs.setString('password', enteredPin);
 
         final nomActeur = responseBody['nomActeur'];
         final idActeur = responseBody['idActeur'];
         final adresseActeur = responseBody['adresseActeur'];
         final telephoneActeur = responseBody['telephoneActeur'];
         final whatsAppActeur = responseBody['whatsAppActeur'];
-        final emailActeur = responseBody['emailActeur'];
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
 
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
-        // if(emailActeur != null)
-        prefs.setString('emailActeur', emailActeur);
+        prefs.setString('codeActeur', responseBody['codeActeur']);
         prefs.setString('adresseActeur', adresseActeur);
         prefs.setString('telephoneActeur', telephoneActeur);
         prefs.setString('whatsAppActeur', whatsAppActeur);
         prefs.setString('niveau3PaysActeur', niveau3PaysActeur);
         prefs.setString('localiteActeur', localiteActeur);
-        prefs.setString('codeActeur', codeActeur!);
-        prefs.setString('password', enteredPin);
+        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
+
+        // Enregistrer la liste des types d'utilisateur dans SharedPreferences
 
         List<dynamic> typeActeurData = responseBody['typeActeur'];
         List<dynamic> speculationData = responseBody['speculation'];
 
         List<TypeActeur> typeActeurList =
             typeActeurData.map((data) => TypeActeur.fromMap(data)).toList();
-        print("Pin Type acteur ${typeActeurList.toString()}");
+
         List<Speculation> speculationsList =
             speculationData.map((data) => Speculation.fromMap(data)).toList();
-        print("Pin sepculation acteur ${speculationsList.toString()}");
+
         // Extraire les libellés des types d'utilisateur et les ajouter à une nouvelle liste de chaînes
         List<String> userTypeLabels =
             typeActeurList.map((typeActeur) => typeActeur.libelle!).toList();
 
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
-        prefs.setStringList('userType', userTypeLabels);
-        prefs.setStringList('specType', speculationLabels);
 
         // Convertir les listes en JSON pour les stocker
         String typeActeurJson = json.encode(
@@ -162,36 +161,38 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         // Sauvegarder les JSON dans SharedPreferences
         prefs.setString('typeActeurList', typeActeurJson);
         prefs.setString('speculationsList', speculationsJson);
-
+// Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
+        prefs.setStringList('userType', userTypeLabels);
+        prefs.setStringList('specType', speculationLabels);
+        // prefs.setStringList('speculations', speculationLabels);
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
-          // resetToken: responseBody['resetToken'],
-          // tokenCreationDate: responseBody['tokenCreationDate'],
+          resetToken: responseBody['resetToken'],
+          tokenCreationDate: responseBody['tokenCreationDate'],
           codeActeur: codeActeur,
           nomActeur: responseBody['nomActeur'],
           adresseActeur: responseBody['adresseActeur'],
           telephoneActeur: responseBody['telephoneActeur'],
           whatsAppActeur: responseBody['whatsAppActeur'],
-          // latitude: responseBody['latitude'],
-          // longitude: responseBody['longitude'],
-          photoSiegeActeur: responseBody['photoSiegeActeur'],
-          logoActeur: responseBody['logoActeur'],
+          latitude: responseBody['latitude'],
+          longitude: responseBody['longitude'],
+          // photoSiegeActeur: responseBody['photoSiegeActeur'],
+          // logoActeur: responseBody['logoActeur'],
           niveau3PaysActeur: responseBody['niveau3PaysActeur'],
-          password: enteredPin,
+          password: responseBody['password'],
           dateAjout: responseBody['dateAjout'],
-          // dateModif: responseBody['dateModif'],
+          dateModif: responseBody['dateModif'],
           personneModif: responseBody['personneModif'],
           localiteActeur: responseBody['localiteActeur'],
           emailActeur: responseBody['emailActeur'],
           statutActeur: responseBody['statutActeur'],
-          // isConnected: responseBody['isConnected'],
-          // pays: null,
+          isConnected: responseBody['isConnected'],
+          pays: null,
           typeActeur: typeActeurList,
           speculation: speculationsList,
         );
-        // print('Pays acteur : ${responseBody['pays']}');
+        print('Pays acteur : ${responseBody['pays']}');
         acteurProvider.setActeur(acteurs);
-        print("login acteur :${acteurs.toString()}");
 
         final List<String> type =
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
@@ -206,6 +207,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             type.libelle!.toLowerCase() == 'transformeur' ||
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
+          // Index pour les intrants
           Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
@@ -222,6 +224,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
+          // Index pour les véhicules
           // Mise à jour de l'index de navigation
           Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
@@ -231,7 +234,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
-          // Mise à jour de l'index de navigation
           Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
@@ -246,68 +248,113 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               .changeIndex(0);
         }
       } else {
-        enteredPin = '';
-        String errorMessage = '';
+        print('$baseUrl?codeActeur=$codeActeur&password=$enteredPin');
         final responseBody = json.decode(utf8.decode(response.bodyBytes));
-        errorMessage = responseBody['message'];
-        if (errorMessage.contains('Code Pin incorrect')) {
-          errorMessage = 'Code Pin incorrect';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text(errorMessage, maxLines: 2)),
-              duration: Duration(seconds: 5),
-            ),
-          );
-        } else if (errorMessage.contains(
-            "Connexion échouée : votre compte est désactivé. Veuillez contacter l'administrateur pour la procédure d'activation de votre compte !")) {
-          errorMessage =
-              'votre compte est désactivé. Veuillez contacter l\'administrateur au numéro suivant +223 51554851 pour la procédure d\'activation de votre compte !';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text(errorMessage, maxLines: 2)),
-              duration: Duration(seconds: 5),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(
+        String errorMessage = responseBody['message'];
+        print('Erreur if : $errorMessage');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
                   child: Text(
-                      "votre compte est désactivé. Veuillez contacter l\'administrateur au numéro suivant +223 51554851 pour la procédure d\'activation de votre compte !",
-                      maxLines: 2)),
-              duration: Duration(seconds: 5),
+                    "votre compte est désactivé. Veuillez contacter l\'administrateur au numéro suivant +223 51554851 pour la procédure d\'activation de votre compte !",
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Icon(Icons.error_outline, color: Colors.white),
+              ],
             ),
-          );
-        }
+            backgroundColor: Colors.redAccent, // Couleur de fond du SnackBar
+            duration: Duration(seconds: 5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior:
+                SnackBarBehavior.floating, // Flottant pour un style moderne
+            margin: EdgeInsets.all(10), // Espace autour du SnackBar
+          ),
+        );
+
         print("if : $errorMessage");
+        throw Exception(errorMessage);
       }
     } catch (e) {
-      String errorMessage = "";
-      debugPrint(e.toString());
-      if (e is Exception) {
-        final exception = e;
-        if (exception.toString().contains('Code Pin incorrect')) {
-          errorMessage = 'Code Pin incorrect';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text(errorMessage, maxLines: 2)),
-              duration: Duration(seconds: 5),
-            ),
-          );
-        } else if (exception.toString().contains(
-            "Connexion échouée : votre compte est désactivé. Veuillez contacter l'administrateur pour la procédure d'activation de votre compte !")) {
-          errorMessage =
-              'votre compte est désactivé. Veuillez contacter l\'administrateur pour la procédure d\'activation de votre compte !';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text(errorMessage, maxLines: 2)),
-              duration: Duration(seconds: 5),
-            ),
-          );
-        }
-        print("error : $errorMessage");
+      print('$baseUrl?codeActeur=$codeActeur&password=$enteredPin');
 
-        throw Exception("throw $errorMessage");
+      String errorMessage = e.toString();
+      print("Erreur catch : ${errorMessage}");
+      if (errorMessage.contains('Code Pin incorrect')) {
+        errorMessage = 'Code Pin incorrect';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    errorMessage,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Icon(Icons.error_outline, color: Colors.white),
+              ],
+            ),
+            backgroundColor: Colors.redAccent, // Couleur de fond du SnackBar
+            duration: Duration(seconds: 5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior:
+                SnackBarBehavior.floating, // Flottant pour un style moderne
+            margin: EdgeInsets.all(10), // Espace autour du SnackBar
+          ),
+        );
+      } else if (errorMessage.contains(' is not a subtype of type')) {
+        // errorMessage = 'Code Pin incorrect ou compte non validée';
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Center(child: Text(errorMessage, maxLines: 2)),
+        //     duration: Duration(seconds: 5),
+        //   ),
+        // );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Code Pin incorrect ou compte non validée',
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Icon(Icons.error_outline, color: Colors.white),
+              ],
+            ),
+            backgroundColor: Colors.redAccent, // Couleur de fond du SnackBar
+            duration: Duration(seconds: 5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior:
+                SnackBarBehavior.floating, // Flottant pour un style moderne
+            margin: EdgeInsets.all(10), // Espace autour du SnackBar
+          ),
+        );
       }
     }
   }
@@ -348,7 +395,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            // backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(
@@ -363,38 +409,56 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               ),
             ),
             actions: [
-              PopupMenuButton<String>(
-                padding: EdgeInsets.zero,
-                itemBuilder: (context) {
-                  return <PopupMenuEntry<String>>[
-                    PopupMenuItem<String>(
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.login,
-                        ),
-                        title: const Text(
-                          "S'authentifier",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                          Future.microtask(() {
-                            Provider.of<BottomNavigationService>(context,
-                                    listen: false)
-                                .changeIndex(0);
-                          });
-                          Get.to(LoginScreen(),
-                              duration: Duration(seconds: 1),
-                              transition: Transition.leftToRight);
-                        },
-                      ),
-                    ),
-                  ];
-                },
-              )
+              // TextButton(
+              //   onPressed: () {
+              //     Future.microtask(() {
+              //       Provider.of<BottomNavigationService>(context, listen: false)
+              //           .changeIndex(0);
+              //     });
+              //     Get.to(LoginScreen(),
+              //         duration: Duration(seconds: 1),
+              //         transition: Transition.leftToRight);
+              //   },
+              //   child: const Text(
+              //     "connexion avec email",
+              //     style: TextStyle(
+              //         fontSize: 16,
+              //         // decoration: TextDecoration.underline,
+              //         color: d_colorOr),
+              //   ),
+              // ),
+              // PopupMenuButton<String>(
+              //   padding: EdgeInsets.zero,
+              //   itemBuilder: (context) {
+              //     return <PopupMenuEntry<String>>[
+              //       PopupMenuItem<String>(
+              //         child: ListTile(
+              //           leading: const Icon(
+              //             Icons.login,
+              //           ),
+              //           title: const Text(
+              //             "S'authentifier",
+              //             style: TextStyle(
+              //               fontSize: 18,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //           onTap: () async {
+              //             Navigator.of(context).pop();
+              //   Future.microtask(() {
+              //     Provider.of<BottomNavigationService>(context,
+              //             listen: false)
+              //         .changeIndex(0);
+              //   });
+              //   Get.to(LoginScreen(),
+              //       duration: Duration(seconds: 1),
+              //       transition: Transition.leftToRight);
+              // },
+              //         ),
+              //       ),
+              //     ];
+              //   },
+              // )
             ]),
         body: SafeArea(
           minimum: EdgeInsets.only(top: 10),
@@ -417,7 +481,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               ),
               const SizedBox(height: 60),
 
-              /// pin code area
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
