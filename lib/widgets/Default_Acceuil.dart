@@ -56,7 +56,6 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('whatsAppActeur');
     if (email != null) {
-      // Si l'email de l'acteur est présent, exécute checkLoggedIn
       acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
       setState(() {
         isExist = true;
