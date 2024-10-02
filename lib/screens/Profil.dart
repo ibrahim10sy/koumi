@@ -114,14 +114,6 @@ class _ProfilState extends State<Profil> {
                         SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            // Future.microtask(() {
-                            //   Provider.of<BottomNavigationService>(context,
-                            //           listen: false)
-                            //       .changeIndex(0);
-                            // });
-                            // Get.to(LoginScreen(),
-                            //     duration: Duration(seconds: 1),
-                            //     transition: Transition.leftToRight);
                             Future.microtask(() {
                               Provider.of<BottomNavigationService>(context,
                                       listen: false)
@@ -188,7 +180,7 @@ class _ProfilState extends State<Profil> {
                                         leading: ClipOval(
                                             child: FadeInImage(
                                           image: NetworkImage(
-                                            "$apiOnlineUrl/acteur/${acteur!.idActeur}/image",
+                                            "$apiOnlineUrl/acteur/${acteur!.idActeur}/image?timestamp=${DateTime.now().millisecondsSinceEpoch}",
                                           ),
                                           placeholder: AssetImage(
                                               'assets/images/profil.jpg'),
@@ -198,7 +190,6 @@ class _ProfilState extends State<Profil> {
                                           fit: BoxFit.cover,
                                           imageErrorBuilder:
                                               (context, error, stackTrace) {
-                                           
                                             return Image.asset(
                                               'assets/images/profil.jpg',
                                               fit: BoxFit.cover,

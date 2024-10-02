@@ -15,7 +15,6 @@ import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/ZoneProductionService.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfilA extends StatefulWidget {
   const ProfilA({super.key});
@@ -31,11 +30,16 @@ const d_colorPage = Color.fromRGBO(255, 255, 255, 1);
 class _ProfilAState extends State<ProfilA> {
   late Acteur acteur;
   late List<ZoneProduction> zoneList = [];
+
   @override
   void initState() {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     print("profil init : ${acteur.toString()}");
     super.initState();
+  }
+
+  Future<void> _refreshProfile() async {
+    setState(() {});
   }
 
   @override
@@ -75,26 +79,26 @@ class _ProfilAState extends State<ProfilA> {
                           children: [
                             ListTile(
                                 leading: ClipOval(
-                                            child: FadeInImage(
-                                          image: NetworkImage(
-                                            "$apiOnlineUrl/acteur/${acteur.idActeur}/image",
-                                          ),
-                                          placeholder: AssetImage(
-                                              'assets/images/profil.jpg'),
-                                          placeholderFit: BoxFit.cover,
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.cover,
-                                          imageErrorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.asset(
-                                              'assets/images/profil.jpg',
-                                              fit: BoxFit.cover,
-                                              width: 50,
-                                              height: 50,
-                                            );
-                                          },
-                                        )),
+                                    child: FadeInImage(
+                                  image: NetworkImage(
+                                   "$apiOnlineUrl/acteur/${acteur!.idActeur}/image?timestamp=${DateTime.now().millisecondsSinceEpoch}",
+                                  ),
+                                  placeholder:
+                                      AssetImage('assets/images/profil.jpg'),
+                                  placeholderFit: BoxFit.cover,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/profil.jpg',
+                                      fit: BoxFit.cover,
+                                      width: 50,
+                                      height: 50,
+                                    );
+                                  },
+                                )),
                                 title: Text(
                                   ac.nomActeur!.toUpperCase(),
                                   style: const TextStyle(
@@ -152,13 +156,17 @@ class _ProfilAState extends State<ProfilA> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
+                                        onTap: () async {
+                                          // Ouvrir la page de modification de profil
+                                          await Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     EditProfil()),
                                           );
+
+                                          // Après le retour, rafraîchir les données du profil
+                                          await _refreshProfile();
                                         },
                                         child: Row(
                                           mainAxisAlignment:

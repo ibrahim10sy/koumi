@@ -539,13 +539,21 @@ class _DetailTransportState extends State<DetailTransport> {
                         // size: 60,
                       ),
                     )
-                  : IconButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
-                      icon:
-                          const Icon(Icons.arrow_back_ios, color: Colors.white),
-                    ),
+                  : acteur.idActeur == vehicules.acteur.idActeur
+                      ? IconButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          icon: const Icon(Icons.arrow_back_ios,
+                              color: Colors.white),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.arrow_back_ios,
+                              color: Colors.white),
+                        ),
               title: _isEditing
                   ? Text(
                       'Modification',

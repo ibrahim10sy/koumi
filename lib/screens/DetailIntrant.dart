@@ -444,9 +444,17 @@ class _DetailIntrantState extends State<DetailIntrant> {
                           // size: 60,
                         ),
                       )
-                    : IconButton(
+                    :  acteur.idActeur != intrants.acteur!.idActeur ?
+                    IconButton(
                         onPressed: () {
                           Navigator.pop(context, true);
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        )): IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
                         },
                         icon: const Icon(
                           Icons.arrow_back_ios,
@@ -537,42 +545,7 @@ class _DetailIntrantState extends State<DetailIntrant> {
                         ),
                   SizedBox(height: 30),
                   !_isEditing ? viewData() : _buildEditing(),
-                  // SizedBox(height: 10),
-                  // isExist == true
-                  //     ? widget.intrant.acteur!.idActeur == acteur.idActeur
-                  //         ? SizedBox()
-                  //         : Center(
-                  //             child: SizedBox(
-                  //               width: 200,
-                  //               height: 48,
-                  //               child: ElevatedButton(
-                  //                 onPressed: () {
-                  //                   // _addToCart(widget.stock);
-                  //                   if (widget.intrant.acteur!.idActeur ==
-                  //                       acteur.idActeur) {
-                  //                     Snack.error(
-                  //                         titre: "Alerte",
-                  //                         message:
-                  //                             "Désolé!, Vous ne pouvez pas commander un intrant qui vous appartient");
-                  //                   } else {
-                  //                     Provider.of<CartProvider>(context,
-                  //                             listen: false)
-                  //                         .addToCartInt(widget.intrant, 1, "");
-                  //                   }
-                  //                 },
-                  //                 style: ElevatedButton.styleFrom(
-                  //                     foregroundColor: Colors.orange,
-                  //                     shape: const StadiumBorder()),
-                  //                 child: Text(
-                  //                   "Ajouter au panier",
-                  //                   style: TextStyle(
-                  //                       fontSize: 16,
-                  //                       fontWeight: FontWeight.bold),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           )
-                  //     : SizedBox(),
+                  
                   const SizedBox(height: 10),
                 ],
               ),

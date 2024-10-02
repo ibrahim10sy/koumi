@@ -320,13 +320,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           ),
         );
       } else if (errorMessage.contains(' is not a subtype of type')) {
-        // errorMessage = 'Code Pin incorrect ou compte non validée';
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Center(child: Text(errorMessage, maxLines: 2)),
-        //     duration: Duration(seconds: 5),
-        //   ),
-        // );
+      
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
