@@ -36,9 +36,6 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
   TextEditingController emailStructureController = TextEditingController();
   TextEditingController telephoneStructureController = TextEditingController();
   TextEditingController whattsAppStructureController = TextEditingController();
-  // TextEditingController libelleNiveau1PaysController = TextEditingController();
-  // TextEditingController libelleNiveau2PaysController = TextEditingController();
-  // TextEditingController libelleNiveau3PaysController = TextEditingController();
   TextEditingController localiteStructureController = TextEditingController();
   bool isEditing = false;
   late ParametreGeneraux param;
@@ -319,7 +316,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                   MediaQuery.of(context).size.width * 0.05,
                             ),
                             child: Container(
-                              height: isEditing ? 290 : 200,
+                              // height: isEditing ? 290 : 200,
                               width: MediaQuery.of(context).size.width * 0.9,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -337,101 +334,80 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                 children: [
                                   ListTile(
                                     leading: isEditing
-                                        ? param.logoSysteme == null ||
-                                                param.logoSysteme!.isEmpty
-                                            ? SizedBox(
-                                                width: 110,
-                                                height: 150,
-                                                child: Image.asset(
-                                                  "assets/images/logo.png",
-                                                  scale: 1,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 150,
-                                                height: 80,
-                                                child: Column(
-                                                  children: [
-                                                    Flexible(
-                                                      child: Image.network(
-                                                        "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image",
-                                                        scale: 1,
-                                                        fit: BoxFit.contain,
-                                                        errorBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                Object
-                                                                    exception,
-                                                                StackTrace?
-                                                                    stackTrace) {
-                                                          return Image.asset(
-                                                            'assets/images/default_image.png',
-                                                            scale: 1,
-                                                            fit: BoxFit.contain,
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height:
-                                                          50, // ou une autre valeur selon vos besoins
-                                                      child: TextButton(
-                                                        onPressed:
-                                                            _showImageSourceDialog,
-                                                        child: const Text(
-                                                          'Modifier',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  d_colorGreen),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                        : param.logoSysteme == null ||
-                                                param.logoSysteme!.isEmpty
-                                            ? SizedBox(
-                                                width: 110,
-                                                height: 150,
-                                                child: Image.asset(
-                                                  "assets/images/logo.png",
-                                                  scale: 1,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 110,
-                                                height: 150,
-                                                child: CachedNetworkImage(
-                                                  width: double.infinity,
-                                                  height: 150,
-                                                  imageUrl:
+                                        ? SizedBox(
+                                            width: 150,
+                                            height: 80,
+                                            child: Column(
+                                              children: [
+                                                Flexible(
+                                                  child: FadeInImage(
+                                                    image: NetworkImage(
                                                       "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image",
-                                                  fit: BoxFit.fitWidth,
-                                                  placeholder: (context, url) =>
-                                                      const Center(
-                                                          child:
-                                                              CircularProgressIndicator()),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Image.asset(
-                                                    'assets/images/default_image.png',
-                                                    fit: BoxFit.contain,
+                                                    ),
+                                                    placeholder: AssetImage(
+                                                        "assets/images/logo.png"),
+                                                    placeholderFit:
+                                                        BoxFit.cover,
+                                                    width: 90,
+                                                    height: 90,
+                                                    fit: BoxFit.cover,
+                                                    imageErrorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      // Widget affiché en cas d'erreur
+                                                      return Image.asset(
+                                                        'assets/images/default_image.png',
+                                                        fit: BoxFit.contain,
+                                                      );
+                                                    },
                                                   ),
-                                                )),
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                      50, // ou une autre valeur selon vos besoins
+                                                  child: TextButton(
+                                                    onPressed:
+                                                        _showImageSourceDialog,
+                                                    child: const Text(
+                                                      'Modifier',
+                                                      style: TextStyle(
+                                                          color: d_colorGreen),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : FadeInImage(
+                                                    image: NetworkImage(
+                                                      "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image",
+                                                    ),
+                                                    placeholder: AssetImage(
+                                                        "assets/images/logo.png"),
+                                                    placeholderFit:
+                                                        BoxFit.cover,
+                                                    width: 90,
+                                                    height: 90,
+                                                    fit: BoxFit.cover,
+                                                    imageErrorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      // Widget affiché en cas d'erreur
+                                                      return Image.asset(
+                                                        'assets/images/default_image.png',
+                                                        fit: BoxFit.contain,
+                                                      );
+                                                    },
+                                                  ),
+                                                
                                     title: isEditing
                                         ? TextFormField(
                                             initialValue: param.nomSysteme,
-                                            // controller:sigleStructureController,
                                             onChanged: (value) {
                                               param.nomSysteme = value;
                                             })
                                         : Text(
                                             param.nomSysteme!,
                                             style: const TextStyle(
-                                              fontSize: 22,
+                                              fontSize: 18,
                                               color: Colors.black,
                                               overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold,
@@ -447,7 +423,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                         : Text(
                                             param.sloganSysteme!,
                                             style: const TextStyle(
-                                              fontSize: 17,
+                                              fontSize: 16,
                                               // overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -457,14 +433,14 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                     height: 10,
                                   ),
                                   const Padding(
-                                    padding: EdgeInsets.all(10.0),
+                                    padding: EdgeInsets.all(5.0),
                                     child: Divider(
                                       height: 2,
                                       color: d_colorGreen,
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 10,
+                                    height: 5,
                                   ),
                                   isEditing
                                       ? TextFormField(
@@ -473,17 +449,19 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                           onChanged: (value) {
                                             param.descriptionSysteme = value;
                                           },
-                                          // controller:
-                                          //     descriptionSystemeController,
                                         )
-                                      : Text(
-                                          param.descriptionSysteme!,
-                                          textAlign: TextAlign.justify,
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic,
+                                      : Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            param.descriptionSysteme!,
+                                            textAlign: TextAlign.justify,
+                                            maxLines: 2,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              overflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
                                         ),
                                 ],
@@ -497,7 +475,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                   horizontal:
                                       MediaQuery.of(context).size.width * 0.05),
                               child: Container(
-                                height: isEditing ? 150 : 110,
+                                // height: isEditing ? 150 : 110,
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -596,7 +574,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                               )),
                           const Padding(
                             padding: EdgeInsets.all(10),
-                            child: Text("Autre information"),
+                            child: Text("Autres informations"),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(

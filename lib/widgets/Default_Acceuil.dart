@@ -185,8 +185,6 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
     super.initState();
     getLocation();
     verify();
-    // _currentContext = context;
-    // _liste = getCat();
   }
 
   @override
