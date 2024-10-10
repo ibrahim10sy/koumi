@@ -1162,7 +1162,7 @@ class _AddAndUpdateProductEndSreenState
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color(0xFFFF8A00), // Orange color code
+                                  const Color(0xFFFF8A00),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),

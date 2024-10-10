@@ -15,7 +15,7 @@ import 'package:koumi/service/ConseilService.dart';
 import 'package:koumi/service/ContinentService.dart';
 import 'package:koumi/service/FiliereService.dart';
 import 'package:koumi/service/FormeService.dart';
-import 'package:koumi/service/IntrantService.dart';
+import 'package:koumi/service/IntrantService.dart'; 
 import 'package:koumi/service/MagasinService.dart';
 import 'package:koumi/service/MaterielService.dart';
 import 'package:koumi/service/MessageService.dart';

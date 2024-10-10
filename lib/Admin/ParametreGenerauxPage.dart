@@ -21,7 +21,7 @@ class ParametreGenerauxPage extends StatefulWidget {
   State<ParametreGenerauxPage> createState() => _ParametreGenerauxPageState();
 }
 
-const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
+
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
@@ -50,10 +50,28 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
   bool isLoadingLibelle = true;
 
   Future<File> saveImagePermanently(String imagePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final name = path.basename(imagePath);
-    final image = File('${directory.path}/$name');
-    return image;
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final name = path.basename(imagePath);
+      final image = File('${directory.path}/$name');
+      return File(imagePath).copy(image.path);
+    } catch (e) {
+      // Gérer l'exception
+      print('Erreur lors de la sauvegarde de l\'image : $e');
+      rethrow;
+    }
+  }
+
+  Future<File?> getImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return null;
+      return File(image.path);
+    } catch (e) {
+      // Gérer l'exception
+      print('Erreur lors de la sélection de l\'image : $e');
+      return null;
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -63,14 +81,8 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
         photo = image;
         imageSrc = image.path;
       });
+      await saveImagePermanently(image.path);
     }
-  }
-
-  Future<File?> getImage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image == null) return null;
-
-    return File(image.path);
   }
 
   Future<void> _showImageSourceDialog() async {
@@ -78,40 +90,37 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 150,
-          child: AlertDialog(
-            title: const Text('Choisir une source'),
-            content: Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Fermer le dialogue
-                    _pickImage(ImageSource.camera);
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(Icons.camera_alt, size: 40),
-                      Text('Camera'),
-                    ],
-                  ),
+        return AlertDialog(
+          title: Text("Chosir une logo"),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context); // Fermer le dialogue
+                  _pickImage(ImageSource.camera);
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.camera_alt, size: 40),
+                    Text('Camera'),
+                  ],
                 ),
-                const SizedBox(width: 40),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // Fermer le dialogue
-                    _pickImage(ImageSource.gallery);
-                  },
-                  child: const Column(
-                    children: [
-                      Icon(Icons.image, size: 40),
-                      Text('Galerie photo'),
-                    ],
-                  ),
+              ),
+              const SizedBox(width: 40),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context); // Fermer le dialogue
+                  _pickImage(ImageSource.gallery);
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.image, size: 40),
+                    Text('Galerie photo'),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -334,70 +343,106 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                 children: [
                                   ListTile(
                                     leading: isEditing
-                                        ? SizedBox(
-                                            width: 150,
-                                            height: 80,
-                                            child: Column(
-                                              children: [
-                                                Flexible(
-                                                  child: FadeInImage(
-                                                    image: NetworkImage(
-                                                      "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image",
+                                        ? Column(
+                                            children: [
+                                              Stack(
+                                                children: [
+                                                  photo != null
+                                                      ? SizedBox(
+                                                          height: 55,
+                                                          width: 55,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50.0),
+                                                            child: Image.file(
+                                                              photo!,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          height: 55,
+                                                          width: 55,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50.0),
+                                                            child: FadeInImage(
+                                                              image: NetworkImage(
+                                                                  "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image"),
+                                                              placeholder:
+                                                                  AssetImage(
+                                                                      "assets/images/fav.png"),
+                                                              placeholderFit:
+                                                                  BoxFit.cover,
+                                                              fit: BoxFit.cover,
+                                                              imageErrorBuilder:
+                                                                  (context,
+                                                                      error,
+                                                                      stackTrace) {
+                                                                return Image
+                                                                    .asset(
+                                                                  'assets/images/fav.png',
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ),
+                                                  Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    child: GestureDetector(
+                                                      onTap:
+                                                          _showImageSourceDialog,
+                                                      child: Container(
+                                                        height: 26,
+                                                        width: 26,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              d_colorOr, // Couleur de fond du bouton
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.edit,
+                                                          color: Colors
+                                                              .white, // Couleur de l'icône
+                                                          size: 20,
+                                                        ),
+                                                      ),
                                                     ),
-                                                    placeholder: AssetImage(
-                                                        "assets/images/logo.png"),
-                                                    placeholderFit:
-                                                        BoxFit.cover,
-                                                    width: 90,
-                                                    height: 90,
-                                                    fit: BoxFit.cover,
-                                                    imageErrorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      // Widget affiché en cas d'erreur
-                                                      return Image.asset(
-                                                        'assets/images/default_image.png',
-                                                        fit: BoxFit.contain,
-                                                      );
-                                                    },
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height:
-                                                      50, // ou une autre valeur selon vos besoins
-                                                  child: TextButton(
-                                                    onPressed:
-                                                        _showImageSourceDialog,
-                                                    child: const Text(
-                                                      'Modifier',
-                                                      style: TextStyle(
-                                                          color: d_colorGreen),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                                ],
+                                              ),
+                                            ],
                                           )
                                         : FadeInImage(
-                                                    image: NetworkImage(
-                                                      "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image",
-                                                    ),
-                                                    placeholder: AssetImage(
-                                                        "assets/images/logo.png"),
-                                                    placeholderFit:
-                                                        BoxFit.cover,
-                                                    width: 90,
-                                                    height: 90,
-                                                    fit: BoxFit.cover,
-                                                    imageErrorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      // Widget affiché en cas d'erreur
-                                                      return Image.asset(
-                                                        'assets/images/default_image.png',
-                                                        fit: BoxFit.contain,
-                                                      );
-                                                    },
-                                                  ),
-                                                
+                                            image: NetworkImage(
+                                              "https://koumi.ml/api-koumi/parametreGeneraux/${param.idParametreGeneraux!}/image",
+                                            ),
+                                            placeholder: AssetImage(
+                                                "assets/images/fav.png"),
+                                            placeholderFit: BoxFit.cover,
+                                            width: 85,
+                                            height: 85,
+                                            fit: BoxFit.cover,
+                                            imageErrorBuilder:
+                                                (context, error, stackTrace) {
+                                              // Widget affiché en cas d'erreur
+                                              return Image.asset(
+                                                'assets/images/fav.png',
+                                                fit: BoxFit.contain,
+                                                width: 85,
+                                                height: 85,
+                                              );
+                                            },
+                                          ),
                                     title: isEditing
                                         ? TextFormField(
                                             initialValue: param.nomSysteme,
@@ -407,7 +452,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                         : Text(
                                             param.nomSysteme!,
                                             style: const TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 16,
                                               color: Colors.black,
                                               overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold,
@@ -422,8 +467,10 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                           )
                                         : Text(
                                             param.sloganSysteme!,
+                                            maxLines: 2,
                                             style: const TextStyle(
                                               fontSize: 16,
+
                                               // overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -436,7 +483,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                     padding: EdgeInsets.all(5.0),
                                     child: Divider(
                                       height: 2,
-                                      color: d_colorGreen,
+                                      color: d_colorOr,
                                     ),
                                   ),
                                   const SizedBox(
@@ -455,7 +502,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                           child: Text(
                                             param.descriptionSysteme!,
                                             textAlign: TextAlign.justify,
-                                            maxLines: 2,
+                                            maxLines: 4,
                                             style: const TextStyle(
                                               fontSize: 16,
                                               overflow: TextOverflow.ellipsis,
@@ -518,9 +565,12 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                                 ),
                                               )
                                             : Text(param.nomStructure!,
+                                                maxLines: 2,
                                                 style: const TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   fontWeight: FontWeight.w800,
                                                 ))
                                       ],
@@ -530,7 +580,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                     padding: EdgeInsets.all(10.0),
                                     child: Divider(
                                       height: 2,
-                                      color: d_colorGreen,
+                                      color: d_colorOr,
                                     ),
                                   ),
                                   Padding(
@@ -562,9 +612,12 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                                 ),
                                               )
                                             : Text(param.sigleStructure!,
+                                                maxLines: 2,
                                                 style: const TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   fontWeight: FontWeight.w800,
                                                 ))
                                       ],
@@ -583,7 +636,6 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                 horizontal:
                                     MediaQuery.of(context).size.width * 0.05),
                             child: Container(
-                              height: isEditing ? 340 : 250,
                               width: MediaQuery.of(context).size.width * 0.9,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -606,13 +658,15 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Expanded(
-                                          child: Text("Adresse",
-                                              style: TextStyle(
+                                          child: Text(
+                                            "Adresse",
+                                            style: const TextStyle(
                                                 color: Colors.black87,
-                                                fontSize: 17,
                                                 fontWeight: FontWeight.w500,
                                                 fontStyle: FontStyle.italic,
-                                              )),
+                                                overflow: TextOverflow.ellipsis,
+                                                fontSize: 17),
+                                          ),
                                         ),
                                         isEditing
                                             ? Expanded(
@@ -623,16 +677,23 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                                     param.adresseStructure =
                                                         value;
                                                   },
-                                                  // controller:
-                                                  //     adresseStructureController,
                                                 ),
                                               )
-                                            : Text(param.adresseStructure!,
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w800,
-                                                ))
+                                            : Expanded(
+                                                child: Text(
+                                                    param.adresseStructure!,
+                                                    textAlign: TextAlign.right,
+                                                    maxLines: 3,
+                                                    // softWrap: true,
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontSize: 16,
+                                                    )),
+                                              )
                                       ],
                                     ),
                                   ),
@@ -640,7 +701,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                     padding: EdgeInsets.all(5.0),
                                     child: Divider(
                                       height: 1,
-                                      color: d_colorGreen,
+                                      color: d_colorOr,
                                     ),
                                   ),
                                   Padding(
@@ -651,12 +712,13 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                       children: [
                                         const Expanded(
                                           child: Text("Téléphone",
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w500,
-                                                fontStyle: FontStyle.italic,
-                                              )),
+                                              style: const TextStyle(
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontStyle: FontStyle.italic,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontSize: 17)),
                                         ),
                                         isEditing
                                             ? Expanded(
@@ -667,16 +729,23 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                                     param.telephoneStructure =
                                                         value;
                                                   },
-                                                  // controller:
-                                                  //     telephoneStructureController,
                                                 ),
                                               )
-                                            : Text(param.telephoneStructure!,
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w800,
-                                                ))
+                                            : Expanded(
+                                                child: Text(
+                                                    param.telephoneStructure!,
+                                                    textAlign: TextAlign.right,
+                                                    maxLines: 3,
+                                                    // softWrap: true,
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontSize: 16,
+                                                    )),
+                                              )
                                       ],
                                     ),
                                   ),
@@ -684,7 +753,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                     padding: EdgeInsets.all(5.0),
                                     child: Divider(
                                       height: 1,
-                                      color: d_colorGreen,
+                                      color: d_colorOr,
                                     ),
                                   ),
                                   Padding(
@@ -716,9 +785,12 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                                 ),
                                               )
                                             : Text(param.whattsAppStructure!,
+                                                maxLines: 2,
                                                 style: const TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   fontWeight: FontWeight.w800,
                                                 ))
                                       ],
@@ -728,7 +800,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                     padding: EdgeInsets.all(5.0),
                                     child: Divider(
                                       height: 1,
-                                      color: d_colorGreen,
+                                      color: d_colorOr,
                                     ),
                                   ),
                                   Padding(
@@ -760,9 +832,12 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                                 ),
                                               )
                                             : Text(param.localiteStructure!,
+                                                maxLines: 2,
                                                 style: const TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   fontWeight: FontWeight.w800,
                                                 ))
                                       ],

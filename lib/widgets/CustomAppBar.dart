@@ -10,10 +10,11 @@ import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/PinLoginScreen.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/MessageService.dart';
+import 'package:koumi/widgets/Subscribe.dart';
+import 'package:koumi/widgets/SubscriptionPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -84,6 +85,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               listen: false)
                           .changeIndex(0);
                     });
+
                     Get.to(
                       PinLoginScreen(),
                       duration: Duration(seconds: 1),
@@ -116,7 +118,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
           )
         : Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Consumer<ActeurProvider>(
@@ -136,15 +138,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           "$apiOnlineUrl/acteur/${acteur!.idActeur}/image?timestamp=${DateTime.now().millisecondsSinceEpoch}"),
                       placeholder: AssetImage('assets/images/profil.jpg'),
                       placeholderFit: BoxFit.cover,
-                      width: 50,
-                      height: 50,
+                      width: 45,
+                      height: 45,
                       fit: BoxFit.cover,
                       imageErrorBuilder: (context, error, stackTrace) {
                         return Image.asset(
                           'assets/images/profil.jpg',
                           fit: BoxFit.cover,
-                          width: 50,
-                          height: 50,
+                          width: 45,
+                          height: 45,
                         );
                       },
                     )),
@@ -153,7 +155,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           color: d_colorGreen,
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w800),
                     ),
                     subtitle: Text(
@@ -162,74 +164,84 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           color: d_colorOr,
-                          fontSize: 17,
+                          fontSize: 15,
                           fontWeight: FontWeight.w400),
                     ),
-                    trailing: badges.Badge(
-                      position: badges.BadgePosition.topEnd(top: -8, end: -1),
-                      badgeContent:
-                          Consumer(builder: (context, messageService, child) {
-                        return FutureBuilder(
-                            future: MessageService()
-                                .fetchMessageByActeur(ac.idActeur!),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Text("0",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w800,
-                                    ));
-                              }
-
-                              if (!snapshot.hasData) {
-                                return Text("0",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w800,
-                                    ));
-                              } else {
-                                messageList = snapshot.data!;
-                                return Text(
-                                  messageList.length.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 17),
-                                );
-                              }
-                            });
-                      }),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => NotificationPage()));
-                        },
-                        child: Icon(
-                          Icons.notifications_none_outlined,
-                          size: 40,
+                    trailing: Wrap(
+                      spacing: 10,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Subscribe()));
+                            
+                          },
+                          child: FaIcon(
+                            FontAwesomeIcons.userFriends,
+                            size: 25,
+                            color: d_colorOr,
+                          ),
                         ),
-                      ),
+                        badges.Badge(
+                          position:
+                              badges.BadgePosition.topEnd(top: -14, end: -1),
+                          badgeContent: Consumer(
+                              builder: (context, messageService, child) {
+                            return FutureBuilder(
+                                future: MessageService()
+                                    .fetchMessageByActeur(ac.idActeur!),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Text("0",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w800,
+                                        ));
+                                  }
+
+                                  if (!snapshot.hasData) {
+                                    return Text("0",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w800,
+                                        ));
+                                  } else {
+                                    messageList = snapshot.data!;
+                                    return Text(
+                                      messageList.length.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 17),
+                                    );
+                                  }
+                                });
+                          }),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          NotificationPage()));
+                            },
+                            child: Icon(
+                              Icons.notifications_none_outlined,
+                              size: 32,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
               ),
             ),
           );
-  }
-
-  Widget _buildShimmerEffect() {
-    return ClipOval(
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: Container(
-          height: 16,
-          color: Colors.grey,
-        ),
-      ),
-    );
   }
 }

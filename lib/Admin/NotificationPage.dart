@@ -250,69 +250,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                               padding: EdgeInsets.zero,
                                               itemBuilder: (context) =>
                                                   <PopupMenuEntry<String>>[
-                                                //  PopupMenuItem<String>(
-                                                //   child: ListTile(
-                                                //     leading: const Icon(
-                                                //       Icons.check,
-                                                //       color: Colors.green,
-                                                //     ),
-                                                //     title: const Text(
-                                                //       "Activer",
-                                                //       style: TextStyle(
-                                                //         color: Colors.green,
-                                                //         fontWeight:
-                                                //             FontWeight.bold,
-                                                //       ),
-                                                //     ),
-                                                //     onTap: () async {
-                                                //       await ActeurService()
-                                                //           .activerActeur(
-                                                //               e.)
-                                                //           .then((value) => {
-                                                //                 Provider.of<ActeurService>(
-                                                //                         context,
-                                                //                         listen:
-                                                //                             false)
-                                                //                     .applyChange(),
-                                                //                 Navigator.of(
-                                                //                         context)
-                                                //                     .pop(),
-                                                //                 ScaffoldMessenger.of(
-                                                //                         context)
-                                                //                     .showSnackBar(
-                                                //                   const SnackBar(
-                                                //                     content:
-                                                //                         Row(
-                                                //                       children: [
-                                                //                         Text("Activer avec succèss "),
-                                                //                       ],
-                                                //                     ),
-                                                //                     duration:
-                                                //                         Duration(seconds: 2),
-                                                //                   ),
-                                                //                 )
-                                                //               })
-                                                //           .catchError(
-                                                //               (onError) => {
-                                                //                     ScaffoldMessenger.of(context)
-                                                //                         .showSnackBar(
-                                                //                       const SnackBar(
-                                                //                         content:
-                                                //                             Row(
-                                                //                           children: [
-                                                //                             Text("Une erreur s'est produit"),
-                                                //                           ],
-                                                //                         ),
-                                                //                         duration:
-                                                //                             Duration(seconds: 5),
-                                                //                       ),
-                                                //                     ),
-                                                //                     Navigator.of(context)
-                                                //                         .pop(),
-                                                //                   });
-                                                //     },
-                                                //   ),
-                                                // ),
+                                                
                                                 PopupMenuItem<String>(
                                                   child: ListTile(
                                                     leading: Icon(
