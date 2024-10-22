@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final Uri apiUrl =
         Uri.parse('$baseUrl?emailActeur=$emailActeur&password=$password');
-      print('$baseUrl?emailActeur=$emailActeur&password=$password');
+    print('$baseUrl?emailActeur=$emailActeur&password=$password');
     try {
       final response = await http.get(
         apiUrl,
@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('emailActeur', emailActeur);
         prefs.setString('password', password);
-       
+
         final nomActeur = responseBody['nomActeur'];
         final idActeur = responseBody['idActeur'];
         final adresseActeur = responseBody['adresseActeur'];
@@ -108,10 +108,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
         final niveau3PaysActeur = responseBody['niveau3PaysActeur'];
         final localiteActeur = responseBody['localiteActeur'];
-      //  final photoSiegeActeur = responseBody['photoSiegeActeur'];
-      //   final logoActeur = responseBody['logoActeur'];
-      //   prefs.setString('photoSiegeActeur', photoSiegeActeur);
-      //   prefs.setString('logoActeur', logoActeur);
+        //  final photoSiegeActeur = responseBody['photoSiegeActeur'];
+        //   final logoActeur = responseBody['logoActeur'];
+        //   prefs.setString('photoSiegeActeur', photoSiegeActeur);
+        //   prefs.setString('logoActeur', logoActeur);
         prefs.setString('nomActeur', nomActeur);
         prefs.setString('idActeur', idActeur);
         //  prefs.setString('resetToken', responseBody['resetToken']);
@@ -141,15 +141,16 @@ class _LoginScreenState extends State<LoginScreen> {
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
 
-     // Convertir les listes en JSON pour les stocker
-      String typeActeurJson = json.encode(
-          typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
-      String speculationsJson = json.encode(
-          speculationsList.map((speculation) => speculation.toMap()).toList());
+        // Convertir les listes en JSON pour les stocker
+        String typeActeurJson = json.encode(
+            typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
+        String speculationsJson = json.encode(speculationsList
+            .map((speculation) => speculation.toMap())
+            .toList());
 
-      // Sauvegarder les JSON dans SharedPreferences
-      prefs.setString('typeActeurList', typeActeurJson);
-      prefs.setString('speculationsList', speculationsJson);
+        // Sauvegarder les JSON dans SharedPreferences
+        prefs.setString('typeActeurList', typeActeurJson);
+        prefs.setString('speculationsList', speculationsJson);
 // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
         prefs.setStringList('userType', userTypeLabels);
         prefs.setStringList('specType', speculationLabels);
@@ -221,9 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Provider.of<BottomNavigationService>(context, listen: false)
                 .changeIndex(1);
           });
-        }  else if (acteurs.typeActeur!
+        } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
-          
           Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
@@ -357,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final Uri apiUrl =
         Uri.parse('$baseUrl?emailActeur=$emailActeur&password=$password');
-      print('$baseUrl?emailActeur=$emailActeur&password=$password');
+    print('$baseUrl?emailActeur=$emailActeur&password=$password');
     try {
       final response = await http.get(
         apiUrl,
@@ -371,10 +371,10 @@ class _LoginScreenState extends State<LoginScreen> {
         emailController.clear();
         passwordController.clear();
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('emailActeur', emailActeur);
         prefs.setString('password', password);
-       
+
         final nomActeur = responseBody['nomActeur'];
         final idActeur = responseBody['idActeur'];
         final adresseActeur = responseBody['adresseActeur'];
@@ -416,19 +416,19 @@ class _LoginScreenState extends State<LoginScreen> {
         List<String> speculationLabels =
             speculationsList.map((spec) => spec.nomSpeculation!).toList();
 
-     // Convertir les listes en JSON pour les stocker
-      String typeActeurJson = json.encode(
-          typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
-      String speculationsJson = json.encode(
-          speculationsList.map((speculation) => speculation.toMap()).toList());
+        // Convertir les listes en JSON pour les stocker
+        String typeActeurJson = json.encode(
+            typeActeurList.map((typeActeur) => typeActeur.toMap()).toList());
+        String speculationsJson = json.encode(speculationsList
+            .map((speculation) => speculation.toMap())
+            .toList());
 
-      // Sauvegarder les JSON dans SharedPreferences
-      prefs.setString('typeActeurList', typeActeurJson);
-      prefs.setString('speculationsList', speculationsJson);
+        // Sauvegarder les JSON dans SharedPreferences
+        prefs.setString('typeActeurList', typeActeurJson);
+        prefs.setString('speculationsList', speculationsJson);
 // Enregistrer la liste des libellés des types d'utilisateur dans SharedPreferences
         prefs.setStringList('userType', userTypeLabels);
         prefs.setStringList('specType', speculationLabels);
-       
 
         Acteur acteurs = Acteur(
           idActeur: responseBody['idActeur'],
@@ -489,7 +489,6 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
-          
           Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
@@ -498,15 +497,13 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
-          
           Timer(const Duration(seconds: 1), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
                 .changeIndex(1);
           });
-        }
-         else {
+        } else {
           Get.offAll(BottomNavigationPage(),
               duration: Duration(seconds: 1),
               transition: Transition.leftToRight);
@@ -594,14 +591,16 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 180,
-                  width: 150,
-                  child: Center(
-                      child: Image.asset(
-                    'assets/images/logo.png',
-                    // height: MediaQuery.sizeOf(context).height * 0.45,
-                  )),
+                  height: 30,
                 ),
+                Center(
+                    child: SizedBox(
+                  height: 150,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 190,
+                  ),
+                )),
                 const Text(
                   " Connexion ",
                   style: TextStyle(
@@ -609,25 +608,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.bold,
                       color: Color(0xfff2b6706)),
                 ),
-                // connexion
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Form(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //       Text('LAT: ${_currentPosition?.latitude ?? ""}'),
-                      // Text('LNG: ${_currentPosition?.longitude ?? ""}'),
-                      // Text('ADDRESS: ${_currentAddress ?? ""}'),
-                      // const SizedBox(height: 32),
-                      // ElevatedButton(
-                      //   onPressed: _getCurrentPosition,
-                      //   child: const Text("Get Current Location"),
-                      // ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      // debut fullname
                       const Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: Text(
@@ -769,7 +755,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                           
                             _handleButtonPress();
                           },
                           style: ElevatedButton.styleFrom(

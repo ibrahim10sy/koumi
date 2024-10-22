@@ -1137,7 +1137,7 @@ class _DetailTransportState extends State<DetailTransport> {
               value,
               textAlign: TextAlign.right,
               maxLines: 2,
-              // softWrap: true,
+             
               style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w800,

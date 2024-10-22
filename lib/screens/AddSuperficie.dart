@@ -18,7 +18,10 @@ import 'package:provider/provider.dart';
 import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
 
 class AddSuperficie extends StatefulWidget {
-  const AddSuperficie({super.key});
+   String? distanceParcourue = "";
+   String? positionInitiale = "";
+   AddSuperficie(
+      {super.key, this.positionInitiale, this.distanceParcourue});
 
   @override
   State<AddSuperficie> createState() => _AddSuperficieState();
@@ -88,7 +91,11 @@ class _AddSuperficieState extends State<AddSuperficie> {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _liste = http.get(Uri.parse(
         '$apiOnlineUrl/Campagne/getAllCampagneByActeur/${acteur.idActeur}'));
+    if(widget.distanceParcourue != null){
 
+    _superficieHaController.text = widget.distanceParcourue!;
+    _localiteController.text = widget.positionInitiale!;
+    }
     _speculationList =
         http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
 
@@ -189,7 +196,6 @@ class _AddSuperficieState extends State<AddSuperficie> {
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
@@ -319,7 +325,6 @@ class _AddSuperficieState extends State<AddSuperficie> {
                           },
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
@@ -453,7 +458,6 @@ class _AddSuperficieState extends State<AddSuperficie> {
                               );
                             },
                           )),
-
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
@@ -583,7 +587,6 @@ class _AddSuperficieState extends State<AddSuperficie> {
                           },
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
@@ -658,7 +661,6 @@ class _AddSuperficieState extends State<AddSuperficie> {
                                     icon: Icon(Icons.add))
                               ],
                             ),
-                          
                             Column(
                               children: List.generate(
                                 intrantController.length,
