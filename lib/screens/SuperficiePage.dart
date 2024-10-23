@@ -9,6 +9,7 @@ import 'package:koumi/screens/AddSuperficie.dart';
 import 'package:koumi/screens/DetailSuperficie.dart';
 import 'package:koumi/screens/UpdateSuperficie.dart';
 import 'package:koumi/service/SuperficieService.dart';
+import 'package:koumi/widgets/DistanceTrackingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -29,11 +30,11 @@ class _SuperficiePageState extends State<SuperficiePage> {
   List<Superficie> superficieList = [];
   bool isSearchMode = false;
   late ScrollController _scrollController;
-  Position? _startPosition;
-  double _totalDistance = 0;
-  String distanceP = "0 mètres";
-  String _positionP = "";
-  StreamSubscription<Position>? _positionStream;
+  // Position? _startPosition;
+  // double _totalDistance = 0;
+  // String distanceP = "0 mètres";
+  // String _positionP = "";
+  // StreamSubscription<Position>? _positionStream;
   late Future<List<Superficie>> _liste;
 
   Future<List<Superficie>> getCampListe(String id) async {
@@ -47,146 +48,133 @@ class _SuperficiePageState extends State<SuperficiePage> {
     _searchController = TextEditingController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _liste = getCampListe(acteur.idActeur!);
-    _getPermissions();
+    // _getPermissions();
     super.initState();
   }
 
-  Future<void> _getPermissions() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<void> _getPermissions() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    // Vérifier si le service de localisation est activé
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Les autorisations de localisation sont désactivées')),
-      );
-      return;
-    }
+  //   // Vérifier si le service de localisation est activé
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //           content:
+  //               Text('Les autorisations de localisation sont désactivées')),
+  //     );
+  //     return;
+  //   }
 
-    // Vérifier les permissions de localisation
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Les autorisations de localisation sont refusées')),
-        );
-        return;
-      }
-    }
+  //   // Vérifier les permissions de localisation
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //             content: Text('Les autorisations de localisation sont refusées')),
+  //       );
+  //       return;
+  //     }
+  //   }
 
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Les autorisations de localisation sont refusées de manière permanente.')),
-      );
-      return;
-    }
-  }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //           content: Text(
+  //               'Les autorisations de localisation sont refusées de manière permanente.')),
+  //     );
+  //     return;
+  //   }
+  // }
 
-  void _startTracking() {
-    print("Début du parcours");
-    _positionStream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.bestForNavigation,
-        distanceFilter: 1,
-      ),
-    ).listen((Position position) {
-      log("Nouvelle position reçue: ${position.latitude}, ${position.longitude}");
+  // void _startTracking() {
+  //   print("Début du parcours");
+  //   _positionStream = Geolocator.getPositionStream(
+  //     locationSettings: const LocationSettings(
+  //       accuracy: LocationAccuracy.bestForNavigation,
+  //       distanceFilter: 1,
+  //     ),
+  //   ).listen((Position position) {
+  //     log("Nouvelle position reçue: ${position.latitude}, ${position.longitude}");
 
-      if (_startPosition == null) {
-        _startPosition = position;
-        log("Position initiale: $_startPosition");
-      } else {
-        // Calculer la distance entre la position précédente et la nouvelle
-        double distance = Geolocator.distanceBetween(
-          _startPosition!.latitude,
-          _startPosition!.longitude,
-          position.latitude,
-          position.longitude,
-        );
+  //     if (_startPosition == null) {
+  //       _startPosition = position;
+  //       log("Position initiale: $_startPosition");
+  //     } else {
+  //       // Calculer la distance entre la position précédente et la nouvelle
+  //       double distance = Geolocator.distanceBetween(
+  //         _startPosition!.latitude,
+  //         _startPosition!.longitude,
+  //         position.latitude,
+  //         position.longitude,
+  //       );
 
-        setState(() {
-          // Incrémenter la distance totale
-          _totalDistance += distance;
-          distanceP = "${_totalDistance.toStringAsFixed(2)} mètres";
-          _startPosition = position; // Mettre à jour la position de départ
-          _positionP = "${_startPosition.toString()}";
-          log("Distance incrémentée: $_totalDistance mètres");
-        });
-      }
-    });
-  }
+  //       setState(() {
+  //         // Incrémenter la distance totale
+  //         _totalDistance += distance;
+  //         distanceP = "${_totalDistance.toStringAsFixed(2)} mètres";
+  //         _startPosition = position; // Mettre à jour la position de départ
+  //         _positionP = "${_startPosition.toString()}";
+  //         log("Distance incrémentée: $_totalDistance mètres");
+  //       });
+  //     }
+  //   });
+  // }
 
-  Future<void> _showDistancePopup() async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, mySetStateFunc) {
-            return AlertDialog(
-              title: const Text("Mesure de la superficie"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("La distance parcourue est de :"),
-                  const SizedBox(height: 20),
-                  Text(
-                    "${_totalDistance.toStringAsFixed(2)} mètres",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                      "Cliquez sur Valider pour envoyer la superficie mesurée."),
-                ],
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _stopTracking();
-                  },
-                  child: const Text("Annuler"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _stopTracking();
-                    _getResultFromNextScreen(context);
-                  },
-                  child: const Text("Valider",
-                      style: TextStyle(color: d_colorGreen)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  // Future<void> _showDistancePopup() async {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder: (context, mySetStateFunc) {
+  //           return AlertDialog(
+  //             title: const Text("Mesure de la superficie"),
+  //             content: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 const Text("La distance parcourue est de :"),
+  //                 const SizedBox(height: 20),
+  //                 Text(
+  //                   "${_totalDistance.toStringAsFixed(2)} mètres",
+  //                   style: const TextStyle(
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 22,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 20),
+  //                 const Text(
+  //                     "Cliquez sur Valider pour envoyer la superficie mesurée."),
+  //               ],
+  //             ),
+  //             actions: <Widget>[
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                   _stopTracking();
+  //                 },
+  //                 child: const Text("Annuler"),
+  //               ),
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                   _stopTracking();
+  //                   _getResultFromNextScreen(context);
+  //                 },
+  //                 child: const Text("Valider",
+  //                     style: TextStyle(color: d_colorGreen)),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+ 
 
-  Future<void> _getResultFromNextScreen(BuildContext context) async {
-    final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AddSuperficie(
-                distanceParcourue: distanceP, positionInitiale: _positionP)));
-    log(result.toString());
-    if (result == true) {
-      print("Rafraichissement en cours");
-      setState(() {
-        _liste = getCampListe(acteur.idActeur!);
-      });
-    }
-  }
 
   Future<void> _getResultFromNextScreen1(
       BuildContext context, Superficie s) async {
@@ -203,17 +191,17 @@ class _SuperficiePageState extends State<SuperficiePage> {
     }
   }
 
-  void _stopTracking() {
-    _positionStream?.cancel();
-    print(
-        "total distance : ${_totalDistance.toStringAsFixed(2)} mètres et distance p : ${distanceP}");
-  }
+  // void _stopTracking() {
+  //   _positionStream?.cancel();
+  //   print(
+  //       "total distance : ${_totalDistance.toStringAsFixed(2)} mètres et distance p : ${distanceP}");
+  // }
 
   @override
   void dispose() {
     _scrollController.dispose();
     _searchController.dispose();
-    _positionStream?.cancel();
+    // _positionStream?.cancel();
     super.dispose();
   }
 
@@ -293,8 +281,13 @@ class _SuperficiePageState extends State<SuperficiePage> {
                                 ).then((value) async {
                                   if (value != null) {
                                     if (value == 'add_fil') {
-                                      _startTracking();
-                                      _showDistancePopup();
+                                      // Naviguer vers la page DistanceTrackerPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DistanceTrackerPage(),
+                    ),
+                  );
                                     }
                                   }
                                 });
