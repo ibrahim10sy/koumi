@@ -19,6 +19,9 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
   bool _isTracking = false;
   String distanceP = "0 mètres";
   String _positionP = "";
+  
+  // Liste pour stocker les distances mesurées 
+  List<String> _distanceHistory = [];
 
   @override
   void initState() {
@@ -30,7 +33,6 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Vérifie si le service de localisation est activé
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -41,7 +43,6 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
       return;
     }
 
-    // Vérifie et demande les autorisations de localisation
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -66,19 +67,30 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
     }
   }
 
-  // Fonction de démarrage du suivi de position
+  // Fonction pour démarrer le suivi
   void _startTracking() {
+    if (_isTracking) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Suivi déjà en cours'),
+        ),
+      );
+      return;
+    }
+
+    log("Début du parcours");
     setState(() {
       _isTracking = true;
-      _totalDistance = 0.0;
+      _totalDistance = 0.0;  // Réinitialise la distance totale
       _startPosition = null; // Réinitialise la position de départ
+      distanceP = "0 mètres"; // Réinitialise l'affichage
     });
 
     // Commence à écouter les changements de position
     _positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 1, // Filtre de distance de 1 mètre
+        distanceFilter: 1,
       ),
     ).listen((Position position) {
       log("Nouvelle position reçue: ${position.latitude}, ${position.longitude}");
@@ -95,30 +107,48 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
           position.latitude,
           position.longitude,
         );
+        log("Distance calculée: $distance mètres");
 
         setState(() {
           _totalDistance += distance;
-          _startPosition = position;
+          _startPosition = position; // Met à jour la position de départ
           distanceP = "${_totalDistance.toStringAsFixed(2)} mètres";
-          _positionP = "${_startPosition.toString()}";
+          _positionP = _startPosition.toString();
           log("Distance incrémentée: $_totalDistance mètres");
         });
       }
     });
   }
 
-  // Fonction pour arrêter le suivi de position
+  // Fonction pour arrêter le suivi et réinitialiser les valeurs
   void _stopTracking() {
     _positionStream?.cancel(); // Arrête le flux de position
-    _positionStream = null;    // Libère le flux pour éviter les conflits
+    _positionStream = null; // Libère le flux pour éviter les conflits
+
+    // Ajoute la distance actuelle à l'historique
+    _distanceHistory.add(distanceP);
 
     setState(() {
       _isTracking = false;
       log("Suivi arrêté. Distance parcourue: $distanceP");
     });
 
+    // Réinitialisation complète après l'arrêt
+    _resetValues();
+
     // Redirection vers la page AddSuperficie
     _getResultFromNextScreen(context);
+  }
+
+  // Fonction pour réinitialiser toutes les valeurs après chaque suivi
+  void _resetValues() {
+    setState(() {
+      _totalDistance = 0.0;       // Réinitialise la distance totale
+      _startPosition = null;      // Réinitialise la position de départ
+      distanceP = "0 mètres";     // Réinitialise l'affichage de la distance
+      _positionP = "";            // Réinitialise la position initiale
+      log("Valeurs réinitialisées.");
+    });
   }
 
   // Fonction pour récupérer le résultat après avoir ajouté la superficie
@@ -136,10 +166,7 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
 
     // Vérifie si le résultat est vrai pour éventuellement rafraîchir des données
     if (result == true) {
-      print("Rafraîchissement en cours");
-      // setState(() {
-      //   _liste = getCampListe(acteur.idActeur!);
-      // });
+      log("Rafraîchissement en cours");
     }
   }
 
