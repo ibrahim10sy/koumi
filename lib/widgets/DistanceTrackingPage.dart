@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as l;
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:koumi/screens/AddSuperficie.dart';
@@ -86,23 +87,77 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
     }
   }
 
-  void _stopTracking() {
-    _timer?.cancel();
-    setState(() {
-      _isTracking = false;
-      if (_positions.length > 2) {
-        _area = _calculateArea(_positions);
-        distanceP = "${_area.toStringAsFixed(2)} m²";
-        _positionP = _positions.toString();
-        print("Suivi arrêté. Surface calculée : $_area m²");
-      } else {
-        _area = 0.0;
-        print("Pas assez de points pour calculer la surface.");
-      }
-    });
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
+  // void _stopTracking() {
+  //   _timer?.cancel();
+  //   setState(() {
+  //     _isTracking = false;
+  //     if (_positions.length > 2) {
+  //       _area = _calculateArea(_positions);
+  //       distanceP = "${_area.toStringAsFixed(2)} m²";
+  //       _positionP = _positions.toString();
+  //       print(
+  //           "Suivi arrêté. Surface calculée : ${_area.toStringAsFixed(2)} m² et distance : $distanceP");
+  //     } else {
+  //       _area = 0.0;
+  //       print("Pas assez de points pour calculer la surface.");
+  //     }
+  //   });
+  //   ScaffoldMessenger.of(context)
+  //       .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
+  // }
+
+void _stopTracking() {
+  _timer?.cancel();
+  setState(() {
+    _isTracking = false;
+    if (_positions.length > 2) {
+      _area = _calculateArea(_positions);
+      distanceP = "${_area.toStringAsFixed(2)} m²";
+      _positionP = _positions.toString();
+      print(
+          "Suivi arrêté. Surface calculée : ${_area.toStringAsFixed(2)} m² et distance : $distanceP");
+    } else {
+      _area = 0.0;
+      print("Pas assez de points pour calculer la surface.");
+    }
+  });
+  ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
+}
+
+double _calculateArea(List<Position> positions) {
+  if (positions.length < 3) return 0.0; // Pas assez de points pour former une zone.
+
+  double totalArea = 0.0;
+  const double radiusOfEarth = 6371000; // Rayon de la terre en mètres.
+
+  // Convertir les latitudes et longitudes en radians.
+  List<double> latitudes = positions.map((p) => p.latitude * (3.14159 / 180)).toList();
+  List<double> longitudes = positions.map((p) => p.longitude * (3.14159 / 180)).toList();
+
+  // Calcul de l'aire en utilisant la formule sphérique.
+  for (int i = 0; i < latitudes.length; i++) {
+    int j = (i + 1) % latitudes.length;
+    totalArea += (longitudes[j] - longitudes[i]) * (2 + sin(latitudes[i]) + sin(latitudes[j]));
   }
+
+  totalArea = totalArea.abs() * (radiusOfEarth * radiusOfEarth) / 2.0;
+  return totalArea;
+}
+
+
+//  double _calculateArea(List<Position> positions) {
+//     double distance = 0.0;
+//     int n = positions.length;
+
+//     for (int i = 0; i < n; i++) {
+//       int j = (i + 1) % n;
+//       distance += positions[i].latitude * positions[j].longitude;
+//       distance -= positions[j].latitude * positions[i].longitude;
+//     }
+//     distance = distance.abs() / 2.0;
+//     return distance;
+//   }
 
   Future<void> _getResultFromNextScreen(BuildContext context) async {
     final result = await Navigator.push(
@@ -112,7 +167,7 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
                   distanceParcourue: distanceP,
                   positionInitiale: _positionP,
                 )));
-    log(result.toString());
+    l.log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {});
@@ -122,22 +177,11 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
   void valider() {
     // Code pour valider les données et effectuer une action en fonction des données reçues
     print(
-        "Les données sont validées. Positions : $_positionP, Surface : $distanceP");
+        "Les données sont validées. Positions :, Surface : $distanceP , $_positionP");
     _getResultFromNextScreen(context);
   }
 
-  double _calculateArea(List<Position> positions) {
-    double distance = 0.0;
-    int n = positions.length;
-
-    for (int i = 0; i < n; i++) {
-      int j = (i + 1) % n;
-      distance += positions[i].latitude * positions[j].longitude;
-      distance -= positions[j].latitude * positions[i].longitude;
-    }
-    distance = distance.abs() / 2.0;
-    return distance;
-  }
+ 
 
   @override
   void dispose() {
@@ -177,6 +221,7 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
             children: [
               Text("Distance Totale : ${_totalDistance.toStringAsFixed(2)} m",
                   style: TextStyle(fontSize: 20)),
+                
               Text("Superficie Estimée : ${_area.toStringAsFixed(2)} m²",
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 20),

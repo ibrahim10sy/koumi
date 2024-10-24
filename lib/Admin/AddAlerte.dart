@@ -779,7 +779,7 @@ class _AddAlerteState extends State<AddAlerte> {
                           // _buildUi(),
                           isRecording
                               ? Text(
-                                  'Durée: ${_elapsedSeconds}s',
+                                  'Durée: ${_elapsedSeconds} s',
                                   style: TextStyle(fontSize: 20),
                                 )
                               : Container(),
