@@ -13,166 +13,135 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
-  StreamSubscription<Position>? _positionStream;
-  Position? _startPosition;
+  List<Position> _positions = [];
   double _totalDistance = 0.0;
+  double _area = 0.0;
   bool _isTracking = false;
-  String distanceP = "0 mètres";
+  Timer? _timer;
+  String distanceP = "0 m²";
   String _positionP = "";
-  
-  // Liste pour stocker les distances mesurées 
-  List<String> _distanceHistory = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _getPermissions();
-  }
-
-  Future<void> _getPermissions() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Les services de localisation sont désactivés'),
-        ),
-      );
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
+  Future<void> _checkLocationPermissions() async {
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Les autorisations de localisation sont refusées'),
-          ),
+          SnackBar(content: Text("L'accès à la localisation est requis.")),
         );
         return;
       }
     }
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              'Les autorisations de localisation sont refusées de manière permanente.'),
-        ),
-      );
-      return;
+  Future<Position?> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      return position;
+    } catch (e) {
+      print("Erreur lors de l'obtention de la localisation : $e");
+      return null;
     }
   }
 
-  // Fonction pour démarrer le suivi
-  void _startTracking() {
-    if (_isTracking) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Suivi déjà en cours'),
-        ),
-      );
-      return;
-    }
+  void _startTracking() async {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Suivi commencé")));
+    await _checkLocationPermissions();
 
-    log("Début du parcours");
-    setState(() {
-      _isTracking = true;
-      _totalDistance = 0.0;  // Réinitialise la distance totale
-      _startPosition = null; // Réinitialise la position de départ
-      distanceP = "0 mètres"; // Réinitialise l'affichage
-    });
+    if (_isTracking) return;
 
-    // Commence à écouter les changements de position
-    _positionStream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 1,
-      ),
-    ).listen((Position position) {
-      log("Nouvelle position reçue: ${position.latitude}, ${position.longitude}");
+    Position? initialPosition = await _getCurrentLocation();
+    if (initialPosition != null) {
+      _positions.add(initialPosition);
+      print("Position initiale ajoutée : $initialPosition");
+      setState(() {
+        _isTracking = true;
+        _totalDistance = 0.0;
+      });
 
-      // Si c'est la première position, on l'enregistre comme point de départ
-      if (_startPosition == null) {
-        _startPosition = position;
-        log("Position initiale: $_startPosition");
-      } else {
-        // Calcule la distance parcourue entre la position de départ et la nouvelle position
-        double distance = Geolocator.distanceBetween(
-          _startPosition!.latitude,
-          _startPosition!.longitude,
-          position.latitude,
-          position.longitude,
-        );
-        log("Distance calculée: $distance mètres");
-
-        setState(() {
+      // Démarrer le Timer pour obtenir la position régulièrement
+      _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
+        Position? currentPosition = await _getCurrentLocation();
+        if (currentPosition != null) {
+          double distance = Geolocator.distanceBetween(
+            _positions.last.latitude,
+            _positions.last.longitude,
+            currentPosition.latitude,
+            currentPosition.longitude,
+          );
           _totalDistance += distance;
-          _startPosition = position; // Met à jour la position de départ
-          distanceP = "${_totalDistance.toStringAsFixed(2)} mètres";
-          _positionP = _startPosition.toString();
-          log("Distance incrémentée: $_totalDistance mètres");
-        });
-      }
-    });
+          _positions.add(currentPosition);
+          print(
+              "Nouvelle position ajoutée : $currentPosition, Distance : $_totalDistance m");
+          setState(() {});
+        } else {
+          print("Impossible d'obtenir la position actuelle.");
+        }
+      });
+    } else {
+      print("Impossible d'obtenir la position initiale.");
+    }
   }
 
-  // Fonction pour arrêter le suivi et réinitialiser les valeurs
   void _stopTracking() {
-    _positionStream?.cancel(); // Arrête le flux de position
-    _positionStream = null; // Libère le flux pour éviter les conflits
-
-    // Ajoute la distance actuelle à l'historique
-    _distanceHistory.add(distanceP);
-
+    _timer?.cancel();
     setState(() {
       _isTracking = false;
-      log("Suivi arrêté. Distance parcourue: $distanceP");
+      if (_positions.length > 2) {
+        _area = _calculateArea(_positions);
+        distanceP = "${_area.toStringAsFixed(2)} m²";
+        _positionP = _positions.toString();
+        print("Suivi arrêté. Surface calculée : $_area m²");
+      } else {
+        _area = 0.0;
+        print("Pas assez de points pour calculer la surface.");
+      }
     });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
+  }
 
-    // Réinitialisation complète après l'arrêt
-    _resetValues();
+  Future<void> _getResultFromNextScreen(BuildContext context) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddSuperficie(
+                  distanceParcourue: distanceP,
+                  positionInitiale: _positionP,
+                )));
+    log(result.toString());
+    if (result == true) {
+      print("Rafraichissement en cours");
+      setState(() {});
+    }
+  }
 
-    // Redirection vers la page AddSuperficie
+  void valider() {
+    // Code pour valider les données et effectuer une action en fonction des données reçues
+    print(
+        "Les données sont validées. Positions : $_positionP, Surface : $distanceP");
     _getResultFromNextScreen(context);
   }
 
-  // Fonction pour réinitialiser toutes les valeurs après chaque suivi
-  void _resetValues() {
-    setState(() {
-      _totalDistance = 0.0;       // Réinitialise la distance totale
-      _startPosition = null;      // Réinitialise la position de départ
-      distanceP = "0 mètres";     // Réinitialise l'affichage de la distance
-      _positionP = "";            // Réinitialise la position initiale
-      log("Valeurs réinitialisées.");
-    });
-  }
+  double _calculateArea(List<Position> positions) {
+    double distance = 0.0;
+    int n = positions.length;
 
-  // Fonction pour récupérer le résultat après avoir ajouté la superficie
-  Future<void> _getResultFromNextScreen(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddSuperficie(
-          distanceParcourue: distanceP,
-          positionInitiale: _positionP,
-        ),
-      ),
-    );
-    log(result.toString());
-
-    // Vérifie si le résultat est vrai pour éventuellement rafraîchir des données
-    if (result == true) {
-      log("Rafraîchissement en cours");
+    for (int i = 0; i < n; i++) {
+      int j = (i + 1) % n;
+      distance += positions[i].latitude * positions[j].longitude;
+      distance -= positions[j].latitude * positions[i].longitude;
     }
+    distance = distance.abs() / 2.0;
+    return distance;
   }
 
   @override
   void dispose() {
-    _positionStream?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -201,64 +170,84 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Affichage de la distance parcourue
-            const Text(
-              "Distance parcourue:",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-              ),
-            ),
-            Text(
-              "${_totalDistance.toStringAsFixed(2)} mètres",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Bouton pour commencer ou arrêter le suivi
-            _isTracking
-                ? ElevatedButton(
-                    onPressed: _stopTracking,
-                    child: const Text(
-                      'Arrêter',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Distance Totale : ${_totalDistance.toStringAsFixed(2)} m",
+                  style: TextStyle(fontSize: 20)),
+              Text("Superficie Estimée : ${_area.toStringAsFixed(2)} m²",
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 20),
+              _isTracking
+                  ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: d_colorOr,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        minimumSize: const Size(250, 40),
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                      onPressed: _stopTracking,
+                      child: Text(
+                        "Arrêter le Suivi",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      minimumSize: const Size(250, 40),
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: d_colorOr,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              minimumSize: const Size(150, 40),
+                            ),
+                            onPressed: _startTracking,
+                            child: Text(
+                              "Commencer",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: d_colorGreen,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              minimumSize: const Size(150, 40),
+                            ),
+                            onPressed: _area != 0.0 ? valider : null,
+                            child: Text(
+                              "Valider",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                : ElevatedButton(
-                    onPressed: _startTracking,
-                    child: const Text(
-                      'Commencer',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: d_colorOr,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      minimumSize: const Size(250, 40),
-                    ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
     );
