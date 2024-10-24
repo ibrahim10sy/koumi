@@ -169,7 +169,7 @@ class _AddSuperficieState extends State<AddSuperficie> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Superficie (Hectare)",
+                            "Superficie (m²)",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),

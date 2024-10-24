@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer' as l;
+import 'dart:developer' as log;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,6 +20,9 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
   bool _isTracking = false;
   Timer? _timer;
   String distanceP = "0 m²";
+  String L = "0 m";
+  String l = "0 m";
+
   String _positionP = "";
 
   Future<void> _checkLocationPermissions() async {
@@ -87,77 +90,90 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
     }
   }
 
-  // void _stopTracking() {
-  //   _timer?.cancel();
-  //   setState(() {
-  //     _isTracking = false;
-  //     if (_positions.length > 2) {
-  //       _area = _calculateArea(_positions);
-  //       distanceP = "${_area.toStringAsFixed(2)} m²";
-  //       _positionP = _positions.toString();
-  //       print(
-  //           "Suivi arrêté. Surface calculée : ${_area.toStringAsFixed(2)} m² et distance : $distanceP");
-  //     } else {
-  //       _area = 0.0;
-  //       print("Pas assez de points pour calculer la surface.");
-  //     }
-  //   });
-  //   ScaffoldMessenger.of(context)
-  //       .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
-  // }
-
-void _stopTracking() {
-  _timer?.cancel();
-  setState(() {
-    _isTracking = false;
-    if (_positions.length > 2) {
-      _area = _calculateArea(_positions);
-      distanceP = "${_area.toStringAsFixed(2)} m²";
-      _positionP = _positions.toString();
-      print(
-          "Suivi arrêté. Surface calculée : ${_area.toStringAsFixed(2)} m² et distance : $distanceP");
-    } else {
-      _area = 0.0;
-      print("Pas assez de points pour calculer la surface.");
-    }
-  });
-  ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
-}
-
-double _calculateArea(List<Position> positions) {
-  if (positions.length < 3) return 0.0; // Pas assez de points pour former une zone.
-
-  double totalArea = 0.0;
-  const double radiusOfEarth = 6371000; // Rayon de la terre en mètres.
-
-  // Convertir les latitudes et longitudes en radians.
-  List<double> latitudes = positions.map((p) => p.latitude * (3.14159 / 180)).toList();
-  List<double> longitudes = positions.map((p) => p.longitude * (3.14159 / 180)).toList();
-
-  // Calcul de l'aire en utilisant la formule sphérique.
-  for (int i = 0; i < latitudes.length; i++) {
-    int j = (i + 1) % latitudes.length;
-    totalArea += (longitudes[j] - longitudes[i]) * (2 + sin(latitudes[i]) + sin(latitudes[j]));
+  void _stopTracking() {
+    _timer?.cancel();
+    setState(() {
+      _isTracking = false;
+      if (_positions.length > 2) {
+        _area = _calculateArea(_positions);
+        distanceP = "${_area.toStringAsFixed(2)} m²";
+        _positionP = _positions.toString();
+        // Calculer la longueur et la largeur
+        double length = _calculateLength(_positions);
+        double width = _calculateWidth(_positions);
+        l = "${length.toStringAsFixed(2)} m";
+        L = "${width.toStringAsFixed(2)} m";
+        print("Longueur : $length m, Largeur : $width m");
+        print(
+            "Suivi arrêté. Surface calculée : ${_area.toStringAsFixed(2)} m² et distance : $_totalDistance");
+      } else {
+        _area = 0.0;
+        print("Pas assez de points pour calculer la surface.");
+      }
+    });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
   }
 
-  totalArea = totalArea.abs() * (radiusOfEarth * radiusOfEarth) / 2.0;
-  return totalArea;
-}
+  double _calculateLength(List<Position> positions) {
+    if (positions.isEmpty) return 0.0;
 
+    // Trouver la latitude maximale (nord) et minimale (sud)
+    double maxLatitude = positions.map((p) => p.latitude).reduce(max);
+    double minLatitude = positions.map((p) => p.latitude).reduce(min);
 
-//  double _calculateArea(List<Position> positions) {
-//     double distance = 0.0;
-//     int n = positions.length;
+    // Calculer la distance entre les deux points extrêmes (nord et sud)
+    double length = Geolocator.distanceBetween(
+        maxLatitude,
+        positions.first.longitude, // Point le plus au nord
+        minLatitude,
+        positions.first.longitude // Point le plus au sud
+        );
 
-//     for (int i = 0; i < n; i++) {
-//       int j = (i + 1) % n;
-//       distance += positions[i].latitude * positions[j].longitude;
-//       distance -= positions[j].latitude * positions[i].longitude;
-//     }
-//     distance = distance.abs() / 2.0;
-//     return distance;
-//   }
+    return length;
+  }
+
+  double _calculateWidth(List<Position> positions) {
+    if (positions.isEmpty) return 0.0;
+
+    // Trouver la longitude maximale (est) et minimale (ouest)
+    double maxLongitude = positions.map((p) => p.longitude).reduce(max);
+    double minLongitude = positions.map((p) => p.longitude).reduce(min);
+
+    // Calculer la distance entre les deux points extrêmes (est et ouest)
+    double width = Geolocator.distanceBetween(
+        positions.first.latitude,
+        maxLongitude, // Point le plus à l'est
+        positions.first.latitude,
+        minLongitude // Point le plus à l'ouest
+        );
+
+    return width;
+  }
+
+  double _calculateArea(List<Position> positions) {
+    if (positions.length < 3)
+      return 0.0; // Pas assez de points pour former une zone.
+
+    double totalArea = 0.0;
+    const double radiusOfEarth = 6371000; // Rayon de la terre en mètres.
+
+    // Convertir les latitudes et longitudes en radians.
+    List<double> latitudes =
+        positions.map((p) => p.latitude * (3.14159 / 180)).toList();
+    List<double> longitudes =
+        positions.map((p) => p.longitude * (3.14159 / 180)).toList();
+
+    // Calcul de l'aire en utilisant la formule sphérique.
+    for (int i = 0; i < latitudes.length; i++) {
+      int j = (i + 1) % latitudes.length;
+      totalArea += (longitudes[j] - longitudes[i]) *
+          (2 + sin(latitudes[i]) + sin(latitudes[j]));
+    }
+
+    totalArea = totalArea.abs() * (radiusOfEarth * radiusOfEarth) / 2.0;
+    return totalArea;
+  }
 
   Future<void> _getResultFromNextScreen(BuildContext context) async {
     final result = await Navigator.push(
@@ -167,7 +183,7 @@ double _calculateArea(List<Position> positions) {
                   distanceParcourue: distanceP,
                   positionInitiale: _positionP,
                 )));
-    l.log(result.toString());
+    log.log(result.toString());
     if (result == true) {
       print("Rafraichissement en cours");
       setState(() {});
@@ -180,8 +196,6 @@ double _calculateArea(List<Position> positions) {
         "Les données sont validées. Positions :, Surface : $distanceP , $_positionP");
     _getResultFromNextScreen(context);
   }
-
- 
 
   @override
   void dispose() {
@@ -221,7 +235,8 @@ double _calculateArea(List<Position> positions) {
             children: [
               Text("Distance Totale : ${_totalDistance.toStringAsFixed(2)} m",
                   style: TextStyle(fontSize: 20)),
-                
+              Text(_area != 0.0 ? "Longueur : $L, Largeur : $l" : "",
+                  maxLines: 2, style: TextStyle(fontSize: 20)),
               Text("Superficie Estimée : ${_area.toStringAsFixed(2)} m²",
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 20),
