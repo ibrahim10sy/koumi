@@ -82,7 +82,7 @@ class _ProfilState extends State<Profil> {
           backgroundColor: d_colorOr,
           centerTitle: true,
           toolbarHeight: 75,
-          title: const Text(
+          title: const Text( 
             "Mon Profil",
             style: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),

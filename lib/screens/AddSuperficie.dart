@@ -9,6 +9,7 @@ import 'package:koumi/models/Campagne.dart';
 import 'package:koumi/models/Niveau3Pays.dart';
 import 'package:koumi/models/Speculation.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
+import 'package:koumi/screens/SuperficiePage.dart';
 import 'package:koumi/service/CampagneService.dart';
 import 'package:koumi/service/Niveau3Service.dart';
 import 'package:koumi/service/SpeculationService.dart';
@@ -16,12 +17,12 @@ import 'package:koumi/service/SuperficieService.dart';
 import 'package:koumi/widgets/LoadingOverlay.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_plus_plus/dropdown_plus_plus.dart';
+import 'package:get/get.dart';
 
 class AddSuperficie extends StatefulWidget {
-   String? distanceParcourue = "";
-   String? positionInitiale = "";
-   AddSuperficie(
-      {super.key, this.positionInitiale, this.distanceParcourue});
+  String? distanceParcourue = "";
+  String? positionInitiale = "";
+  AddSuperficie({super.key, this.positionInitiale, this.distanceParcourue});
 
   @override
   State<AddSuperficie> createState() => _AddSuperficieState();
@@ -33,9 +34,14 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 class _AddSuperficieState extends State<AddSuperficie> {
   final formkey = GlobalKey<FormState>();
   TextEditingController _localiteController = TextEditingController();
+  late TextEditingController _searchController;
   TextEditingController _superficieHaController = TextEditingController();
+  TextEditingController speculationController = TextEditingController();
+  TextEditingController campagneController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+  TextEditingController nomController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   List<Widget> listeIntrantFields = [];
   List<TextEditingController> intrantController = [];
   List<String> selectedIntrant = [];
@@ -48,6 +54,7 @@ class _AddSuperficieState extends State<AddSuperficie> {
   late Future _liste;
 
   late Future _speculationList;
+  late Future _campList;
   late Speculation speculation;
   late Campagne campagne;
   DateTime selectedDate = DateTime.now();
@@ -91,14 +98,15 @@ class _AddSuperficieState extends State<AddSuperficie> {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _liste = http.get(Uri.parse(
         '$apiOnlineUrl/Campagne/getAllCampagneByActeur/${acteur.idActeur}'));
-    if(widget.distanceParcourue != null){
-
-    _superficieHaController.text = widget.distanceParcourue!;
-    _localiteController.text = widget.positionInitiale!;
+    if (widget.distanceParcourue != null) {
+      _searchController = TextEditingController();
+      _superficieHaController.text = widget.distanceParcourue!;
+      // _localiteController.text = widget.positionInitiale!;
     }
     _speculationList =
         http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
-
+    _campList = http.get(Uri.parse(
+        '$apiOnlineUrl/Campagne/getAllCampagneByActeur/${acteur.idActeur}'));
     _niveau3List = http.get(Uri.parse(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
     fetchLibelleNiveau3Pays();
@@ -129,6 +137,12 @@ class _AddSuperficieState extends State<AddSuperficie> {
   Future<List<Speculation>> fetchSpeculationList() async {
     final response = await SpeculationService().fetchSpeculation();
     return response;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -212,117 +226,22 @@ class _AddSuperficieState extends State<AddSuperficie> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _niveau3List,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
-                                cursorColor: Colors.green,
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final niveau3List = reponse
-                                    .map((e) => Niveau3Pays.fromMap(e))
-                                    .where((con) => con.statutN3 == true)
-                                    .toList();
-                                if (niveau3List.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune localité trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Niveau3Pays>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: 'Selectionner une localité'),
-                                  onSaved: (dynamic n) {
-                                    niveau3 = n?.nomN3;
-                                    print("onSaved : $niveau3");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    niveau3 = n?.nomN3;
-                                    print("selected : $niveau3");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.nomN3 ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => niveau3List,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idNiveau3Pays ==
-                                          item2.idNiveau3Pays;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .nomN3!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.nomN3!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune localité trouvé"),
-                              cursorColor: Colors.green,
-                            );
-                          },
+                        child: GestureDetector(
+                          onTap: _showLocalite,
+                          child: TextFormField(
+                            onTap: _showLocalite,
+                            controller: _localiteController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une localité",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Padding(
@@ -339,125 +258,27 @@ class _AddSuperficieState extends State<AddSuperficie> {
                         ),
                       ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                            future: _speculationList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return TextDropdownFormField(
-                                  options: [],
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: "Chargement..."),
-                                  cursorColor: Colors.green,
-                                );
-                              }
-
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final monaieList = reponse
-                                      .map((e) => Speculation.fromMap(e))
-                                      .where((con) =>
-                                          con.statutSpeculation == true)
-                                      .toList();
-                                  if (monaieList.isEmpty) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText:
-                                              "Aucune spéculation trouvé"),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-
-                                  return DropdownFormField<Speculation>(
-                                    onEmptyActionPressed: (String str) async {},
-                                    dropdownHeight: 200,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText:
-                                            'Selectionner une spécumation'),
-                                    onSaved: (dynamic n) {
-                                      speculation = n;
-                                      print("onSaved : $speculation");
-                                    },
-                                    onChanged: (dynamic n) {
-                                      speculation = n;
-                                      print("selected : $speculation");
-                                    },
-                                    displayItemFn: (dynamic item) => Text(
-                                      item?.nomSpeculation ?? '',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    findFn: (String str) async => monaieList,
-                                    selectedFn: (dynamic item1, dynamic item2) {
-                                      if (item1 != null && item2 != null) {
-                                        return item1.idSpeculation ==
-                                            item2.idSpeculation;
-                                      }
-                                      return false;
-                                    },
-                                    filterFn: (dynamic item, String str) => item
-                                        .nomSpeculation!
-                                        .toLowerCase()
-                                        .contains(str.toLowerCase()),
-                                    dropdownItemFn: (dynamic item,
-                                            int position,
-                                            bool focused,
-                                            bool selected,
-                                            Function() onTap) =>
-                                        ListTile(
-                                      title: Text(item.nomSpeculation!),
-                                      tileColor: focused
-                                          ? Color.fromARGB(20, 0, 0, 0)
-                                          : Colors.transparent,
-                                      onTap: onTap,
-                                    ),
-                                  );
-                                }
-                              }
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Aucune spéculation trouvé"),
-                                cursorColor: Colors.green,
-                              );
-                            },
-                          )),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        child: GestureDetector(
+                          onTap: _showSpeculation,
+                          child: TextFormField(
+                            onTap: _showSpeculation,
+                            controller: speculationController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une speculation",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 22,
@@ -474,117 +295,23 @@ class _AddSuperficieState extends State<AddSuperficie> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _liste,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return TextDropdownFormField(
-                                options: [],
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
-                                cursorColor: Colors.green,
-                              );
-                            }
-
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final niveau3List = reponse
-                                    .map((e) => Campagne.fromMap(e))
-                                    .where((con) => con.statutCampagne == true)
-                                    .toList();
-                                if (niveau3List.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune campagne trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Campagne>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: 'Selectionner une campagne'),
-                                  onSaved: (dynamic n) {
-                                    campagne = n;
-                                    print("onSaved : $campagne");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    campagne = n;
-                                    print("selected : $campagne");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.nomCampagne ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => niveau3List,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idCampagne ==
-                                          item2.idCampagne;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .nomCampagne!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.nomCampagne!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune campagne trouvé"),
-                              cursorColor: Colors.green,
-                            );
-                          },
+                        child: GestureDetector(
+                          onTap: _showCampagne,
+                          child: TextFormField(
+                            onTap: _showCampagne,
+                            controller: campagneController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une campagne",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Padding(
@@ -628,7 +355,7 @@ class _AddSuperficieState extends State<AddSuperficie> {
                             DateTime? pickedDate = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
+                                firstDate: DateTime(2000),
                                 lastDate: DateTime(2100));
                             if (pickedDate != null) {
                               print(pickedDate);
@@ -732,7 +459,12 @@ class _AddSuperficieState extends State<AddSuperficie> {
                                 speValue = null;
                                 n3Value = null;
                               }),
-                              Navigator.pop(context, true)
+                              // Navigator.pop(context, true),
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SuperficiePage()))
                             })
                         .catchError((onError) => {
                               setState(() {
@@ -776,6 +508,689 @@ class _AddSuperficieState extends State<AddSuperficie> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showCampagne() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une campagne',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _campList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Campagne> typeListe = responseData
+                          .map((e) => Campagne.fromMap(e))
+                          .where((con) => con.statutCampagne == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Aucune campagne trouvée",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black87,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(
+                                      height:
+                                          20), // Ajout d'espace entre les éléments
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      _showDialog();
+                                    },
+                                    style: TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      backgroundColor:
+                                          d_colorOr, // Style de fond personnalisé
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            8), // Bords arrondis
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Ajouter une campagne",
+                                      style: TextStyle(
+                                        color: Colors.white, // Couleur du texte
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ));
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Campagne> filteredSearch = typeListe
+                          .where((type) => type.nomCampagne
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune campagne trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected = campagneController.text ==
+                                      type.nomCampagne;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomCampagne!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            campagne = type;
+                                            campagneController.text =
+                                                type.nomCampagne;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Aucune campagne trouvée",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                            height: 20), // Ajout d'espace entre les éléments
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+
+                            _showDialog();
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            backgroundColor:
+                                d_colorOr, // Style de fond personnalisé
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // Bords arrondis
+                            ),
+                          ),
+                          child: const Text(
+                            "Ajouter une campagne",
+                            style: TextStyle(
+                              color: Colors.white, // Couleur du texte
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $campagne');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text(
+                    "Ajouter une campagne ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 30,
+                      )),
+                ),
+
+                // const SizedBox(height: 10),
+                Form(
+                  // key: formkey,
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text(
+                        'Nom campagne',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Veuillez remplir les champs";
+                          }
+                          return null;
+                        },
+                        controller: nomController,
+                        decoration: InputDecoration(
+                          hintText: "Nom campagne",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                      TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Veuillez remplir les champs";
+                            }
+                            return null;
+                          },
+                          controller: descriptionController,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            labelText: "Description",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          )),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final String nom = nomController.text;
+                          final String desc = descriptionController.text;
+                          // if (formkey.currentState!.validate()) {
+                          try {
+                            await CampagneService()
+                                .addCampagne(
+                                    nomCampagne: nom,
+                                    description: desc,
+                                    acteur: acteur)
+                                .then((value) => {
+                                      Navigator.of(context).pop(),
+                                      nomController.clear(),
+                                      descriptionController.clear(),
+                                      setState(() {
+                                        _campList = http.get(Uri.parse(
+                                            '$apiOnlineUrl/Campagne/getAllCampagneByActeur/${acteur.idActeur}'));
+                                      }),
+                                    });
+                          } catch (e) {
+                            final String errorMessage = e.toString();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Row(
+                                  children: [
+                                    Text("Une erreur s'est produit"),
+                                  ],
+                                ),
+                                duration: const Duration(seconds: 5),
+                              ),
+                            );
+                          }
+                          // }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          minimumSize: const Size(290, 45),
+                        ),
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        label: const Text(
+                          "Ajouter",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showSpeculation() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une speculation',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _speculationList,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Speculation> typeListe = responseData
+                          .map((e) => Speculation.fromMap(e))
+                          .where((con) => con.statutSpeculation == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child:
+                              Center(child: Text("Aucune speculation trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Speculation> filteredSearch = typeListe
+                          .where((type) => type.nomSpeculation!
+                              .toLowerCase()
+                              .contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune speculation trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index];
+                                  final isSelected =
+                                      speculationController.text ==
+                                          type.nomSpeculation;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type.nomSpeculation!,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            speculation = type;
+                                            speculationController.text =
+                                                type.nomSpeculation!;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $speculation');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalite() async {
+    final BuildContext context = this.context;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    if (mounted) setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher une localité',
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              content: FutureBuilder(
+                future: _niveau3List,
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Erreur lors du chargement des données"),
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    final responseData =
+                        json.decode(utf8.decode(snapshot.data.bodyBytes));
+                    if (responseData is List) {
+                      List<Niveau3Pays> typeListe = responseData
+                          .map((e) => Niveau3Pays.fromMap(e))
+                          .where((con) => con.statutN3 == true)
+                          .toList();
+
+                      if (typeListe.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(child: Text("Aucune localité trouvée")),
+                        );
+                      }
+
+                      String searchText = _searchController.text.toLowerCase();
+                      List<Niveau3Pays> filteredSearch = typeListe
+                          .where((type) =>
+                              type.nomN3.toLowerCase().contains(searchText))
+                          .toList();
+
+                      return filteredSearch.isEmpty
+                          ? const Text(
+                              'Aucune localité trouvée',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          : SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: filteredSearch.length,
+                                itemBuilder: (context, index) {
+                                  final type = filteredSearch[index].nomN3;
+                                  final isSelected =
+                                      _localiteController.text == type;
+
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        trailing: isSelected
+                                            ? const Icon(
+                                                Icons.check_box_outlined,
+                                                color: d_colorOr,
+                                              )
+                                            : null,
+                                        onTap: () {
+                                          setState(() {
+                                            niveau3 = type;
+                                            _localiteController.text = type;
+                                          });
+                                        },
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  }
+
+                  return const SizedBox(height: 8);
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'Valider',
+                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                    print('Options sélectionnées : $niveau3');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

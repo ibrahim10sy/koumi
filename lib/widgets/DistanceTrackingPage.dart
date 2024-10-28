@@ -115,65 +115,124 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
         .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
   }
 
-  double _calculateLength(List<Position> positions) {
-    if (positions.isEmpty) return 0.0;
+  
+double _calculateLength(List<Position> positions) {
+  if (positions.isEmpty) return 0.0;
 
-    // Trouver la latitude maximale (nord) et minimale (sud)
-    double maxLatitude = positions.map((p) => p.latitude).reduce(max);
-    double minLatitude = positions.map((p) => p.latitude).reduce(min);
+  // Trouver la latitude maximale (nord) et minimale (sud)
+  double maxLatitude = positions.map((p) => p.latitude).reduce(max);
+  double minLatitude = positions.map((p) => p.latitude).reduce(min);
 
-    // Calculer la distance entre les deux points extrêmes (nord et sud)
-    double length = Geolocator.distanceBetween(
-        maxLatitude,
-        positions.first.longitude, // Point le plus au nord
-        minLatitude,
-        positions.first.longitude // Point le plus au sud
-        );
+  // Calculer la distance entre les points les plus au nord et au sud
+  double length = Geolocator.distanceBetween(
+      maxLatitude,
+      positions.first.longitude, // Longitude d'un point de référence
+      minLatitude,
+      positions.first.longitude);
 
-    return length;
+  return length;
+}
+
+double _calculateWidth(List<Position> positions) {
+  if (positions.isEmpty) return 0.0;
+
+  // Trouver la longitude maximale (est) et minimale (ouest)
+  double maxLongitude = positions.map((p) => p.longitude).reduce(max);
+  double minLongitude = positions.map((p) => p.longitude).reduce(min);
+
+  // Calculer la distance entre les points les plus à l'est et à l'ouest
+  double width = Geolocator.distanceBetween(
+      positions.first.latitude,
+      maxLongitude,
+      positions.first.latitude,
+      minLongitude);
+
+  return width;
+}
+
+double _calculateArea(List<Position> positions) {
+  if (positions.length < 3) return 0.0; // Pas assez de points pour une zone
+
+  const double radiusOfEarth = 6371000; // Rayon de la Terre en mètres.
+  double totalArea = 0.0;
+
+  // Convertir les latitudes et longitudes en radians
+  List<double> latitudes =
+      positions.map((p) => p.latitude * (pi / 180)).toList();
+  List<double> longitudes =
+      positions.map((p) => p.longitude * (pi / 180)).toList();
+
+  // Calcul de l'aire en utilisant la formule de l'aire sphérique de Gauss
+  for (int i = 0; i < latitudes.length; i++) {
+    int j = (i + 1) % latitudes.length;
+    totalArea += (longitudes[j] - longitudes[i]) *
+        (2 + sin(latitudes[i]) + sin(latitudes[j]));
   }
 
-  double _calculateWidth(List<Position> positions) {
-    if (positions.isEmpty) return 0.0;
+  totalArea = (totalArea.abs() * radiusOfEarth * radiusOfEarth) / 2.0;
+  return totalArea;
+}
 
-    // Trouver la longitude maximale (est) et minimale (ouest)
-    double maxLongitude = positions.map((p) => p.longitude).reduce(max);
-    double minLongitude = positions.map((p) => p.longitude).reduce(min);
 
-    // Calculer la distance entre les deux points extrêmes (est et ouest)
-    double width = Geolocator.distanceBetween(
-        positions.first.latitude,
-        maxLongitude, // Point le plus à l'est
-        positions.first.latitude,
-        minLongitude // Point le plus à l'ouest
-        );
+  // double _calculateLength(List<Position> positions) {
+  //   if (positions.isEmpty) return 0.0;
 
-    return width;
-  }
+  //   // Trouver la latitude maximale (nord) et minimale (sud)
+  //   double maxLatitude = positions.map((p) => p.latitude).reduce(max);
+  //   double minLatitude = positions.map((p) => p.latitude).reduce(min);
 
-  double _calculateArea(List<Position> positions) {
-    if (positions.length < 3)
-      return 0.0; // Pas assez de points pour former une zone.
+  //   // Calculer la distance entre les deux points extrêmes (nord et sud)
+  //   double length = Geolocator.distanceBetween(
+  //       maxLatitude,
+  //       positions.first.longitude, // Point le plus au nord
+  //       minLatitude,
+  //       positions.first.longitude // Point le plus au sud
+  //       );
 
-    double totalArea = 0.0;
-    const double radiusOfEarth = 6371000; // Rayon de la terre en mètres.
+  //   return length;
+  // }
 
-    // Convertir les latitudes et longitudes en radians.
-    List<double> latitudes =
-        positions.map((p) => p.latitude * (3.14159 / 180)).toList();
-    List<double> longitudes =
-        positions.map((p) => p.longitude * (3.14159 / 180)).toList();
+  // double _calculateWidth(List<Position> positions) {
+  //   if (positions.isEmpty) return 0.0;
 
-    // Calcul de l'aire en utilisant la formule sphérique.
-    for (int i = 0; i < latitudes.length; i++) {
-      int j = (i + 1) % latitudes.length;
-      totalArea += (longitudes[j] - longitudes[i]) *
-          (2 + sin(latitudes[i]) + sin(latitudes[j]));
-    }
+  //   // Trouver la longitude maximale (est) et minimale (ouest)
+  //   double maxLongitude = positions.map((p) => p.longitude).reduce(max);
+  //   double minLongitude = positions.map((p) => p.longitude).reduce(min);
 
-    totalArea = totalArea.abs() * (radiusOfEarth * radiusOfEarth) / 2.0;
-    return totalArea;
-  }
+  //   // Calculer la distance entre les deux points extrêmes (est et ouest)
+  //   double width = Geolocator.distanceBetween(
+  //       positions.first.latitude,
+  //       maxLongitude, // Point le plus à l'est
+  //       positions.first.latitude,
+  //       minLongitude // Point le plus à l'ouest
+  //       );
+
+  //   return width;
+  // }
+
+  // double _calculateArea(List<Position> positions) {
+  //   if (positions.length < 3)
+  //     return 0.0; // Pas assez de points pour former une zone.
+
+  //   double totalArea = 0.0;
+  //   const double radiusOfEarth = 6371000; // Rayon de la terre en mètres.
+
+  //   // Convertir les latitudes et longitudes en radians.
+  //   List<double> latitudes =
+  //       positions.map((p) => p.latitude * (3.14159 / 180)).toList();
+  //   List<double> longitudes =
+  //       positions.map((p) => p.longitude * (3.14159 / 180)).toList();
+
+  //   // Calcul de l'aire en utilisant la formule sphérique.
+  //   for (int i = 0; i < latitudes.length; i++) {
+  //     int j = (i + 1) % latitudes.length;
+  //     totalArea += (longitudes[j] - longitudes[i]) *
+  //         (2 + sin(latitudes[i]) + sin(latitudes[j]));
+  //   }
+
+  //   totalArea = totalArea.abs() * (radiusOfEarth * radiusOfEarth) / 2.0;
+  //   return totalArea;
+  // }
 
   Future<void> _getResultFromNextScreen(BuildContext context) async {
     final result = await Navigator.push(

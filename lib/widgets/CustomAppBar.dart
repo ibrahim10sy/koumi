@@ -173,12 +173,52 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Subscribe()));
-                            
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  title: Row(
+                                    children: [
+                                      FaIcon(
+                                        FontAwesomeIcons.exclamationTriangle,
+                                        color: d_colorOr,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text("Fonctionnalité en cours",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                              overflow: TextOverflow.ellipsis)),
+                                    ],
+                                  ),
+                                  content: Text(
+                                    "Cette fonctionnalité sera bientôt disponible. Merci pour votre patience !",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Ferme le popup
+                                      },
+                                      child: Text(
+                                        "OK",
+                                        style: TextStyle(color: d_colorOr),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            // Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (context) =>
+                            //               Subscribe()));
                           },
                           child: FaIcon(
                             FontAwesomeIcons.userFriends,

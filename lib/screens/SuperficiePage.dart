@@ -7,11 +7,13 @@ import 'package:koumi/models/Superficie.dart';
 import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/AddSuperficie.dart';
 import 'package:koumi/screens/DetailSuperficie.dart';
+import 'package:koumi/screens/Surface.dart';
 import 'package:koumi/screens/UpdateSuperficie.dart';
 import 'package:koumi/service/SuperficieService.dart';
 import 'package:koumi/widgets/DistanceTrackingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 class SuperficiePage extends StatefulWidget {
   const SuperficiePage({super.key});
@@ -51,8 +53,6 @@ class _SuperficiePageState extends State<SuperficiePage> {
     // _getPermissions();
     super.initState();
   }
- 
-
 
   Future<void> _getResultFromNextScreen1(
       BuildContext context, Superficie s) async {
@@ -68,12 +68,6 @@ class _SuperficiePageState extends State<SuperficiePage> {
       });
     }
   }
-
-  // void _stopTracking() {
-  //   _positionStream?.cancel();
-  //   print(
-  //       "total distance : ${_totalDistance.toStringAsFixed(2)} mètres et distance p : ${distanceP}");
-  // }
 
   @override
   void dispose() {
@@ -93,7 +87,7 @@ class _SuperficiePageState extends State<SuperficiePage> {
         toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Surface()));
             },
             icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: const Text(
@@ -160,12 +154,13 @@ class _SuperficiePageState extends State<SuperficiePage> {
                                   if (value != null) {
                                     if (value == 'add_fil') {
                                       // Naviguer vers la page DistanceTrackerPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DistanceTrackerPage(),
-                    ),
-                  );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DistanceTrackerPage(),
+                                        ),
+                                      );
                                     }
                                   }
                                 });

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:koumi/models/Acteur.dart';
+import 'package:koumi/providers/ActeurProvider.dart';
 import 'package:koumi/screens/CampagnePage.dart';
 import 'package:koumi/screens/SuperficiePage.dart';
+import 'package:get/get.dart';
+import 'package:koumi/service/BottomNavigationService.dart';
+import 'package:koumi/widgets/BottomNavBarAdmin.dart';
+import 'package:koumi/widgets/BottomNavigationPage.dart';
+import 'package:provider/provider.dart';
 
 class Surface extends StatefulWidget {
   const Surface({super.key});
@@ -13,6 +20,15 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _SurfaceState extends State<Surface> {
+
+    Acteur? acteur;
+  @override
+  void initState() {
+    super.initState();
+    acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +39,20 @@ class _SurfaceState extends State<Surface> {
             toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              final List<String> type =
+                acteur!.typeActeur!.map((e) => e.libelle!).toList();
+            if (type.contains('admin') || type.contains('Admin')) {
+              Get.offAll(BottomNavBarAdmin(),
+                 
+                  transition: Transition.leftToRight);
+                   Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(2);
+            } else {
+              Get.offAll(BottomNavigationPage(),
+                  transition: Transition.leftToRight);
+                    Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(2);
+            }
             },
             icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
         title: Text(

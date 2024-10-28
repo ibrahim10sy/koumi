@@ -486,10 +486,11 @@ class _CampagnePageState extends State<CampagnePage> {
                                                                         .idCampagne!)
                                                                     .then(
                                                                         (value) => {
-                                                                              Provider.of<CampagneService>(context, listen: false)
-                                                                                  .applyChange(),
-                                                                              Navigator.of(context)
-                                                                                  .pop(),
+                                                                              Provider.of<CampagneService>(context, listen: false).applyChange(),
+                                                                                  Navigator.of(context).pop(),
+                                                                                  setState(() {
+                                                                                    _liste = getCampListe();
+                                                                                  }),
                                                                             })
                                                                     .catchError(
                                                                         (onError) =>
