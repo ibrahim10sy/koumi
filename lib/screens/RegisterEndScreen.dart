@@ -14,6 +14,7 @@ import 'package:koumi/widgets/BottomNavigationPage.dart';
 import 'package:koumi/widgets/LoadingOverlay.dart';
 import 'package:koumi/widgets/TermeConditionPage.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -672,7 +673,14 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                 width: 4,
                               ),
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async {
+                                  // final url = Uri.parse("https://aismali.com/condition.html");
+                                  // if (await canLaunchUrl(url)) {
+                                  //   await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  // } else {
+                                  //   // Gérer l'erreur si le lien ne peut pas être ouvert
+                                  //   print("Impossible d'ouvrir le lien.");
+                                  // }
                                   Get.to(TermsConditionsPage(),
                                       duration: Duration(seconds: 1),
                                       transition: Transition.leftToRight);
@@ -680,11 +688,12 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                 child: const Text(
                                   "Conditions d'utilisation",
                                   style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.blue,
-                                      fontSize: 16,
-                                      fontStyle: FontStyle.italic,
-                                      fontWeight: FontWeight.bold),
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
