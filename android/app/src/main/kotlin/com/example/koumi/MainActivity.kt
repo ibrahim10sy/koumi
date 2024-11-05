@@ -1,4 +1,4 @@
-package com.example.koumi
+package com.ais.koumi
 
 import io.flutter.embedding.android.FlutterActivity
 

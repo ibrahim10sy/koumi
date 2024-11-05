@@ -436,86 +436,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                         );
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
-            ]
-            // : (typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("fournisseur") ||
-            //         typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("admin") ||
-            //         typeActeurData
-            //             .map((e) => e.libelle!.toLowerCase())
-            //             .contains("fournisseurs"))
-            //     ? [
-            //         IconButton(
-            //             onPressed: () {
-            //               intrantListeFuture = fetchIntrantByCategorie(
-            //                   detectedCountry != null
-            //                       ? detectedCountry!
-            //                       : "Mali");
-            //             },
-            //             icon:
-            //                 const Icon(Icons.refresh, color: Colors.white)),
-            //         PopupMenuButton<String>(
-            //           padding: EdgeInsets.zero,
-            //           itemBuilder: (context) {
-            //             return <PopupMenuEntry<String>>[
-            //               PopupMenuItem<String>(
-            //                 child: ListTile(
-            //                   leading: const Icon(
-            //                     Icons.add,
-            //                     color: d_colorGreen,
-            //                   ),
-            //                   title: const Text(
-            //                     "Ajouter intrant ",
-            //                     style: TextStyle(
-            //                       color: d_colorGreen,
-            //                       fontSize: 18,
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                   onTap: () async {
-            //                     Navigator.of(context).pop();
-            //                     _getResultFromNextScreen1(context);
-            //                   },
-            //                 ),
-            //               ),
-            //              PopupMenuItem<String>(
-            //                 child: ListTile(
-            //                   leading: const Icon(
-            //                     Icons.remove_red_eye,
-            //                     color: d_colorGreen,
-            //                   ),
-            //                   title: const Text(
-            //                     "Mes intrants ",
-            //                     style: TextStyle(
-            //                       color: d_colorGreen,
-            //                       fontSize: 18,
-            //                       fontWeight: FontWeight.bold,
-            //                     ),
-            //                   ),
-            //                   onTap: () async {
-            //                     Navigator.of(context).pop();
-            //                     _getResultFromNextScreen2(context);
-            //                   },
-            //                 ),
-            //               )
-            //             ];
-            //           },
-            //         )
-            //       ]
-            //     : [
-            //         IconButton(
-            //             onPressed: () {
-            //               intrantListeFuture = fetchIntrantByCategorie(
-            //                   detectedCountry != null
-            //                       ? detectedCountry!
-            //                       : "Mali");
-            //             },
-            //             icon:
-            //                 const Icon(Icons.refresh, color: Colors.white)),
-            //       ]
-            ),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -1083,11 +1004,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                             libelle, nomP!);
                               })
                             : setState(() {
-                                intrantListeFuture = fetchIntrantByCategorie(
-                                    // detectedCountry != null
-                                    //     ? detectedCountry!
-                                    //     : "Mali"
-                                    );
+                                intrantListeFuture = fetchIntrantByCategorie();
                               });
                       },
                       child: selectedCat == null && nomP == null
@@ -1188,19 +1105,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Produits locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         color: d_colorGreen,
-                                                    //         fontSize: 16),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1305,18 +1209,31 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsLocaux[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsLocaux[index].prixIntrant.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                          : "${produitsLocaux[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsLocaux[index].prixIntrant.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsLocaux[index].monnaie != null
+                                                                              ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1464,18 +1381,31 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsEtrangers[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsEtrangers[index].prixIntrant.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                          : "${produitsEtrangers[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsEtrangers[index].prixIntrant.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsEtrangers[index].monnaie != null
+                                                                              ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1608,19 +1538,6 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Produits locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         color: d_colorGreen,
-                                                    //         fontSize: 16),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1725,18 +1642,31 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsLocaux[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsLocaux[index].prixIntrant.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                          : "${produitsLocaux[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsLocaux[index].prixIntrant.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsLocaux[index].monnaie != null
+                                                                              ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1884,18 +1814,31 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsEtrangers[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsEtrangers[index].prixIntrant.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                          : "${produitsEtrangers[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsEtrangers[index].prixIntrant.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsEtrangers[index].monnaie != null
+                                                                              ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],

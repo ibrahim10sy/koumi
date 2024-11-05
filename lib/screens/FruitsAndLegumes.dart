@@ -84,29 +84,6 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
     }
   }
 
-  // void _scrollListener() {
-  //   if (scrollableController.position.pixels >=
-  //           scrollableController.position.maxScrollExtent - 200 &&
-  //       hasMore &&
-  //       !isLoading) {
-  //     // if (selectedCat != null) {
-  //     // Incrementez la page et récupérez les stocks par catégorie
-  //     debugPrint("yes - fetch by category");
-  //     setState(() {
-  //       // Rafraîchir les données ici
-  //       page++;
-  //     });
-
-  //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
-  //         .then((value) {
-  //       setState(() {
-  //         // Rafraîchir les données ici
-  //         debugPrint("page inc all ${page}");
-  //       });
-  //     });
-  //   }
-  //   debugPrint("no");
-  // }
   void _scrollListener() {
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
@@ -527,56 +504,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                     //     detectedCountry != null ? detectedCountry! : "Mali");
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white)),
-            ]
-            // : [
-            //     IconButton(
-            //         onPressed: () {
-            //           stockListeFuture = fetchStock(detectedCountry != null
-            //               ? detectedCountry!
-            //               : "Mali");
-            //         },
-            //         icon: const Icon(Icons.refresh, color: Colors.white)),
-            //     (typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("commercant") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("commerçant") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("admin") ||
-            //             typeActeurData
-            //                 .map((e) => e.libelle!.toLowerCase())
-            //                 .contains("producteur"))
-            //         ? PopupMenuButton<String>(
-            //             padding: EdgeInsets.zero,
-            //             itemBuilder: (context) {
-            //               return <PopupMenuEntry<String>>[
-            //                 PopupMenuItem<String>(
-            //                   child: ListTile(
-            //                     leading: const Icon(
-            //                       Icons.add,
-            //                       color: Colors.green,
-            //                     ),
-            //                     title: const Text(
-            //                       "Ajouter produit",
-            //                       style: TextStyle(
-            //                         color: Colors.green,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     onTap: () async {
-            //                       Navigator.of(context).pop();
-            //                       _getResultFromNextScreen1(context);
-            //                     },
-            //                   ),
-            //                 ),
-            //               ];
-            //             },
-            //           )
-            //         : Container()
-            //   ],
-            ),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -764,10 +692,6 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                           selectedCat =
                                               null; // Réinitialiser la catégorie sélectionnée
                                           stockListeFuture = fetchStock();
-                                          // stockListeFuture = fetchStock(
-                                          //     detectedCountry != null
-                                          //         ? detectedCountry!
-                                          //         : "Mali");
                                         });
                                         debugPrint(
                                             "Rechercher mode désactivé : $isSearchMode");
@@ -1397,18 +1321,27 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsLocaux[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                            : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsLocaux[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1563,18 +1496,27 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsEtrangers[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                            : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsEtrangers[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1820,18 +1762,31 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsLocaux[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                          : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsLocaux[index].prix.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsLocaux[index].monnaie != null
+                                                                              ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
                                                                 ],
@@ -1985,18 +1940,31 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsEtrangers[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                          : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsEtrangers[index].prix.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsEtrangers[index].monnaie != null
+                                                                              ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
                                                                 ],

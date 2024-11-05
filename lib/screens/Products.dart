@@ -104,7 +104,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     stockListe = await StockService().fetchStock();
     return stockListe;
   }
- 
+
   void _scrollListener() {
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
@@ -216,7 +216,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
     return stockListe;
   }
- 
+
   Future<List<Stock>> fetchStockByCategorie(String niveau3PaysActeur,
       {bool refresh = false}) async {
     if (isLoading == true) return [];
@@ -980,7 +980,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     : setState(() {
                         stockListeFuture = StockService().fetchStock();
                       });
-              
               },
               child: selectedCat == null && nomP == null
                   ? SingleChildScrollView(
@@ -1122,7 +1121,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                   crossAxisSpacing: 5,
                                                   childAspectRatio: 0.8,
                                                 ),
-                                                itemCount: produitsLocaux.length,
+                                                itemCount:
+                                                    produitsLocaux.length,
                                                 // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                 itemBuilder: (context, index) {
                                                   if (index <
@@ -1154,7 +1154,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             8.0),
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   height: 85,
                                                                   child: produitsLocaux[index].photo ==
                                                                               null ||
@@ -1172,16 +1173,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                               "https://koumi.ml/api-koumi/Stock/${produitsLocaux[index].idStock}/image",
                                                                           fit: BoxFit
                                                                               .cover,
-                                                                          placeholder:
-                                                                              (context, url) =>
-                                                                                  const Center(child: CircularProgressIndicator()),
-                                                                          errorWidget: (context,
-                                                                                  url,
-                                                                                  error) =>
+                                                                          placeholder: (context, url) =>
+                                                                              const Center(child: CircularProgressIndicator()),
+                                                                          errorWidget: (context, url, error) =>
                                                                               Image.asset(
                                                                             'assets/images/default_image.png',
-                                                                            fit: BoxFit
-                                                                                .cover,
+                                                                            fit:
+                                                                                BoxFit.cover,
                                                                           ),
                                                                         ),
                                                                 ),
@@ -1194,7 +1192,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       .nomProduit!,
                                                                   style:
                                                                       TextStyle(
-                                                                    fontSize: 16,
+                                                                    fontSize:
+                                                                        16,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1216,7 +1215,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     overflow:
                                                                         TextOverflow
                                                                             .ellipsis,
-                                                                    fontSize: 15,
+                                                                    fontSize:
+                                                                        15,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1226,23 +1226,36 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                 ),
                                                               ),
                                                               Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            15),
-                                                                child: Text(
-                                                                  produitsLocaux[index]
-                                                                              .monnaie !=
-                                                                          null
-                                                                      ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                      : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize: 15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        15),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      "${produitsLocaux[index].prix.toString()} ",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            17,
+                                                                        color:
+                                                                            d_colorOr,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      produitsLocaux[index].monnaie !=
+                                                                              null
+                                                                          ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                          : " FCFA ",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        color:
+                                                                            d_colorOr,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                             ],
@@ -1254,14 +1267,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .symmetric(
-                                                                    vertical: 32),
+                                                                    vertical:
+                                                                        32),
                                                             child: Center(
                                                                 child:
                                                                     const Center(
                                                               child:
                                                                   CircularProgressIndicator(
-                                                                color:
-                                                                    Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                             )),
                                                           )
@@ -1282,7 +1296,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                             ),
-                                           
                                             RepaintBoundary(
                                               child: GridView.builder(
                                                 shrinkWrap: true,
@@ -1300,7 +1313,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                 // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                 itemBuilder: (context, index) {
                                                   if (index <
-                                                      produitsEtrangers.length) {
+                                                      produitsEtrangers
+                                                          .length) {
                                                     return GestureDetector(
                                                         onTap: () {
                                                           Navigator.push(
@@ -1328,7 +1342,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             8.0),
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   height: 85,
                                                                   child: produitsEtrangers[index].photo ==
                                                                               null ||
@@ -1346,16 +1361,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                               "https://koumi.ml/api-koumi/Stock/${produitsEtrangers[index].idStock}/image",
                                                                           fit: BoxFit
                                                                               .cover,
-                                                                          placeholder:
-                                                                              (context, url) =>
-                                                                                  const Center(child: CircularProgressIndicator()),
-                                                                          errorWidget: (context,
-                                                                                  url,
-                                                                                  error) =>
+                                                                          placeholder: (context, url) =>
+                                                                              const Center(child: CircularProgressIndicator()),
+                                                                          errorWidget: (context, url, error) =>
                                                                               Image.asset(
                                                                             'assets/images/default_image.png',
-                                                                            fit: BoxFit
-                                                                                .cover,
+                                                                            fit:
+                                                                                BoxFit.cover,
                                                                           ),
                                                                         ),
                                                                 ),
@@ -1368,7 +1380,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       .nomProduit!,
                                                                   style:
                                                                       TextStyle(
-                                                                    fontSize: 16,
+                                                                    fontSize:
+                                                                        16,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1390,7 +1403,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     overflow:
                                                                         TextOverflow
                                                                             .ellipsis,
-                                                                    fontSize: 15,
+                                                                    fontSize:
+                                                                        15,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1400,23 +1414,36 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                 ),
                                                               ),
                                                               Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            15),
-                                                                child: Text(
-                                                                  produitsEtrangers[index]
-                                                                              .monnaie !=
-                                                                          null
-                                                                      ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                      : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize: 15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        15),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      "${produitsEtrangers[index].prix.toString()} ",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            17,
+                                                                        color:
+                                                                            d_colorOr,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      produitsEtrangers[index].monnaie !=
+                                                                              null
+                                                                          ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                          : " FCFA ",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        color:
+                                                                            d_colorOr,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                             ],
@@ -1428,14 +1455,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .symmetric(
-                                                                    vertical: 32),
+                                                                    vertical:
+                                                                        32),
                                                             child: Center(
                                                                 child:
                                                                     const Center(
                                                               child:
                                                                   CircularProgressIndicator(
-                                                                color:
-                                                                    Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                             )),
                                                           )
@@ -1707,18 +1735,32 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       .symmetric(
                                                                       horizontal:
                                                                           15),
-                                                                  child: Text(
-                                                                    produitsLocaux[index].monnaie !=
-                                                                            null
-                                                                        ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                        : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      color: Colors
-                                                                          .black87,
-                                                                    ),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        "${produitsLocaux[index].prix.toString()} ",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              17,
+                                                                          color:
+                                                                              d_colorOr,
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        produitsLocaux[index].monnaie !=
+                                                                                null
+                                                                            ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                            : " FCFA ",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color:
+                                                                              d_colorOr,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
                                                               ],
@@ -1884,18 +1926,32 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       .symmetric(
                                                                       horizontal:
                                                                           15),
-                                                                  child: Text(
-                                                                    produitsEtrangers[index].monnaie !=
-                                                                            null
-                                                                        ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                        : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      color: Colors
-                                                                          .black87,
-                                                                    ),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        "${produitsEtrangers[index].prix.toString()} ",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              17,
+                                                                          color:
+                                                                              d_colorOr,
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        produitsEtrangers[index].monnaie !=
+                                                                                null
+                                                                            ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                            : " FCFA ",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color:
+                                                                              d_colorOr,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
                                                               ],

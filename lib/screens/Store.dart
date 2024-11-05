@@ -1145,43 +1145,56 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     ),
                                                                   ),
                                                                   // SizedBox(height: 8),
-                                                                  ListTile(
-                                                                    title: Text(
-                                                                      produitsLocaux[
-                                                                              index]
-                                                                          .nomMagasin!,
-                                                                      maxLines:
-                                                                          2,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            17,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                    subtitle:
-                                                                        Text(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      produitsLocaux[
-                                                                              index]
-                                                                          .localiteMagasin!,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Text(
+                                                                            produitsLocaux[index].nomMagasin!,
+                                                                            maxLines:
+                                                                                2,
+                                                                            textAlign:
+                                                                                TextAlign.left,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.black87,
+                                                                            ),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                10),
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.location_on,
+                                                                              color: d_colorOr, // Couleur de l'icône
+                                                                              size: 24.0,
+                                                                            ),
+                                                                            Text(
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              produitsLocaux[index].localiteMagasin!,
+                                                                              style: TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
 
@@ -1222,7 +1235,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Magasins autre pays",
+                                                        "Magasins autress pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1300,47 +1313,58 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             ),
                                                                     ),
                                                                   ),
-                                                                  // SizedBox(height: 8),
-                                                                  ListTile(
-                                                                    title: Text(
-                                                                      produitsEtrangers[
-                                                                              index]
-                                                                          .nomMagasin!,
-                                                                      maxLines:
-                                                                          2,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            17,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                    subtitle:
-                                                                        Text(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      produitsEtrangers[
-                                                                              index]
-                                                                          .localiteMagasin!,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Text(
+                                                                            produitsEtrangers[index].nomMagasin!,
+                                                                            maxLines:
+                                                                                2,
+                                                                            textAlign:
+                                                                                TextAlign.left,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.black87,
+                                                                            ),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                10),
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.location_on,
+                                                                              color: d_colorOr, // Couleur de l'icône
+                                                                              size: 24.0,
+                                                                            ),
+                                                                            Text(
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              produitsEtrangers[index].localiteMagasin!,
+                                                                              style: TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
-
                                                                   _buildItem(produitsEtrangers[
                                                                           index]
                                                                       .contactMagasin!)
@@ -1569,40 +1593,48 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         ),
                                                                       ),
                                                                       // SizedBox(height: 8),
-                                                                      ListTile(
-                                                                        title:
-                                                                            Text(
-                                                                          produitsLocaux[index]
-                                                                              .nomMagasin!,
-                                                                          maxLines:
-                                                                              2,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                17,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            color:
-                                                                                Colors.black87,
-                                                                          ),
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                        ),
-                                                                        subtitle:
-                                                                            Text(
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          produitsLocaux[index]
-                                                                              .localiteMagasin!,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                15,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            color:
-                                                                                Colors.black87,
-                                                                          ),
+
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Align(
+                                                                              alignment: Alignment.topLeft,
+                                                                              child: Text(
+                                                                                produitsLocaux[index].nomMagasin!,
+                                                                                maxLines: 2,
+                                                                                textAlign: TextAlign.left,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 17,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(height: 10),
+                                                                            Row(
+                                                                              children: [
+                                                                                Icon(
+                                                                                  Icons.location_on,
+                                                                                  color: d_colorOr, // Couleur de l'icône
+                                                                                  size: 24.0,
+                                                                                ),
+                                                                                Text(
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  produitsLocaux[index].localiteMagasin!,
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.black87,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
                                                                         ),
                                                                       ),
 
@@ -1723,43 +1755,48 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         ),
                                                                       ),
                                                                       // SizedBox(height: 8),
-                                                                      ListTile(
-                                                                        title:
-                                                                            Text(
-                                                                          produitsEtrangers[index]
-                                                                              .nomMagasin!,
-                                                                          maxLines:
-                                                                              2,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                17,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            color:
-                                                                                Colors.black87,
-                                                                          ),
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                        ),
-                                                                        subtitle:
-                                                                            Text(
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          produitsEtrangers[index]
-                                                                              .localiteMagasin!,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                15,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            color:
-                                                                                Colors.black87,
-                                                                          ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Align(
+                                                                              alignment: Alignment.topLeft,
+                                                                              child: Text(
+                                                                                produitsEtrangers[index].nomMagasin!,
+                                                                                maxLines: 2,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 17,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(height: 10),
+                                                                            Row(
+                                                                              children: [
+                                                                                Icon(
+                                                                                  Icons.location_on,
+                                                                                  color: d_colorOr, // Couleur de l'icône
+                                                                                  size: 24.0,
+                                                                                ),
+                                                                                Text(
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  produitsEtrangers[index].localiteMagasin!,
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 15,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.black87,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
                                                                         ),
                                                                       ),
-
                                                                       _buildItem(
                                                                           produitsEtrangers[index]
                                                                               .contactMagasin!)
@@ -1869,14 +1906,24 @@ class _StoreScreenState extends State<StoreScreen> {
   Widget _buildItem(String value) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text(
-        value,
-        maxLines: 2,
-        style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w800,
-            overflow: TextOverflow.ellipsis,
-            fontSize: 16),
+      child: Row(
+        children: [
+          Icon(
+            Icons.phone, // Icône de localisation
+            color: d_colorOr, // Couleur de l'icône
+            size: 24.0, // Taille de l'icône
+          ),
+          SizedBox(width: 10),
+          Text(
+            value,
+            maxLines: 2,
+            style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+                overflow: TextOverflow.ellipsis,
+                fontSize: 16),
+          ),
+        ],
       ),
     );
   }

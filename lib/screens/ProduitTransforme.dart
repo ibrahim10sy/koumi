@@ -317,29 +317,6 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
     }
     debugPrint("no");
   }
-  // void _scrollListener() {
-  //   if (scrollableController.position.pixels >=
-  //           scrollableController.position.maxScrollExtent - 200 &&
-  //       hasMore &&
-  //       !isLoading) {
-  //     // if (selectedCat != null) {
-  //     // Incrementez la page et récupérez les stocks par catégorie
-  //     debugPrint("yes - fetch by category");
-  //     setState(() {
-  //       // Rafraîchir les données ici
-  //       page++;
-  //     });
-
-  //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
-  //         .then((value) {
-  //       setState(() {
-  //         // Rafraîchir les données ici
-  //         debugPrint("page inc all ${page}");
-  //       });
-  //     });
-  //   }
-  //   debugPrint("no");
-  // }
 
   void _scrollListener1() {
     if (scrollableController1.position.pixels >=
@@ -1188,9 +1165,6 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                         .fetchStockByCategorieAndFiliere(
                                         selectedCat!.idCategorieProduit!,
                                         libelle,
-                                        // detectedCountry != null
-                                        //     ? detectedCountry!
-                                        //     : "Mali"
                                       )
                                     : stockListeFuture1 = StockService()
                                         .fetchStockByPaysAndFiliere(
@@ -1198,11 +1172,6 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                               })
                             : setState(() {
                                 stockListeFuture = fetchStock();
-                                // : setState(() {
-                                //     stockListeFuture = fetchStock(
-                                //         detectedCountry != null
-                                //             ? detectedCountry!
-                                //             : "Mali");
                               });
                         debugPrint("refresh page ${page}");
                       },
@@ -1410,18 +1379,27 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsLocaux[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                            : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsLocaux[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsLocaux[index].monnaie != null
+                                                                                ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1576,18 +1554,27 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsEtrangers[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                            : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsEtrangers[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1824,18 +1811,27 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsLocaux[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                            : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsLocaux[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsLocaux[index].monnaie != null
+                                                                                ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1990,18 +1986,27 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsEtrangers[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                            : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsEtrangers[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],

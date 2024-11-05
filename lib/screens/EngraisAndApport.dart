@@ -455,9 +455,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                     Icons.refresh,
                     color: Colors.white,
                   )),
-            ]
-          
-            ),
+            ]),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -1102,7 +1100,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                         return filteredSearch.isEmpty &&
                                                 isLoading == false
                                             ? SingleChildScrollView(
-                                                child:  Padding(
+                                                child: Padding(
                                                   padding: EdgeInsets.all(10),
                                                   child: Center(
                                                     child: Column(
@@ -1112,7 +1110,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                         SizedBox(
                                                           height: 10,
                                                         ),
-                                                      const  Text(
+                                                        const Text(
                                                           'Aucun produit trouvé',
                                                           style: TextStyle(
                                                             color: Colors.black,
@@ -1149,7 +1147,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                         if (index <
                                                             produitsLocaux
                                                                 .length) {
-                                                          return  GestureDetector(
+                                                          return GestureDetector(
                                                             onTap: () {
                                                               Navigator.push(
                                                                 context,
@@ -1199,7 +1197,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                   ),
                                                                   // SizedBox(height: 8),
                                                                   ListTile(
-                                                                    title:  Text(
+                                                                    title: Text(
                                                                       produitsLocaux[
                                                                               index]
                                                                           .nomIntrant!,
@@ -1235,18 +1233,31 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsLocaux[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsLocaux[index].prixIntrant.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                          : "${produitsLocaux[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsLocaux[index].prixIntrant.toString()}",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsLocaux[index].monnaie != null
+                                                                              ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1394,18 +1405,31 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsEtrangers[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsEtrangers[index].prixIntrant.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                          : "${produitsEtrangers[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsEtrangers[index].prixIntrant.toString()}",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsEtrangers[index].monnaie != null
+                                                                              ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1538,19 +1562,6 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Produits locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         color: d_colorGreen,
-                                                    //         fontSize: 16),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1655,18 +1666,31 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsLocaux[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsLocaux[index].prixIntrant.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                          : "${produitsLocaux[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsLocaux[index].prixIntrant.toString()}",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsLocaux[index].monnaie != null
+                                                                              ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1814,18 +1838,31 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                         .symmetric(
                                                                         horizontal:
                                                                             15),
-                                                                    child: Text(
-                                                                      produitsEtrangers[index].monnaie !=
-                                                                              null
-                                                                          ? "${produitsEtrangers[index].prixIntrant.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                          : "${produitsEtrangers[index].prixIntrant.toString()} FCFA ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "${produitsEtrangers[index].prixIntrant.toString()} ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          produitsEtrangers[index].monnaie != null
+                                                                              ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                              : " FCFA ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                d_colorOr,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                 ],
@@ -1931,6 +1968,4 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
       ),
     );
   }
-
-  
 }

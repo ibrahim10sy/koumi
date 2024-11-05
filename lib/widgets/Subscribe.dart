@@ -89,10 +89,7 @@ class _SubscribeState extends State<Subscribe> {
               children: [
                 TextButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => SubscriptionPage()));
+                   
                     _getResultFromZonePage(context);
                   },
                   child: Row(
@@ -168,89 +165,97 @@ class _SubscribeState extends State<Subscribe> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.code, color: d_colorOr),
-                              SizedBox(width: 8),
-                              Text(
-                                "Code Abonnement: ${abonnement.codeAbonnement}",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: d_colorGreen,
+                    child: GestureDetector(
+                      onTap:(){
+                        //  Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) => PaymentPage()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.code, color: d_colorOr),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Code Abonnement: ${abonnement.codeAbonnement}",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: d_colorGreen,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.category, color: d_colorOr),
-                              SizedBox(width: 8),
-                              Text(
-                                "Type Abonnement: ${abonnement.typeAbonnement}",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.date_range, color: d_colorOr),
-                              SizedBox(width: 8),
-                              Text(
-                                "Date d'ajout: ${abonnement.dateAjout}",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.attach_money, color: d_colorOr),
-                              SizedBox(width: 8),
-                              Text(
-                                "Montant: ${abonnement.montant} FCFA",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.check_circle,
-                                  color: abonnement.statutAbonnement!
-                                      ? Colors.green
-                                      : Colors.red),
-                              SizedBox(width: 8),
-                              Text(
-                                "Statut: ${abonnement.statutAbonnement! ? 'Actif' : 'Inactif'}",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: abonnement.statutAbonnement!
-                                      ? Colors.green
-                                      : Colors.red,
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(Icons.category, color: d_colorOr),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Type Abonnement: ${abonnement.typeAbonnement}",
+                                  style: TextStyle(fontSize: 16),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.calendar_today, color: d_colorOr),
-                              SizedBox(width: 8),
-                              Text(
-                                "Date Fin: ${abonnement.dateFin}",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(Icons.date_range, color: d_colorOr),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Date d'ajout: ${abonnement.dateAjout}",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(Icons.attach_money, color: d_colorOr),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Montant: ${abonnement.montant} FCFA",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle,
+                                    color: abonnement.statutAbonnement!
+                                        ? Colors.green
+                                        : Colors.red),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Statut: ${abonnement.statutAbonnement! ? 'Actif' : 'Inactif'}",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: abonnement.statutAbonnement!
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(Icons.calendar_today, color: d_colorOr),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Date Fin: ${abonnement.dateFin}",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -260,7 +265,7 @@ class _SubscribeState extends State<Subscribe> {
           else
             const Padding(
               padding: EdgeInsets.all(10),
-              child: Center(child: Text("Acteur non trouvé")),
+              child: Center(child: Text("Abonnement non trouvé")),
             ),
         ],
       ),

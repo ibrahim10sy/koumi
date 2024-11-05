@@ -108,29 +108,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
     }
     debugPrint("no");
   }
-  // void _scrollListener() {
-  //   if (scrollableController.position.pixels >=
-  //           scrollableController.position.maxScrollExtent - 200 &&
-  //       hasMore &&
-  //       !isLoading) {
-  //     // if (selectedCat != null) {
-  //     // Incrementez la page et récupérez les stocks par catégorie
-  //     debugPrint("yes - fetch by category");
-  //     setState(() {
-  //       // Rafraîchir les données ici
-  //       page++;
-  //     });
-
-  //     fetchStock(detectedCountry != null ? detectedCountry! : "Mali")
-  //         .then((value) {
-  //       setState(() {
-  //         // Rafraîchir les données ici
-  //         debugPrint("page inc all ${page}");
-  //       });
-  //     });
-  //   }
-  //   debugPrint("no");
-  // }
 
   void _scrollListener1() {
     if (scrollableController1.position.pixels >=
@@ -1280,19 +1257,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Produits locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         color: d_colorGreen,
-                                                    //         fontSize: 16),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1306,7 +1270,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                       ),
                                                       itemCount:
                                                           produitsLocaux.length,
-                                                      // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                       itemBuilder:
                                                           (context, index) {
                                                         if (index <
@@ -1404,18 +1367,27 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsLocaux[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                            : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsLocaux[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1472,7 +1444,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                       itemCount:
                                                           produitsEtrangers
                                                               .length,
-                                                      // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                       itemBuilder:
                                                           (context, index) {
                                                         if (index <
@@ -1570,18 +1541,27 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsEtrangers[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                            : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsEtrangers[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1707,19 +1687,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Produits locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         color: d_colorGreen,
-                                                    //         fontSize: 16),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1733,7 +1700,6 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                       ),
                                                       itemCount:
                                                           produitsLocaux.length,
-                                                      // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                                       itemBuilder:
                                                           (context, index) {
                                                         if (index <
@@ -1831,18 +1797,27 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsLocaux[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsLocaux[index].prix.toString()} ${produitsLocaux[index].monnaie!.libelle}"
-                                                                            : "${produitsLocaux[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsLocaux[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsLocaux[index].monnaie != null
+                                                                                ? " ${produitsLocaux[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
@@ -1997,18 +1972,27 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                           horizontal:
                                                                               15),
                                                                       child:
+                                                                          Row(
+                                                                        children: [
                                                                           Text(
-                                                                        produitsEtrangers[index].monnaie !=
-                                                                                null
-                                                                            ? "${produitsEtrangers[index].prix.toString()} ${produitsEtrangers[index].monnaie!.libelle}"
-                                                                            : "${produitsEtrangers[index].prix.toString()} FCFA",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                            "${produitsEtrangers[index].prix.toString()} ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 17,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            produitsEtrangers[index].monnaie != null
+                                                                                ? " ${produitsEtrangers[index].monnaie!.libelle}"
+                                                                                : " FCFA ",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: d_colorOr,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
