@@ -84,8 +84,6 @@ class _TransportState extends State<Transport> {
         hasMore &&
         !isLoading &&
         selectedType != null) {
-      // if (selectedCat != null) {
-      // Incrementez la page et récupérez les stocks par catégorie
       debugPrint("yes - fetch by type and pays");
       if (mounted)
         setState(() {
@@ -401,34 +399,6 @@ class _TransportState extends State<Transport> {
     super.dispose();
   }
 
-  void _updateMode(int index) {
-    if (mounted) {
-      setState(() {
-        isSearchMode = index == 0;
-        if (!isSearchMode) {
-          _searchController.clear();
-          _searchController.dispose();
-          _searchController = TextEditingController();
-        }
-      });
-    }
-  }
-
-  void _selectMode(String mode) {
-    setState(() {
-      if (mode == 'Rechercher') {
-        isSearchMode = true;
-        isFilterMode = false;
-      } else if (mode == 'Filtrer') {
-        isSearchMode = false;
-        isFilterMode = true;
-      } else if (mode == 'Fermer') {
-        isSearchMode = false;
-        isFilterMode = false;
-      }
-    });
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -454,10 +424,7 @@ class _TransportState extends State<Transport> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
-            actions:
-                // !isExist
-                //     ?
-                [
+            actions: [
               IconButton(
                   onPressed: () {
                     selectedType == null
@@ -1217,13 +1184,6 @@ class _TransportState extends State<Transport> {
                                                         produitsLocaux.length) {
                                                       return GestureDetector(
                                                         onTap: () {
-                                                          // Navigator.push(
-                                                          //     context,
-                                                          //    MaterialPageRoute(
-                                                          //         builder: (context) =>
-                                                          //             DetailTransport(
-                                                          //                 vehicule:
-                                                          //                     produitsLocaux[index])));
                                                           _getResultFromNextScreen3(
                                                               context,
                                                               produitsLocaux[
@@ -1271,56 +1231,117 @@ class _TransportState extends State<Transport> {
                                                                         ),
                                                                 ),
                                                               ),
-                                                              // SizedBox(height: 8),
-                                                              ListTile(
-                                                                title: Text(
-                                                                  produitsLocaux[
-                                                                          index]
-                                                                      .nomVehicule,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
-                                                                  maxLines: 2,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                subtitle: Text(
-                                                                  "${produitsLocaux[index].nbKilometrage.toString()} Km",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
+                                                              SizedBox(
+                                                                  height: 8),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        4.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topLeft,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                10),
+                                                                        child:
+                                                                            Text(
+                                                                          produitsLocaux[index]
+                                                                              .nomVehicule,
+                                                                          maxLines:
+                                                                              2,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10),
+                                                                    Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .speed,
+                                                                          color:
+                                                                              d_colorOr, // Couleur de l'icône
+                                                                          size:
+                                                                              24.0,
+                                                                        ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5),
+                                                                        Text(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          "${produitsLocaux[index].nbKilometrage.toString()} Km",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                               Padding(
                                                                 padding: const EdgeInsets
                                                                     .symmetric(
                                                                     horizontal:
-                                                                        15),
-                                                                child: Text(
-                                                                  produitsLocaux[
-                                                                          index]
-                                                                      .localisation,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
+                                                                        5,
+                                                                    vertical:
+                                                                        10),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .location_on,
+                                                                      color:
+                                                                          d_colorOr, // Couleur de l'icône
+                                                                      size:
+                                                                          24.0,
+                                                                    ),
+                                                                    Text(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      produitsLocaux[
+                                                                              index]
+                                                                          .localisation,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        color: Colors
+                                                                            .black87,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              )
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
@@ -1426,56 +1447,117 @@ class _TransportState extends State<Transport> {
                                                                         ),
                                                                 ),
                                                               ),
-                                                              // SizedBox(height: 8),
-                                                              ListTile(
-                                                                title: Text(
-                                                                  produitsEtrangers[
-                                                                          index]
-                                                                      .nomVehicule,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
-                                                                  maxLines: 2,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                subtitle: Text(
-                                                                  "${produitsEtrangers[index].nbKilometrage.toString()} Km",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
+                                                              SizedBox(
+                                                                  height: 8),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        4.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topLeft,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                10),
+                                                                        child:
+                                                                            Text(
+                                                                          produitsEtrangers[index]
+                                                                              .nomVehicule,
+                                                                          maxLines:
+                                                                              2,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10),
+                                                                    Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .speed,
+                                                                          color:
+                                                                              d_colorOr, // Couleur de l'icône
+                                                                          size:
+                                                                              24.0,
+                                                                        ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5),
+                                                                        Text(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          "${produitsEtrangers[index].nbKilometrage.toString()} Km",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                               Padding(
                                                                 padding: const EdgeInsets
                                                                     .symmetric(
                                                                     horizontal:
-                                                                        15),
-                                                                child: Text(
-                                                                  produitsEtrangers[
-                                                                          index]
-                                                                      .localisation,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
+                                                                        5,
+                                                                    vertical:
+                                                                        10),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .location_on,
+                                                                      color:
+                                                                          d_colorOr, // Couleur de l'icône
+                                                                      size:
+                                                                          24.0,
+                                                                    ),
+                                                                    Text(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      produitsEtrangers[
+                                                                              index]
+                                                                          .localisation,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        color: Colors
+                                                                            .black87,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              )
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
@@ -1601,18 +1683,6 @@ class _TransportState extends State<Transport> {
                                                 children: [
                                                   if (produitsLocaux
                                                       .isNotEmpty) ...[
-                                                    // Padding(
-                                                    //   padding:
-                                                    //       const EdgeInsets.all(
-                                                    //           8.0),
-                                                    //   child: Text(
-                                                    //     "Transport locaux",
-                                                    //     style: TextStyle(
-                                                    //         fontWeight:
-                                                    //             FontWeight.bold,
-                                                    //         fontSize: 18),
-                                                    //   ),
-                                                    // ),
                                                     GridView.builder(
                                                       shrinkWrap: true,
                                                       physics:
@@ -1671,57 +1741,97 @@ class _TransportState extends State<Transport> {
                                                                             ),
                                                                     ),
                                                                   ),
-                                                                  // SizedBox(height: 8),
-                                                                  ListTile(
-                                                                    title: Text(
-                                                                      produitsLocaux[
-                                                                              index]
-                                                                          .nomVehicule,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
-                                                                      maxLines:
-                                                                          2,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                    subtitle:
-                                                                        Text(
-                                                                      "${produitsLocaux[index].nbKilometrage.toString()} Km",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          8),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            4.0),
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 10),
+                                                                            child:
+                                                                                Text(
+                                                                              produitsLocaux[index].nomVehicule,
+                                                                              maxLines: 2,
+                                                                              style: TextStyle(
+                                                                                fontSize: 17,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                10),
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.speed,
+                                                                              color: d_colorOr, // Couleur de l'icône
+                                                                              size: 24.0,
+                                                                            ),
+                                                                            SizedBox(width: 5),
+                                                                            Text(
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              "${produitsLocaux[index].nbKilometrage.toString()} Km",
+                                                                              style: TextStyle(
+                                                                                fontSize: 16,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
                                                                   Padding(
                                                                     padding: const EdgeInsets
                                                                         .symmetric(
                                                                         horizontal:
-                                                                            15),
-                                                                    child: Text(
-                                                                      produitsLocaux[
-                                                                              index]
-                                                                          .localisation,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                            5,
+                                                                        vertical:
+                                                                            10),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .location_on,
+                                                                          color:
+                                                                              d_colorOr, // Couleur de l'icône
+                                                                          size:
+                                                                              24.0,
+                                                                        ),
+                                                                        Text(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          produitsLocaux[index]
+                                                                              .localisation,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  )
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -1820,57 +1930,97 @@ class _TransportState extends State<Transport> {
                                                                             ),
                                                                     ),
                                                                   ),
-                                                                  // SizedBox(height: 8),
-                                                                  ListTile(
-                                                                    title: Text(
-                                                                      produitsEtrangers[
-                                                                              index]
-                                                                          .nomVehicule,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
-                                                                      maxLines:
-                                                                          2,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                    subtitle:
-                                                                        Text(
-                                                                      "${produitsEtrangers[index].nbKilometrage.toString()} Km",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          8),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            4.0),
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 10),
+                                                                            child:
+                                                                                Text(
+                                                                              produitsEtrangers[index].nomVehicule,
+                                                                              maxLines: 2,
+                                                                              style: TextStyle(
+                                                                                fontSize: 17,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                10),
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.speed,
+                                                                              color: d_colorOr,
+                                                                              size: 24.0,
+                                                                            ),
+                                                                            SizedBox(width: 5),
+                                                                            Text(
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              "${produitsEtrangers[index].nbKilometrage.toString()} Km",
+                                                                              style: TextStyle(
+                                                                                fontSize: 16,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
                                                                   Padding(
                                                                     padding: const EdgeInsets
                                                                         .symmetric(
                                                                         horizontal:
-                                                                            15),
-                                                                    child: Text(
-                                                                      produitsEtrangers[
-                                                                              index]
-                                                                          .localisation,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            15,
-                                                                        color: Colors
-                                                                            .black87,
-                                                                      ),
+                                                                            5,
+                                                                        vertical:
+                                                                            10),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .location_on,
+                                                                          color:
+                                                                              d_colorOr, // Couleur de l'icône
+                                                                          size:
+                                                                              24.0,
+                                                                        ),
+                                                                        Text(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          produitsEtrangers[index]
+                                                                              .localisation,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  )
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),

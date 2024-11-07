@@ -61,7 +61,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
   String? nomP;
   late Future _paysList;
 
-   void _scrollListener() {
+  void _scrollListener() {
     if (scrollableController.position.pixels >=
             scrollableController.position.maxScrollExtent - 200 &&
         hasMore &&
@@ -84,7 +84,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     debugPrint("no");
   }
 
-   void _scrollListener1() {
+  void _scrollListener1() {
     if (scrollableController1.position.pixels >=
             scrollableController1.position.maxScrollExtent - 200 &&
         hasMore &&
@@ -111,42 +111,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     }
     debugPrint("no");
   }
-
-  // void _scrollListener1() {
-  //   if (scrollableController1.position.pixels >=
-  //           scrollableController1.position.maxScrollExtent - 200 &&
-  //       hasMore &&
-  //       !isLoading &&
-  //       selectedType != null) {
-  //     // if (selectedCat != null) {
-  //     // Incrementez la page et récupérez les stocks par catégorie
-  //     debugPrint("yes - fetch by type and pays");
-  //     setState(() {
-  //       // Rafraîchir les données ici
-  //       page++;
-  //     });
-
-  //     fetchMaterielByType(detectedCountry != null ? detectedCountry! : "Mali")
-  //         .then((value) {
-  //       setState(() {
-  //         // Rafraîchir les données ici
-  //       });
-  //     });
-  //   } else if (nomP != null && nomP!.isNotEmpty) {
-  //     debugPrint("yes - fetch by country");
-  //     if (mounted)
-  //       setState(() {
-  //         page++;
-  //       });
-
-  //     fetchAllByPays().then((value) {
-  //       setState(() {
-  //         debugPrint("page pour pays ${nomP} inc all ${page}");
-  //       });
-  //     });
-  //   }
-  //   debugPrint("no");
-  // }
 
   Future<List<Materiels>> fetchAllByPays({bool refresh = false}) async {
     if (isLoading == true) return [];
@@ -359,7 +323,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
             Provider.of<DetectorPays>(context, listen: false).detectedCountry!
         : detectedCountry = "Mali";
     _searchController = TextEditingController();
-   WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       //code will run when widget rendering complete
       scrollableController.addListener(_scrollListener);
     });
@@ -375,7 +339,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
     super.initState();
   }
 
- 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -1142,7 +1105,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                   children: [
                                                     if (produitsLocaux
                                                         .isNotEmpty) ...[
-                                                     
                                                       GridView.builder(
                                                         shrinkWrap: true,
                                                         physics:
@@ -1164,7 +1126,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                   .length) {
                                                             return GestureDetector(
                                                               onTap: () {
-                                                               
                                                                 _getResultFromNextScreen3(
                                                                     context,
                                                                     produitsLocaux[
@@ -1202,55 +1163,73 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                               ),
                                                                       ),
                                                                     ),
-                                                                    // SizedBox(height: 8),
-                                                                    ListTile(
-                                                                      title:
-                                                                          Text(
-                                                                        produitsLocaux[index]
-                                                                            .nom!,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
-                                                                        maxLines:
-                                                                            2,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                      subtitle:
-                                                                          Text(
-                                                                        produitsLocaux[index]
-                                                                            .localisation!,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            8),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          4.0),
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Align(
+                                                                            alignment:
+                                                                                Alignment.topLeft,
+                                                                            child:
+                                                                                Padding(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                              child: Text(
+                                                                                produitsLocaux[index].nom!,
+                                                                                maxLines: 2,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 17,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                              height: 10),
+                                                                          Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.location_on,
+                                                                                color: d_colorOr, // Couleur de l'icône
+                                                                                size: 24.0,
+                                                                              ),
+                                                                              Text(
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                produitsLocaux[index].localisation!,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 16,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                     Padding(
                                                                       padding: const EdgeInsets
                                                                           .symmetric(
                                                                           horizontal:
-                                                                              15),
+                                                                              15,
+                                                                          vertical:
+                                                                              10),
                                                                       child:
                                                                           Text(
                                                                         "${produitsLocaux[index].prixParHeure.toString()} ${produitsLocaux[index].monnaie!.libelle}",
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           color:
-                                                                              Colors.black87,
+                                                                              d_colorOr,
                                                                         ),
                                                                       ),
                                                                     )
@@ -1313,7 +1292,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                   .length) {
                                                             return GestureDetector(
                                                               onTap: () {
-                                                               
                                                                 _getResultFromNextScreen3(
                                                                     context,
                                                                     produitsEtrangers[
@@ -1351,55 +1329,73 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                               ),
                                                                       ),
                                                                     ),
-                                                                    // SizedBox(height: 8),
-                                                                    ListTile(
-                                                                      title:
-                                                                          Text(
-                                                                        produitsEtrangers[index]
-                                                                            .nom!,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
-                                                                        maxLines:
-                                                                            2,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                      subtitle:
-                                                                          Text(
-                                                                        produitsEtrangers[index]
-                                                                            .localisation!,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            8),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          4.0),
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Align(
+                                                                            alignment:
+                                                                                Alignment.topLeft,
+                                                                            child:
+                                                                                Padding(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                              child: Text(
+                                                                                produitsEtrangers[index].nom!,
+                                                                                maxLines: 2,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 17,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                              height: 10),
+                                                                          Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.location_on,
+                                                                                color: d_colorOr, // Couleur de l'icône
+                                                                                size: 24.0,
+                                                                              ),
+                                                                              Text(
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                produitsEtrangers[index].localisation!,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 16,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                     Padding(
                                                                       padding: const EdgeInsets
                                                                           .symmetric(
                                                                           horizontal:
-                                                                              15),
+                                                                              15,
+                                                                          vertical:
+                                                                              10),
                                                                       child:
                                                                           Text(
                                                                         "${produitsEtrangers[index].prixParHeure.toString()} ${produitsEtrangers[index].monnaie!.libelle}",
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           color:
-                                                                              Colors.black87,
+                                                                              d_colorOr,
                                                                         ),
                                                                       ),
                                                                     )
@@ -1551,7 +1547,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                       children: [
                                                         if (produitsLocaux
                                                             .isNotEmpty) ...[
-                                                         
                                                           GridView.builder(
                                                             shrinkWrap: true,
                                                             physics:
@@ -1577,7 +1572,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       .length) {
                                                                 return GestureDetector(
                                                                   onTap: () {
-                                                                  
                                                                     _getResultFromNextScreen3(
                                                                         context,
                                                                         produitsLocaux[
@@ -1614,44 +1608,66 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                                   ),
                                                                           ),
                                                                         ),
-                                                                        // SizedBox(height: 8),
-                                                                        ListTile(
-                                                                          title:
-                                                                              Text(
-                                                                            produitsLocaux[index].nom!,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.black87,
-                                                                            ),
-                                                                            maxLines:
-                                                                                2,
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                          ),
-                                                                          subtitle:
-                                                                              Text(
-                                                                            produitsLocaux[index].localisation!,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              fontSize: 15,
-                                                                              color: Colors.black87,
-                                                                            ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                8),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              4.0),
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Align(
+                                                                                alignment: Alignment.topLeft,
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  child: Text(
+                                                                                    produitsLocaux[index].nom!,
+                                                                                    maxLines: 2,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 17,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Colors.black87,
+                                                                                    ),
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(height: 10),
+                                                                              Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.location_on,
+                                                                                    color: d_colorOr, // Couleur de l'icône
+                                                                                    size: 24.0,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    produitsLocaux[index].localisation!,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 16,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Colors.black87,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
                                                                           ),
                                                                         ),
                                                                         Padding(
                                                                           padding: const EdgeInsets
                                                                               .symmetric(
-                                                                              horizontal: 15),
+                                                                              horizontal: 15,
+                                                                              vertical: 10),
                                                                           child:
                                                                               Text(
                                                                             "${produitsLocaux[index].prixParHeure.toString()} ${produitsLocaux[index].monnaie!.libelle}",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Colors.black87,
+                                                                              fontSize: 16,
+                                                                              color: d_colorOr,
                                                                             ),
                                                                           ),
                                                                         )
@@ -1718,7 +1734,6 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       .length) {
                                                                 return GestureDetector(
                                                                   onTap: () {
-                                                                   
                                                                     _getResultFromNextScreen3(
                                                                         context,
                                                                         produitsEtrangers[
@@ -1755,44 +1770,66 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                                   ),
                                                                           ),
                                                                         ),
-                                                                        // SizedBox(height: 8),
-                                                                        ListTile(
-                                                                          title:
-                                                                              Text(
-                                                                            produitsEtrangers[index].nom!,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.black87,
-                                                                            ),
-                                                                            maxLines:
-                                                                                2,
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                          ),
-                                                                          subtitle:
-                                                                              Text(
-                                                                            produitsEtrangers[index].localisation!,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              fontSize: 15,
-                                                                              color: Colors.black87,
-                                                                            ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                8),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              4.0),
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Align(
+                                                                                alignment: Alignment.topLeft,
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  child: Text(
+                                                                                    produitsEtrangers[index].nom!,
+                                                                                    maxLines: 2,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 17,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Colors.black87,
+                                                                                    ),
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(height: 10),
+                                                                              Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.location_on,
+                                                                                    color: d_colorOr, // Couleur de l'icône
+                                                                                    size: 24.0,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    produitsEtrangers[index].localisation!,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 16,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Colors.black87,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
                                                                           ),
                                                                         ),
                                                                         Padding(
                                                                           padding: const EdgeInsets
                                                                               .symmetric(
-                                                                              horizontal: 15),
+                                                                              horizontal: 15,
+                                                                              vertical: 10),
                                                                           child:
                                                                               Text(
                                                                             "${produitsEtrangers[index].prixParHeure.toString()} ${produitsEtrangers[index].monnaie!.libelle}",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
-                                                                              color: Colors.black87,
+                                                                              fontSize: 16,
+                                                                              color: d_colorOr,
                                                                             ),
                                                                           ),
                                                                         )

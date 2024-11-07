@@ -1144,12 +1144,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             ),
                                                                     ),
                                                                   ),
-                                                                  // SizedBox(height: 8),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          8),
                                                                   Padding(
                                                                     padding:
                                                                         const EdgeInsets
                                                                             .all(
-                                                                            8.0),
+                                                                            4.0),
                                                                     child:
                                                                         Column(
                                                                       children: [
@@ -1157,20 +1159,21 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                           alignment:
                                                                               Alignment.topLeft,
                                                                           child:
-                                                                              Text(
-                                                                            produitsLocaux[index].nomMagasin!,
-                                                                            maxLines:
-                                                                                2,
-                                                                            textAlign:
-                                                                                TextAlign.left,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 17,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.black87,
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 10),
+                                                                            child:
+                                                                                Text(
+                                                                              produitsLocaux[index].nomMagasin!,
+                                                                              maxLines: 2,
+                                                                              textAlign: TextAlign.left,
+                                                                              style: TextStyle(
+                                                                                fontSize: 17,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
                                                                             ),
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
                                                                           ),
                                                                         ),
                                                                         SizedBox(
@@ -1197,7 +1200,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                       ],
                                                                     ),
                                                                   ),
-
                                                                   _buildItem(produitsLocaux[
                                                                           index]
                                                                       .contactMagasin!)
@@ -1235,7 +1237,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Magasins autress pays",
+                                                        "Magasins autres pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1313,11 +1315,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             ),
                                                                     ),
                                                                   ),
+                                                                  SizedBox(
+                                                                      height:
+                                                                          8),
                                                                   Padding(
                                                                     padding:
                                                                         const EdgeInsets
                                                                             .all(
-                                                                            8.0),
+                                                                            4.0),
                                                                     child:
                                                                         Column(
                                                                       children: [
@@ -1325,20 +1330,21 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                           alignment:
                                                                               Alignment.topLeft,
                                                                           child:
-                                                                              Text(
-                                                                            produitsEtrangers[index].nomMagasin!,
-                                                                            maxLines:
-                                                                                2,
-                                                                            textAlign:
-                                                                                TextAlign.left,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 17,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.black87,
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 10),
+                                                                            child:
+                                                                                Text(
+                                                                              produitsEtrangers[index].nomMagasin!,
+                                                                              maxLines: 2,
+                                                                              textAlign: TextAlign.left,
+                                                                              style: TextStyle(
+                                                                                fontSize: 17,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.black87,
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
                                                                             ),
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
                                                                           ),
                                                                         ),
                                                                         SizedBox(
@@ -1592,27 +1598,31 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                                 ),
                                                                         ),
                                                                       ),
-                                                                      // SizedBox(height: 8),
-
+                                                                      SizedBox(
+                                                                          height:
+                                                                              8),
                                                                       Padding(
                                                                         padding: const EdgeInsets
                                                                             .all(
-                                                                            8.0),
+                                                                            4.0),
                                                                         child:
                                                                             Column(
                                                                           children: [
                                                                             Align(
                                                                               alignment: Alignment.topLeft,
-                                                                              child: Text(
-                                                                                produitsLocaux[index].nomMagasin!,
-                                                                                maxLines: 2,
-                                                                                textAlign: TextAlign.left,
-                                                                                style: TextStyle(
-                                                                                  fontSize: 17,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Colors.black87,
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                child: Text(
+                                                                                  produitsLocaux[index].nomMagasin!,
+                                                                                  maxLines: 2,
+                                                                                  textAlign: TextAlign.left,
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 17,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.black87,
+                                                                                  ),
+                                                                                  overflow: TextOverflow.ellipsis,
                                                                                 ),
-                                                                                overflow: TextOverflow.ellipsis,
                                                                               ),
                                                                             ),
                                                                             SizedBox(height: 10),
@@ -1637,7 +1647,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                           ],
                                                                         ),
                                                                       ),
-
                                                                       _buildItem(
                                                                           produitsLocaux[index]
                                                                               .contactMagasin!)
@@ -1754,25 +1763,30 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                                 ),
                                                                         ),
                                                                       ),
-                                                                      // SizedBox(height: 8),
+                                                                      SizedBox(
+                                                                          height:
+                                                                              8),
                                                                       Padding(
                                                                         padding: const EdgeInsets
                                                                             .all(
-                                                                            8.0),
+                                                                            4.0),
                                                                         child:
                                                                             Column(
                                                                           children: [
                                                                             Align(
                                                                               alignment: Alignment.topLeft,
-                                                                              child: Text(
-                                                                                produitsEtrangers[index].nomMagasin!,
-                                                                                maxLines: 2,
-                                                                                style: TextStyle(
-                                                                                  fontSize: 17,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                  color: Colors.black87,
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                child: Text(
+                                                                                  produitsEtrangers[index].nomMagasin!,
+                                                                                  maxLines: 2,
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 17,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.black87,
+                                                                                  ),
+                                                                                  overflow: TextOverflow.ellipsis,
                                                                                 ),
-                                                                                overflow: TextOverflow.ellipsis,
                                                                               ),
                                                                             ),
                                                                             SizedBox(height: 10),

@@ -80,21 +80,16 @@ class StockService extends ChangeNotifier {
             duration: Duration(seconds: 5));
         debugPrint('stock service ${donneesResponse.toString()}');
       } else {
-        Get.snackbar(
-            "Erreur", "Une erreur s'est produite veuiller réessayer plus tard",
-            duration: Duration(seconds: 5));
-
+        print("Erreur ");
         throw Exception(
             'Échec de la requête avec le code d\'état : ${responsed.statusCode}');
       }
     } catch (e) {
-      debugPrint('stock service erreur $e');
+      print('stock service erreur ${e.toString()}');
 
-      Get.snackbar("Erreur de connexion",
-          "Une erreur s'est produite veuiller réessayer ultérieurement",
+      Get.snackbar(
+          "Erreur", "Une erreur s'est produite veuiller réessayer plus tard",
           duration: Duration(seconds: 5));
-      // throw Exception(
-      //     'Une erreur s\'est produite lors de l\'ajout de acteur : $e');
     }
   }
 

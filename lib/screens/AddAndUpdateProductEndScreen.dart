@@ -128,7 +128,10 @@ class _AddAndUpdateProductEndSreenState
           isLoading = false;
         });
         Navigator.pop(context, true);
+      }).catchError((onError) {
+        print("Error catch ${onError.toString()}");
       });
+      ;
     } else {
       await updateProduit().then((_) {
         _typeController.clear();
@@ -149,9 +152,6 @@ class _AddAndUpdateProductEndSreenState
 
   // Fonction pour traiter les données du QR code scanné
   Future<void> processScannedQRCode(Stock scannedData) async {
-    // Ici, vous pouvez décoder les données du QR code et effectuer les actions nécessaires
-    // Par exemple, naviguer vers la page de détail du produit avec les données du produit
-    // Veuillez remplacer DetailProduits avec le nom de votre widget de détail du produit
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -197,7 +197,7 @@ class _AddAndUpdateProductEndSreenState
     } catch (error) {
       // Handle any exceptions that might occur during the request
       final String errorMessage = error.toString();
-      debugPrint("no " + errorMessage);
+      print("Error lors de l'ajout du produit " + errorMessage);
     }
   }
 
@@ -1161,8 +1161,7 @@ class _AddAndUpdateProductEndSreenState
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color(0xFFFF8A00),
+                              backgroundColor: const Color(0xFFFF8A00),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
@@ -1189,7 +1188,6 @@ class _AddAndUpdateProductEndSreenState
       ),
     );
   }
-
 
   void _showMagasinDialog() {
     showDialog(
