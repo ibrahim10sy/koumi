@@ -79,9 +79,12 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
   late TextEditingController _searchController;
   String? image2Src;
   File? image2;
-
+  String pinStrength = "";
+  double strength = 0;
+  String pin = "";
   String url = "";
   List<Speculation> options = [];
+  bool showStrengthIndicator = false;
 
   Future<File> saveImagePermanently(String imagePath) async {
     final directory = await getApplicationDocumentsDirectory();
@@ -239,7 +242,8 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                       if (typeListe.isEmpty) {
                         return const Padding(
                           padding: EdgeInsets.all(10),
-                          child: Center(child: Text("Aucun type trouvé")),
+                          child:
+                              Center(child: Text("Aucune spéculation trouvé")),
                         );
                       }
 
@@ -271,24 +275,34 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                         title: Text(
                                           type.nomSpeculation!,
                                           style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: isSelected
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
+                                            color: isSelected
+                                                ? d_colorOr
+                                                : Colors.black,
+                                            fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),
                                         ),
-                                        trailing: isSelected
-                                            ? const Icon(
-                                                Icons.check_box_outlined,
-                                                color: d_colorOr,
-                                              )
-                                            : null,
+                                        trailing: Checkbox(
+                                          activeColor: d_colorOr,
+                                          value: isSelected,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              if (value == true) {
+                                                selectedSpec.add(type);
+                                              } else {
+                                                selectedSpec.remove(type);
+                                              }
+                                            });
+                                          },
+                                        ),
                                         onTap: () {
+                                          // Inverser la sélection avec un clic sur toute la ligne
                                           setState(() {
-                                            isSelected
-                                                ? selectedSpec.remove(type)
-                                                : selectedSpec.add(type);
+                                            if (isSelected) {
+                                              selectedSpec.remove(type);
+                                            } else {
+                                              selectedSpec.add(type);
+                                            }
                                           });
                                         },
                                       ),
@@ -308,7 +322,11 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                 TextButton(
                   child: const Text(
                     'Annuler',
-                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                    style: TextStyle(
+                      color: d_colorOr,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   onPressed: () {
                     _searchController.clear();
@@ -318,7 +336,11 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                 TextButton(
                   child: const Text(
                     'Valider',
-                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                    style: TextStyle(
+                      color: d_colorOr,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   onPressed: () {
                     List<String> typeLibelle =
@@ -462,6 +484,33 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
     );
   }
 
+  // Méthode pour évaluer la qualité du code PIN
+  void evaluatePinStrength(String pin) {
+    setState(() {
+      if (pin.isEmpty) {
+        showStrengthIndicator = false;
+      } else if (pin.length < 6) {
+        strength = 0.3;
+        pinStrength = "Trop court";
+        showStrengthIndicator = true;
+      } else if (RegExp(r'^(.)\1*$').hasMatch(pin)) {
+        // Vérifie si tous les chiffres sont identiques (ex. 111111)
+        strength = 0.4;
+        showStrengthIndicator = true;
+        pinStrength = "Faible";
+      } else if (RegExp(r'^(123456|654321|987654|012345)$').hasMatch(pin)) {
+        // Vérifie les séquences prévisibles
+        strength = 0.4;
+        pinStrength = "Faible";
+        showStrengthIndicator = true;
+      } else {
+        strength = 1.0;
+        pinStrength = "Bon";
+        showStrengthIndicator = false;
+      }
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -532,11 +581,11 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Spéculation (Multi-selection)",
+                            "Spéculation (Multi-sélection)",
                             style: TextStyle(color: Colors.black, fontSize: 18),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         GestureDetector(
                           onTap: _showMultiSelectDialogt,
                           child: TextFormField(
@@ -558,16 +607,17 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Mot de passe (6 chiffres)",
+                            "Code PIN (6 chiffres)",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: passwordController,
+                          onChanged: evaluatePinStrength,
                           decoration: InputDecoration(
-                            hintText: "Entrez votre mot de passe",
+                            hintText: "Entrez votre code PIN",
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -593,33 +643,48 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           obscureText: _obscureText,
                           validator: (val) {
                             if (val == null || val.isEmpty) {
-                              return "Veillez entrez votre  mot de passe ";
+                              return "Veuillez entrer votre code PIN";
                             }
-                            if (val.length < 6) {
-                              return 'Le mot de passe doit contenir au moins 6 caractères';
-                            } else if (val.length > 6) {
-                              return 'Le mot de passe ne doit pas dépassé 6 caractères';
-                            } else {
-                              return null;
+                            if (val.length != 6) {
+                              return 'Le code PIN doit contenir exactement 6 chiffres';
                             }
+                            return null;
                           },
                           onSaved: (val) => password = val!,
                         ),
+                        if (showStrengthIndicator)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("$pinStrength ",
+                                  style: const TextStyle(fontSize: 15)),
+                              Expanded(
+                                child: LinearProgressIndicator(
+                                  value: strength,
+                                  color: strength == 1.0
+                                      ? Colors.green
+                                      : (strength > 0.3
+                                          ? Colors.orange
+                                          : Colors.red),
+                                  backgroundColor: Colors.grey[300],
+                                ),
+                              ),
+                            ],
+                          ),
                         const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Confirmer le mot de passe",
+                            "Confirmer le code PIN",
                             style:
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: confirmPasswordController,
                           decoration: InputDecoration(
-                            hintText:
-                                "Entrez votre confirmer votre mot de passe",
+                            hintText: "Confirmez votre code PIN",
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -645,15 +710,12 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           obscureText: _obscureText,
                           validator: (val) {
                             if (val == null || val.isEmpty) {
-                              return "Veillez entrez votre  mot de passe à nouveau";
+                              return "Veuillez confirmer votre code PIN";
                             }
-                            if (val.length < 6) {
-                              return 'Le mot de passe doit contenir au moins 6 caractères';
-                            } else if (val.length > 6) {
-                              return 'Le mot de passe ne doit pas dépassé 6 caractères';
-                            } else {
-                              return null;
+                            if (val != passwordController.text) {
+                              return 'Les codes PIN ne correspondent pas';
                             }
+                            return null;
                           },
                           onSaved: (val) => password = val!,
                         ),
@@ -674,15 +736,9 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                               ),
                               GestureDetector(
                                 onTap: () async {
-                                  // final url = Uri.parse("https://aismali.com/condition.html");
-                                  // if (await canLaunchUrl(url)) {
-                                  //   await launchUrl(url, mode: LaunchMode.externalApplication);
-                                  // } else {
-                                  //   // Gérer l'erreur si le lien ne peut pas être ouvert
-                                  //   print("Impossible d'ouvrir le lien.");
-                                  // }
                                   Get.to(TermsConditionsPage(),
-                                      duration: Duration(seconds: 1),
+                                      duration: Duration(milliseconds:
+                                      500),
                                       transition: Transition.leftToRight);
                                 },
                                 child: const Text(

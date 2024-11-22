@@ -202,9 +202,9 @@ class Magasin {
       photo: map['photo'] != null ? map['photo'] as String : null,
       nbreView: map['nbreView'] != null ? map['nbreView'] as int : null,
       pays: map['pays'] != null ? map['pays'] as String : null,
-      acteur: map['acteur'] != null
-          ? Acteur.fromMap(map['acteur'] as Map<String, dynamic>)
-          : null,
+     acteur: map['acteur'] != null
+        ? Acteur.fromMap(map['acteur'] as Map<String, dynamic>)
+        : Acteur(),
       niveau1Pays: map['niveau1Pays'] != null
           ? Niveau1Pays.fromMap(map['niveau1Pays'] as Map<String, dynamic>)
           : null,

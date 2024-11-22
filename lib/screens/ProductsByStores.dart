@@ -256,7 +256,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
     updateViews();
     _searchController = TextEditingController();
     _catList = http.get(Uri.parse('$apiOnlineUrl/Categorie/allCategorie'));
-      
+
     stockListeFuture = stockListeFuture1 = getAllStock();
   }
 
@@ -346,7 +346,6 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                 fontSize: 20),
           ),
           actions: [
-            
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CodePays().getFlagsApp(p!),
@@ -834,22 +833,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                           itemCount: stockListe.length + 1,
                                           // itemCount: stockListe.length + (isLoading ? 1 : 0),
                                           itemBuilder: (context, index) {
-                                            //     if (index == stockListe.length) {
-                                            // return
-                                            // _buildShimmerEffects()
-                                            // // Center(
-                                            // //   child: CircularProgressIndicator(
-                                            // //     color: Colors.orange,
-                                            // //   ),
-                                            // // )
-                                            // ;
-                                            //     }
-
                                             if (index < stockListe.length) {
-                                              // var e = stockListe
-                                              //     // .where((element) =>
-                                              //     //     element.statutSotck == true)
-                                              //     .elementAt(index-1);
                                               return GestureDetector(
                                                   onTap: () {
                                                     Navigator.push(
@@ -864,6 +848,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                     );
                                                   },
                                                   child: Card(
+                                                    color: Color(0xFFFAFAFA),
+                                                    elevation: 1,
                                                     margin: EdgeInsets.all(8),
                                                     child: Column(
                                                       crossAxisAlignment:
@@ -876,7 +862,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                   .circular(
                                                                       8.0),
                                                           child: Container(
-                                                            height: 85,
+                                                            height: 90,
                                                             child: stockListe[index]
                                                                             .photo ==
                                                                         null ||
@@ -917,7 +903,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                             stockListe[index]
                                                                 .nomProduit!,
                                                             style: TextStyle(
-                                                              fontSize: 16,
+                                                              fontSize: 17,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -938,7 +924,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              fontSize: 15,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -960,9 +946,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                 ? "${stockListe[index].prix.toString()} ${stockListe[index].monnaie!.libelle}"
                                                                 : "${stockListe[index].prix.toString()} ",
                                                             style: TextStyle(
-                                                              fontSize: 15,
-                                                              color: Colors
-                                                                  .black87,
+                                                              fontSize: 16,
+                                                              color: d_colorOr,
                                                             ),
                                                           ),
                                                         ),
@@ -1121,17 +1106,6 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                               itemCount: stockListe.length + 1,
                                               //  itemCount: stockListe.length + (!isLoading ? 1 : 0),
                                               itemBuilder: (context, index) {
-                                                //   if (index == stockListe.length) {
-                                                // return
-                                                // _buildShimmerEffect()
-                                                // // Center(
-                                                // //   child: CircularProgressIndicator(
-                                                // //     color: Colors.orange,
-                                                // //   ),
-                                                // // )
-                                                // ;
-                                                //     }
-
                                                 if (index < stockListe.length) {
                                                   return GestureDetector(
                                                       onTap: () {
@@ -1160,7 +1134,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                       .circular(
                                                                           8.0),
                                                               child: Container(
-                                                                height: 85,
+                                                                height: 90,
                                                                 child: stockListe[index].photo ==
                                                                             null ||
                                                                         stockListe[index]
@@ -1199,7 +1173,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                     .nomProduit!,
                                                                 style:
                                                                     TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -1221,7 +1195,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
-                                                                  fontSize: 15,
+                                                                  fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -1244,9 +1218,9 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                     : "${stockListe[index].prix.toString()} FCFA",
                                                                 style:
                                                                     TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black87,
+                                                                  fontSize: 16,
+                                                                  color:
+                                                                      d_colorOr,
                                                                 ),
                                                               ),
                                                             ),

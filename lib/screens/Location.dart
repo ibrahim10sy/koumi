@@ -1117,8 +1117,8 @@ class _LocationState extends State<Location> {
                                                         gridDelegate:
                                                             SliverGridDelegateWithFixedCrossAxisCount(
                                                           crossAxisCount: 2,
-                                                          mainAxisSpacing: 10,
-                                                          crossAxisSpacing: 10,
+                                                          mainAxisSpacing: 5,
+                                                          crossAxisSpacing: 5,
                                                           childAspectRatio: 0.8,
                                                         ),
                                                         itemCount:
@@ -1137,6 +1137,9 @@ class _LocationState extends State<Location> {
                                                                         index]);
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -1149,13 +1152,13 @@ class _LocationState extends State<Location> {
                                                                       child:
                                                                           SizedBox(
                                                                         height:
-                                                                            72,
+                                                                            90,
                                                                         child: produitsLocaux[index].photoMateriel == null ||
                                                                                 produitsLocaux[index].photoMateriel!.isEmpty
                                                                             ? Image.asset(
                                                                                 "assets/images/default_image.png",
                                                                                 fit: BoxFit.cover,
-                                                                                height: 85,
+                                                                                // height: 90,
                                                                               )
                                                                             : CachedNetworkImage(
                                                                                 imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsLocaux[index].idMateriel}/image",
@@ -1173,8 +1176,11 @@ class _LocationState extends State<Location> {
                                                                             8),
                                                                     Padding(
                                                                       padding: const EdgeInsets
-                                                                          .all(
-                                                                          4.0),
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              5,
+                                                                          vertical:
+                                                                              5),
                                                                       child:
                                                                           Column(
                                                                         children: [
@@ -1205,6 +1211,7 @@ class _LocationState extends State<Location> {
                                                                                 color: d_colorOr, // Couleur de l'icône
                                                                                 size: 24.0,
                                                                               ),
+                                                                              SizedBox(width: 5),
                                                                               Text(
                                                                                 overflow: TextOverflow.ellipsis,
                                                                                 produitsLocaux[index].localisation!,
@@ -1283,8 +1290,8 @@ class _LocationState extends State<Location> {
                                                         gridDelegate:
                                                             SliverGridDelegateWithFixedCrossAxisCount(
                                                           crossAxisCount: 2,
-                                                          mainAxisSpacing: 10,
-                                                          crossAxisSpacing: 10,
+                                                          mainAxisSpacing: 5,
+                                                          crossAxisSpacing: 5,
                                                           childAspectRatio: 0.8,
                                                         ),
                                                         itemCount:
@@ -1303,6 +1310,9 @@ class _LocationState extends State<Location> {
                                                                         index]);
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -1315,13 +1325,13 @@ class _LocationState extends State<Location> {
                                                                       child:
                                                                           SizedBox(
                                                                         height:
-                                                                            72,
+                                                                            90,
                                                                         child: produitsEtrangers[index].photoMateriel == null ||
                                                                                 produitsEtrangers[index].photoMateriel!.isEmpty
                                                                             ? Image.asset(
                                                                                 "assets/images/default_image.png",
                                                                                 fit: BoxFit.cover,
-                                                                                height: 85,
+                                                                                // height: 85,
                                                                               )
                                                                             : CachedNetworkImage(
                                                                                 imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsEtrangers[index].idMateriel}/image",
@@ -1339,8 +1349,11 @@ class _LocationState extends State<Location> {
                                                                             8),
                                                                     Padding(
                                                                       padding: const EdgeInsets
-                                                                          .all(
-                                                                          4.0),
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              5,
+                                                                          vertical:
+                                                                              5),
                                                                       child:
                                                                           Column(
                                                                         children: [
@@ -1371,6 +1384,7 @@ class _LocationState extends State<Location> {
                                                                                 color: d_colorOr, // Couleur de l'icône
                                                                                 size: 24.0,
                                                                               ),
+                                                                              SizedBox(width: 5),
                                                                               Text(
                                                                                 overflow: TextOverflow.ellipsis,
                                                                                 produitsEtrangers[index].localisation!,
@@ -1398,7 +1412,7 @@ class _LocationState extends State<Location> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           color:
                                                                               d_colorOr,
                                                                         ),
@@ -1559,9 +1573,9 @@ class _LocationState extends State<Location> {
                                                                 SliverGridDelegateWithFixedCrossAxisCount(
                                                               crossAxisCount: 2,
                                                               mainAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               crossAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               childAspectRatio:
                                                                   0.8,
                                                             ),
@@ -1582,6 +1596,10 @@ class _LocationState extends State<Location> {
                                                                             index]);
                                                                   },
                                                                   child: Card(
+                                                                    color: Color(
+                                                                        0xFFFAFAFA),
+                                                                    elevation:
+                                                                        1,
                                                                     child:
                                                                         Column(
                                                                       crossAxisAlignment:
@@ -1594,12 +1612,12 @@ class _LocationState extends State<Location> {
                                                                           child:
                                                                               SizedBox(
                                                                             height:
-                                                                                72,
+                                                                                90,
                                                                             child: produitsLocaux[index].photoMateriel == null || produitsLocaux[index].photoMateriel!.isEmpty
                                                                                 ? Image.asset(
                                                                                     "assets/images/default_image.png",
                                                                                     fit: BoxFit.cover,
-                                                                                    height: 85,
+                                                                                    // height: 85,
                                                                                   )
                                                                                 : CachedNetworkImage(
                                                                                     imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsLocaux[index].idMateriel}/image",
@@ -1617,8 +1635,9 @@ class _LocationState extends State<Location> {
                                                                                 8),
                                                                         Padding(
                                                                           padding: const EdgeInsets
-                                                                              .all(
-                                                                              4.0),
+                                                                              .symmetric(
+                                                                              horizontal: 5,
+                                                                              vertical: 5),
                                                                           child:
                                                                               Column(
                                                                             children: [
@@ -1646,6 +1665,7 @@ class _LocationState extends State<Location> {
                                                                                     color: d_colorOr, // Couleur de l'icône
                                                                                     size: 24.0,
                                                                                   ),
+                                                                                  SizedBox(width: 5),
                                                                                   Text(
                                                                                     overflow: TextOverflow.ellipsis,
                                                                                     produitsLocaux[index].localisation!,
@@ -1670,7 +1690,7 @@ class _LocationState extends State<Location> {
                                                                             "${produitsLocaux[index].prixParHeure.toString()} ${produitsLocaux[index].monnaie!.libelle}",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 16,
+                                                                              fontSize: 17,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1721,9 +1741,9 @@ class _LocationState extends State<Location> {
                                                                 SliverGridDelegateWithFixedCrossAxisCount(
                                                               crossAxisCount: 2,
                                                               mainAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               crossAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               childAspectRatio:
                                                                   0.8,
                                                             ),
@@ -1744,6 +1764,10 @@ class _LocationState extends State<Location> {
                                                                             index]);
                                                                   },
                                                                   child: Card(
+                                                                    color: Color(
+                                                                        0xFFFAFAFA),
+                                                                    elevation:
+                                                                        1,
                                                                     child:
                                                                         Column(
                                                                       crossAxisAlignment:
@@ -1756,7 +1780,7 @@ class _LocationState extends State<Location> {
                                                                           child:
                                                                               SizedBox(
                                                                             height:
-                                                                                72,
+                                                                                90,
                                                                             child: produitsEtrangers[index].photoMateriel == null || produitsEtrangers[index].photoMateriel!.isEmpty
                                                                                 ? Image.asset(
                                                                                     "assets/images/default_image.png",
@@ -1779,8 +1803,9 @@ class _LocationState extends State<Location> {
                                                                                 8),
                                                                         Padding(
                                                                           padding: const EdgeInsets
-                                                                              .all(
-                                                                              4.0),
+                                                                              .symmetric(
+                                                                              horizontal: 5,
+                                                                              vertical: 5),
                                                                           child:
                                                                               Column(
                                                                             children: [
@@ -1808,6 +1833,7 @@ class _LocationState extends State<Location> {
                                                                                     color: d_colorOr, // Couleur de l'icône
                                                                                     size: 24.0,
                                                                                   ),
+                                                                                  SizedBox(width: 10),
                                                                                   Text(
                                                                                     overflow: TextOverflow.ellipsis,
                                                                                     produitsEtrangers[index].localisation!,
@@ -1832,7 +1858,7 @@ class _LocationState extends State<Location> {
                                                                             "${produitsEtrangers[index].prixParHeure.toString()} ${produitsEtrangers[index].monnaie!.libelle}",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 16,
+                                                                              fontSize: 17,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1880,8 +1906,8 @@ class _LocationState extends State<Location> {
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
           childAspectRatio: 0.8,
         ),
         itemCount: 6, // Number of shimmer items to display

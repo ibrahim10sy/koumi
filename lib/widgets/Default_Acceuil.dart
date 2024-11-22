@@ -219,16 +219,16 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
       _buildAccueilCard("Conseils", "cons1.png", 1)
     ];
 
-    if (isExist) {
-      cards.insert(
-        8,
-        _buildAccueilCard("Intrants agricoles", "int1.png", 15),
-      );
-      // cards.insert(
-      //   11,
-      //   _buildAccueilCard("Commandes", "cm.png", 14),
-      // );
-    }
+    // if (isExist) {
+    //   cards.insert(
+    //     8,
+    //     _buildAccueilCard("Intrants agricoles", "int1.png", 15),
+    //   );
+    //   // cards.insert(
+    //   //   11,
+    //   //   _buildAccueilCard("Commandes", "cm.png", 14),
+    //   // );
+    // }
 
     return cards;
   }

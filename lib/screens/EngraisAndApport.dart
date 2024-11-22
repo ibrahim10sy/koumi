@@ -1163,6 +1163,9 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1177,7 +1180,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1204,7 +1207,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1222,7 +1225,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1252,7 +1255,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                17,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1295,7 +1298,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1335,6 +1338,9 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1349,7 +1355,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1376,7 +1382,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1394,7 +1400,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1424,7 +1430,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                17,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1596,6 +1602,9 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1610,7 +1619,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1637,7 +1646,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1655,7 +1664,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1685,7 +1694,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                17,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1728,7 +1737,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1768,6 +1777,9 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1782,7 +1794,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1809,7 +1821,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1827,7 +1839,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1857,7 +1869,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                17,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),

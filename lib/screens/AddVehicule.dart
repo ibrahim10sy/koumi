@@ -120,7 +120,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                 Navigator.pop(context, true);
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-          title: Text(
+           title: Text(
             'Ajout de véhicule',
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),

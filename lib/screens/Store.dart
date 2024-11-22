@@ -1112,6 +1112,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 2,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1126,7 +1129,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          72,
+                                                                          90,
                                                                       child: produitsLocaux[index].photo == null ||
                                                                               produitsLocaux[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1146,12 +1149,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                   ),
                                                                   SizedBox(
                                                                       height:
-                                                                          8),
+                                                                          5),
                                                                   Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            3,
+                                                                        vertical:
+                                                                            5),
                                                                     child:
                                                                         Column(
                                                                       children: [
@@ -1178,7 +1183,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         ),
                                                                         SizedBox(
                                                                             height:
-                                                                                10),
+                                                                                5),
                                                                         Row(
                                                                           children: [
                                                                             Icon(
@@ -1186,6 +1191,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                               color: d_colorOr, // Couleur de l'icône
                                                                               size: 24.0,
                                                                             ),
+                                                                            SizedBox(width: 5),
                                                                             Text(
                                                                               overflow: TextOverflow.ellipsis,
                                                                               produitsLocaux[index].localiteMagasin!,
@@ -1237,7 +1243,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Magasins autres pays",
+                                                        "Magasin autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1283,6 +1289,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 2,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1297,7 +1306,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          72,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photo == null ||
                                                                               produitsEtrangers[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1317,12 +1326,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                   ),
                                                                   SizedBox(
                                                                       height:
-                                                                          8),
+                                                                          5),
                                                                   Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            3,
+                                                                        vertical:
+                                                                            5),
                                                                     child:
                                                                         Column(
                                                                       children: [
@@ -1349,7 +1360,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         ),
                                                                         SizedBox(
                                                                             height:
-                                                                                10),
+                                                                                5),
                                                                         Row(
                                                                           children: [
                                                                             Icon(
@@ -1357,11 +1368,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                               color: d_colorOr, // Couleur de l'icône
                                                                               size: 24.0,
                                                                             ),
+                                                                            SizedBox(
+                                                                              width: 5,
+                                                                            ),
                                                                             Text(
                                                                               overflow: TextOverflow.ellipsis,
                                                                               produitsEtrangers[index].localiteMagasin!,
                                                                               style: TextStyle(
-                                                                                fontSize: 15,
+                                                                                fontSize: 16,
                                                                                 fontWeight: FontWeight.bold,
                                                                                 color: Colors.black87,
                                                                               ),
@@ -1566,6 +1580,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                   );
                                                                 },
                                                                 child: Card(
+                                                                  color: Color(
+                                                                      0xFFFAFAFA),
+                                                                  elevation: 2,
                                                                   margin:
                                                                       EdgeInsets
                                                                           .all(
@@ -1581,7 +1598,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         child:
                                                                             Container(
                                                                           height:
-                                                                              72,
+                                                                              90,
                                                                           child: produitsLocaux[index].photo == null || produitsLocaux[index].photo!.isEmpty
                                                                               ? Image.asset(
                                                                                   "assets/images/default_image.png",
@@ -1600,11 +1617,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                       ),
                                                                       SizedBox(
                                                                           height:
-                                                                              8),
+                                                                              5),
                                                                       Padding(
                                                                         padding: const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                3,
+                                                                            vertical:
+                                                                                5),
                                                                         child:
                                                                             Column(
                                                                           children: [
@@ -1625,7 +1645,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                            SizedBox(height: 10),
+                                                                            SizedBox(height: 5),
                                                                             Row(
                                                                               children: [
                                                                                 Icon(
@@ -1633,11 +1653,12 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                                   color: d_colorOr, // Couleur de l'icône
                                                                                   size: 24.0,
                                                                                 ),
+                                                                                SizedBox(width: 5),
                                                                                 Text(
                                                                                   overflow: TextOverflow.ellipsis,
                                                                                   produitsLocaux[index].localiteMagasin!,
                                                                                   style: TextStyle(
-                                                                                    fontSize: 15,
+                                                                                    fontSize: 16,
                                                                                     fontWeight: FontWeight.bold,
                                                                                     color: Colors.black87,
                                                                                   ),
@@ -1683,7 +1704,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               const EdgeInsets
                                                                   .all(8.0),
                                                           child: Text(
-                                                            "Magasins autre pays",
+                                                            "Magasin autre pays",
                                                             style: TextStyle(
                                                                 color:
                                                                     d_colorGreen,
@@ -1731,6 +1752,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                   );
                                                                 },
                                                                 child: Card(
+                                                                  color: Color(
+                                                                      0xFFFAFAFA),
+                                                                  elevation: 2,
                                                                   margin:
                                                                       EdgeInsets
                                                                           .all(
@@ -1746,7 +1770,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         child:
                                                                             Container(
                                                                           height:
-                                                                              72,
+                                                                              90,
                                                                           child: produitsEtrangers[index].photo == null || produitsEtrangers[index].photo!.isEmpty
                                                                               ? Image.asset(
                                                                                   "assets/images/default_image.png",
@@ -1765,11 +1789,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                       ),
                                                                       SizedBox(
                                                                           height:
-                                                                              8),
+                                                                              5),
                                                                       Padding(
                                                                         padding: const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                3,
+                                                                            vertical:
+                                                                                5),
                                                                         child:
                                                                             Column(
                                                                           children: [
@@ -1789,7 +1816,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                            SizedBox(height: 10),
+                                                                            SizedBox(height: 5),
                                                                             Row(
                                                                               children: [
                                                                                 Icon(
@@ -1797,6 +1824,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                                   color: d_colorOr, // Couleur de l'icône
                                                                                   size: 24.0,
                                                                                 ),
+                                                                                SizedBox(width: 5),
                                                                                 Text(
                                                                                   overflow: TextOverflow.ellipsis,
                                                                                   produitsEtrangers[index].localiteMagasin!,
@@ -1919,7 +1947,7 @@ class _StoreScreenState extends State<StoreScreen> {
 
   Widget _buildItem(String value) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Row(
         children: [
           Icon(
@@ -1927,10 +1955,11 @@ class _StoreScreenState extends State<StoreScreen> {
             color: d_colorOr, // Couleur de l'icône
             size: 24.0, // Taille de l'icône
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 5),
           Text(
             value,
             maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w800,

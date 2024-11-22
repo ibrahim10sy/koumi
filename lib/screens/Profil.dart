@@ -121,7 +121,8 @@ class _ProfilState extends State<Profil> {
                             });
                             Get.to(
                               PinLoginScreen(),
-                              duration: Duration(seconds: 1),
+                              duration: Duration(milliseconds:
+                                      500),
                               transition: Transition.leftToRight,
                             );
                           },

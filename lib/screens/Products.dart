@@ -412,6 +412,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
           backgroundColor: d_colorOr,
           centerTitle: true,
@@ -1142,6 +1143,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           );
                                                         },
                                                         child: Card(
+                                                          color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                           margin:
                                                               EdgeInsets.all(8),
                                                           child: Column(
@@ -1156,7 +1160,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                             8.0),
                                                                 child:
                                                                     Container(
-                                                                  height: 85,
+                                                                  height: 90,
                                                                   child: produitsLocaux[index].photo ==
                                                                               null ||
                                                                           produitsLocaux[index]
@@ -1193,7 +1197,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                   style:
                                                                       TextStyle(
                                                                     fontSize:
-                                                                        16,
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1216,7 +1220,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         TextOverflow
                                                                             .ellipsis,
                                                                     fontSize:
-                                                                        15,
+                                                                        16,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1250,7 +1254,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color:
                                                                             d_colorOr,
                                                                       ),
@@ -1330,6 +1334,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           );
                                                         },
                                                         child: Card(
+                                                          color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                           margin:
                                                               EdgeInsets.all(8),
                                                           child: Column(
@@ -1344,7 +1351,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                             8.0),
                                                                 child:
                                                                     Container(
-                                                                  height: 85,
+                                                                  height: 90,
                                                                   child: produitsEtrangers[index].photo ==
                                                                               null ||
                                                                           produitsEtrangers[index]
@@ -1381,7 +1388,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                   style:
                                                                       TextStyle(
                                                                     fontSize:
-                                                                        16,
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1404,7 +1411,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         TextOverflow
                                                                             .ellipsis,
                                                                     fontSize:
-                                                                        15,
+                                                                        16,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -1438,7 +1445,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color:
                                                                             d_colorOr,
                                                                       ),
@@ -1646,6 +1653,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                             );
                                                           },
                                                           child: Card(
+                                                            color: Color(
+                                                                0xFFFAFAFA),
+                                                            elevation: 1,
                                                             margin:
                                                                 EdgeInsets.all(
                                                                     8),
@@ -1661,7 +1671,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                               8.0),
                                                                   child:
                                                                       Container(
-                                                                    height: 85,
+                                                                    height: 90,
                                                                     child: produitsLocaux[index].photo ==
                                                                                 null ||
                                                                             produitsLocaux[index]
@@ -1697,7 +1707,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     style:
                                                                         TextStyle(
                                                                       fontSize:
-                                                                          16,
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold,
@@ -1721,7 +1731,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                           TextOverflow
                                                                               .ellipsis,
                                                                       fontSize:
-                                                                          15,
+                                                                          16,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold,
@@ -1755,7 +1765,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           color:
                                                                               d_colorOr,
                                                                         ),
@@ -1837,6 +1847,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                             );
                                                           },
                                                           child: Card(
+                                                            color: Color(
+                                                                0xFFFAFAFA),
+                                                            elevation: 1,
                                                             margin:
                                                                 EdgeInsets.all(
                                                                     8),
@@ -1852,7 +1865,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                               8.0),
                                                                   child:
                                                                       Container(
-                                                                    height: 85,
+                                                                    height: 90,
                                                                     child: produitsEtrangers[index].photo ==
                                                                                 null ||
                                                                             produitsEtrangers[index]
@@ -1888,7 +1901,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                     style:
                                                                         TextStyle(
                                                                       fontSize:
-                                                                          16,
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold,
@@ -1912,7 +1925,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                           TextOverflow
                                                                               .ellipsis,
                                                                       fontSize:
-                                                                          15,
+                                                                          16,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold,
@@ -1946,7 +1959,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           color:
                                                                               d_colorOr,
                                                                         ),
@@ -2057,60 +2070,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  // Define the _buildShimmerEffects function
-  Widget _buildShimmerEffects() {
-    return Card(
-      margin: EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 85,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            title: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 16,
-                color: Colors.grey,
-              ),
-            ),
-            subtitle: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 15,
-                color: Colors.grey,
-                margin: EdgeInsets.only(top: 4),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 15,
-                color: Colors.grey,
-                margin: EdgeInsets.only(top: 4),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

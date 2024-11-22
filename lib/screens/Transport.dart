@@ -1172,8 +1172,8 @@ class _TransportState extends State<Transport> {
                                                   gridDelegate:
                                                       SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 2,
-                                                    mainAxisSpacing: 10,
-                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 5,
+                                                    crossAxisSpacing: 5,
                                                     childAspectRatio: 0.8,
                                                   ),
                                                   itemCount:
@@ -1190,6 +1190,9 @@ class _TransportState extends State<Transport> {
                                                                   index]);
                                                         },
                                                         child: Card(
+                                                          color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                           margin:
                                                               EdgeInsets.all(8),
                                                           child: Column(
@@ -1203,7 +1206,7 @@ class _TransportState extends State<Transport> {
                                                                         .circular(
                                                                             8.0),
                                                                 child: SizedBox(
-                                                                  height: 85,
+                                                                  height: 90,
                                                                   child: produitsLocaux[index].photoVehicule ==
                                                                               null ||
                                                                           produitsLocaux[index]
@@ -1232,12 +1235,14 @@ class _TransportState extends State<Transport> {
                                                                 ),
                                                               ),
                                                               SizedBox(
-                                                                  height: 8),
+                                                                  height: 5),
                                                               Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        4.0),
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        5,
+                                                                    vertical:
+                                                                        5),
                                                                 child: Column(
                                                                   children: [
                                                                     Align(
@@ -1272,7 +1277,7 @@ class _TransportState extends State<Transport> {
                                                                     ),
                                                                     SizedBox(
                                                                         height:
-                                                                            10),
+                                                                            5),
                                                                     Row(
                                                                       children: [
                                                                         Icon(
@@ -1311,7 +1316,7 @@ class _TransportState extends State<Transport> {
                                                                     horizontal:
                                                                         5,
                                                                     vertical:
-                                                                        10),
+                                                                        5),
                                                                 child: Row(
                                                                   children: [
                                                                     Icon(
@@ -1322,6 +1327,9 @@ class _TransportState extends State<Transport> {
                                                                       size:
                                                                           24.0,
                                                                     ),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            5),
                                                                     Text(
                                                                       overflow:
                                                                           TextOverflow
@@ -1387,8 +1395,8 @@ class _TransportState extends State<Transport> {
                                                   gridDelegate:
                                                       SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 2,
-                                                    mainAxisSpacing: 10,
-                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 5,
+                                                    crossAxisSpacing: 5,
                                                     childAspectRatio: 0.8,
                                                   ),
                                                   itemCount:
@@ -1406,6 +1414,9 @@ class _TransportState extends State<Transport> {
                                                                   index]);
                                                         },
                                                         child: Card(
+                                                          color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                           margin:
                                                               EdgeInsets.all(8),
                                                           child: Column(
@@ -1419,7 +1430,7 @@ class _TransportState extends State<Transport> {
                                                                         .circular(
                                                                             8.0),
                                                                 child: SizedBox(
-                                                                  height: 85,
+                                                                  height: 90,
                                                                   child: produitsEtrangers[index].photoVehicule ==
                                                                               null ||
                                                                           produitsEtrangers[index]
@@ -1448,12 +1459,14 @@ class _TransportState extends State<Transport> {
                                                                 ),
                                                               ),
                                                               SizedBox(
-                                                                  height: 8),
+                                                                  height: 5),
                                                               Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        4.0),
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        5,
+                                                                    vertical:
+                                                                        5),
                                                                 child: Column(
                                                                   children: [
                                                                     Align(
@@ -1488,7 +1501,7 @@ class _TransportState extends State<Transport> {
                                                                     ),
                                                                     SizedBox(
                                                                         height:
-                                                                            10),
+                                                                            5),
                                                                     Row(
                                                                       children: [
                                                                         Icon(
@@ -1527,7 +1540,7 @@ class _TransportState extends State<Transport> {
                                                                     horizontal:
                                                                         5,
                                                                     vertical:
-                                                                        10),
+                                                                        5),
                                                                 child: Row(
                                                                   children: [
                                                                     Icon(
@@ -1709,6 +1722,9 @@ class _TransportState extends State<Transport> {
                                                                       index]);
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1723,7 +1739,7 @@ class _TransportState extends State<Transport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoVehicule == null ||
                                                                               produitsLocaux[index].photoVehicule!.isEmpty
                                                                           ? Image.asset(
@@ -1743,12 +1759,14 @@ class _TransportState extends State<Transport> {
                                                                   ),
                                                                   SizedBox(
                                                                       height:
-                                                                          8),
+                                                                          5),
                                                                   Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            5,
+                                                                        vertical:
+                                                                            5),
                                                                     child:
                                                                         Column(
                                                                       children: [
@@ -1774,7 +1792,7 @@ class _TransportState extends State<Transport> {
                                                                         ),
                                                                         SizedBox(
                                                                             height:
-                                                                                10),
+                                                                                5),
                                                                         Row(
                                                                           children: [
                                                                             Icon(
@@ -1803,7 +1821,7 @@ class _TransportState extends State<Transport> {
                                                                         horizontal:
                                                                             5,
                                                                         vertical:
-                                                                            10),
+                                                                            5),
                                                                     child: Row(
                                                                       children: [
                                                                         Icon(
@@ -1814,6 +1832,9 @@ class _TransportState extends State<Transport> {
                                                                           size:
                                                                               24.0,
                                                                         ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5),
                                                                         Text(
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
@@ -1898,6 +1919,9 @@ class _TransportState extends State<Transport> {
                                                                       index]);
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1912,7 +1936,7 @@ class _TransportState extends State<Transport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoVehicule == null ||
                                                                               produitsEtrangers[index].photoVehicule!.isEmpty
                                                                           ? Image.asset(
@@ -1932,12 +1956,14 @@ class _TransportState extends State<Transport> {
                                                                   ),
                                                                   SizedBox(
                                                                       height:
-                                                                          8),
+                                                                          5),
                                                                   Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            5,
+                                                                        vertical:
+                                                                            5),
                                                                     child:
                                                                         Column(
                                                                       children: [
@@ -1963,7 +1989,7 @@ class _TransportState extends State<Transport> {
                                                                         ),
                                                                         SizedBox(
                                                                             height:
-                                                                                10),
+                                                                                5),
                                                                         Row(
                                                                           children: [
                                                                             Icon(
@@ -1973,8 +1999,8 @@ class _TransportState extends State<Transport> {
                                                                             ),
                                                                             SizedBox(width: 5),
                                                                             Text(
-                                                                              overflow: TextOverflow.ellipsis,
                                                                               "${produitsEtrangers[index].nbKilometrage.toString()} Km",
+                                                                              overflow: TextOverflow.ellipsis,
                                                                               style: TextStyle(
                                                                                 fontSize: 16,
                                                                                 fontWeight: FontWeight.bold,
@@ -1992,7 +2018,7 @@ class _TransportState extends State<Transport> {
                                                                         horizontal:
                                                                             5,
                                                                         vertical:
-                                                                            10),
+                                                                            5),
                                                                     child: Row(
                                                                       children: [
                                                                         Icon(
@@ -2003,6 +2029,9 @@ class _TransportState extends State<Transport> {
                                                                           size:
                                                                               24.0,
                                                                         ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5),
                                                                         Text(
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
@@ -2066,8 +2095,8 @@ class _TransportState extends State<Transport> {
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
           childAspectRatio: 0.8,
         ),
         itemCount: 6, // Number of shimmer items to display

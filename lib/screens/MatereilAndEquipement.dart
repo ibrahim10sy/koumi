@@ -1112,8 +1112,8 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                         gridDelegate:
                                                             SliverGridDelegateWithFixedCrossAxisCount(
                                                           crossAxisCount: 2,
-                                                          mainAxisSpacing: 10,
-                                                          crossAxisSpacing: 10,
+                                                          mainAxisSpacing: 5,
+                                                          crossAxisSpacing: 5,
                                                           childAspectRatio: 0.8,
                                                         ),
                                                         itemCount:
@@ -1132,6 +1132,9 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                         index]);
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -1144,13 +1147,13 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       child:
                                                                           SizedBox(
                                                                         height:
-                                                                            72,
+                                                                            90,
                                                                         child: produitsLocaux[index].photoMateriel == null ||
                                                                                 produitsLocaux[index].photoMateriel!.isEmpty
                                                                             ? Image.asset(
                                                                                 "assets/images/default_image.png",
                                                                                 fit: BoxFit.cover,
-                                                                                height: 85,
+                                                                                // height: 85,
                                                                               )
                                                                             : CachedNetworkImage(
                                                                                 imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsLocaux[index].idMateriel}/image",
@@ -1165,11 +1168,14 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                     ),
                                                                     SizedBox(
                                                                         height:
-                                                                            8),
+                                                                            5),
                                                                     Padding(
                                                                       padding: const EdgeInsets
-                                                                          .all(
-                                                                          4.0),
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              5,
+                                                                          vertical:
+                                                                              5),
                                                                       child:
                                                                           Column(
                                                                         children: [
@@ -1192,7 +1198,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                             ),
                                                                           ),
                                                                           SizedBox(
-                                                                              height: 10),
+                                                                              height: 5),
                                                                           Row(
                                                                             children: [
                                                                               Icon(
@@ -1200,6 +1206,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                                 color: d_colorOr, // Couleur de l'icône
                                                                                 size: 24.0,
                                                                               ),
+                                                                              SizedBox(width: 5),
                                                                               Text(
                                                                                 overflow: TextOverflow.ellipsis,
                                                                                 produitsLocaux[index].localisation!,
@@ -1278,8 +1285,8 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                         gridDelegate:
                                                             SliverGridDelegateWithFixedCrossAxisCount(
                                                           crossAxisCount: 2,
-                                                          mainAxisSpacing: 10,
-                                                          crossAxisSpacing: 10,
+                                                          mainAxisSpacing: 5,
+                                                          crossAxisSpacing: 5,
                                                           childAspectRatio: 0.8,
                                                         ),
                                                         itemCount:
@@ -1298,6 +1305,9 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                         index]);
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -1310,13 +1320,13 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       child:
                                                                           SizedBox(
                                                                         height:
-                                                                            72,
+                                                                            90,
                                                                         child: produitsEtrangers[index].photoMateriel == null ||
                                                                                 produitsEtrangers[index].photoMateriel!.isEmpty
                                                                             ? Image.asset(
                                                                                 "assets/images/default_image.png",
                                                                                 fit: BoxFit.cover,
-                                                                                height: 85,
+                                                                                // height: 85,
                                                                               )
                                                                             : CachedNetworkImage(
                                                                                 imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsEtrangers[index].idMateriel}/image",
@@ -1331,11 +1341,14 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                     ),
                                                                     SizedBox(
                                                                         height:
-                                                                            8),
+                                                                            5),
                                                                     Padding(
                                                                       padding: const EdgeInsets
-                                                                          .all(
-                                                                          4.0),
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              5,
+                                                                          vertical:
+                                                                              5),
                                                                       child:
                                                                           Column(
                                                                         children: [
@@ -1358,7 +1371,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                             ),
                                                                           ),
                                                                           SizedBox(
-                                                                              height: 10),
+                                                                              height: 5),
                                                                           Row(
                                                                             children: [
                                                                               Icon(
@@ -1366,6 +1379,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                                 color: d_colorOr, // Couleur de l'icône
                                                                                 size: 24.0,
                                                                               ),
+                                                                              SizedBox(width: 5),
                                                                               Text(
                                                                                 overflow: TextOverflow.ellipsis,
                                                                                 produitsEtrangers[index].localisation!,
@@ -1555,9 +1569,9 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                 SliverGridDelegateWithFixedCrossAxisCount(
                                                               crossAxisCount: 2,
                                                               mainAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               crossAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               childAspectRatio:
                                                                   0.8,
                                                             ),
@@ -1578,6 +1592,10 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                             index]);
                                                                   },
                                                                   child: Card(
+                                                                    color: Color(
+                                                                        0xFFFAFAFA),
+                                                                    elevation:
+                                                                        1,
                                                                     child:
                                                                         Column(
                                                                       crossAxisAlignment:
@@ -1590,12 +1608,12 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                           child:
                                                                               SizedBox(
                                                                             height:
-                                                                                72,
+                                                                                90,
                                                                             child: produitsLocaux[index].photoMateriel == null || produitsLocaux[index].photoMateriel!.isEmpty
                                                                                 ? Image.asset(
                                                                                     "assets/images/default_image.png",
                                                                                     fit: BoxFit.cover,
-                                                                                    height: 85,
+                                                                                    // height: 85,
                                                                                   )
                                                                                 : CachedNetworkImage(
                                                                                     imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsLocaux[index].idMateriel}/image",
@@ -1610,11 +1628,12 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                         ),
                                                                         SizedBox(
                                                                             height:
-                                                                                8),
+                                                                                5),
                                                                         Padding(
                                                                           padding: const EdgeInsets
-                                                                              .all(
-                                                                              4.0),
+                                                                              .symmetric(
+                                                                              horizontal: 5,
+                                                                              vertical: 5),
                                                                           child:
                                                                               Column(
                                                                             children: [
@@ -1634,13 +1653,16 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                                   ),
                                                                                 ),
                                                                               ),
-                                                                              SizedBox(height: 10),
+                                                                              SizedBox(height: 5),
                                                                               Row(
                                                                                 children: [
                                                                                   Icon(
                                                                                     Icons.location_on,
                                                                                     color: d_colorOr, // Couleur de l'icône
                                                                                     size: 24.0,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 5,
                                                                                   ),
                                                                                   Text(
                                                                                     overflow: TextOverflow.ellipsis,
@@ -1717,9 +1739,9 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                 SliverGridDelegateWithFixedCrossAxisCount(
                                                               crossAxisCount: 2,
                                                               mainAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               crossAxisSpacing:
-                                                                  10,
+                                                                  5,
                                                               childAspectRatio:
                                                                   0.8,
                                                             ),
@@ -1740,6 +1762,10 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                             index]);
                                                                   },
                                                                   child: Card(
+                                                                    color: Color(
+                                                                        0xFFFAFAFA),
+                                                                    elevation:
+                                                                        1,
                                                                     child:
                                                                         Column(
                                                                       crossAxisAlignment:
@@ -1752,12 +1778,12 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                           child:
                                                                               SizedBox(
                                                                             height:
-                                                                                72,
+                                                                                90,
                                                                             child: produitsEtrangers[index].photoMateriel == null || produitsEtrangers[index].photoMateriel!.isEmpty
                                                                                 ? Image.asset(
                                                                                     "assets/images/default_image.png",
                                                                                     fit: BoxFit.cover,
-                                                                                    height: 85,
+                                                                                    // height: 85,
                                                                                   )
                                                                                 : CachedNetworkImage(
                                                                                     imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsEtrangers[index].idMateriel}/image",
@@ -1772,11 +1798,12 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                         ),
                                                                         SizedBox(
                                                                             height:
-                                                                                8),
+                                                                                5),
                                                                         Padding(
                                                                           padding: const EdgeInsets
-                                                                              .all(
-                                                                              4.0),
+                                                                              .symmetric(
+                                                                              horizontal: 5,
+                                                                              vertical: 5),
                                                                           child:
                                                                               Column(
                                                                             children: [
@@ -1796,7 +1823,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                                   ),
                                                                                 ),
                                                                               ),
-                                                                              SizedBox(height: 10),
+                                                                              SizedBox(height: 15),
                                                                               Row(
                                                                                 children: [
                                                                                   Icon(
@@ -1876,8 +1903,8 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
           childAspectRatio: 0.8,
         ),
         itemCount: 6, // Number of shimmer items to display

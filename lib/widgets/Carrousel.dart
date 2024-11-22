@@ -357,7 +357,8 @@ Future<void> getLocationNew() async {
       onTap: () {
         Get.to(() => DetailAlerte(alertes: alertesList[index]),
             transition: Transition.leftToRightWithFade,
-            duration: Duration(seconds: 2));
+            duration: Duration(milliseconds:
+                                      500));
       },
       child: Stack(
         children: [

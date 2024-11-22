@@ -188,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
           Get.offAll(BottomNavBarAdmin(),
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 500),
               transition: Transition.leftToRight);
         } else if (acteurs.typeActeur!.any((type) =>
             type.libelle!.toLowerCase() == 'producteur' ||
@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -206,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -216,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Index pour les véhicules
           // Mise à jour de l'index de navigation
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -232,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else {
           Get.offAll(BottomNavigationPage(),
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 500),
               transition: Transition.leftToRight);
           Provider.of<BottomNavigationService>(context, listen: false)
               .changeIndex(0);
@@ -248,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
             return AlertDialog(
               title: const Center(child: Text('Connexion échouée !')),
               content: Text(
-                'Email ou mot de passe incorrect',
+                'Email ou code PIN incorrect',
                 // errorMessage,
                 textAlign: TextAlign.justify,
                 style: const TextStyle(color: Colors.black, fontSize: 20),
@@ -463,7 +463,7 @@ class _LoginScreenState extends State<LoginScreen> {
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
           Get.offAll(BottomNavBarAdmin(),
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 500),
               transition: Transition.leftToRight);
         } else if (acteurs.typeActeur!.any((type) =>
             type.libelle!.toLowerCase() == 'producteur' ||
@@ -473,7 +473,7 @@ class _LoginScreenState extends State<LoginScreen> {
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -481,7 +481,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -489,7 +489,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -497,7 +497,7 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -519,7 +519,7 @@ class _LoginScreenState extends State<LoginScreen> {
             return AlertDialog(
               title: const Center(child: Text('Connexion échouée !')),
               content: Text(
-                'Email ou mot de passe incorrect',
+                'Email ou code PIN incorrect',
                 // errorMessage,
                 textAlign: TextAlign.justify,
                 style: const TextStyle(color: Colors.black, fontSize: 20),
@@ -617,7 +617,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: Text(
-                          "Email *",
+                          "Email ",
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
@@ -650,7 +650,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: Text(
-                          "Mot de passe *",
+                          "Code PIN",
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
@@ -663,7 +663,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          hintText: "Entrez votre mot de passe",
+                          hintText: "Entrez votre code PIN",
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
@@ -734,7 +734,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               print("ho");
 
                               Get.to(ForgetPassScreen(),
-                                  duration: Duration(seconds: 1),
+                                  duration: Duration(milliseconds:
+                                      500),
                                   transition: Transition.leftToRight);
                             },
                             child: const Text(
@@ -801,7 +802,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               GestureDetector(
                                 onTap: () {
                                   Get.to(RegisterScreen(),
-                                      duration: Duration(seconds: 1),
+                                      duration: Duration(milliseconds:
+                                      500),
                                       transition: Transition.leftToRight);
                                 },
                                 child: const Text(

@@ -298,23 +298,37 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                         title: Text(
                                           type,
                                           style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: isSelected
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
+                                            color: isSelected
+                                                ? d_colorOr
+                                                : Colors.black,
+                                            fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),
                                         ),
-                                        trailing: isSelected
-                                            ? const Icon(
-                                                Icons.check_box_outlined,
-                                                color: d_colorOr,
-                                              )
-                                            : null,
+                                        trailing: Checkbox(
+                                          activeColor: d_colorOr,
+                                          value: isSelected,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              if (value == true) {
+                                                niveau3 = type;
+                                                localisationController.text =
+                                                    type;
+                                              } else {
+                                                niveau3 = "";
+                                              }
+                                            });
+                                          },
+                                        ),
                                         onTap: () {
                                           setState(() {
-                                            niveau3 = type;
-                                            localisationController.text = type;
+                                            if (isSelected) {
+                                              niveau3 = "";
+                                            } else {
+                                              niveau3 = type;
+                                              localisationController.text =
+                                                  type;
+                                            }
                                           });
                                         },
                                       ),
@@ -447,25 +461,35 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                         title: Text(
                                           typeActeur.libelle!,
                                           style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: isSelected
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
+                                            color: isSelected
+                                                ? d_colorOr
+                                                : Colors.black,
+                                            fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),
                                         ),
-                                        trailing: isSelected
-                                            ? const Icon(
-                                                Icons.check_box_outlined,
-                                                color: d_colorOr,
-                                              )
-                                            : null,
+                                        trailing: Checkbox(
+                                          activeColor: d_colorOr,
+                                          value: isSelected,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              if (value == true) {
+                                                selectedTypes.add(typeActeur);
+                                              } else {
+                                                selectedTypes
+                                                    .remove(typeActeur);
+                                              }
+                                            });
+                                          },
+                                        ),
                                         onTap: () {
+                                          // Inverser la sélection avec un clic sur toute la ligne
                                           setState(() {
-                                            isSelected
-                                                ? selectedTypes
-                                                    .remove(typeActeur)
-                                                : selectedTypes.add(typeActeur);
+                                            if (isSelected) {
+                                              selectedTypes.remove(typeActeur);
+                                            } else {
+                                              selectedTypes.add(typeActeur);
+                                            }
                                           });
                                         },
                                       ),
@@ -484,7 +508,11 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                 TextButton(
                   child: const Text(
                     'Annuler',
-                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                    style: TextStyle(
+                      color: d_colorOr,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   onPressed: () {
                     _searchController.clear();
@@ -494,7 +522,11 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                 TextButton(
                   child: const Text(
                     'Valider',
-                    style: TextStyle(color: d_colorOr, fontSize: 16),
+                    style: TextStyle(
+                      color: d_colorOr,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   onPressed: () {
                     List<String> typeLibelle =
@@ -554,11 +586,6 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
             //     MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // SizedBox(
-              //     height: 130,
-              //     width: double.infinity,
-              //     child:
-              //         Center(child: Image.asset('assets/images/logo-pr.png'))),
               const SizedBox(
                 height: 70,
               ),
@@ -570,7 +597,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
-                          "Type Acteur (Multi-selection)",
+                          "Type Acteur (Multi-sélection)",
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
@@ -647,7 +674,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
-                          "Adresse  *",
+                          "Adresse ",
                           style: TextStyle(color: (Colors.black), fontSize: 18),
                         ),
                       ),
@@ -655,7 +682,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                       TextFormField(
                         controller: adresseController,
                         decoration: InputDecoration(
-                          hintText: "Entrez votre adresse de residence",
+                          hintText: "Entrez votre adresse",
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
                           border: OutlineInputBorder(

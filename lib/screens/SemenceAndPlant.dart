@@ -1163,6 +1163,9 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                               );
                                                             },
                                                             child: Card(
+                                                                color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1177,7 +1180,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1204,7 +1207,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1222,7 +1225,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1252,7 +1255,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1295,7 +1298,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1335,6 +1338,9 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                               );
                                                             },
                                                             child: Card(
+                                                                color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1349,7 +1355,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1376,7 +1382,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1394,7 +1400,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1424,7 +1430,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1594,6 +1600,9 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                               );
                                                             },
                                                             child: Card(
+                                                                color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1608,7 +1617,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1635,7 +1644,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1653,7 +1662,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1683,7 +1692,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1726,7 +1735,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1766,6 +1775,9 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color:
+                                                              Color(0xFFFAFAFA),
+                                                          elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1780,7 +1792,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1807,7 +1819,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1825,7 +1837,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1855,7 +1867,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),

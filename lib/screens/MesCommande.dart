@@ -249,8 +249,8 @@ class _MesCommandeState extends State<MesCommande> {
                           });
                           Get.to(LoginScreen(),
                               duration: Duration(
-                                  seconds:
-                                      1), //duration of transitions, default 1 sec
+                                  milliseconds:
+                                      500), //duration of transitions, default 1 sec
                               transition: Transition.leftToRight);
                         },
                         style: ButtonStyle(

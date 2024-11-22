@@ -507,6 +507,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                             filtereSearch[index])));
                                                       },
                                                       child: Card(
+                                                        color:
+                                                            Color(0xFFFAFAFA),
+                                                        elevation: 1,
                                                         margin:
                                                             EdgeInsets.all(8),
                                                         child: Column(
@@ -520,7 +523,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                       .circular(
                                                                           8.0),
                                                               child: SizedBox(
-                                                                height: 72,
+                                                                height: 85,
                                                                 child: filtereSearch[index].photoVehicule ==
                                                                             null ||
                                                                         filtereSearch[index]

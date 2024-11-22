@@ -73,7 +73,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         builder: (context) => AlertDialog(
           title: Text("Connexion"),
           content: Text(
-              "Veillez vous connectez d'abord avec votre email et le mot de passe puis réessayer plus tard",
+              "Veillez vous connectez d'abord avec votre email et le code PIN puis réessayer plus tard",
               style: TextStyle(
                 color: Colors.black87,
               )),
@@ -198,7 +198,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             acteurs.typeActeur!.map((e) => e.libelle!).toList();
         if (type.contains('admin') || type.contains('Admin')) {
           Get.offAll(BottomNavBarAdmin(),
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 500),
               transition: Transition.leftToRight);
         } else if (acteurs.typeActeur!.any((type) =>
             type.libelle!.toLowerCase() == 'producteur' ||
@@ -208,7 +208,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             type.libelle!.toLowerCase() == 'transformateur' ||
             type.libelle!.toLowerCase() == 'partenaires de développement')) {
           // Index pour les intrants
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -216,7 +216,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'fournisseur')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -226,7 +226,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
             .any((type) => type.libelle!.toLowerCase() == 'transporteur')) {
           // Index pour les véhicules
           // Mise à jour de l'index de navigation
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -234,7 +234,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           });
         } else if (acteurs.typeActeur!
             .any((type) => type.libelle!.toLowerCase() == 'prestataire')) {
-          Timer(const Duration(seconds: 1), () {
+          Timer(const Duration(milliseconds: 500), () {
             Get.offAll(BottomNavigationPage(),
                 transition: Transition.leftToRight);
             Provider.of<BottomNavigationService>(context, listen: false)
@@ -242,7 +242,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           });
         } else {
           Get.offAll(BottomNavigationPage(),
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 500),
               transition: Transition.leftToRight);
           Provider.of<BottomNavigationService>(context, listen: false)
               .changeIndex(0);
@@ -402,58 +402,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                 Icons.arrow_back_ios,
               ),
             ),
-            actions: [
-              // TextButton(
-              //   onPressed: () {
-              //     Future.microtask(() {
-              //       Provider.of<BottomNavigationService>(context, listen: false)
-              //           .changeIndex(0);
-              //     });
-              //     Get.to(LoginScreen(),
-              //         duration: Duration(seconds: 1),
-              //         transition: Transition.leftToRight);
-              //   },
-              //   child: const Text(
-              //     "connexion avec email",
-              //     style: TextStyle(
-              //         fontSize: 16,
-              //         // decoration: TextDecoration.underline,
-              //         color: d_colorOr),
-              //   ),
-              // ),
-              // PopupMenuButton<String>(
-              //   padding: EdgeInsets.zero,
-              //   itemBuilder: (context) {
-              //     return <PopupMenuEntry<String>>[
-              //       PopupMenuItem<String>(
-              //         child: ListTile(
-              //           leading: const Icon(
-              //             Icons.login,
-              //           ),
-              //           title: const Text(
-              //             "S'authentifier",
-              //             style: TextStyle(
-              //               fontSize: 18,
-              //               fontWeight: FontWeight.bold,
-              //             ),
-              //           ),
-              //           onTap: () async {
-              //             Navigator.of(context).pop();
-              //   Future.microtask(() {
-              //     Provider.of<BottomNavigationService>(context,
-              //             listen: false)
-              //         .changeIndex(0);
-              //   });
-              //   Get.to(LoginScreen(),
-              //       duration: Duration(seconds: 1),
-              //       transition: Transition.leftToRight);
-              // },
-              //         ),
-              //       ),
-              //     ];
-              //   },
-              // )
-            ]),
+            ),
         body: SafeArea(
           minimum: EdgeInsets.only(top: 10),
           child: ListView(
@@ -465,15 +414,15 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               ),
               const Center(
                 child: Text(
-                  'Entrer votre code pin',
+                  'Entrez votre code PIN',
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: 30,
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 50),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -570,11 +519,12 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               TextButton(
                 onPressed: () {
                   Get.to(ForgetPassScreen(),
-                      duration: Duration(seconds: 1),
+                      duration: Duration(milliseconds:
+                                      500),
                       transition: Transition.leftToRight);
                 },
                 child: const Text(
-                  "Mot de passe oublié ",
+                  "Code PIN oublié ",
                   style: TextStyle(
                     fontSize: 16,
                     decoration: TextDecoration.underline,
@@ -601,7 +551,8 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                       GestureDetector(
                         onTap: () {
                           Get.to(RegisterScreen(),
-                              duration: Duration(seconds: 1),
+                              duration: Duration(milliseconds:
+                                      500),
                               transition: Transition.leftToRight);
                         },
                         child: const Text(

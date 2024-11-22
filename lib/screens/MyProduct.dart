@@ -317,12 +317,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
 
   @override
   void dispose() {
-    // if (isSearchMode) {
-    //   _searchController = TextEditingController();
-    // } else {
-    // }
     _searchController.dispose();
-    // Disposez le TextEditingController lorsque vous n'en avez plus besoin
+
     scrollableController.dispose();
     scrollableController1.dispose();
     super.dispose();
@@ -331,6 +327,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
             backgroundColor: d_colorOr,
             centerTitle: true,
@@ -607,9 +604,6 @@ class _MyProductScreenState extends State<MyProductScreen> {
                           builder: (context, sService, child) {
                         return FutureBuilder(
                             future: stockListeFuture,
-                            // future: (widget.isRoute ?? false)
-                            //     ? stockListeFuture
-                            //     : sService.fetchStockByActeur(acteur.idActeur!),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -684,8 +678,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 2,
-                                          mainAxisSpacing: 10,
-                                          crossAxisSpacing: 10,
+                                          mainAxisSpacing: 5,
+                                          crossAxisSpacing: 5,
                                           childAspectRatio: 0.8,
                                         ),
                                         itemCount: filteredSearch.length + 1,
@@ -705,6 +699,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                                   );
                                                 },
                                                 child: Card(
+                                                  color: Color(0xFFFAFAFA),
+                                                  elevation: 1,
                                                   margin: EdgeInsets.all(8),
                                                   child: Column(
                                                     crossAxisAlignment:
@@ -716,7 +712,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                                             BorderRadius
                                                                 .circular(8.0),
                                                         child: SizedBox(
-                                                          height: 72,
+                                                          height: 85,
                                                           child: filteredSearch[
                                                                               index]
                                                                           .photo ==
@@ -760,7 +756,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
-                                                            fontSize: 15,
+                                                            fontSize: 16,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             color:
@@ -1079,8 +1075,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
           childAspectRatio: 0.8,
         ),
         itemCount: 6, // Number of shimmer items to display

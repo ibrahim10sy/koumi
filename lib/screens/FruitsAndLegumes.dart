@@ -1244,6 +1244,9 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                 );
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
                                                                         .all(8),
@@ -1259,7 +1262,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            90,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1286,7 +1289,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1307,7 +1310,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1337,7 +1340,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                                 : " FCFA ",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
+                                                                              fontSize: 17,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1379,7 +1382,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1419,6 +1422,9 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                 );
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
                                                                         .all(8),
@@ -1434,7 +1440,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            90,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1461,7 +1467,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1482,7 +1488,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1512,7 +1518,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                                 : " FCFA ",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
+                                                                              fontSize: 17,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1638,19 +1644,6 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                               children: [
                                                 if (produitsLocaux
                                                     .isNotEmpty) ...[
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Text(
-                                                      "Produits locaux",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: d_colorGreen,
-                                                          fontSize: 16),
-                                                    ),
-                                                  ),
                                                   GridView.builder(
                                                     shrinkWrap: true,
                                                     physics:
@@ -1685,6 +1678,9 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1699,7 +1695,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photo == null ||
                                                                               produitsLocaux[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1726,7 +1722,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1749,7 +1745,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                         overflow:
                                                                             TextOverflow.ellipsis,
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1781,7 +1777,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                17,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1824,7 +1820,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: Text(
-                                                      "Produits autre pays",
+                                                      "Produit autre pays",
                                                       style: TextStyle(
                                                           fontSize: 16),
                                                     ),
@@ -1863,6 +1859,9 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1877,7 +1876,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photo == null ||
                                                                               produitsEtrangers[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1904,7 +1903,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1927,7 +1926,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                         overflow:
                                                                             TextOverflow.ellipsis,
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1959,7 +1958,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                17,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),

@@ -77,6 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isWhatsAppEditing = false;
   bool isPhoneEditing = false;
   String processedNumberWA = "";
+  String errorMessage = "";
   String processedNumberTel = "";
   String selectCode = "";
 
@@ -323,22 +324,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         processedNumberTel = removePlus(phoneController.text);
       });
     });
-
-    // whatsAppController.addListener(() {
-    //   if (isPhoneEditing) return;
-    //   setState(() {
-    //     // processedNumber = removePlus(whatsAppController.text);
-    //     phoneController.text = whatsAppController.text;
-    //   });
-    // });
-
-    // phoneController.addListener(() {
-    //   if (isWhatsAppEditing) return;
-    //   setState(() {
-    //     processedNumberTel = phoneController.text;
-    //     // processedNumberTel = removePlus(phoneController.text);
-    //   });
-    // });
   }
 
   @override
@@ -467,7 +452,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           onSaved: (val) => nomActeur = val!,
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         // fin  adresse fullname
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
@@ -482,7 +467,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ? detectedCountryCode
                               : "ML",
                           controller: whatsAppController,
-                          disableLengthCheck: true,
                           invalidNumberMessage: "Numéro invalide",
                           searchText: "Chercher un pays",
                           decoration: InputDecoration(
@@ -497,13 +481,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             print(phone.completeNumber);
                             processedNumberWA =
                                 removePlus(phone.completeNumber.toString());
-                            print("wa selected  $processedNumberWA");
+                            print(
+                                "wa selected  $processedNumberWA and pays $selectedCountry");
                           },
                           onCountryChanged: (country) {
                             setState(() {
-                              selectedCountry = countryTranslations[
-                                      country.name.toString()] ??
-                                  country.name.toString();
+                              selectedCountry = country.name.toString();
                               print('Country Origin : ' +
                                   country.name.toString());
                               print('Country changed to: ' + selectedCountry!);
@@ -533,7 +516,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 "wa updated with country change $processedNumberWA");
                           },
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 5),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
@@ -547,7 +530,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ? detectedCountryCode
                               : "ML",
                           controller: phoneController,
-                          disableLengthCheck: true,
                           invalidNumberMessage: "Numéro invalide",
                           searchText: "Chercher un pays",
                           decoration: InputDecoration(
@@ -563,13 +545,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                             processedNumberTel =
                                 removePlus(phone.completeNumber.toString());
-                            print("tel selected  $processedNumberTel");
+                            print(
+                                "tel selected  $processedNumberTel and pays $selectedCountry");
                           },
                           onCountryChanged: (country) {
                             setState(() {
-                              selectedCountry = countryTranslations[
-                                      country.name.toString()] ??
-                                  country.name.toString();
+                              selectedCountry = country.name.toString();
                               print('Country changed to: ' + selectedCountry!);
 
                               processedNumberTel =
@@ -601,7 +582,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             print('Country changed to: ' + country.name);
                           },
                         ),
-
                         SizedBox(
                           height: 80,
                           child: Center(

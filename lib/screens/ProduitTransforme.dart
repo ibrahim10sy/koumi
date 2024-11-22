@@ -1302,6 +1302,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
                                                                         .all(8),
@@ -1317,7 +1320,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            90,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1344,7 +1347,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1365,7 +1368,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1395,7 +1398,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                                 : " FCFA ",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
+                                                                              fontSize: 16,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1437,7 +1440,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1477,6 +1480,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
                                                                         .all(8),
@@ -1492,7 +1498,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            90,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1519,7 +1525,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1540,7 +1546,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1570,7 +1576,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                                 : " FCFA ",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
+                                                                              fontSize: 16,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1734,6 +1740,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
                                                                         .all(8),
@@ -1749,7 +1758,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            90,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1776,7 +1785,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1797,7 +1806,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1827,7 +1836,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                                 : " FCFA ",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
+                                                                              fontSize: 16,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),
@@ -1869,7 +1878,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1909,6 +1918,9 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                 );
                                                               },
                                                               child: Card(
+                                                                color: Color(
+                                                                    0xFFFAFAFA),
+                                                                elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
                                                                         .all(8),
@@ -1924,7 +1936,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            90,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1951,7 +1963,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              16,
+                                                                              17,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -1972,7 +1984,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontSize:
-                                                                              15,
+                                                                              16,
                                                                           fontWeight:
                                                                               FontWeight.bold,
                                                                           color:
@@ -2002,7 +2014,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                                 : " FCFA ",
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize: 15,
+                                                                              fontSize: 16,
                                                                               color: d_colorOr,
                                                                             ),
                                                                           ),

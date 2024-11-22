@@ -1139,6 +1139,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1153,7 +1156,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1180,7 +1183,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1198,7 +1201,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1228,7 +1231,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1271,7 +1274,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1311,6 +1314,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1325,7 +1331,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1352,7 +1358,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1370,7 +1376,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1400,7 +1406,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1572,6 +1578,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1586,7 +1595,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1613,7 +1622,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1631,7 +1640,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1661,7 +1670,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
@@ -1704,7 +1713,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                           const EdgeInsets.all(
                                                               8.0),
                                                       child: Text(
-                                                        "Produits autre pays",
+                                                        "Produit autre pays",
                                                         style: TextStyle(
                                                             fontSize: 16),
                                                       ),
@@ -1744,6 +1753,9 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                               );
                                                             },
                                                             child: Card(
+                                                              color: Color(
+                                                                  0xFFFAFAFA),
+                                                              elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
                                                               child: Column(
@@ -1758,7 +1770,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          90,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1785,7 +1797,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            16,
+                                                                            17,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -1803,7 +1815,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
-                                                                            15,
+                                                                            16,
                                                                         color: Colors
                                                                             .black87,
                                                                       ),
@@ -1833,7 +1845,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                           style:
                                                                               TextStyle(
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             color:
                                                                                 d_colorOr,
                                                                           ),
