@@ -203,20 +203,20 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
 
   List<Widget> _buildCards() {
     List<Widget> cards = [
-      _buildAccueilCard("Semences et plants", "semence.png", 13),
-      _buildAccueilCard("Produits phytosanitaires", "physo.png", 12),
-      _buildAccueilCard("Engrais et apports", "engrais.png", 11),
-      _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 10),
-      _buildAccueilCard("Compléments alimentaires", "compl.png", 5),
-      _buildAccueilCard("Produits transformés", "transforme.png", 8),
-      _buildAccueilCard("Produits d'élevages", "elevage.png", 7),
-      _buildAccueilCard("Produits agricoles", "pro1.png", 9),
+      // _buildAccueilCard("Semences et plants", "semence.png", 13),
+      // _buildAccueilCard("Produits phytosanitaires", "physo.png", 12),
+      _buildAccueilCard("Intrants agricoles", "engrais.png", 15),
+      _buildAccueilCard("Produits agricoles & élevages", "fruit&legume.png", 9),
       _buildAccueilCard("Matériels et équipements", "equi.png", 16),
       _buildAccueilCard("Magasins", "shop1.png", 6),
       _buildAccueilCard("Moyens de transport", "transp.png", 3),
       _buildAccueilCard("Matériels de location", "loc.png", 4),
       _buildAccueilCard("Météo", "met1.png", 2),
       _buildAccueilCard("Conseils", "cons1.png", 1)
+      // _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 10),
+      // _buildAccueilCard("Compléments alimentaires", "compl.png", 5),
+      // _buildAccueilCard("Produits transformés", "transforme.png", 8),
+      // _buildAccueilCard("Produits d'élevages", "elevage.png", 7),
     ];
 
     // if (isExist) {
@@ -246,12 +246,7 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
           } else if (index == 15) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => IntrantPage()));
-          }
-          // else if (index == 14) {
-          //   Navigator.push(context,
-          //       MaterialPageRoute(builder: (context) => const MesCommande()));
-          // }
-          else if (index == 13) {
+          } else if (index == 13) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => SemenceAndPlant()));
           } else if (index == 12) {
@@ -303,7 +298,8 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
             color: Colors.white,
             boxShadow: const [
               BoxShadow(
-                blurRadius: 5.0,
+                blurRadius: 4.0,
+                offset: Offset(0, 1),
                 color: Color.fromRGBO(0, 0, 0, 0.20), // Opacité de 10%
               ),
             ],
@@ -311,20 +307,11 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
           child: Row(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 36,
-                  height: 36,
-                  child: Image.asset(
-                    "assets/images/$imgLocation",
-                    fit: BoxFit.contain,
-                    scale: 1,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Image.asset(
+                  "assets/images/$imgLocation",
                 ),
               ),
-              // SizedBox(
-              //   width: 10,
-              // ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -334,7 +321,7 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.left,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
