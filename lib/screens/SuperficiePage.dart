@@ -87,9 +87,11 @@ class _SuperficiePageState extends State<SuperficiePage> {
         toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Surface()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Surface()));
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Superficie cultiver",
           style: TextStyle(

@@ -116,7 +116,8 @@ class _NextsubscriptionpageState extends State<Nextsubscriptionpage> {
               Navigator.pop(context, true);
             },
             icon: const Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_back_sharp,
+              size: 30,
               color: Colors.white,
             ),
           ),

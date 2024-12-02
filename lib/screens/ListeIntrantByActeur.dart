@@ -214,7 +214,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                   onPressed: () {
                     Navigator.pop(context, true);
                   },
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back_sharp,
+                      size: 30, color: Colors.white),
                 )
               : Container(),
           title: const Text(

@@ -20,45 +20,43 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _SurfaceState extends State<Surface> {
-
-    Acteur? acteur;
+  Acteur? acteur;
   @override
   void initState() {
     super.initState();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               final List<String> type =
-                acteur!.typeActeur!.map((e) => e.libelle!).toList();
-            if (type.contains('admin') || type.contains('Admin')) {
-              Get.offAll(BottomNavBarAdmin(),
-                 
-                  transition: Transition.leftToRight);
-                   Provider.of<BottomNavigationService>(context, listen: false)
+                  acteur!.typeActeur!.map((e) => e.libelle!).toList();
+              if (type.contains('admin') || type.contains('Admin')) {
+                Get.offAll(BottomNavBarAdmin(),
+                    transition: Transition.leftToRight);
+                Provider.of<BottomNavigationService>(context, listen: false)
                     .changeIndex(2);
-            } else {
-              Get.offAll(BottomNavigationPage(),
-                  transition: Transition.leftToRight);
-                    Provider.of<BottomNavigationService>(context, listen: false)
+              } else {
+                Get.offAll(BottomNavigationPage(),
+                    transition: Transition.leftToRight);
+                Provider.of<BottomNavigationService>(context, listen: false)
                     .changeIndex(2);
-            }
+              }
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           "Surface cultiver",
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: SingleChildScrollView(

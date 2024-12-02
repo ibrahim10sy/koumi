@@ -59,7 +59,8 @@ class _PaysPageState extends State<PaysPage> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Pays",
           style: TextStyle(

@@ -171,10 +171,11 @@ class _DetailProduitsState extends State<DetailProduits>
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: const Text("Détail Produit",
                 style: TextStyle(fontSize: 20, color: Colors.white)),
-            actions: 
+            actions:
                 // ? [
                 //     acteur.idActeur != widget.stock.acteur!.idActeur
                 //         ? SizedBox()
@@ -192,11 +193,12 @@ class _DetailProduitsState extends State<DetailProduits>
                 //             icon: Icon(Icons.edit, color: Colors.white),
                 //           )
                 //   ]
-                 [
-                  Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CodePays().getFlagsApp(stock.acteur!.niveau3PaysActeur!),
-                )]),
+                [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CodePays().getFlagsApp(stock.acteur!.niveau3PaysActeur!),
+              )
+            ]),
         body: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
@@ -611,7 +613,7 @@ class _DetailProduitsState extends State<DetailProduits>
                         ),
                       ],
                     ),
-                   
+
                     // const SizedBox(height: 20),
                     // isExist == true
                     //     ? widget.stock.acteur!.idActeur == acteur.idActeur

@@ -416,7 +416,8 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: const Text(
               "Produits phytosanitaires",
               style: TextStyle(
@@ -1156,7 +1157,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1331,7 +1332,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1595,7 +1596,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1770,7 +1771,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(

@@ -67,125 +67,127 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
     }
   }
 
-  void getLocationNew() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-        return Future.error('Location services are disabled.');
-      }
+  // void getLocationNew() async {
+  //   try {
+  //     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //     if (!serviceEnabled) {
+  //       await Geolocator.openLocationSettings();
+  //       return Future.error('Location services are disabled.');
+  //     }
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          return Future.error('Location permissions are denied');
-        }
-      }
+  //     LocationPermission permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       permission = await Geolocator.requestPermission();
+  //       if (permission == LocationPermission.denied) {
+  //         return Future.error('Location permissions are denied');
+  //       }
+  //     }
 
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location permissions are permanently denied.');
-      }
+  //     if (permission == LocationPermission.deniedForever) {
+  //       return Future.error('Location permissions are permanently denied.');
+  //     }
 
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
+  //     Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high,
+  //     );
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(
+  //       position.latitude,
+  //       position.longitude,
+  //     );
 
-      Placemark placemark = placemarks.first;
-      setState(() {
-        detectedCountryCode = placemark.isoCountryCode!;
-      });
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  //     Placemark placemark = placemarks.first;
+  //     setState(() {
+  //       detectedCountryCode = placemark.isoCountryCode!;
+  //     });
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
-  var latitude = 'Getting Latitude..'.obs;
-  var longitude = 'Getting Longitude..'.obs;
-  var address = 'Getting Address..'.obs;
-  late StreamSubscription<Position> streamSubscription;
+  // var latitude = 'Getting Latitude..'.obs;
+  // var longitude = 'Getting Longitude..'.obs;
+  // var address = 'Getting Address..'.obs;
+  // late StreamSubscription<Position> streamSubscription;
 
-  getLocation() async {
-    bool serviceEnabled;
+  // getLocation() async {
+  //   bool serviceEnabled;
 
-    LocationPermission permission;
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    streamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-      latitude.value = 'Latitude : ${position.latitude}';
-      longitude.value = 'Longitude : ${position.longitude}';
-      getAddressFromLatLang(position);
-    });
-  }
+  //   LocationPermission permission;
+  //   // Test if location services are enabled.
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     // Location services are not enabled don't continue
+  //     // accessing the position and request users of the
+  //     // App to enable the location services.
+  //     await Geolocator.openLocationSettings();
+  //     return Future.error('Location services are disabled.');
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       // Permissions are denied, next time you could try
+  //       // requesting permissions again (this is also where
+  //       // Android's shouldShowRequestPermissionRationale
+  //       // returned true. According to Android guidelines
+  //       // your App should show an explanatory UI now.
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     // Permissions are denied forever, handle appropriately.
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
+  //   // When we reach here, permissions are granted and we can
+  //   // continue accessing the position of the device.
+  //   streamSubscription =
+  //       Geolocator.getPositionStream().listen((Position position) {
+  //     latitude.value = 'Latitude : ${position.latitude}';
+  //     longitude.value = 'Longitude : ${position.longitude}';
+  //     getAddressFromLatLang(position);
+  //   });
+  // }
 
-  Future<void> getAddressFromLatLang(Position position) async {
-    try {
-      List<Placemark> placemark =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemark.isNotEmpty) {
-        Placemark place = placemark[0];
-        debugPrint("Address ISO: $detectedC");
-        address.value =
-            'Address : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+  // Future<void> getAddressFromLatLang(Position position) async {
+  //   try {
+  //     List<Placemark> placemark =
+  //         await placemarkFromCoordinates(position.latitude, position.longitude);
+  //     if (placemark.isNotEmpty) {
+  //       Placemark place = placemark[0];
+  //       debugPrint("Address ISO: $detectedC");
+  //       address.value =
+  //           'Address : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
 
-        if (mounted) {
-          setState(() {
-            detectedC = place.isoCountryCode;
-            detectedCountryCode = place.isoCountryCode!;
-            detectedCountry = place.country!;
-          });
-        }
+  //       if (mounted) {
+  //         setState(() {
+  //           detectedC = place.isoCountryCode;
+  //           detectedCountryCode = place.isoCountryCode!;
+  //           detectedCountry = place.country!;
+  //         });
+  //       }
 
-        debugPrint(
-            "Address: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
-      } else {
-        debugPrint(
-            "Aucun emplacement trouvé dans defaut accueil pour les coordonnées fournies.");
-      }
-    } catch (e) {
-      debugPrint(
-          "Une erreur est survenue lors de la récupération de l'adresse : $e");
-    }
-  }
+  //       debugPrint(
+  //           "Address: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
+  //     } else {
+  //       debugPrint(
+  //           "Aucun emplacement trouvé dans defaut accueil pour les coordonnées fournies.");
+  //     }
+  //   } catch (e) {
+  //     debugPrint(
+  //         "Une erreur est survenue lors de la récupération de l'adresse : $e");
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    getLocation();
+    // getLocation();
     verify();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -201,10 +203,33 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
     );
   }
 
+//  List<Widget> _buildCards() {
+//     List<Widget> cards = [
+//       _buildAccueilCard("Semences et plants", "semence.png", 13),
+//       _buildAccueilCard("Produits phytosanitaires", "physo.png", 12),
+//       _buildAccueilCard("Engrais et apports", "engrais.png", 11),
+//       _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 10),
+//       _buildAccueilCard("Compléments alimentaires", "compl.png", 5),
+//       _buildAccueilCard("Produits transformés", "transforme.png", 8),
+//       _buildAccueilCard("Produits d'élevages", "elevage.png", 7),
+//       _buildAccueilCard("Produits agricoles", "pro1.png", 9),
+//       _buildAccueilCard("Matériels et équipements", "equi.png", 16),
+//       _buildAccueilCard("Magasins", "shop1.png", 6),
+//       _buildAccueilCard("Moyens de transport", "transp.png", 3),
+//       _buildAccueilCard("Matériels de location", "loc.png", 4),
+//       _buildAccueilCard("Météo", "met1.png", 2),
+//       _buildAccueilCard("Conseils", "cons1.png", 1)
+//     ];
+
+    // if (isExist) {
+    //   cards.insert(
+    //     8,
+    //     _buildAccueilCard("Intrants agricoles", "int1.png", 15),
+    //   );
+     
+    // }
   List<Widget> _buildCards() {
     List<Widget> cards = [
-      // _buildAccueilCard("Semences et plants", "semence.png", 13),
-      // _buildAccueilCard("Produits phytosanitaires", "physo.png", 12),
       _buildAccueilCard("Intrants agricoles", "engrais.png", 15),
       _buildAccueilCard("Produits agricoles & élevages", "fruit&legume.png", 9),
       _buildAccueilCard("Matériels et équipements", "equi.png", 16),
@@ -213,22 +238,9 @@ class _DefautAcceuilState extends State<DefautAcceuil> {
       _buildAccueilCard("Matériels de location", "loc.png", 4),
       _buildAccueilCard("Météo", "met1.png", 2),
       _buildAccueilCard("Conseils", "cons1.png", 1)
-      // _buildAccueilCard("Fruits et légumes", "fruit&legume.png", 10),
-      // _buildAccueilCard("Compléments alimentaires", "compl.png", 5),
-      // _buildAccueilCard("Produits transformés", "transforme.png", 8),
-      // _buildAccueilCard("Produits d'élevages", "elevage.png", 7),
     ];
 
-    // if (isExist) {
-    //   cards.insert(
-    //     8,
-    //     _buildAccueilCard("Intrants agricoles", "int1.png", 15),
-    //   );
-    //   // cards.insert(
-    //   //   11,
-    //   //   _buildAccueilCard("Commandes", "cm.png", 14),
-    //   // );
-    // }
+   
 
     return cards;
   }

@@ -124,7 +124,8 @@ class _ActeurScreenState extends State<ActeurScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             "Listes des acteurs",
             style: TextStyle(

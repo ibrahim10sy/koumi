@@ -32,7 +32,8 @@ class _AddParametreState extends State<AddParametre> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: d_colorGreen)),
           title: const Text(
             "Ajout de parametre",
             style: TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold),

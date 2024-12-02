@@ -38,7 +38,8 @@ class _DetailSuperficieState extends State<DetailSuperficie> {
               Navigator.of(context).pop();
             },
             icon: const Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_back_sharp,
+              size: 30,
               color: Colors.white,
             )),
         title: Text(

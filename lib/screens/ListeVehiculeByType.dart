@@ -205,7 +205,8 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                 Navigator.of(context).pop();
                 // Get.to(TypeVehicule());
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             typeVoiture.nom!.toUpperCase(),
             style: const TextStyle(

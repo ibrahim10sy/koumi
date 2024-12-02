@@ -38,9 +38,9 @@ class _AddMaterielState extends State<AddMateriel> {
   TextEditingController _etatController = TextEditingController();
   TextEditingController _prixController = TextEditingController();
   TextEditingController _monnaieController = TextEditingController();
-    TextEditingController localisationController = TextEditingController();
-    TextEditingController speculationController = TextEditingController();
-    TextEditingController typeController = TextEditingController();
+  TextEditingController localisationController = TextEditingController();
+  TextEditingController speculationController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
 
   final formkey = GlobalKey<FormState>();
   late TextEditingController _searchController;
@@ -103,7 +103,7 @@ class _AddMaterielState extends State<AddMateriel> {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     fetchLibelleNiveau3Pays();
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
-     _searchController = TextEditingController();
+    _searchController = TextEditingController();
     // _filiereList = http.get(Uri.parse('$apiOnlineUrl/Filiere/getAllFiliere/'));
 
     // _categorieList = http.get(Uri.parse(
@@ -200,7 +200,7 @@ class _AddMaterielState extends State<AddMateriel> {
     });
   }
 
- @override
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -220,7 +220,8 @@ class _AddMaterielState extends State<AddMateriel> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: Text(
               "Ajout matériel",
               style: const TextStyle(
@@ -237,7 +238,6 @@ class _AddMaterielState extends State<AddMateriel> {
                     child: Column(
                       children: [
                         SizedBox(height: 10),
-                        
                         if (widget.isEquipement!)
                           Padding(
                             padding: EdgeInsets.symmetric(
@@ -256,26 +256,25 @@ class _AddMaterielState extends State<AddMateriel> {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 20),
-                            child:  GestureDetector(
-                          onTap: _showSpeculation,
-                          child: TextFormField(
-                            onTap: _showSpeculation,
-                            controller: speculationController,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(Icons.arrow_drop_down,
-                                  color: Colors.blueGrey[400]),
-                              hintText: "Sélectionner une speculation",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            child: GestureDetector(
+                              onTap: _showSpeculation,
+                              child: TextFormField(
+                                onTap: _showSpeculation,
+                                controller: speculationController,
+                                keyboardType: TextInputType.text,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(Icons.arrow_drop_down,
+                                      color: Colors.blueGrey[400]),
+                                  hintText: "Sélectionner une speculation",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                          ),
-                       
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 22,
@@ -328,26 +327,25 @@ class _AddMaterielState extends State<AddMateriel> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child:  GestureDetector(
-                          onTap: _showType,
-                          child: TextFormField(
-                            onTap: _showType,
-                            controller: typeController,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(Icons.arrow_drop_down,
-                                  color: Colors.blueGrey[400]),
-                              hintText: "Sélectionner un type ",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: GestureDetector(
+                              onTap: _showType,
+                              child: TextFormField(
+                                onTap: _showType,
+                                controller: typeController,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(Icons.arrow_drop_down,
+                                      color: Colors.blueGrey[400]),
+                                  hintText: "Sélectionner un type ",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        )
-                        ),
+                            )),
                         SizedBox(
                           height: 5,
                         ),
@@ -443,22 +441,22 @@ class _AddMaterielState extends State<AddMateriel> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
                           child: GestureDetector(
-                        onTap: _showLocalite,
-                        child: TextFormField(
-                          onTap: _showLocalite,
-                          controller: localisationController,
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.arrow_drop_down,
-                                color: Colors.blueGrey[400]),
-                            hintText: "Sélectionner une localité",
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            onTap: _showLocalite,
+                            child: TextFormField(
+                              onTap: _showLocalite,
+                              controller: localisationController,
+                              decoration: InputDecoration(
+                                suffixIcon: Icon(Icons.arrow_drop_down,
+                                    color: Colors.blueGrey[400]),
+                                hintText: "Sélectionner une localité",
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
                         ),
                         SizedBox(
                           height: 5,
@@ -541,26 +539,25 @@ class _AddMaterielState extends State<AddMateriel> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width:10),
+                              SizedBox(width: 10),
                               Expanded(
-                                child: GestureDetector(
-                          onTap: _showMonnaie,
-                          child: TextFormField(
-                            onTap: _showMonnaie,
-                            controller: _monnaieController,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(Icons.arrow_drop_down,
-                                  color: Colors.blueGrey[400]),
-                              hintText: "Monnaie",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        )
-                              ),
+                                  child: GestureDetector(
+                                onTap: _showMonnaie,
+                                child: TextFormField(
+                                  onTap: _showMonnaie,
+                                  controller: _monnaieController,
+                                  decoration: InputDecoration(
+                                    suffixIcon: Icon(Icons.arrow_drop_down,
+                                        color: Colors.blueGrey[400]),
+                                    hintText: "Monnaie",
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              )),
                             ],
                           ),
                         ),
@@ -775,8 +772,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    d_colorOr, // Orange color code
+                                backgroundColor: d_colorOr, // Orange color code
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -947,7 +943,6 @@ class _AddMaterielState extends State<AddMateriel> {
                                                 _etatController.clear(),
                                                 _nomController.clear(),
                                                 _descriptionController.clear(),
-
                                                 setState(() {
                                                   _isLoading = false;
                                                   n3Value = null;
@@ -979,8 +974,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    d_colorOr, // Orange color code
+                                backgroundColor: d_colorOr, // Orange color code
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -1002,7 +996,6 @@ class _AddMaterielState extends State<AddMateriel> {
         ));
   }
 
- 
   void _showMonnaie() async {
     final BuildContext context = this.context;
 
@@ -1150,7 +1143,7 @@ class _AddMaterielState extends State<AddMateriel> {
     );
   }
 
-   void _showSpeculation() async {
+  void _showSpeculation() async {
     final BuildContext context = this.context;
 
     showDialog(
@@ -1300,7 +1293,7 @@ class _AddMaterielState extends State<AddMateriel> {
     );
   }
 
-   void _showType() async {
+  void _showType() async {
     final BuildContext context = this.context;
 
     showDialog(
@@ -1353,16 +1346,15 @@ class _AddMaterielState extends State<AddMateriel> {
                       if (typeListe.isEmpty) {
                         return const Padding(
                           padding: EdgeInsets.all(10),
-                          child:
-                              Center(child: Text("Aucune type Mmteriel trouvée")),
+                          child: Center(
+                              child: Text("Aucune type Mmteriel trouvée")),
                         );
                       }
 
                       String searchText = _searchController.text.toLowerCase();
                       List<TypeMateriel> filteredSearch = typeListe
-                          .where((type) => type.nom!
-                              .toLowerCase()
-                              .contains(searchText))
+                          .where((type) =>
+                              type.nom!.toLowerCase().contains(searchText))
                           .toList();
 
                       return filteredSearch.isEmpty
@@ -1378,8 +1370,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                 itemBuilder: (context, index) {
                                   final type = filteredSearch[index];
                                   final isSelected =
-                                      typeController.text ==
-                                          type.nom!;
+                                      typeController.text == type.nom!;
 
                                   return Column(
                                     children: [
@@ -1403,8 +1394,7 @@ class _AddMaterielState extends State<AddMateriel> {
                                         onTap: () {
                                           setState(() {
                                             typeMateriel = type;
-                                            typeController.text =
-                                                type.nom!;
+                                            typeController.text = type.nom!;
                                           });
                                         },
                                       ),
@@ -1595,7 +1585,6 @@ class _AddMaterielState extends State<AddMateriel> {
       },
     );
   }
-
 }
 
 

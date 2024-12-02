@@ -127,7 +127,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
   @override
   void initState() {
     super.initState();
-     _searchController = TextEditingController();
+    _searchController = TextEditingController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     prixParDestinations = {};
     _monnaieList = http.get(Uri.parse('$apiOnlineUrl/Monnaie/getAllMonnaie'));
@@ -205,7 +205,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
     );
   }
 
- @override
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -225,7 +225,8 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Etape 2',
             style: const TextStyle(
@@ -289,7 +290,7 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                           ),
                         ),
                       ),
-                       Padding(
+                      Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
                           child: GestureDetector(
@@ -336,13 +337,15 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                                   label: Text(
                                     'Ajouter les  prix',
                                     style: TextStyle(
-                                        color: d_colorOr, fontSize: 17,  decoration: TextDecoration.underline ),
+                                        color: d_colorOr,
+                                        fontSize: 17,
+                                        decoration: TextDecoration.underline),
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 10),
-                           Column(
+                            Column(
                               children: List.generate(
                                 destinationControllers.length,
                                 (index) => Padding(

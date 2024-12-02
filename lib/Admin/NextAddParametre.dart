@@ -45,7 +45,8 @@ class _NextAddParametreState extends State<NextAddParametre> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: d_colorGreen)),
           title: const Text(
             "Suite",
             style: TextStyle(color: d_colorGreen, fontWeight: FontWeight.bold),

@@ -38,7 +38,7 @@ class _CampagnePageState extends State<CampagnePage> {
 
   @override
   void initState() {
-      _scrollController = ScrollController();
+    _scrollController = ScrollController();
     _searchController = TextEditingController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
     _liste = getCampListe();
@@ -47,7 +47,7 @@ class _CampagnePageState extends State<CampagnePage> {
 
   @override
   void dispose() {
-     _scrollController.dispose();
+    _scrollController.dispose();
     _searchController
         .dispose(); // Disposez le TextEditingController lorsque vous n'en avez plus besoin
     super.dispose();
@@ -57,18 +57,20 @@ class _CampagnePageState extends State<CampagnePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Campagne agricole",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:20),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
           IconButton(
@@ -77,14 +79,15 @@ class _CampagnePageState extends State<CampagnePage> {
                   _liste = getCampListe();
                 });
               },
-              icon: Icon(Icons.refresh,
-                color: Colors.white,)),
-         
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+              )),
         ],
       ),
       body: Container(
         child: NestedScrollView(
-           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverToBoxAdapter(
                 child: Column(
@@ -96,7 +99,7 @@ class _CampagnePageState extends State<CampagnePage> {
                         children: [
                           TextButton(
                             onPressed: () {
-                                _showDialog();
+                              _showDialog();
                             },
                             child: Row(
                               children: [
@@ -181,19 +184,19 @@ class _CampagnePageState extends State<CampagnePage> {
             controller: _scrollController,
             child: Column(
               children: [
-               
                 Consumer<CampagneService>(builder: (context, camp, child) {
                   return FutureBuilder(
                       future: _liste,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(
                               color: Colors.orange,
                             ),
                           );
                         }
-          
+
                         if (!snapshot.hasData) {
                           return const Padding(
                             padding: EdgeInsets.all(10),
@@ -211,7 +214,8 @@ class _CampagnePageState extends State<CampagnePage> {
                           return filtereSearch.isEmpty
                               ? Padding(
                                   padding: EdgeInsets.all(10),
-                                  child: Center(child: Text("Aucune donné trouvé")),
+                                  child: Center(
+                                      child: Text("Aucune donné trouvé")),
                                 )
                               : Column(
                                   children: filtereSearch
@@ -245,14 +249,16 @@ class _CampagnePageState extends State<CampagnePage> {
                                                       height: 80,
                                                     ),
                                                     title: Text(
-                                                        e.nomCampagne.toUpperCase(),
+                                                        e.nomCampagne
+                                                            .toUpperCase(),
                                                         style: const TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 20,
-                                                          overflow:
-                                                              TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         )),
-                                                    subtitle: Text(e.description,
+                                                    subtitle: Text(
+                                                        e.description,
                                                         style: const TextStyle(
                                                           color: Colors.black87,
                                                           fontSize: 17,
@@ -263,21 +269,25 @@ class _CampagnePageState extends State<CampagnePage> {
                                                         ))),
                                                 SizedBox(height: 10),
                                                 Container(
-                                                  alignment: Alignment.bottomRight,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 10),
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      _buildEtat(e.statutCampagne),
+                                                      _buildEtat(
+                                                          e.statutCampagne),
                                                       PopupMenuButton<String>(
-                                                        padding: EdgeInsets.zero,
-                                                        itemBuilder: (context) =>
-                                                            <PopupMenuEntry<
-                                                                String>>[
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        itemBuilder:
+                                                            (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
                                                               leading:
@@ -286,25 +296,26 @@ class _CampagnePageState extends State<CampagnePage> {
                                                                       ? Icon(
                                                                           Icons
                                                                               .check,
-                                                                          color: Colors
-                                                                              .green,
+                                                                          color:
+                                                                              Colors.green,
                                                                         )
                                                                       : Icon(
                                                                           Icons
                                                                               .disabled_visible,
-                                                                          color: Colors
-                                                                                  .orange[
-                                                                              400],
+                                                                          color:
+                                                                              Colors.orange[400],
                                                                         ),
                                                               title: Text(
                                                                 e.statutCampagne ==
                                                                         false
                                                                     ? "Activer"
                                                                     : "Desactiver",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color: e.statutCampagne ==
                                                                           false
-                                                                      ? Colors.green
+                                                                      ? Colors
+                                                                          .green
                                                                       : Colors.orange[
                                                                           400],
                                                                   fontWeight:
@@ -318,25 +329,24 @@ class _CampagnePageState extends State<CampagnePage> {
                                                                     ? await CampagneService()
                                                                         .activerCampagne(e
                                                                             .idCampagne!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<CampagneService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  setState(() {
-                                                                                    _liste = getCampListe();
-                                                                                  }),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Activer avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                })
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<CampagneService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                              setState(() {
+                                                                                _liste = getCampListe();
+                                                                              }),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Activer avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            })
                                                                         .catchError(
                                                                             (onError) =>
                                                                                 {
@@ -355,55 +365,53 @@ class _CampagnePageState extends State<CampagnePage> {
                                                                     : await CampagneService()
                                                                         .desactiverCampagne(e
                                                                             .idCampagne!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<CampagneService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  setState(() {
-                                                                                    _liste = getCampListe();
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                                                      const SnackBar(
-                                                                                        content: Row(
-                                                                                          children: [
-                                                                                            Text("Desactiver avec succèss "),
-                                                                                          ],
-                                                                                        ),
-                                                                                        duration: Duration(seconds: 2),
-                                                                                      ),
-                                                                                    );
-                                                                                  })
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 5),
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<CampagneService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                              setState(() {
+                                                                                _liste = getCampListe();
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  const SnackBar(
+                                                                                    content: Row(
+                                                                                      children: [
+                                                                                        Text("Desactiver avec succèss "),
+                                                                                      ],
                                                                                     ),
+                                                                                    duration: Duration(seconds: 2),
                                                                                   ),
-                                                                                  Navigator.of(context).pop(),
-                                                                                });
-          
-                                                                ScaffoldMessenger
-                                                                        .of(context)
+                                                                                );
+                                                                              })
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Une erreur s'est produit"),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 5),
+                                                                                ),
+                                                                              ),
+                                                                              Navigator.of(context).pop(),
+                                                                            });
+
+                                                                ScaffoldMessenger.of(
+                                                                        context)
                                                                     .showSnackBar(
                                                                   const SnackBar(
-                                                                    content: Row(
+                                                                    content:
+                                                                        Row(
                                                                       children: [
                                                                         Text(
                                                                             "Désactiver avec succèss "),
                                                                       ],
                                                                     ),
-                                                                    duration:
-                                                                        Duration(
-                                                                            seconds:
-                                                                                2),
+                                                                    duration: Duration(
+                                                                        seconds:
+                                                                            2),
                                                                   ),
                                                                 );
                                                               },
@@ -411,15 +419,18 @@ class _CampagnePageState extends State<CampagnePage> {
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.edit,
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                               title: const Text(
                                                                 "Modifier",
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors.green,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .green,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -429,23 +440,22 @@ class _CampagnePageState extends State<CampagnePage> {
                                                                 // Ouvrir la boîte de dialogue de modification
                                                                 var updatedSousRegion =
                                                                     await showDialog(
-                                                                  context: context,
+                                                                  context:
+                                                                      context,
                                                                   builder: (BuildContext
                                                                           context) =>
                                                                       AlertDialog(
-                                                                          backgroundColor:
-                                                                              Colors
-                                                                                  .white,
+                                                                          backgroundColor: Colors
+                                                                              .white,
                                                                           shape:
                                                                               RoundedRectangleBorder(
                                                                             borderRadius:
                                                                                 BorderRadius.circular(16),
                                                                           ),
-                                                                          content: UpdateCampagne(
-                                                                              campagnes:
-                                                                                  e)),
+                                                                          content:
+                                                                              UpdateCampagne(campagnes: e)),
                                                                 );
-          
+
                                                                 // Si les détails sont modifiés, appliquer les changements
                                                                 if (updatedSousRegion !=
                                                                     null) {
@@ -467,14 +477,18 @@ class _CampagnePageState extends State<CampagnePage> {
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.delete,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               title: const Text(
                                                                 "Supprimer",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -485,18 +499,18 @@ class _CampagnePageState extends State<CampagnePage> {
                                                                     .deleteCampagne(e
                                                                         .idCampagne!)
                                                                     .then(
-                                                                        (value) => {
+                                                                        (value) =>
+                                                                            {
                                                                               Provider.of<CampagneService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  setState(() {
-                                                                                    _liste = getCampListe();
-                                                                                  }),
+                                                                              Navigator.of(context).pop(),
+                                                                              setState(() {
+                                                                                _liste = getCampListe();
+                                                                              }),
                                                                             })
                                                                     .catchError(
                                                                         (onError) =>
                                                                             {
-                                                                              ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
                                                                                 const SnackBar(
                                                                                   content: Row(
                                                                                     children: [

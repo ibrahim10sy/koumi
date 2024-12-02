@@ -38,7 +38,8 @@ class _DetailsActeurState extends State<DetailsActeur> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           "Détails",
           style: TextStyle(
@@ -52,25 +53,21 @@ class _DetailsActeurState extends State<DetailsActeur> {
               padding: const EdgeInsets.all(15.0),
               child: Center(
                 child: ClipOval(
-                                          child: CachedNetworkImage(
-                                            width: 185,
-                                            height: 185,
-                                            imageUrl:
-                                                "$apiOnlineUrl/acteur/${acteurs.idActeur}/image",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    'assets/images/profil.jpg'),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
-                                              'assets/images/profil.jpg',
-                                              fit: BoxFit.cover,
-                                              width: 185,
-                                              height: 185,
-                                            ),
-                                          ),
-                                        ),
+                  child: CachedNetworkImage(
+                    width: 185,
+                    height: 185,
+                    imageUrl: "$apiOnlineUrl/acteur/${acteurs.idActeur}/image",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        Image.asset('assets/images/profil.jpg'),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/profil.jpg',
+                      fit: BoxFit.cover,
+                      width: 185,
+                      height: 185,
+                    ),
+                  ),
+                ),
               ),
             ),
             Padding(

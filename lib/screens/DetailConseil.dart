@@ -106,14 +106,15 @@ class _DetailConseilState extends State<DetailConseil> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon:
+              const Icon(Icons.arrow_back_sharp, size: 30, color: Colors.white),
         ),
         title: Text(
           'Détail conseil',

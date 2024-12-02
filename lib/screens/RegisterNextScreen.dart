@@ -563,7 +563,10 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios)),
+              icon: const Icon(
+                Icons.arrow_back_sharp,
+                size: 30,
+              )),
           actions: [
             TextButton(
               onPressed: () {

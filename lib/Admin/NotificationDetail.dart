@@ -26,7 +26,8 @@ class _NotificationDetailState extends State<NotificationDetail> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon:
+              const Icon(Icons.arrow_back_sharp, size: 30, color: Colors.white),
         ),
         title: Text(
           "Détails",

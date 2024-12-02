@@ -55,21 +55,23 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
   late Acteur acteur;
   bool _isLoading = false;
   late Superficie superficies;
-   bool isLoadingLibelle = true;
-    String? libelleNiveau3Pays;
+  bool isLoadingLibelle = true;
+  String? libelleNiveau3Pays;
 
-    Future<String> getLibelleNiveau3PaysByActor(String id) async {
-    final response = await http.get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
+  Future<String> getLibelleNiveau3PaysByActor(String id) async {
+    final response = await http
+        .get(Uri.parse('$apiOnlineUrl/acteur/libelleNiveau3Pays/$id'));
 
     if (response.statusCode == 200) {
       print("libelle : ${response.body}");
-      return response.body;  // Return the body directly since it's a plain string
+      return response
+          .body; // Return the body directly since it's a plain string
     } else {
       throw Exception('Failed to load libelle niveau3Pays');
     }
-}
+  }
 
-     Future<void> fetchLibelleNiveau3Pays() async {
+  Future<void> fetchLibelleNiveau3Pays() async {
     try {
       String libelle = await getLibelleNiveau3PaysByActor(acteur.idActeur!);
       setState(() {
@@ -84,7 +86,6 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -93,12 +94,12 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
     _liste = http.get(Uri.parse(
         '$apiOnlineUrl/Campagne/getAllCampagneByActeur/${acteur.idActeur}'));
 
-    _speculationList = http.get(Uri.parse(
-        '$apiOnlineUrl/Speculation/getAllSpeculation'));
-      
-      _niveau3List =
-        http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
-     fetchLibelleNiveau3Pays();
+    _speculationList =
+        http.get(Uri.parse('$apiOnlineUrl/Speculation/getAllSpeculation'));
+
+    _niveau3List = http.get(Uri.parse(
+        '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
+    fetchLibelleNiveau3Pays();
     superficies = widget.superficie;
     _localiteController.text = superficies.localite!;
     _superficieHaController.text = superficies.superficieHa!;
@@ -140,7 +141,6 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
     return response;
   }
 
-
   Future<List<Speculation>> fetchSpeculationList() async {
     final response = await SpeculationService().fetchSpeculation();
     return response;
@@ -153,18 +153,19 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Modification  ',
             style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: SingleChildScrollView(
@@ -209,27 +210,52 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                   SizedBox(
                     height: 10,
                   ),
-                   Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 22,
-                        ),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Localité",
-                            style:
-                                TextStyle(color: (Colors.black), fontSize: 18),
-                          ),
-                        ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 22,
+                    ),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Localité",
+                        style: TextStyle(color: (Colors.black), fontSize: 18),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _niveau3List,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: FutureBuilder(
+                      future: _niveau3List,
+                      builder: (_, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return TextDropdownFormField(
+                            options: [],
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                suffixIcon: Icon(Icons.search),
+                                labelText: "Chargement..."),
+                            cursorColor: Colors.green,
+                          );
+                        }
+
+                        if (snapshot.hasData) {
+                          dynamic jsonString =
+                              utf8.decode(snapshot.data.bodyBytes);
+                          dynamic responseData = json.decode(jsonString);
+
+                          if (responseData is List) {
+                            final reponse = responseData;
+                            final niveau3List = reponse
+                                .map((e) => Niveau3Pays.fromMap(e))
+                                .where((con) => con.statutN3 == true)
+                                .toList();
+                            if (niveau3List.isEmpty) {
                               return TextDropdownFormField(
                                 options: [],
                                 decoration: InputDecoration(
@@ -239,92 +265,14 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
+                                    labelText: "Aucune localité trouvé"),
                                 cursorColor: Colors.green,
                               );
                             }
 
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final niveau3List = reponse
-                                    .map((e) => Niveau3Pays.fromMap(e))
-                                    .where((con) => con.statutN3 == true)
-                                    .toList();
-                                if (niveau3List.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune localité trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Niveau3Pays>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: superficies.localite),
-                                  onSaved: (dynamic n) {
-                                    niveau3 = n?.nomN3;
-                                    print("onSaved : $niveau3");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    niveau3 = n?.nomN3;
-                                    print("selected : $niveau3");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.nomN3 ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => niveau3List,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idNiveau3Pays ==
-                                          item2.idNiveau3Pays;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .nomN3!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.nomN3!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
+                            return DropdownFormField<Niveau3Pays>(
+                              onEmptyActionPressed: (String str) async {},
+                              dropdownHeight: 200,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
@@ -332,12 +280,61 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune localité trouvé"),
-                              cursorColor: Colors.green,
+                                  labelText: superficies.localite),
+                              onSaved: (dynamic n) {
+                                niveau3 = n?.nomN3;
+                                print("onSaved : $niveau3");
+                              },
+                              onChanged: (dynamic n) {
+                                niveau3 = n?.nomN3;
+                                print("selected : $niveau3");
+                              },
+                              displayItemFn: (dynamic item) => Text(
+                                item?.nomN3 ?? '',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              findFn: (String str) async => niveau3List,
+                              selectedFn: (dynamic item1, dynamic item2) {
+                                if (item1 != null && item2 != null) {
+                                  return item1.idNiveau3Pays ==
+                                      item2.idNiveau3Pays;
+                                }
+                                return false;
+                              },
+                              filterFn: (dynamic item, String str) => item
+                                  .nomN3!
+                                  .toLowerCase()
+                                  .contains(str.toLowerCase()),
+                              dropdownItemFn: (dynamic item,
+                                      int position,
+                                      bool focused,
+                                      bool selected,
+                                      Function() onTap) =>
+                                  ListTile(
+                                title: Text(item.nomN3!),
+                                tileColor: focused
+                                    ? Color.fromARGB(20, 0, 0, 0)
+                                    : Colors.transparent,
+                                onTap: onTap,
+                              ),
                             );
-                          },
-                        ),
-                      ),
+                          }
+                        }
+                        return TextDropdownFormField(
+                          options: [],
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: Icon(Icons.search),
+                              labelText: "Aucune localité trouvé"),
+                          cursorColor: Colors.green,
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
@@ -353,14 +350,40 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                       ),
                     ),
                   ),
-                 Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: FutureBuilder(
-                            future: _speculationList,
-                            builder: (_, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: FutureBuilder(
+                        future: _speculationList,
+                        builder: (_, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return TextDropdownFormField(
+                              options: [],
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  suffixIcon: Icon(Icons.search),
+                                  labelText: "Chargement..."),
+                              cursorColor: Colors.green,
+                            );
+                          }
+
+                          if (snapshot.hasData) {
+                            dynamic jsonString =
+                                utf8.decode(snapshot.data.bodyBytes);
+                            dynamic responseData = json.decode(jsonString);
+
+                            if (responseData is List) {
+                              final reponse = responseData;
+                              final monaieList = reponse
+                                  .map((e) => Speculation.fromMap(e))
+                                  .where((con) => con.statutSpeculation == true)
+                                  .toList();
+                              if (monaieList.isEmpty) {
                                 return TextDropdownFormField(
                                   options: [],
                                   decoration: InputDecoration(
@@ -371,95 +394,14 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       suffixIcon: Icon(Icons.search),
-                                      labelText: "Chargement..."),
+                                      labelText: "Aucune spéculation trouvé"),
                                   cursorColor: Colors.green,
                                 );
                               }
 
-                              if (snapshot.hasData) {
-                                dynamic jsonString =
-                                    utf8.decode(snapshot.data.bodyBytes);
-                                dynamic responseData = json.decode(jsonString);
-
-                                if (responseData is List) {
-                                  final reponse = responseData;
-                                  final monaieList = reponse
-                                      .map((e) => Speculation.fromMap(e))
-                                      .where((con) =>
-                                          con.statutSpeculation == true)
-                                      .toList();
-                                  if (monaieList.isEmpty) {
-                                    return TextDropdownFormField(
-                                      options: [],
-                                      decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          suffixIcon: Icon(Icons.search),
-                                          labelText:
-                                              "Aucune spéculation trouvé"),
-                                      cursorColor: Colors.green,
-                                    );
-                                  }
-
-                                  return DropdownFormField<Speculation>(
-                                    onEmptyActionPressed: (String str) async {},
-                                    dropdownHeight: 200,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText:superficies.speculation.nomSpeculation),
-                                    onSaved: (dynamic n) {
-                                      speculation = n;
-                                      print("onSaved : $speculation");
-                                    },
-                                    onChanged: (dynamic n) {
-                                      speculation = n;
-                                      print("selected : $speculation");
-                                    },
-                                    displayItemFn: (dynamic item) => Text(
-                                      item?.nomSpeculation ?? '',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    findFn: (String str) async => monaieList,
-                                    selectedFn: (dynamic item1, dynamic item2) {
-                                      if (item1 != null && item2 != null) {
-                                        return item1.idSpeculation ==
-                                            item2.idSpeculation;
-                                      }
-                                      return false;
-                                    },
-                                    filterFn: (dynamic item, String str) => item
-                                        .nomSpeculation!
-                                        .toLowerCase()
-                                        .contains(str.toLowerCase()),
-                                    dropdownItemFn: (dynamic item,
-                                            int position,
-                                            bool focused,
-                                            bool selected,
-                                            Function() onTap) =>
-                                        ListTile(
-                                      title: Text(item.nomSpeculation!),
-                                      tileColor: focused
-                                          ? Color.fromARGB(20, 0, 0, 0)
-                                          : Colors.transparent,
-                                      onTap: onTap,
-                                    ),
-                                  );
-                                }
-                              }
-                              return TextDropdownFormField(
-                                options: [],
+                              return DropdownFormField<Speculation>(
+                                onEmptyActionPressed: (String str) async {},
+                                dropdownHeight: 200,
                                 decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
@@ -467,11 +409,61 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     suffixIcon: Icon(Icons.search),
-                                    labelText: "Aucune spéculation trouvé"),
-                                cursorColor: Colors.green,
+                                    labelText:
+                                        superficies.speculation.nomSpeculation),
+                                onSaved: (dynamic n) {
+                                  speculation = n;
+                                  print("onSaved : $speculation");
+                                },
+                                onChanged: (dynamic n) {
+                                  speculation = n;
+                                  print("selected : $speculation");
+                                },
+                                displayItemFn: (dynamic item) => Text(
+                                  item?.nomSpeculation ?? '',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                findFn: (String str) async => monaieList,
+                                selectedFn: (dynamic item1, dynamic item2) {
+                                  if (item1 != null && item2 != null) {
+                                    return item1.idSpeculation ==
+                                        item2.idSpeculation;
+                                  }
+                                  return false;
+                                },
+                                filterFn: (dynamic item, String str) => item
+                                    .nomSpeculation!
+                                    .toLowerCase()
+                                    .contains(str.toLowerCase()),
+                                dropdownItemFn: (dynamic item,
+                                        int position,
+                                        bool focused,
+                                        bool selected,
+                                        Function() onTap) =>
+                                    ListTile(
+                                  title: Text(item.nomSpeculation!),
+                                  tileColor: focused
+                                      ? Color.fromARGB(20, 0, 0, 0)
+                                      : Colors.transparent,
+                                  onTap: onTap,
+                                ),
                               );
-                            },
-                          )),
+                            }
+                          }
+                          return TextDropdownFormField(
+                            options: [],
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                suffixIcon: Icon(Icons.search),
+                                labelText: "Aucune spéculation trouvé"),
+                            cursorColor: Colors.green,
+                          );
+                        },
+                      )),
                   SizedBox(
                     height: 10,
                   ),
@@ -488,13 +480,39 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                     ),
                   ),
                   Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: FutureBuilder(
-                          future: _liste,
-                          builder: (_, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: FutureBuilder(
+                      future: _liste,
+                      builder: (_, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return TextDropdownFormField(
+                            options: [],
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                suffixIcon: Icon(Icons.search),
+                                labelText: "Chargement..."),
+                            cursorColor: Colors.green,
+                          );
+                        }
+
+                        if (snapshot.hasData) {
+                          dynamic jsonString =
+                              utf8.decode(snapshot.data.bodyBytes);
+                          dynamic responseData = json.decode(jsonString);
+
+                          if (responseData is List) {
+                            final reponse = responseData;
+                            final niveau3List = reponse
+                                .map((e) => Campagne.fromMap(e))
+                                .where((con) => con.statutCampagne == true)
+                                .toList();
+                            if (niveau3List.isEmpty) {
                               return TextDropdownFormField(
                                 options: [],
                                 decoration: InputDecoration(
@@ -504,92 +522,14 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     suffixIcon: Icon(Icons.search),
-                                    labelText: "Chargement..."),
+                                    labelText: "Aucune campagne trouvé"),
                                 cursorColor: Colors.green,
                               );
                             }
 
-                            if (snapshot.hasData) {
-                              dynamic jsonString =
-                                  utf8.decode(snapshot.data.bodyBytes);
-                              dynamic responseData = json.decode(jsonString);
-
-                              if (responseData is List) {
-                                final reponse = responseData;
-                                final niveau3List = reponse
-                                    .map((e) => Campagne.fromMap(e))
-                                    .where((con) => con.statutCampagne == true)
-                                    .toList();
-                                if (niveau3List.isEmpty) {
-                                  return TextDropdownFormField(
-                                    options: [],
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        suffixIcon: Icon(Icons.search),
-                                        labelText: "Aucune campagne trouvé"),
-                                    cursorColor: Colors.green,
-                                  );
-                                }
-
-                                return DropdownFormField<Campagne>(
-                                  onEmptyActionPressed: (String str) async {},
-                                  dropdownHeight: 200,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      labelText: superficies.campagne.nomCampagne),
-                                  onSaved: (dynamic n) {
-                                    campagne = n;
-                                    print("onSaved : $campagne");
-                                  },
-                                  onChanged: (dynamic n) {
-                                    campagne = n;
-                                    print("selected : $campagne");
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    item?.nomCampagne ?? '',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (String str) async => niveau3List,
-                                  selectedFn: (dynamic item1, dynamic item2) {
-                                    if (item1 != null && item2 != null) {
-                                      return item1.idCampagne ==
-                                          item2.idCampagne;
-                                    }
-                                    return false;
-                                  },
-                                  filterFn: (dynamic item, String str) => item
-                                      .nomCampagne!
-                                      .toLowerCase()
-                                      .contains(str.toLowerCase()),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item.nomCampagne!),
-                                    tileColor: focused
-                                        ? Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                );
-                              }
-                            }
-                            return TextDropdownFormField(
-                              options: [],
+                            return DropdownFormField<Campagne>(
+                              onEmptyActionPressed: (String str) async {},
+                              dropdownHeight: 200,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
@@ -597,12 +537,60 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   suffixIcon: Icon(Icons.search),
-                                  labelText: "Aucune campagne trouvé"),
-                              cursorColor: Colors.green,
+                                  labelText: superficies.campagne.nomCampagne),
+                              onSaved: (dynamic n) {
+                                campagne = n;
+                                print("onSaved : $campagne");
+                              },
+                              onChanged: (dynamic n) {
+                                campagne = n;
+                                print("selected : $campagne");
+                              },
+                              displayItemFn: (dynamic item) => Text(
+                                item?.nomCampagne ?? '',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              findFn: (String str) async => niveau3List,
+                              selectedFn: (dynamic item1, dynamic item2) {
+                                if (item1 != null && item2 != null) {
+                                  return item1.idCampagne == item2.idCampagne;
+                                }
+                                return false;
+                              },
+                              filterFn: (dynamic item, String str) => item
+                                  .nomCampagne!
+                                  .toLowerCase()
+                                  .contains(str.toLowerCase()),
+                              dropdownItemFn: (dynamic item,
+                                      int position,
+                                      bool focused,
+                                      bool selected,
+                                      Function() onTap) =>
+                                  ListTile(
+                                title: Text(item.nomCampagne!),
+                                tileColor: focused
+                                    ? Color.fromARGB(20, 0, 0, 0)
+                                    : Colors.transparent,
+                                onTap: onTap,
+                              ),
                             );
-                          },
-                        ),
-                      ),
+                          }
+                        }
+                        return TextDropdownFormField(
+                          options: [],
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: Icon(Icons.search),
+                              labelText: "Aucune campagne trouvé"),
+                          cursorColor: Colors.green,
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
@@ -674,8 +662,7 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                                   TextStyle(color: Colors.black, fontSize: 18),
                             ),
                             IconButton(
-                                onPressed: addNewIntrant,
-                                icon: Icon(Icons.add))
+                                onPressed: addNewIntrant, icon: Icon(Icons.add))
                           ],
                         ),
                         SizedBox(height: 10),
@@ -720,10 +707,10 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                   final String superficie = _superficieHaController.text;
                   final String date = _dateController.text;
                   final String localite = _localiteController.text;
-                  
+
                   setState(() {
                     //parcourir pour recuperer les elements modifier
-                     for (int i = 0; i < intrantController.length; i++) {
+                    for (int i = 0; i < intrantController.length; i++) {
                       String item = intrantController[i].text;
                       if (item.isNotEmpty) {
                         newSelectedIntrant.addAll({item});
@@ -731,7 +718,7 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                     }
 
                     //parcourir pour recuperer les nouvellers elements
-                     for (int i = 0; i < selectedIntrantList.length; i++) {
+                    for (int i = 0; i < selectedIntrantList.length; i++) {
                       String item = intrantController[i].text;
                       if (item.isNotEmpty) {
                         newSelectedIntrant.addAll({item});
@@ -743,7 +730,15 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                       _isLoading = true;
                     });
                     await SuperficieService()
-                        .updateSuperficie(idSuperficie: superficies.idSuperficie!, localite: localite, superficieHa: superficie, dateSemi: date, personneModif: acteur.nomActeur!, intrants: newSelectedIntrant, speculation: speculation, campagne: campagne)
+                        .updateSuperficie(
+                            idSuperficie: superficies.idSuperficie!,
+                            localite: localite,
+                            superficieHa: superficie,
+                            dateSemi: date,
+                            personneModif: acteur.nomActeur!,
+                            intrants: newSelectedIntrant,
+                            speculation: speculation,
+                            campagne: campagne)
                         .then((value) => {
                               Provider.of<SuperficieService>(context,
                                       listen: false)
@@ -752,13 +747,12 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                               _dateController.clear(),
                               _localiteController.clear(),
                               _dateController.clear(),
-                            
                               setState(() {
                                 catValue = null;
                                 speValue = null;
                                 n3Value = null;
                               }),
-                                Navigator.pop(context, true)
+                              Navigator.pop(context, true)
                             })
                         .catchError((onError) => {});
                   } catch (e) {

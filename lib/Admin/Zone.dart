@@ -47,7 +47,7 @@ class _ZoneState extends State<Zone> {
         context, MaterialPageRoute(builder: (context) => AddZone()));
     log(result.toString());
     if (result == true) {
-       _liste = getZone(acteur.idActeur!);
+      _liste = getZone(acteur.idActeur!);
       print("Rafraichissement en cours");
     }
   }
@@ -71,7 +71,8 @@ class _ZoneState extends State<Zone> {
             onPressed: () {
               Navigator.pop(context, true);
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Zone de production",
           style: TextStyle(

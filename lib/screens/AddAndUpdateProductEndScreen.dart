@@ -962,7 +962,8 @@ class _AddAndUpdateProductEndSreenState
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             widget.isEditable == false ? "Ajouter produit" : "Modifier produit",
             style: TextStyle(

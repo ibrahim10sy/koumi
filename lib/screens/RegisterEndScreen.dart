@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -550,7 +551,10 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(
+                  Icons.arrow_back_sharp,
+                  size: 30,
+                )),
             actions: [
               TextButton(
                 onPressed: () {
@@ -719,44 +723,95 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                           },
                           onSaved: (val) => password = val!,
                         ),
-                        const SizedBox(height: 10),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Voir les ",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              GestureDetector(
-                                onTap: () async {
-                                  Get.to(TermsConditionsPage(),
-                                      duration: Duration(milliseconds:
-                                      500),
-                                      transition: Transition.leftToRight);
-                                },
-                                child: const Text(
-                                  "Conditions d'utilisation",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: Colors.blue,
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //       horizontal: 10, vertical: 12),
+                        //   child: Wrap(
+                        //     children: [
+                        //       const Text(
+                        //         "Voir les ",
+                        //         style: TextStyle(
+                        //           color: Colors.black,
+                        //           fontSize: 14,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //       const SizedBox(width: 4),
+                        //       GestureDetector(
+                        //         onTap: () async {
+                        //           Get.to(
+                        //             TermsConditionsPage(),
+                        //             duration: const Duration(milliseconds: 500),
+                        //             transition: Transition.leftToRight,
+                        //           );
+                        //         },
+                        //         child: const Text(
+                        //           "Conditions d'utilisation",
+                        //           style: TextStyle(
+                        //             decoration: TextDecoration.underline,
+                        //             color: Colors.blue,
+                        //             fontSize: 16,
+                        //             fontStyle: FontStyle.italic,
+                        //             fontWeight: FontWeight.bold,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       const SizedBox(width: 8),
+                        //       const Text(
+                        //         "et la ",
+                        //         style: TextStyle(
+                        //           color: Colors.black,
+                        //           fontSize: 14,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //       GestureDetector(
+                        //         onTap: () async {
+                        //           Get.to(
+                        //             TermsConditionsPage(), // La même page inclut déjà les deux sections.
+                        //             duration: const Duration(milliseconds: 500),
+                        //             transition: Transition.leftToRight,
+                        //           );
+                        //         },
+                        //         child: const Text(
+                        //           "Politique de confidentialité",
+                        //           maxLines: 2,
+                        //           style: TextStyle(
+                        //             decoration: TextDecoration.underline,
+                        //             color: Colors.blue,
+                        //             fontSize: 16,
+                        //             fontStyle: FontStyle.italic,
+                        //             fontWeight: FontWeight.bold,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 8),
+                        // Row(
+                        //   children: [
+                        //     Checkbox(
+                        //       value: _isAgreed,
+                        //       onChanged: (bool? value) {
+                        //         setState(() {
+                        //           _isAgreed = value!;
+                        //         });
+                        //       },
+                        //     ),
+                        //     Flexible(
+                        //       child: Text(
+                        //         "J'accepte les conditions d'utilisation.",
+                        //         maxLines: 3,
+                        //         style: TextStyle(fontSize: 16),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        SizedBox(height: 15),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Checkbox(
                               value: _isAgreed,
@@ -766,15 +821,60 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                                 });
                               },
                             ),
+                            SizedBox(width: 15),
                             Flexible(
-                              child: Text(
-                                "J'accepte les conditions d'utilisation.",
-                                maxLines: 3,
-                                style: TextStyle(fontSize: 16),
+                              child: RichText(
+                                text: TextSpan(
+                                  text: "J'accepte les termes de la ",
+                                  style: const TextStyle(
+                                      fontSize: 16, color: Colors.black),
+                                  children: [
+                                    TextSpan(
+                                      text: "Conditions d'utilisation",
+                                      style: const TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Get.to(
+                                            TermsConditionsPage(),
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            transition: Transition.leftToRight,
+                                          );
+                                        },
+                                    ),
+                                    const TextSpan(
+                                      text: " et la ",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.black),
+                                    ),
+                                    TextSpan(
+                                      text: "Politique de confidentialité.",
+                                      style: const TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Get.to(
+                                            TermsConditionsPage(),
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            transition: Transition.leftToRight,
+                                          );
+                                        },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
+
                         // fin confirm password
 
                         const SizedBox(height: 35),

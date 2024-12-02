@@ -76,7 +76,8 @@ class _Niveau3PageState extends State<Niveau3Page> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           "Niveau 3",
           style: const TextStyle(
@@ -237,7 +238,6 @@ class _Niveau3PageState extends State<Niveau3Page> {
             controller: _scrollController,
             child: Column(
               children: [
-                
                 Consumer<Niveau3Service>(
                   builder: (context, niveau3Service, child) {
                     return FutureBuilder(

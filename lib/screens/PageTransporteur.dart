@@ -7,6 +7,7 @@ import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:koumi/constants.dart';
+
 class PageTransporteur extends StatefulWidget {
   const PageTransporteur({super.key});
 
@@ -47,18 +48,20 @@ class _PageTransporteurState extends State<PageTransporteur> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           "Listes des transporteurs",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: SingleChildScrollView(
@@ -133,7 +136,6 @@ class _PageTransporteurState extends State<PageTransporteur> {
                                       .toLowerCase()
                                       .contains('transporteur')) ||
                                   element.typeActeur!.any((e) => e.libelle!
-
                                           .toLowerCase()
                                           .contains('transporteurs')) &&
                                       element.idActeur == acteur.idActeur)
@@ -167,25 +169,25 @@ class _PageTransporteurState extends State<PageTransporteur> {
                                         children: [
                                           ListTile(
                                               leading: ClipOval(
-                                          child: CachedNetworkImage(
-                                            width: 50,
-                                            height: 50,
-                                            imageUrl:
-                                                "$apiOnlineUrl/acteur/${e.idActeur}/image",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    'assets/images/profil.jpg'),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
-                                              'assets/images/profil.jpg',
-                                              fit: BoxFit.cover,
-                                              width: 50,
-                                              height: 50,
-                                            ),
-                                          ),
-                                        ),
+                                                child: CachedNetworkImage(
+                                                  width: 50,
+                                                  height: 50,
+                                                  imageUrl:
+                                                      "$apiOnlineUrl/acteur/${e.idActeur}/image",
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      Image.asset(
+                                                          'assets/images/profil.jpg'),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Image.asset(
+                                                    'assets/images/profil.jpg',
+                                                    fit: BoxFit.cover,
+                                                    width: 50,
+                                                    height: 50,
+                                                  ),
+                                                ),
+                                              ),
                                               title: Text(
                                                   e.nomActeur!.toUpperCase(),
                                                   style: const TextStyle(

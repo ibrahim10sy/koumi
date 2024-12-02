@@ -97,7 +97,8 @@ class _Niveau1ListState extends State<Niveau1List> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             widget.pays.nomPays!.toUpperCase(),
             style: const TextStyle(

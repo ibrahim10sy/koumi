@@ -565,7 +565,8 @@ class _AddAlerteState extends State<AddAlerte> {
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(
-                      Icons.arrow_back_ios,
+                      Icons.arrow_back_sharp,
+                      size: 30,
                       color: Colors.white,
                     )),
                 title: const Text(
@@ -947,8 +948,7 @@ class _AddAlerteState extends State<AddAlerte> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    d_colorOr, // Orange color code
+                                backgroundColor: d_colorOr, // Orange color code
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),

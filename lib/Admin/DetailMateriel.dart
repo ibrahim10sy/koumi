@@ -44,7 +44,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _etatController = TextEditingController();
   TextEditingController _prixController = TextEditingController();
-   TextEditingController _monnaieController = TextEditingController();
+  TextEditingController _monnaieController = TextEditingController();
   String? monnaieValue;
   late Future _monnaieList;
   late Monnaie monnaie = Monnaie();
@@ -333,7 +333,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
     verify();
     _niveau3List = http.get(Uri.parse('$apiOnlineUrl/nivveau3Pays/read'));
     materiels = widget.materiel;
-     _searchController = TextEditingController();
+    _searchController = TextEditingController();
     _loadNbVue();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await updateViews(materiels);
@@ -414,22 +414,25 @@ class _DetailMaterielState extends State<DetailMateriel> {
                         // size: 60,
                       ),
                     )
-                  : acteur.idActeur == materiels.acteur!.idActeur! ?
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pop(context, true);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        )): IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        )),
+                  : acteur.idActeur == materiels.acteur!.idActeur!
+                      ? IconButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back_sharp,
+                            size: 30,
+                            color: Colors.white,
+                          ))
+                      : IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back_sharp,
+                            size: 30,
+                            color: Colors.white,
+                          )),
               title: _isEditing
                   ? Text(
                       'Modification',
@@ -705,85 +708,87 @@ class _DetailMaterielState extends State<DetailMateriel> {
         _buildEditableDetailItem('Nom du matériel: ', _nomController),
         _buildEditableDetailItem('Etat du matériel : ', _etatController),
         _buildEditableDetailItem('Description : ', _descriptionController),
-         Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              "Localité",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.italic,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: 18),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                "Localité",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 18),
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-              child: GestureDetector(
-                onTap: _showLocalite,
-                child: TextFormField(
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: GestureDetector(
                   onTap: _showLocalite,
-                  controller: _localiteController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.arrow_drop_down,
-                        color: Colors.blueGrey[400]),
+                  child: TextFormField(
+                    onTap: _showLocalite,
+                    controller: _localiteController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                    ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black54,
+                    ),
+                    enabled: _isEditing,
                   ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                    color: Colors.black54,
-                  ),
-                  enabled: _isEditing,
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
         _buildEditableDetailItem('Prix par heure : ', _prixController),
         Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              "Monnaie",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.italic,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: 18),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                "Monnaie",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 18),
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-              child: GestureDetector(
-                onTap: _showMonnaie,
-                child: TextFormField(
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: GestureDetector(
                   onTap: _showMonnaie,
-                  controller: _monnaieController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.arrow_drop_down,
-                        color: Colors.blueGrey[400]),
+                  child: TextFormField(
+                    onTap: _showMonnaie,
+                    controller: _monnaieController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[400]),
+                    ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black54,
+                    ),
+                    enabled: _isEditing,
                   ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                    color: Colors.black54,
-                  ),
-                  enabled: _isEditing,
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ],
     );
   }
@@ -1048,7 +1053,7 @@ class _DetailMaterielState extends State<DetailMateriel> {
       },
     );
   }
-  
+
   void _showLocalite() async {
     final BuildContext context = this.context;
 
@@ -1194,5 +1199,4 @@ class _DetailMaterielState extends State<DetailMateriel> {
       },
     );
   }
-
 }

@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:search_field_autocomplete/search_field_autocomplete.dart';
 
 class TypeVehicule extends StatefulWidget {
-  
   TypeVehicule({super.key});
 
   @override
@@ -28,7 +27,7 @@ class _TypeVehiculeState extends State<TypeVehicule> {
   late TextEditingController _searchController;
   List<TypeVoiture> typeListe = [];
 
-bool isSearchMode = false;
+  bool isSearchMode = false;
   late ScrollController _scrollController;
   late List<Vehicule> vehiculeList = [];
   final formkey = GlobalKey<FormState>();
@@ -39,14 +38,14 @@ bool isSearchMode = false;
   @override
   void initState() {
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-   _searchController = TextEditingController();
-  _scrollController = ScrollController();
+    _searchController = TextEditingController();
+    _scrollController = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
-     _searchController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -55,15 +54,16 @@ bool isSearchMode = false;
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Type de véhicule',
             style: const TextStyle(
@@ -99,138 +99,141 @@ bool isSearchMode = false;
             // )
           ]),
       body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
         child: Container(
           child: NestedScrollView(
-             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverToBoxAdapter(
-                  child: Column(children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          // The PopupMenuButton is used here to display the menu when the button is pressed.
-                          showMenu<String>(
-                            context: context,
-                            position: RelativeRect.fromLTRB(
-                              0,
-                              50, // Adjust this value based on the desired position of the menu
-                              MediaQuery.of(context).size.width,
-                              0,
-                            ),
-                            items: [
-                              PopupMenuItem<String>(
-                                value: 'add_store',
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.add,
-                                    color: d_colorGreen,
-                                  ),
-                                  title: const Text(
-                                    "Ajouter une forme de produit ",
-                                    style: TextStyle(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverToBoxAdapter(
+                    child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // The PopupMenuButton is used here to display the menu when the button is pressed.
+                            showMenu<String>(
+                              context: context,
+                              position: RelativeRect.fromLTRB(
+                                0,
+                                50, // Adjust this value based on the desired position of the menu
+                                MediaQuery.of(context).size.width,
+                                0,
+                              ),
+                              items: [
+                                PopupMenuItem<String>(
+                                  value: 'add_store',
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      Icons.add,
                                       color: d_colorGreen,
-                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    title: const Text(
+                                      "Ajouter une forme de produit ",
+                                      style: TextStyle(
+                                        color: d_colorGreen,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
+                              ],
+                              elevation: 8.0,
+                            ).then((value) {
+                              if (value != null) {
+                                if (value == 'add_store') {
+                                  _showBottomSheet();
+                                }
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: d_colorGreen,
+                              ),
+                              SizedBox(width: 8), // Space between icon and text
+                              Text(
+                                'Ajouter',
+                                style: TextStyle(
+                                  color: d_colorGreen,
+                                  fontSize: 17,
+                                ),
                               ),
                             ],
-                            elevation: 8.0,
-                          ).then((value) {
-                            if (value != null) {
-                              if (value == 'add_store') {
-                                _showBottomSheet();
-                              }
-                            }
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.add,
-                              color: d_colorGreen,
-                            ),
-                            SizedBox(width: 8), // Space between icon and text
-                            Text(
-                              'Ajouter',
-                              style: TextStyle(
-                                color: d_colorGreen,
-                                fontSize: 17,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            isSearchMode = !isSearchMode;
-                            _searchController.clear();
-                          });
-                        },
-                        icon: Icon(
-                          isSearchMode ? Icons.close : Icons.search,
-                          color: isSearchMode ? Colors.red : d_colorGreen,
-                        ),
-                        label: Text(
-                          isSearchMode ? 'Fermer' : 'Rechercher...',
-                          style: TextStyle(
-                              color: isSearchMode ? Colors.red : d_colorGreen,
-                              fontSize: 17),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (isSearchMode)
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SearchFieldAutoComplete<String>(
-                      controller: _searchController,
-                        itemHeight: 25,
-                      placeholder: 'Rechercher...',
-                      placeholderStyle: TextStyle(fontStyle: FontStyle.italic),
-                      suggestions: AutoComplet.getTransportVehicles,
-                      suggestionsDecoration: SuggestionDecoration(
-                        marginSuggestions: const EdgeInsets.all(8.0),
-                        color: const Color.fromARGB(255, 236, 234, 234),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      onSuggestionSelected: (selectedItem) {
-                        if (mounted) {
-                          _searchController.text = selectedItem.searchKey;
-                        }
-                      },
-                      suggestionItemBuilder: (context, searchFieldItem) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            searchFieldItem.searchKey,
-                            style: TextStyle(color: Colors.black),
                           ),
-                        );
-                      },
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              isSearchMode = !isSearchMode;
+                              _searchController.clear();
+                            });
+                          },
+                          icon: Icon(
+                            isSearchMode ? Icons.close : Icons.search,
+                            color: isSearchMode ? Colors.red : d_colorGreen,
+                          ),
+                          label: Text(
+                            isSearchMode ? 'Fermer' : 'Rechercher...',
+                            style: TextStyle(
+                                color: isSearchMode ? Colors.red : d_colorGreen,
+                                fontSize: 17),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-              ])),
-            ];
-          },
+                  if (isSearchMode)
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SearchFieldAutoComplete<String>(
+                        controller: _searchController,
+                        itemHeight: 25,
+                        placeholder: 'Rechercher...',
+                        placeholderStyle:
+                            TextStyle(fontStyle: FontStyle.italic),
+                        suggestions: AutoComplet.getTransportVehicles,
+                        suggestionsDecoration: SuggestionDecoration(
+                          marginSuggestions: const EdgeInsets.all(8.0),
+                          color: const Color.fromARGB(255, 236, 234, 234),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        onSuggestionSelected: (selectedItem) {
+                          if (mounted) {
+                            _searchController.text = selectedItem.searchKey;
+                          }
+                        },
+                        suggestionItemBuilder: (context, searchFieldItem) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              searchFieldItem.searchKey,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                ])),
+              ];
+            },
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                                   Consumer<TypeVoitureService>(
+                  Consumer<TypeVoitureService>(
                       builder: (context, typeService, child) {
                     return FutureBuilder(
                         future: typeService.fetchTypeVoiture(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const Center(
                               child: CircularProgressIndicator(
                                 color: Colors.orange,
@@ -263,20 +266,22 @@ bool isSearchMode = false;
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           ListeVehiculeByType(
-                                                              typeVoitures: e)));
+                                                              typeVoitures:
+                                                                  e)));
                                             },
                                             child: Container(
-                                              width:
-                                                  MediaQuery.of(context).size.width *
-                                                      0.9,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius:
                                                     BorderRadius.circular(15),
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color:
-                                                        Colors.grey.withOpacity(0.2),
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                     offset: const Offset(0, 2),
                                                     blurRadius: 5,
                                                     spreadRadius: 2,
@@ -290,57 +295,72 @@ bool isSearchMode = false;
                                                       width: 80,
                                                       height: 80,
                                                     ),
-                                                    title: Text(e.nom!.toUpperCase(),
+                                                    title: Text(
+                                                        e.nom!.toUpperCase(),
                                                         style: const TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 20,
-                                                          overflow:
-                                                              TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         )),
-                                                    subtitle: e.nombreSieges != 0
+                                                    subtitle: e.nombreSieges !=
+                                                            0
                                                         ? Text(
                                                             "Nombre de sièges : ${e.nombreSieges.toString().trim()}",
-                                                            style: const TextStyle(
-                                                              color: Colors.black87,
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Colors
+                                                                  .black87,
                                                               fontSize: 17,
                                                               fontWeight:
-                                                                  FontWeight.w500,
+                                                                  FontWeight
+                                                                      .w500,
                                                               fontStyle:
-                                                                  FontStyle.italic,
+                                                                  FontStyle
+                                                                      .italic,
                                                             ))
                                                         : Text(
                                                             "Nombre de sièges : Non renseigné",
-                                                            style: const TextStyle(
-                                                              color: Colors.black87,
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Colors
+                                                                  .black87,
                                                               fontSize: 17,
                                                               fontWeight:
-                                                                  FontWeight.w500,
+                                                                  FontWeight
+                                                                      .w500,
                                                               fontStyle:
-                                                                  FontStyle.italic,
+                                                                  FontStyle
+                                                                      .italic,
                                                             ))),
-                                                Consumer<VehiculeService>(builder:
-                                                    (context, typeService, child) {
+                                                Consumer<VehiculeService>(
+                                                    builder: (context,
+                                                        typeService, child) {
                                                   return FutureBuilder(
                                                       future: typeService
                                                           .fetchVehiculeByTypeVehicule(
                                                               e.idTypeVoiture!),
-                                                      builder: (context, snapshot) {
+                                                      builder:
+                                                          (context, snapshot) {
                                                         if (snapshot
                                                                 .connectionState ==
-                                                            ConnectionState.waiting) {
+                                                            ConnectionState
+                                                                .waiting) {
                                                           return const Center(
                                                             child:
                                                                 CircularProgressIndicator(
-                                                              color: Colors.orange,
+                                                              color:
+                                                                  Colors.orange,
                                                             ),
                                                           );
                                                         }
-            
+
                                                         if (!snapshot.hasData) {
                                                           return Padding(
-                                                            padding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal: 15),
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        15),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -348,10 +368,12 @@ bool isSearchMode = false;
                                                               children: [
                                                                 Text(
                                                                     "Nombre de véhicule",
-                                                                    style: TextStyle(
+                                                                    style:
+                                                                        TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 17,
+                                                                      fontSize:
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -360,10 +382,12 @@ bool isSearchMode = false;
                                                                               .italic,
                                                                     )),
                                                                 Text("0",
-                                                                    style: TextStyle(
+                                                                    style:
+                                                                        TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 18,
+                                                                      fontSize:
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w800,
@@ -375,9 +399,10 @@ bool isSearchMode = false;
                                                           vehiculeList =
                                                               snapshot.data!;
                                                           return Padding(
-                                                            padding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal: 15),
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        15),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -385,10 +410,12 @@ bool isSearchMode = false;
                                                               children: [
                                                                 Text(
                                                                     "Nombres de véhicule",
-                                                                    style: TextStyle(
+                                                                    style:
+                                                                        TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 17,
+                                                                      fontSize:
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -400,10 +427,12 @@ bool isSearchMode = false;
                                                                     vehiculeList
                                                                         .length
                                                                         .toString(),
-                                                                    style: TextStyle(
+                                                                    style:
+                                                                        TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 18,
+                                                                      fontSize:
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w800,
@@ -415,8 +444,10 @@ bool isSearchMode = false;
                                                       });
                                                 }),
                                                 Container(
-                                                  alignment: Alignment.bottomRight,
-                                                  padding: const EdgeInsets.symmetric(
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                       horizontal: 10),
                                                   child: Row(
                                                     mainAxisAlignment:
@@ -425,60 +456,68 @@ bool isSearchMode = false;
                                                     children: [
                                                       _buildEtat(e.statutType!),
                                                       PopupMenuButton<String>(
-                                                        padding: EdgeInsets.zero,
-                                                        itemBuilder: (context) =>
-                                                            <PopupMenuEntry<String>>[
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        itemBuilder:
+                                                            (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: e.statutType ==
-                                                                      false
-                                                                  ? Icon(
-                                                                      Icons.check,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )
-                                                                  : Icon(
-                                                                      Icons
-                                                                          .disabled_visible,
-                                                                      color: Colors
-                                                                              .orange[
-                                                                          400],
-                                                                    ),
+                                                              leading:
+                                                                  e.statutType ==
+                                                                          false
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .check,
+                                                                          color:
+                                                                              Colors.green,
+                                                                        )
+                                                                      : Icon(
+                                                                          Icons
+                                                                              .disabled_visible,
+                                                                          color:
+                                                                              Colors.orange[400],
+                                                                        ),
                                                               title: Text(
-                                                                e.statutType == false
+                                                                e.statutType ==
+                                                                        false
                                                                     ? "Activer"
                                                                     : "Desactiver",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color: e.statutType ==
                                                                           false
-                                                                      ? Colors.green
+                                                                      ? Colors
+                                                                          .green
                                                                       : Colors.orange[
                                                                           400],
                                                                   fontWeight:
-                                                                      FontWeight.bold,
+                                                                      FontWeight
+                                                                          .bold,
                                                                 ),
                                                               ),
                                                               onTap: () async {
-                                                                e.statutType == false
+                                                                e.statutType ==
+                                                                        false
                                                                     ? await TypeVoitureService()
                                                                         .activerType(e
                                                                             .idTypeVoiture!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<TypeVoitureService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Activer avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                })
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<TypeVoitureService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Activer avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            })
                                                                         .catchError(
                                                                             (onError) =>
                                                                                 {
@@ -497,42 +536,40 @@ bool isSearchMode = false;
                                                                     : await TypeVoitureService()
                                                                         .desactiverType(e
                                                                             .idTypeVoiture!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<TypeVoitureService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit : $onError"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: const Duration(seconds: 5),
-                                                                                    ),
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<TypeVoitureService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Une erreur s'est produit : $onError"),
+                                                                                    ],
                                                                                   ),
-                                                                                  Navigator.of(context).pop(),
-                                                                                });
-            
+                                                                                  duration: const Duration(seconds: 5),
+                                                                                ),
+                                                                              ),
+                                                                              Navigator.of(context).pop(),
+                                                                            });
+
                                                                 ScaffoldMessenger.of(
                                                                         context)
                                                                     .showSnackBar(
                                                                   const SnackBar(
-                                                                    content: Row(
+                                                                    content:
+                                                                        Row(
                                                                       children: [
                                                                         Text(
                                                                             " Desactiver avec succèss "),
                                                                       ],
                                                                     ),
-                                                                    duration:
-                                                                        Duration(
-                                                                            seconds:
-                                                                                2),
+                                                                    duration: Duration(
+                                                                        seconds:
+                                                                            2),
                                                                   ),
                                                                 );
                                                               },
@@ -540,20 +577,26 @@ bool isSearchMode = false;
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.edit,
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                               title: const Text(
                                                                 "Modifier",
-                                                                style: TextStyle(
-                                                                  color: Colors.green,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .green,
                                                                   fontWeight:
-                                                                      FontWeight.bold,
+                                                                      FontWeight
+                                                                          .bold,
                                                                 ),
                                                               ),
                                                               onTap: () {
-                                                                Navigator.of(context)
+                                                                Navigator.of(
+                                                                        context)
                                                                     .pop();
                                                                 bottomUpdatesheet(
                                                                     context, e);
@@ -562,47 +605,45 @@ bool isSearchMode = false;
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.delete,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               title: const Text(
                                                                 "Supprimer",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
                                                                   fontWeight:
-                                                                      FontWeight.bold,
+                                                                      FontWeight
+                                                                          .bold,
                                                                 ),
                                                               ),
                                                               onTap: () async {
                                                                 await TypeVoitureService()
                                                                     .deleteType(e
                                                                         .idTypeVoiture!)
-                                                                    .then((value) => {
-                                                                          Provider.of<TypeVoitureService>(
-                                                                                  context,
-                                                                                  listen:
-                                                                                      false)
-                                                                              .applyChange(),
-                                                                          Navigator.of(
-                                                                                  context)
-                                                                              .pop(),
-                                                                        })
+                                                                    .then(
+                                                                        (value) =>
+                                                                            {
+                                                                              Provider.of<TypeVoitureService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                            })
                                                                     .catchError(
-                                                                        (onError) => {
-                                                                              print(onError
-                                                                                  .toString()),
-                                                                              ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(
+                                                                        (onError) =>
+                                                                            {
+                                                                              print(onError.toString()),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
                                                                                 const SnackBar(
-                                                                                  content:
-                                                                                      Row(
+                                                                                  content: Row(
                                                                                     children: [
                                                                                       Text("Ce type de vehicule est déjà associer à un véhicule"),
                                                                                     ],
                                                                                   ),
-                                                                                  duration:
-                                                                                      Duration(seconds: 2),
+                                                                                  duration: Duration(seconds: 2),
                                                                                 ),
                                                                               )
                                                                             });

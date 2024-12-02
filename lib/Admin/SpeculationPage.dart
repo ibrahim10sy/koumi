@@ -31,7 +31,7 @@ class _SpeculationPageState extends State<SpeculationPage> {
   late Future<List<Speculation>> _liste;
   late Future<List<Stock>> _listeStock;
   late TextEditingController _searchController;
-   late ScrollController _scrollController;
+  late ScrollController _scrollController;
   bool isSearchMode = false;
 
   @override
@@ -40,7 +40,7 @@ class _SpeculationPageState extends State<SpeculationPage> {
     cat = widget.categorieProduit;
     _liste = getCatListe();
     _searchController = TextEditingController();
-     _scrollController = ScrollController();
+    _scrollController = ScrollController();
     super.initState();
   }
 
@@ -55,7 +55,7 @@ class _SpeculationPageState extends State<SpeculationPage> {
 
   @override
   void dispose() {
-      _scrollController.dispose();
+    _scrollController.dispose();
     _searchController
         .dispose(); // Disposez le TextEditingController lorsque vous n'en avez plus besoin
     super.dispose();
@@ -65,15 +65,16 @@ class _SpeculationPageState extends State<SpeculationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Column(
             children: [
               Text(
@@ -117,7 +118,6 @@ class _SpeculationPageState extends State<SpeculationPage> {
           ],
         ),
         body: Container(
-
           child: NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
@@ -252,29 +252,31 @@ class _SpeculationPageState extends State<SpeculationPage> {
               controller: _scrollController,
               child: Column(
                 children: [
-                 
                   FutureBuilder(
                       future: _liste,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(
                               color: Colors.orange,
                             ),
                           );
                         }
-            
+
                         if (!snapshot.hasData) {
                           return const Padding(
                             padding: EdgeInsets.all(10),
-                            child: Center(child: Text("Aucune spéculation trouvé")),
+                            child: Center(
+                                child: Text("Aucune spéculation trouvé")),
                           );
                         } else {
                           speculationList = snapshot.data!;
                           String searchText = "";
                           List<Speculation> filtereSearch =
                               speculationList.where((search) {
-                            String libelle = search.nomSpeculation!.toLowerCase();
+                            String libelle =
+                                search.nomSpeculation!.toLowerCase();
                             searchText = _searchController.text.toLowerCase();
                             return libelle.contains(searchText);
                           }).toList();
@@ -284,14 +286,18 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10, horizontal: 15),
                                         child: Container(
-                                          width: MediaQuery.of(context).size.width *
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
                                               0.9,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.2),
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
                                                 offset: const Offset(0, 2),
                                                 blurRadius: 5,
                                                 spreadRadius: 2,
@@ -311,8 +317,8 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 20,
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       )),
                                                   subtitle: Text(
                                                       e.descriptionSpeculation!
@@ -320,8 +326,10 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                       style: const TextStyle(
                                                         color: Colors.black87,
                                                         fontSize: 17,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontStyle: FontStyle.italic,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontStyle:
+                                                            FontStyle.italic,
                                                       ))),
                                               // FutureBuilder(
                                               //     future: getCatListeStock(e.idSpeculation!),
@@ -367,7 +375,7 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                               //           ),
                                               //         );
                                               //       }
-            
+
                                               //       if (!snapshot.hasData) {
                                               //         return Padding(
                                               //           padding: EdgeInsets
@@ -449,9 +457,11 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                               //       }
                                               //     }),
                                               Container(
-                                                alignment: Alignment.bottomRight,
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 10),
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -462,14 +472,16 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                     PopupMenuButton<String>(
                                                       padding: EdgeInsets.zero,
                                                       itemBuilder: (context) =>
-                                                          <PopupMenuEntry<String>>[
+                                                          <PopupMenuEntry<
+                                                              String>>[
                                                         PopupMenuItem<String>(
                                                           child: ListTile(
                                                             leading:
                                                                 e.statutSpeculation ==
                                                                         false
                                                                     ? Icon(
-                                                                        Icons.check,
+                                                                        Icons
+                                                                            .check,
                                                                         color: Colors
                                                                             .green,
                                                                       )
@@ -477,8 +489,7 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                                         Icons
                                                                             .disabled_visible,
                                                                         color: Colors
-                                                                                .orange[
-                                                                            400],
+                                                                            .orange[400],
                                                                       ),
                                                             title: Text(
                                                               e.statutSpeculation ==
@@ -488,11 +499,13 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                               style: TextStyle(
                                                                 color: e.statutSpeculation ==
                                                                         false
-                                                                    ? Colors.green
+                                                                    ? Colors
+                                                                        .green
                                                                     : Colors.orange[
                                                                         400],
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
                                                             onTap: () async {
@@ -562,9 +575,9 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
                                                                               });
-            
-                                                              ScaffoldMessenger.of(
-                                                                      context)
+
+                                                              ScaffoldMessenger
+                                                                      .of(context)
                                                                   .showSnackBar(
                                                                 const SnackBar(
                                                                   content: Row(
@@ -586,24 +599,30 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                           child: ListTile(
                                                             leading: const Icon(
                                                               Icons.edit,
-                                                              color: Colors.green,
+                                                              color:
+                                                                  Colors.green,
                                                             ),
                                                             title: const Text(
                                                               "Modifier",
                                                               style: TextStyle(
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
                                                             onTap: () async {
-                                                              Navigator.of(context)
+                                                              Navigator.of(
+                                                                      context)
                                                                   .pop();
                                                               // var updatedSousRegion =
-            
+
                                                               await bottomUpdatesheet(
-                                                                      context, e)
-                                                                  .then((value) {
+                                                                      context,
+                                                                      e)
+                                                                  .then(
+                                                                      (value) {
                                                                 Provider.of<SpeculationService>(
                                                                         context,
                                                                         listen:
@@ -627,43 +646,37 @@ class _SpeculationPageState extends State<SpeculationPage> {
                                                             title: const Text(
                                                               "Supprimer",
                                                               style: TextStyle(
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
                                                             onTap: () async {
                                                               await SpeculationService()
                                                                   .deleteSpeculation(e
                                                                       .idSpeculation!)
-                                                                  .then((value) => {
-                                                                        Provider.of<SpeculationService>(
-                                                                                context,
-                                                                                listen:
-                                                                                    false)
-                                                                            .applyChange(),
-                                                                        setState(
-                                                                            () {
-                                                                          _liste =
-                                                                              getCatListe();
-                                                                        }),
-                                                                        Navigator.of(
-                                                                                context)
-                                                                            .pop(),
-                                                                      })
+                                                                  .then(
+                                                                      (value) =>
+                                                                          {
+                                                                            Provider.of<SpeculationService>(context, listen: false).applyChange(),
+                                                                            setState(() {
+                                                                              _liste = getCatListe();
+                                                                            }),
+                                                                            Navigator.of(context).pop(),
+                                                                          })
                                                                   .catchError(
-                                                                      (onError) => {
-                                                                            ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(
+                                                                      (onError) =>
+                                                                          {
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
                                                                               const SnackBar(
-                                                                                content:
-                                                                                    Row(
+                                                                                content: Row(
                                                                                   children: [
                                                                                     Text("Impossible de supprimer"),
                                                                                   ],
                                                                                 ),
-                                                                                duration:
-                                                                                    Duration(seconds: 2),
+                                                                                duration: Duration(seconds: 2),
                                                                               ),
                                                                             )
                                                                           });

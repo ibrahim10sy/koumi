@@ -122,58 +122,76 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(Icons.arrow_back_sharp, size: 30, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Container(
           height: 50,
           decoration: BoxDecoration(
             color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(20),
           ),
-          child: TextField(
-            controller: _searchController,
-            autofocus: true,
-            onChanged: (query) {
-              if (!isLoading) {
-                setState(() {
-                  _filteredResults.clear(); // Effacer les anciens résultats
-                });
-                fetchStock(query); // Charger les nouveaux résultats
-              }
-            },
-            onSubmitted: (query) async {
-              if (!isLoading) {
-                setState(() {
-                  _filteredResults.clear(); // Effacer les anciens résultats
-                });
-                await _saveSearchHistory(query);
-                fetchStock(query);
-              }
-            },
-            decoration: InputDecoration(
-              hintText: 'Rechercher un produit...',
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              border: InputBorder.none,
-              suffixIcon: _searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.clear, color: Colors.black),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _filteredResults.clear(); // Effacer les résultats
-                        });
-                      },
-                    )
-                  : null,
-            ),
+          child: Row(
+            children: [
+              const SizedBox(width: 15.0),
+              Icon(
+                Icons.search, // Icône de recherche
+                color: Colors.black54,
+                size: 24.0,
+              ),
+              // const SizedBox(width: 8.0),
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  enableSuggestions: true,
+                  autofocus: true,
+                  onChanged: (query) async {
+                    if (!isLoading) {
+                      setState(() {
+                        _filteredResults
+                            .clear(); // Effacer les anciens résultats
+                      });
+                      fetchStock(query); // Charger les nouveaux résultats
+                      // await _saveSearchHistory(query);
+                    }
+                  },
+                  onSubmitted: (query) async {
+                    if (!isLoading) {
+                      setState(() {
+                        _filteredResults
+                            .clear(); // Effacer les anciens résultats
+                      });
+                      await _saveSearchHistory(query);
+                      fetchStock(query);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Rechercher un produit...',
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    border: InputBorder.none,
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(Icons.clear, color: Colors.black),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _filteredResults
+                                    .clear(); // Effacer les résultats
+                              });
+                            },
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -269,7 +287,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                                           borderRadius:
                                               BorderRadius.circular(8.0),
                                           child: Container(
-                                            height: 90,
+                                            height: 78,
                                             child: _filteredResults[index]
                                                             .photo ==
                                                         null ||
@@ -303,7 +321,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                                           title: Text(
                                             _filteredResults[index].nomProduit!,
                                             style: TextStyle(
-                                              fontSize: 17,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black87,
                                             ),
@@ -315,7 +333,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                                             "${_filteredResults[index].quantiteStock!.toString()} ${_filteredResults[index].unite!.nomUnite} ",
                                             style: TextStyle(
                                               overflow: TextOverflow.ellipsis,
-                                              fontSize: 16,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black87,
                                             ),
@@ -329,7 +347,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                                               Text(
                                                 "${_filteredResults[index].prix.toString()} ",
                                                 style: TextStyle(
-                                                  fontSize: 17,
+                                                  fontSize: 15,
                                                   color: d_colorOr,
                                                 ),
                                               ),
@@ -340,7 +358,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                                                     ? " ${_filteredResults[index].monnaie!.libelle}"
                                                     : " FCFA ",
                                                 style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 15,
                                                   color: d_colorOr,
                                                 ),
                                               ),

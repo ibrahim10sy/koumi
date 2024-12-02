@@ -13,68 +13,137 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-          backgroundColor: d_colorOr,
-          centerTitle: true,
-          toolbarHeight: 75,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon:
+              const Icon(Icons.arrow_back_sharp, size: 30, color: Colors.white),
+        ),
+        title: const Text(
+          "Conditions et Politique",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-          title: Text(
-            "Conditions Générales",
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-          )),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              // Titre principal
+              const Text(
                 "Bienvenue sur KOUMI",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-              SizedBox(height: 10),
-              // Texte de description général
-              Text(
-                "KOUMI est une application dédiée à l'agriculture, facilitant la mise en relation des principaux acteurs du secteur agricole, à savoir les producteurs, les fournisseurs d’intrants agricoles, les partenaires de développement, les prestataires, les commerçants et les transformateurs.",
-                style: TextStyle(fontSize: 16),
+              const SizedBox(height: 10),
+
+              // Texte d'introduction
+              const Text(
+                "KOUMI est une application dédiée à l'agriculture, facilitant la mise en relation des principaux acteurs du secteur agricole. Nous vous invitons à lire attentivement nos conditions générales et notre politique de confidentialité.",
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.justify,
               ),
-              SizedBox(height: 20),
-              // Sections de conditions
-              _buildSectionTitle(
-                  "1. Modifications des Conditions d'Utilisation"),
-              _buildSectionText(
-                "Nous nous réservons le droit de modifier, à tout moment et à notre seule discrétion, tout ou partie des présentes conditions d'utilisation, et ce sans préavis. Il vous incombe de consulter régulièrement ces conditions pour prendre connaissance de toute modification. L'utilisation continue de l'application après la publication des modifications implique votre acceptation de ces dernières.",
+              const SizedBox(height: 20),
+              const Text(
+                "Conditions Générales",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-              _buildSectionTitle("2. Propriété des Soumissions"),
-              _buildSectionText(
-                "Toute information, suggestion, ou contenu que vous soumettez via KOUMI (par exemple, des commentaires ou des idées) ne sera pas considérée comme confidentielle. Vous acceptez que ces soumissions deviennent la propriété exclusive de KOUMI et pourront être utilisées à des fins commerciales ou autres, sans compensation, obligation, ou responsabilité envers vous.",
+              const SizedBox(height: 10),
+              _buildSection(
+                "1. Modifications des Conditions d'Utilisation",
+                "Nous nous réservons le droit de modifier, à tout moment et à notre seule discrétion, tout ou partie des présentes conditions d'utilisation. L'utilisation continue de l'application après les modifications implique votre acceptation.",
               ),
-              _buildSectionTitle("3. Inscription et Notifications"),
-              _buildSectionText(
-                "En vous inscrivant à KOUMI, vous consentez à recevoir des notifications en temps réel, notamment des mises à jour sur les prix des produits agricoles, les intrants, les équipements en vente ou en location, ainsi que des services de transport. Vous recevrez également des alertes concernant l'ajout de nouveaux produits agricoles et intrants. Ces notifications peuvent être envoyées via WhatsApp ou d'autres canaux.",
+              _buildSection(
+                "2. Propriété des Soumissions",
+                "Toute information soumise via KOUMI (commentaires, idées, etc.) devient la propriété exclusive de KOUMI et peut être utilisée sans compensation envers vous.",
               ),
-              _buildSectionTitle("4. Consentement à Recevoir des Messages"),
-              _buildSectionText(
-                "En acceptant de recevoir des messages de KOUMI, vous consentez à recevoir des notifications par WhatsApp via un système de numérotation téléphonique automatique. Vous comprenez que votre consentement à recevoir ces messages n’est pas une condition obligatoire pour acheter des biens ou services via l'application.",
+              _buildSection(
+                "3. Inscription et Notifications",
+                "En vous inscrivant, vous acceptez de recevoir des notifications sur les produits agricoles, équipements en vente/location, et autres services via WhatsApp ou d'autres canaux.",
               ),
-              _buildSectionTitle("5. Limite d'Âge"),
-              _buildSectionText(
-                "En vous inscrivant à KOUMI, vous confirmez avoir au moins 13 ans. L'inscription est interdite aux personnes n'ayant pas atteint cet âge minimum.",
+              _buildSection(
+                "4. Limite d'Âge",
+                "L'inscription à KOUMI est interdite aux personnes de moins de 13 ans.",
               ),
-              _buildSectionTitle("6. Désinscription"),
-              _buildSectionText(
-                "Vous pouvez vous désinscrire à tout moment des notifications WhatsApp en envoyant \"STOP\" au +223 51 55 48 51 via WhatsApp. Une confirmation de désinscription vous sera envoyée.",
+              _buildSection(
+                "5. Désinscription",
+                "Pour vous désinscrire des notifications WhatsApp, envoyez \"STOP\" au +223 51 55 48 51. Une confirmation vous sera envoyée.",
               ),
-              _buildSectionTitle("Engagement de Protection des Données"),
-              _buildSectionText(
-                "KOUMI s'engage à respecter la confidentialité et la sécurité de vos informations personnelles.",
+              const SizedBox(height: 20),
+
+              // POLITIQUE DE CONFIDENTIALITÉ
+              const Text(
+                "Politique de Confidentialité",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 10),
+              _buildSection(
+                "1. Collecte des Données Personnelles",
+                "Nous collectons des informations nécessaires pour fournir nos services, comme votre nom, numéro de téléphone, localisation et préférences. Ces données sont utilisées uniquement pour améliorer votre expérience sur KOUMI.",
+              ),
+              _buildSection(
+                "2. Accès à la Localisation",
+                "L'accès à votre localisation nous permet de :\n"
+                    "- Mettre en avant des produits disponibles dans votre pays.\n"
+                    "- Afficher automatiquement les localités de votre pays lors de la création de compte.\n"
+                    "- Suivre votre position en arrière plan pour calculer la superficie de la surface parcourue, utile dans des scénarios agricoles.",
+              ),
+              _buildSection(
+                "3. Utilisation des Données",
+                "Vos données personnelles servent à fournir des services personnalisés, comme des notifications en temps réel, des recommandations de produits, et des analyses géographiques.",
+              ),
+              _buildSection(
+                "4. Protection des Données",
+                "KOUMI s'engage à sécuriser vos informations personnelles. Vos données sont stockées de manière sécurisée et ne sont jamais partagées sans votre consentement.",
+              ),
+              const SizedBox(height: 20),
+
+              // CONTACTS
+              const Text(
+                "Contacts",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: d_colorOr,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _buildContactSection(
+                "Adresse :",
+                "Baco Djicoroni, Bamako, Mali",
+              ),
+              _buildContactSection(
+                "Numéro :",
+                "+223 51 55 48 51",
+              ),
+              _buildContactSection(
+                "Email :",
+                "contact@aismali.com",
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -82,29 +151,58 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSection(String title, String content) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        title,
-        style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.orangeAccent),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            content,
+            textAlign: TextAlign.justify,
+            style: const TextStyle(
+              fontSize: 16,
+              height: 1.5,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSectionText(String text) {
+  Widget _buildContactSection(String title, String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Text(
-        text,
-        textAlign: TextAlign.justify,
-        style: TextStyle(
-          fontSize: 16,
-          height: 1.5,
-        ),
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Expanded(
+            child: Text(
+              content,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

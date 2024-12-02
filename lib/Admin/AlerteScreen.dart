@@ -73,7 +73,8 @@ class _AlerteScreenState extends State<AlerteScreen> {
               Navigator.of(context).pop();
             },
             icon: const Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_back_sharp,
+              size: 30,
               color: Colors.white,
             )),
         title: const Text(

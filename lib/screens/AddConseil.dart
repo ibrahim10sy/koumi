@@ -217,13 +217,12 @@ class _AddConseilState extends State<AddConseil> {
   @override
   void dispose() {
     super.dispose();
-     _timer?.cancel();
+    _timer?.cancel();
     _tokenTextController.dispose();
     _tokenAudioController.dispose();
     _tokenImageController.dispose();
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
@@ -238,7 +237,8 @@ class _AddConseilState extends State<AddConseil> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: const Text(
               "Ajout conseil ",
               style: TextStyle(
@@ -251,7 +251,7 @@ class _AddConseilState extends State<AddConseil> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               SizedBox(
+              SizedBox(
                 height: 10,
               ),
               Form(
@@ -388,37 +388,37 @@ class _AddConseilState extends State<AddConseil> {
                     SizedBox(
                       height: 10,
                     ),
-                      // _buildUi(),
-                          isRecording
-                              ? Text(
-                                  'Durée: ${_elapsedSeconds}s',
-                                  style: TextStyle(fontSize: 20),
-                                )
-                              : Container(),
-                          _hasUploadStarted
-                              ? LinearProgressIndicator(
-                                  color: d_colorGreen,
-                                  backgroundColor: d_colorOr,
-                                  value: _progressValue,
-                                )
-                              : Container(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.camera,
-                                  size: 30,
-                                ),
-                                onPressed: _showImageSourceDialog,
-                              ),
-                              IconButton(
-                                  onPressed: _showVideoSourceDialog,
-                                  icon: Icon(
-                                    Icons.video_camera_front_rounded,
-                                    size: 30,
-                                  )),
-                                   _recordingButton()
+                    // _buildUi(),
+                    isRecording
+                        ? Text(
+                            'Durée: ${_elapsedSeconds}s',
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Container(),
+                    _hasUploadStarted
+                        ? LinearProgressIndicator(
+                            color: d_colorGreen,
+                            backgroundColor: d_colorOr,
+                            value: _progressValue,
+                          )
+                        : Container(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.camera,
+                            size: 30,
+                          ),
+                          onPressed: _showImageSourceDialog,
+                        ),
+                        IconButton(
+                            onPressed: _showVideoSourceDialog,
+                            icon: Icon(
+                              Icons.video_camera_front_rounded,
+                              size: 30,
+                            )),
+                        _recordingButton()
                       ],
                     ),
                     ElevatedButton(
@@ -574,7 +574,6 @@ class _AddConseilState extends State<AddConseil> {
       ),
     );
   }
-
 
   Widget _recordingButton() {
     return IconButton(

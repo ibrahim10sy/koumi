@@ -114,7 +114,8 @@ class _CategoriPageState extends State<CategoriPage> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Catégories de produits",
           style: TextStyle(
@@ -1001,7 +1002,6 @@ class _CategoriPageState extends State<CategoriPage> {
                                                                         .then((value) =>
                                                                             {
                                                                               Provider.of<CategorieService>(context, listen: false).applyChange(),
-                                                                             
                                                                             })
                                                                         .catchError((onError) =>
                                                                             {

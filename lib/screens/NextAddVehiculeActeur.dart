@@ -226,7 +226,8 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Etape 2',
             style: const TextStyle(
@@ -498,7 +499,7 @@ class _NextAddVehiculeActeurState extends State<NextAddVehiculeActeur> {
                                             Navigator.pop(context, true),
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                               const SnackBar(
+                                              const SnackBar(
                                                 content: Row(
                                                   children: [
                                                     Text(

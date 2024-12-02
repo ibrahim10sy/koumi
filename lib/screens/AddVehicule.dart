@@ -27,7 +27,6 @@ const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _AddVehiculeState extends State<AddVehicule> {
-  
   TextEditingController _nomController = TextEditingController();
   TextEditingController _localiteController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
@@ -94,7 +93,7 @@ class _AddVehiculeState extends State<AddVehicule> {
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeVoiture/read'));
     _niveau3List = http.get(Uri.parse(
         '$apiOnlineUrl/nivveau3Pays/listeNiveau3PaysByNomPays/${acteur.niveau3PaysActeur}'));
- _searchController = TextEditingController();
+    _searchController = TextEditingController();
     fetchLibelleNiveau3Pays();
   }
 
@@ -103,7 +102,6 @@ class _AddVehiculeState extends State<AddVehicule> {
     _searchController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +117,9 @@ class _AddVehiculeState extends State<AddVehicule> {
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-           title: Text(
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
+          title: Text(
             'Ajout de véhicule',
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
@@ -171,7 +170,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
-                     SizedBox(
+                      SizedBox(
                         height: 5,
                       ),
                       Padding(
@@ -186,28 +185,27 @@ class _AddVehiculeState extends State<AddVehicule> {
                                 TextStyle(color: (Colors.black), fontSize: 18),
                           ),
                         ),
-                      ), 
-                       Padding(
+                      ),
+                      Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          child:  GestureDetector(
-                          onTap: _showType,
-                          child: TextFormField(
+                          child: GestureDetector(
                             onTap: _showType,
-                            controller: typeController,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(Icons.arrow_drop_down,
-                                  color: Colors.blueGrey[400]),
-                              hintText: "Sélectionner un type ",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            child: TextFormField(
+                              onTap: _showType,
+                              controller: typeController,
+                              decoration: InputDecoration(
+                                suffixIcon: Icon(Icons.arrow_drop_down,
+                                    color: Colors.blueGrey[400]),
+                                hintText: "Sélectionner un type ",
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                        ),
+                          )),
                       SizedBox(
                         height: 5,
                       ),
@@ -287,8 +285,6 @@ class _AddVehiculeState extends State<AddVehicule> {
                           ),
                         ),
                       ),
-                     
-            
                       SizedBox(
                         height: 5,
                       ),
@@ -306,26 +302,26 @@ class _AddVehiculeState extends State<AddVehicule> {
                         ),
                       ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: GestureDetector(
-                        onTap: _showLocalite,
-                        child: TextFormField(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        child: GestureDetector(
                           onTap: _showLocalite,
-                          controller: _localiteController,
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.arrow_drop_down,
-                                color: Colors.blueGrey[400]),
-                            hintText: "Sélectionner une localité",
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                          child: TextFormField(
+                            onTap: _showLocalite,
+                            controller: _localiteController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une localité",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                        ),
                       SizedBox(
                         height: 5,
                       ),
@@ -418,8 +414,7 @@ class _AddVehiculeState extends State<AddVehicule> {
     );
   }
 
-
-   void _showType() async {
+  void _showType() async {
     final BuildContext context = this.context;
 
     showDialog(
@@ -472,16 +467,15 @@ class _AddVehiculeState extends State<AddVehicule> {
                       if (typeListe.isEmpty) {
                         return const Padding(
                           padding: EdgeInsets.all(10),
-                          child:
-                              Center(child: Text("Aucune type Mmteriel trouvée")),
+                          child: Center(
+                              child: Text("Aucune type Mmteriel trouvée")),
                         );
                       }
 
                       String searchText = _searchController.text.toLowerCase();
                       List<TypeVoiture> filteredSearch = typeListe
-                          .where((type) => type.nom!
-                              .toLowerCase()
-                              .contains(searchText))
+                          .where((type) =>
+                              type.nom!.toLowerCase().contains(searchText))
                           .toList();
 
                       return filteredSearch.isEmpty
@@ -497,8 +491,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                                 itemBuilder: (context, index) {
                                   final type = filteredSearch[index];
                                   final isSelected =
-                                      typeController.text ==
-                                          type.nom!;
+                                      typeController.text == type.nom!;
 
                                   return Column(
                                     children: [
@@ -522,8 +515,7 @@ class _AddVehiculeState extends State<AddVehicule> {
                                         onTap: () {
                                           setState(() {
                                             typeVoiture = type;
-                                            typeController.text =
-                                                type.nom!;
+                                            typeController.text = type.nom!;
                                           });
                                         },
                                       ),

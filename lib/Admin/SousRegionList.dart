@@ -47,18 +47,20 @@ class _SousRegionListState extends State<SousRegionList> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-          appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+        appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             continents.nomContinent.toUpperCase(),
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),
+            style: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: SingleChildScrollView(
@@ -168,7 +170,8 @@ class _SousRegionListState extends State<SousRegionList> {
                                                           TextOverflow.ellipsis,
                                                     )),
                                                 subtitle: Text(
-                                                    e.continent.nomContinent.trim(),
+                                                    e.continent.nomContinent
+                                                        .trim(),
                                                     style: const TextStyle(
                                                       color: Colors.black87,
                                                       fontSize: 17,
@@ -204,8 +207,6 @@ class _SousRegionListState extends State<SousRegionList> {
                                                 ],
                                               ),
                                             ),
-                                           
-
                                             Container(
                                               alignment: Alignment.bottomRight,
                                               padding:
@@ -344,7 +345,6 @@ class _SousRegionListState extends State<SousRegionList> {
                                                           },
                                                         ),
                                                       ),
-                                                     
                                                       PopupMenuItem<String>(
                                                         child: ListTile(
                                                           leading: const Icon(
@@ -368,7 +368,7 @@ class _SousRegionListState extends State<SousRegionList> {
                                                                     (value) => {
                                                                           Provider.of<SousRegionService>(context, listen: false)
                                                                               .applyChange(),
-                                                                              setState(
+                                                                          setState(
                                                                               () {
                                                                             _liste =
                                                                                 SousRegionService().fetchSousRegionByContinent(continents.idContinent!);

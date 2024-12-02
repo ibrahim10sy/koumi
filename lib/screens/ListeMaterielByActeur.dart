@@ -184,7 +184,8 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                         Navigator.pop(context, true);
                       });
                     },
-                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                    icon: const Icon(Icons.arrow_back_sharp,
+                        size: 30, color: Colors.white),
                   )
                 : Container(),
             title: Text(
@@ -206,7 +207,7 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                   : Container(),
             ]),
         body: GestureDetector(
-          onTap: () { 
+          onTap: () {
             FocusScope.of(context).unfocus();
           },
           child: Container(

@@ -46,7 +46,7 @@ class _UpdateConseilState extends State<UpdateConseil> {
   double _progressValue = 0;
   bool _hasUploadStarted = false;
   late Conseil conseil;
-   final AudioRecorder audioRecorder = AudioRecorder();
+  final AudioRecorder audioRecorder = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
   bool isRecording = false, isPlaying = false;
   String? recordingPath;
@@ -225,13 +225,11 @@ class _UpdateConseilState extends State<UpdateConseil> {
   @override
   void dispose() {
     super.dispose();
-     _timer?.cancel();
+    _timer?.cancel();
     _tokenTextController.dispose();
     _tokenAudioController.dispose();
     _tokenImageController.dispose();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -239,15 +237,19 @@ class _UpdateConseilState extends State<UpdateConseil> {
       isLoading: _isLoading,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-          appBar: AppBar(
-             backgroundColor: d_colorOr,
+        appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+                icon: const Icon(
+                  Icons.arrow_back_sharp,
+                  size: 30,
+                  color: Colors.white,
+                )),
             title: const Text(
               "Modification ",
               style: TextStyle(
@@ -260,9 +262,9 @@ class _UpdateConseilState extends State<UpdateConseil> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               SizedBox(
-                      height: 10,
-                    ),
+              SizedBox(
+                height: 10,
+              ),
               Form(
                 key: formkey,
                 child: Column(
@@ -398,35 +400,35 @@ class _UpdateConseilState extends State<UpdateConseil> {
                       height: 10,
                     ),
                     isRecording
-                              ? Text(
-                                  'Durée: ${_elapsedSeconds}s',
-                                  style: TextStyle(fontSize: 20),
-                                )
-                              : Container(),
-                          _hasUploadStarted
-                              ? LinearProgressIndicator(
-                                  color: d_colorGreen,
-                                  backgroundColor: d_colorOr,
-                                  value: _progressValue,
-                                )
-                              : Container(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.camera,
-                                  size: 30,
-                                ),
-                                onPressed: _showImageSourceDialog,
-                              ),
-                              IconButton(
-                                  onPressed: _showVideoSourceDialog,
-                                  icon: Icon(
-                                    Icons.video_camera_front_rounded,
-                                    size: 30,
-                                  )),
-                                   _recordingButton()
+                        ? Text(
+                            'Durée: ${_elapsedSeconds}s',
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Container(),
+                    _hasUploadStarted
+                        ? LinearProgressIndicator(
+                            color: d_colorGreen,
+                            backgroundColor: d_colorOr,
+                            value: _progressValue,
+                          )
+                        : Container(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.camera,
+                            size: 30,
+                          ),
+                          onPressed: _showImageSourceDialog,
+                        ),
+                        IconButton(
+                            onPressed: _showVideoSourceDialog,
+                            icon: Icon(
+                              Icons.video_camera_front_rounded,
+                              size: 30,
+                            )),
+                        _recordingButton()
                       ],
                     ),
                     ElevatedButton(
@@ -564,7 +566,7 @@ class _UpdateConseilState extends State<UpdateConseil> {
     );
   }
 
- Widget _recordingButton() {
+  Widget _recordingButton() {
     return IconButton(
       icon: Icon(
         isRecording ? Icons.stop : Icons.mic,

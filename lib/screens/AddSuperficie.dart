@@ -159,7 +159,8 @@ class _AddSuperficieState extends State<AddSuperficie> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Ajout de superficie ',
             style: const TextStyle(

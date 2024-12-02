@@ -121,7 +121,8 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Ajout de véhicule',
             style: const TextStyle(
@@ -269,26 +270,26 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
                         ),
                       ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: GestureDetector(
-                        onTap: _showLocalite,
-                        child: TextFormField(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        child: GestureDetector(
                           onTap: _showLocalite,
-                          controller: _localiteController,
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.arrow_drop_down,
-                                color: Colors.blueGrey[400]),
-                            hintText: "Sélectionner une localité",
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                          child: TextFormField(
+                            onTap: _showLocalite,
+                            controller: _localiteController,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.arrow_drop_down,
+                                  color: Colors.blueGrey[400]),
+                              hintText: "Sélectionner une localité",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                        ),
                       SizedBox(
                         height: 5,
                       ),
@@ -373,7 +374,7 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
     );
   }
 
-   void _showLocalite() async {
+  void _showLocalite() async {
     final BuildContext context = this.context;
 
     showDialog(
@@ -518,5 +519,4 @@ class _AddVehiculeTransportState extends State<AddVehiculeTransport> {
       },
     );
   }
-
 }

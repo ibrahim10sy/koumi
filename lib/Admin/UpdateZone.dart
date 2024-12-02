@@ -115,15 +115,16 @@ class _UpdateZoneState extends State<UpdateZone> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Modification",
           style: TextStyle(
@@ -146,11 +147,9 @@ class _UpdateZoneState extends State<UpdateZone> {
                         width: 150,
                         height: 150,
                       )
-                    
-                        : 
-                        Image.network(
-                           "https://koumi.ml/api-koumi/ZoneProduction/${zoneProd.idZoneProduction}/image",
-                           fit: BoxFit.fitWidth,
+                    : Image.network(
+                        "https://koumi.ml/api-koumi/ZoneProduction/${zoneProd.idZoneProduction}/image",
+                        fit: BoxFit.fitWidth,
                         height: 150,
                         width: double.infinity,
                         errorBuilder: (BuildContext context, Object exception,
@@ -160,7 +159,7 @@ class _UpdateZoneState extends State<UpdateZone> {
                             fit: BoxFit.cover,
                           );
                         },
-                          )),
+                      )),
           ),
           const SizedBox(height: 10),
           Form(

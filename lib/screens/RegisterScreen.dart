@@ -341,7 +341,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios)),
+              icon: const Icon(
+                Icons.arrow_back_sharp,
+                size: 30,
+              )),
           actions: [
             TextButton(
               onPressed: () {
@@ -550,8 +553,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           onCountryChanged: (country) {
                             setState(() {
-                              selectedCountry = country.name.toString();
-                              print('Country changed to: ' + selectedCountry!);
+                              // selectedCountry = country.name.toString();
+                              // print('Country changed to: ' + selectedCountry!);
 
                               processedNumberTel =
                                   removePlus(phoneController.text);

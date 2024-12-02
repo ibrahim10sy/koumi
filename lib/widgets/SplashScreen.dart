@@ -7,6 +7,7 @@ import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/widgets/AnimatedBackground.dart';
 import 'package:koumi/widgets/BottomNavBarAdmin.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
+import 'package:koumi/widgets/SplashPage.dart';
 import 'package:koumi/widgets/connection_verify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
@@ -38,10 +39,35 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    checkEmailInSharedPreferences();
+    _checkFirstLaunch();
+    
   }
 
+  Future<void> _navigateToNextPage() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              SplashPage()), // Remplacez Accueil par votre page d'accueil
+    );
+  }
+
+  // Vérifier si c'est le premier lancement
+  Future<void> _checkFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+
+    if (isFirstLaunch) {
+      // Demander la permission de localisation
+      await _navigateToNextPage();
+
+      // Marquer que l'application a été lancée
+      await prefs.setBool('isFirstLaunch', false);
+    }else{
+      checkEmailInSharedPreferences();
+    }
+  }
+ 
   void checkEmailInSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? codeAc = prefs.getString('whatsAppActeur');
@@ -49,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
       checkLoggedIn();
     } else {
       Timer(
-        const Duration(microseconds: 500),
+        const Duration(seconds: 1),
         () => Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => BottomNavigationPage()),
         ),
@@ -109,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Acteur dans share splash check login : ${acteur!.whatsAppActeur}");
     } else {
       Timer(
-        const Duration(milliseconds: 500),
+        const Duration(seconds: 1),
         () => Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => BottomNavigationPage()),
         ),
@@ -121,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // Vérifie si l'utilisateur est un administrateur
       if (acteur!.typeActeur!
           .any((type) => type.libelle == 'admin' || type.libelle == 'Admin')) {
-        Timer(const Duration(microseconds: 500), () {
+        Timer(const Duration(seconds: 1), () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const BottomNavBarAdmin()),
           );
@@ -129,7 +155,7 @@ class _SplashScreenState extends State<SplashScreen> {
               .changeIndex(0);
         });
       } else {
-        Timer(const Duration(microseconds: 500), () {
+        Timer(const Duration(seconds: 1), () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => BottomNavigationPage()),
           );

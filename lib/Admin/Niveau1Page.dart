@@ -41,8 +41,8 @@ class _Niveau1PageState extends State<Niveau1Page> {
   bool isLoadingLibelle = true;
   String? libelleNiveau1Pays;
   late Acteur acteur;
-  
-   bool isSearchMode = false;
+
+  bool isSearchMode = false;
   late ScrollController _scrollController;
 
   @override
@@ -52,13 +52,13 @@ class _Niveau1PageState extends State<Niveau1Page> {
     _paysList = http.get(Uri.parse('$apiOnlineUrl/pays/read'));
     _searchController = TextEditingController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
-  _searchController = TextEditingController();
+    _searchController = TextEditingController();
     _scrollController = ScrollController();
   }
 
   @override
   void dispose() {
-   _searchController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -75,7 +75,8 @@ class _Niveau1PageState extends State<Niveau1Page> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             "Niveau 1 ",
             style: const TextStyle(
@@ -153,7 +154,7 @@ class _Niveau1PageState extends State<Niveau1Page> {
                             ).then((value) {
                               if (value != null) {
                                 if (value == 'add_store') {
-                                 _showBottomSheet();
+                                  _showBottomSheet();
                                 }
                               }
                             });
@@ -235,19 +236,20 @@ class _Niveau1PageState extends State<Niveau1Page> {
             body: SingleChildScrollView(
               controller: _scrollController,
               child: Column(children: [
-               
-                Consumer<Niveau1Service>(builder: (context, niveau1Service, child) {
+                Consumer<Niveau1Service>(
+                    builder: (context, niveau1Service, child) {
                   return FutureBuilder(
                       future: niveau1Service.fetchNiveau1Pays(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(
                               color: Colors.orange,
                             ),
                           );
                         }
-            
+
                         if (!snapshot.hasData) {
                           return const Padding(
                             padding: EdgeInsets.all(10),
@@ -277,17 +279,18 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                             niveau1pays: e)));
                                           },
                                           child: Container(
-                                            width:
-                                                MediaQuery.of(context).size.width *
-                                                    0.9,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color:
-                                                      Colors.grey.withOpacity(0.2),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
                                                   offset: const Offset(0, 2),
                                                   blurRadius: 5,
                                                   spreadRadius: 2,
@@ -297,46 +300,52 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                             child: Column(
                                               children: [
                                                 ListTile(
-                                                  leading: CodePays()
-                                                      .getFlag(e.pays!.nomPays!),
-                                                  title:
-                                                      Text(e.nomN1!.toUpperCase(),
-                                                          style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 18,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
-                                                          )),
+                                                  leading: CodePays().getFlag(
+                                                      e.pays!.nomPays!),
+                                                  title: Text(
+                                                      e.nomN1!.toUpperCase(),
+                                                      style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 18,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      )),
                                                   subtitle: Text(
                                                       e.descriptionN1!.trim(),
                                                       style: const TextStyle(
                                                         color: Colors.black87,
                                                         fontSize: 17,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontStyle: FontStyle.italic,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontStyle:
+                                                            FontStyle.italic,
                                                       )),
                                                 ),
                                                 FutureBuilder(
                                                     future: Niveau2Service()
                                                         .fetchNiveau2ByNiveau1(
                                                             e.idNiveau1Pays!),
-                                                    builder: (context, snapshot) {
+                                                    builder:
+                                                        (context, snapshot) {
                                                       if (snapshot
                                                               .connectionState ==
-                                                          ConnectionState.waiting) {
+                                                          ConnectionState
+                                                              .waiting) {
                                                         return const Center(
                                                           child:
                                                               CircularProgressIndicator(
-                                                            color: Colors.orange,
+                                                            color:
+                                                                Colors.orange,
                                                           ),
                                                         );
                                                       }
-            
+
                                                       if (!snapshot.hasData) {
                                                         return Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                  horizontal: 15),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -344,10 +353,12 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                             children: [
                                                               Text(
                                                                   "Nombres niveau 2:",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 17,
+                                                                    fontSize:
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -356,10 +367,12 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                                             .italic,
                                                                   )),
                                                               Text("0",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 18,
+                                                                    fontSize:
+                                                                        18,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800,
@@ -371,9 +384,10 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                         niveau2List =
                                                             snapshot.data!;
                                                         return Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                  horizontal: 15),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -381,10 +395,12 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                             children: [
                                                               Text(
                                                                   "Nombres niveau 2 :",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 17,
+                                                                    fontSize:
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -393,12 +409,15 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                                             .italic,
                                                                   )),
                                                               Text(
-                                                                  niveau2List.length
+                                                                  niveau2List
+                                                                      .length
                                                                       .toString(),
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 18,
+                                                                    fontSize:
+                                                                        18,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800,
@@ -409,10 +428,11 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                       }
                                                     }),
                                                 Container(
-                                                  alignment: Alignment.bottomRight,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 20),
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -420,16 +440,19 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                     children: [
                                                       _buildEtat(e.statutN1!),
                                                       PopupMenuButton<String>(
-                                                        padding: EdgeInsets.zero,
-                                                        itemBuilder: (context) =>
-                                                            <PopupMenuEntry<
-                                                                String>>[
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        itemBuilder:
+                                                            (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
                                                               leading: e.statutN1 ==
                                                                       false
                                                                   ? Icon(
-                                                                      Icons.check,
+                                                                      Icons
+                                                                          .check,
                                                                       color: Colors
                                                                           .green,
                                                                     )
@@ -440,13 +463,16 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                                               .orange[
                                                                           400]),
                                                               title: Text(
-                                                                e.statutN1 == false
+                                                                e.statutN1 ==
+                                                                        false
                                                                     ? "Activer"
                                                                     : "Desactiver",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color: e.statutN1 ==
                                                                           false
-                                                                      ? Colors.green
+                                                                      ? Colors
+                                                                          .green
                                                                       : Colors.orange[
                                                                           400],
                                                                   fontWeight:
@@ -455,26 +481,26 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                                 ),
                                                               ),
                                                               onTap: () async {
-                                                                e.statutN1 == false
+                                                                e.statutN1 ==
+                                                                        false
                                                                     ? await Niveau1Service()
                                                                         .activerNiveau1(e
                                                                             .idNiveau1Pays!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<Niveau1Service>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Activer avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                })
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<Niveau1Service>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Activer avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            })
                                                                         .catchError(
                                                                             (onError) =>
                                                                                 {
@@ -493,42 +519,40 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                                     : await Niveau1Service()
                                                                         .desactiverNiveau1Pays(e
                                                                             .idNiveau1Pays!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<Niveau1Service>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 5),
-                                                                                    ),
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<Niveau1Service>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Une erreur s'est produit"),
+                                                                                    ],
                                                                                   ),
-                                                                                  Navigator.of(context).pop(),
-                                                                                });
-            
-                                                                ScaffoldMessenger
-                                                                        .of(context)
+                                                                                  duration: Duration(seconds: 5),
+                                                                                ),
+                                                                              ),
+                                                                              Navigator.of(context).pop(),
+                                                                            });
+
+                                                                ScaffoldMessenger.of(
+                                                                        context)
                                                                     .showSnackBar(
                                                                   const SnackBar(
-                                                                    content: Row(
+                                                                    content:
+                                                                        Row(
                                                                       children: [
                                                                         Text(
                                                                             "Désactiver avec succèss "),
                                                                       ],
                                                                     ),
-                                                                    duration:
-                                                                        Duration(
-                                                                            seconds:
-                                                                                2),
+                                                                    duration: Duration(
+                                                                        seconds:
+                                                                            2),
                                                                   ),
                                                                 );
                                                               },
@@ -536,15 +560,18 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.edit,
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                               title: const Text(
                                                                 "Modifier",
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors.green,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .green,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -561,14 +588,18 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.delete,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               title: const Text(
                                                                 "Supprimer",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -579,17 +610,15 @@ class _Niveau1PageState extends State<Niveau1Page> {
                                                                     .deleteNiveau1Pays(e
                                                                         .idNiveau1Pays!)
                                                                     .then(
-                                                                        (value) => {
-                                                                              Provider.of<Niveau1Service>(context, listen: false)
-                                                                                  .applyChange(),
-                                                                              Navigator.of(context)
-                                                                                  .pop(),
+                                                                        (value) =>
+                                                                            {
+                                                                              Provider.of<Niveau1Service>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
                                                                             })
                                                                     .catchError(
                                                                         (onError) =>
                                                                             {
-                                                                              ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
                                                                                 const SnackBar(
                                                                                   content: Row(
                                                                                     children: [

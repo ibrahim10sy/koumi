@@ -477,7 +477,8 @@ class _ProduitElevageState extends State<ProduitElevage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           actions:
               // !isExist
               //     ?
@@ -1308,7 +1309,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1485,7 +1486,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1744,7 +1745,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1922,7 +1923,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(

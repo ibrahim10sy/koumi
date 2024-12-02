@@ -40,44 +40,6 @@ class _AccueilState extends State<Accueil> {
   CountryProvider? countryProvider;
   late BuildContext _currentContext;
 
-  void getLocationNew() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-        return Future.error('Location services are disabled.');
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          return Future.error('Location permissions are denied');
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location permissions are permanently denied.');
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      Placemark placemark = placemarks.first;
-      setState(() {
-        detectedCountryCode = placemark.isoCountryCode!;
-      });
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
   var latitude = 'Getting Latitude..'.obs;
   var longitude = 'Getting Longitude..'.obs;
   var address = 'Getting Address..'.obs;
@@ -87,8 +49,8 @@ class _AccueilState extends State<Accueil> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // verify();
-    getLocation();
+    // _checkFirstLaunch();
+    // requestUserConsent();
   }
 
   @override
@@ -97,36 +59,123 @@ class _AccueilState extends State<Accueil> {
     super.dispose();
   }
 
-  getLocation() async {
-    bool serviceEnabled;
+  // Vérifier si c'est le premier lancement
+  // Future<void> _checkFirstLaunch() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   bool isFirstLaunch = prefs.getBool('isFirstLaunchAccueil') ?? true;
 
+  //   if (isFirstLaunch) {
+  //     // Demander la permission de localisation
+  //     await requestUserConsent();
+
+  //     // Marquer que l'application a été lancée
+  //     await prefs.setBool('isFirstLaunchAccueil', false);
+  //   }
+  // }
+
+  Future<void> requestUserConsent() async {
+    // Affiche une boîte de dialogue pour demander le consentement
+    final consent = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Autorisation de localisation'),
+          content: const Text(
+              'Cette application utilise votre position pour fournir des services personnalisés. Acceptez-vous de partager votre position ?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Refusé
+              },
+              child: const Text('Refuser'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Accepté
+              },
+              child: const Text('Accepter'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (consent == true) {
+      await requestLocationPermission();
+    } else {
+      // L'utilisateur a refusé de partager sa position
+      debugPrint('L\'utilisateur a refusé de partager sa position.');
+    }
+  }
+
+  Future<void> requestLocationPermission() async {
+    bool serviceEnabled;
     LocationPermission permission;
-    // Test if location services are enabled.
+
+    // Vérifie si le service de localisation est activé
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
+      await showAlertDialog(
+        context,
+        title: 'Service de localisation désactivé',
+        content:
+            'Le service de localisation est désactivé. Veuillez l\'activer pour utiliser cette fonctionnalité.',
+        onConfirm: () async {
+          await Geolocator.openLocationSettings();
+        },
+      );
+      debugPrint('Location services are disabled.');
+      return;
     }
+
+    // Vérifie et demande les permissions nécessaires
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        await showAlertDialog(
+          context,
+          title: 'Permissions refusées',
+          content:
+              'Les permissions de localisation sont nécessaires pour utiliser cette fonctionnalité. Veuillez les activer dans les paramètres.',
+          onConfirm: () async {
+            await Geolocator.openAppSettings();
+          },
+        );
+        debugPrint('Location permissions are denied');
+        return;
       }
     }
+
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      await showAlertDialog(
+        context,
+        title: 'Permissions refusées en permanence',
+        content:
+            'Les permissions de localisation ont été refusées en permanence. Veuillez les activer dans les paramètres de l\'application.',
+        onConfirm: () async {
+          await Geolocator.openAppSettings();
+        },
+      );
+      debugPrint(
+          'Location permissions are permanently denied. Cannot request permission.');
+      return;
     }
+
+    // Si tout est en ordre, commence à écouter les positions
+    getLocationUpdates();
+  }
+
+  void getLocationUpdates() {
     streamSubscription = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
+      locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 10000,
       ),
     ).listen((Position position) {
-      latitude.value = 'accueil Latitude : ${position.latitude}';
-      longitude.value = 'accueil Longitude : ${position.longitude}';
+      debugPrint(
+          'Position actuelle : Latitude: ${position.latitude}, Longitude: ${position.longitude}');
       getAddressFromLatLang(position);
       streamSubscription?.cancel(); // Annule après la première mise à jour
     });
@@ -134,12 +183,11 @@ class _AccueilState extends State<Accueil> {
 
   Future<void> getAddressFromLatLang(Position position) async {
     final detectorPays = Provider.of<DetectorPays>(context, listen: false);
-
     try {
-      List<Placemark> placemark =
+      List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemark.isNotEmpty) {
-        Placemark place = placemark[0];
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
 
         debugPrint("Address ISO dans acceuil: $detectedC");
         address.value =
@@ -183,8 +231,41 @@ class _AccueilState extends State<Accueil> {
       }
     } catch (e) {
       debugPrint(
-          "Une erreur est survenue lors de la récupération de l'adresse : $e");
+          'Une erreur est survenue lors de la récupération de l\'adresse : $e');
     }
+  }
+
+  Future<void> showAlertDialog(
+    BuildContext context, {
+    required String title,
+    required String content,
+    required VoidCallback onConfirm,
+  }) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Ferme la boîte de dialogue
+              },
+            ),
+            TextButton(
+              child: const Text('Paramètres'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                onConfirm(); // Appelle l'action confirmée
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -209,9 +290,9 @@ class _AccueilState extends State<Accueil> {
               },
             ),
           ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
+          const SizedBox(
+            height: 10,
+          ),
           DefautAcceuil(),
           SizedBox(
             height: 20,

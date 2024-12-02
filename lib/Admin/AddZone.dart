@@ -14,8 +14,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddZone extends StatefulWidget {
-   bool? isRoute;
-   AddZone({super.key, this.isRoute});
+  bool? isRoute;
+  AddZone({super.key, this.isRoute});
 
   @override
   State<AddZone> createState() => _AddZoneState();
@@ -205,29 +205,30 @@ class _AddZoneState extends State<AddZone> {
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
-      isLoading: !(widget.isRoute ?? false)
-              ? _isLoading : false,
+      isLoading: !(widget.isRoute ?? false) ? _isLoading : false,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: !(widget.isRoute ?? false)
-              ? AppBar(
-          backgroundColor: d_colorOr,
-          centerTitle: true,
-          toolbarHeight: 75,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
-          title: const Text(
-            "Ajouter une Zone",
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                overflow: TextOverflow.ellipsis),
-          ),
-        ) : null,
+            ? AppBar(
+                backgroundColor: d_colorOr,
+                centerTitle: true,
+                toolbarHeight: 75,
+                leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                    icon: const Icon(Icons.arrow_back_sharp,
+                        size: 30, color: Colors.white)),
+                title: const Text(
+                  "Ajouter une Zone",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      overflow: TextOverflow.ellipsis),
+                ),
+              )
+            : null,
         body: SingleChildScrollView(
           child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
             Padding(
@@ -274,19 +275,19 @@ class _AddZoneState extends State<AddZone> {
                         ),
                       ),
                     ),
-                   
                     const SizedBox(height: 10),
-                   !(widget.isRoute ?? false)
-              ? SizedBox(
-                      height: 60,
-                      child: IconButton(
-                        onPressed: _showImageSourceDialog,
-                        icon: const Icon(
-                          Icons.add_a_photo_rounded,
-                          size: 60,
-                        ),
-                      ),
-                    ) : Container(),
+                    !(widget.isRoute ?? false)
+                        ? SizedBox(
+                            height: 60,
+                            child: IconButton(
+                              onPressed: _showImageSourceDialog,
+                              icon: const Icon(
+                                Icons.add_a_photo_rounded,
+                                size: 60,
+                              ),
+                            ),
+                          )
+                        : Container(),
                     const SizedBox(height: 20),
                     ElevatedButton.icon(
                         onPressed: () async {

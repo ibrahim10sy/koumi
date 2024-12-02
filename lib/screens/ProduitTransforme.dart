@@ -495,7 +495,8 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: const Text(
               "Produits transformés",
               style: TextStyle(
@@ -1320,7 +1321,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1498,7 +1499,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1758,7 +1759,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1936,7 +1937,7 @@ class _ProduitTransformeState extends State<ProduitTransforme> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(

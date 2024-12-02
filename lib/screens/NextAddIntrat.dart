@@ -154,7 +154,7 @@ class _NextAddIntratState extends State<NextAddIntrat> {
     _formeList = http.get(Uri.parse('$apiOnlineUrl/formeproduit/getAllForme/'));
   }
 
-@override
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -179,7 +179,8 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: Text(
               'Etape 2 ',
               style: const TextStyle(

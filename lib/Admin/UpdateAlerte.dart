@@ -494,7 +494,8 @@ class _UpdateAlertedState extends State<UpdateAlerted> {
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(
-                      Icons.arrow_back_ios,
+                      Icons.arrow_back_sharp,
+                      size: 30,
                       color: Colors.white,
                     )),
                 title: const Text(
@@ -509,7 +510,7 @@ class _UpdateAlertedState extends State<UpdateAlerted> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
                     Form(

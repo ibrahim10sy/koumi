@@ -80,7 +80,8 @@ class _FiliereScreenState extends State<FiliereScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Filières agricoles",
           style: TextStyle(
@@ -89,7 +90,6 @@ class _FiliereScreenState extends State<FiliereScreen> {
             fontSize: 20,
           ),
         ),
-       
       ),
       body: Container(
         child: NestedScrollView(

@@ -43,7 +43,7 @@ class _Niveau2PageState extends State<Niveau2Page> {
   List<ParametreGeneraux> paraList = [];
 
   late TextEditingController _searchController;
- bool isSearchMode = false;
+  bool isSearchMode = false;
 
   late ScrollController _scrollController;
   Future<List<Niveau2Pays>> getNiveauListe(String id) async {
@@ -54,14 +54,14 @@ class _Niveau2PageState extends State<Niveau2Page> {
   @override
   void initState() {
     super.initState();
-   _searchController = TextEditingController();
+    _searchController = TextEditingController();
     _scrollController = ScrollController();
     acteur = Provider.of<ActeurProvider>(context, listen: false).acteur!;
   }
 
   @override
   void dispose() {
-   _searchController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -78,7 +78,8 @@ class _Niveau2PageState extends State<Niveau2Page> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           "Niveau 2",
           style: const TextStyle(
@@ -113,133 +114,132 @@ class _Niveau2PageState extends State<Niveau2Page> {
       ),
       body: Container(
         child: NestedScrollView(
-         headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverToBoxAdapter(
-                    child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            // The PopupMenuButton is used here to display the menu when the button is pressed.
-                            showMenu<String>(
-                              context: context,
-                              position: RelativeRect.fromLTRB(
-                                0,
-                                50, // Adjust this value based on the desired position of the menu
-                                MediaQuery.of(context).size.width,
-                                0,
-                              ),
-                              items: [
-                                PopupMenuItem<String>(
-                                  value: 'add_store',
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      Icons.add,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                  child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // The PopupMenuButton is used here to display the menu when the button is pressed.
+                          showMenu<String>(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              0,
+                              50, // Adjust this value based on the desired position of the menu
+                              MediaQuery.of(context).size.width,
+                              0,
+                            ),
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'add_store',
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.add,
+                                    color: d_colorGreen,
+                                  ),
+                                  title: const Text(
+                                    "Ajouter un niveau 2 ",
+                                    style: TextStyle(
                                       color: d_colorGreen,
-                                    ),
-                                    title: const Text(
-                                      "Ajouter un niveau 2 ",
-                                      style: TextStyle(
-                                        color: d_colorGreen,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                              ],
-                              elevation: 8.0,
-                            ).then((value) {
-                              if (value != null) {
-                                if (value == 'add_store') {
-                                bottomAddsheet(context);
-                                }
-                              }
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: d_colorGreen,
-                              ),
-                              SizedBox(width: 8), // Space between icon and text
-                              Text(
-                                'Ajouter',
-                                style: TextStyle(
-                                  color: d_colorGreen,
-                                  fontSize: 17,
-                                ),
                               ),
                             ],
-                          ),
-                        ),
-                        TextButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              isSearchMode = !isSearchMode;
-                              _searchController.clear();
-                            });
-                          },
-                          icon: Icon(
-                            isSearchMode ? Icons.close : Icons.search,
-                            color: isSearchMode ? Colors.red : d_colorGreen,
-                          ),
-                          label: Text(
-                            isSearchMode ? 'Fermer' : 'Rechercher...',
-                            style: TextStyle(
-                                color: isSearchMode ? Colors.red : d_colorGreen,
-                                fontSize: 17),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isSearchMode)
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.blueGrey[50],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
+                            elevation: 8.0,
+                          ).then((value) {
+                            if (value != null) {
+                              if (value == 'add_store') {
+                                bottomAddsheet(context);
+                              }
+                            }
+                          });
+                        },
                         child: Row(
                           children: [
-                            Icon(Icons.search, color: Colors.blueGrey[400]),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: TextField(
-                                controller: _searchController,
-                                onChanged: (value) {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'Rechercher',
-                                  border: InputBorder.none,
-                                  hintStyle:
-                                      TextStyle(color: Colors.blueGrey[400]),
-                                ),
+                            Icon(
+                              Icons.add,
+                              color: d_colorGreen,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Ajouter',
+                              style: TextStyle(
+                                color: d_colorGreen,
+                                fontSize: 17,
                               ),
                             ),
                           ],
                         ),
                       ),
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isSearchMode = !isSearchMode;
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(
+                          isSearchMode ? Icons.close : Icons.search,
+                          color: isSearchMode ? Colors.red : d_colorGreen,
+                        ),
+                        label: Text(
+                          isSearchMode ? 'Fermer' : 'Rechercher...',
+                          style: TextStyle(
+                              color: isSearchMode ? Colors.red : d_colorGreen,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (isSearchMode)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey[50],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.blueGrey[400]),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher',
+                                border: InputBorder.none,
+                                hintStyle:
+                                    TextStyle(color: Colors.blueGrey[400]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                ])),
-              ];
-            },
-            body: SingleChildScrollView(
-              controller: _scrollController,
+                  ),
+              ])),
+            ];
+          },
+          body: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(children: [
-              
-              Consumer<Niveau2Service>(builder: (context, niveau2Service, child) {
+              Consumer<Niveau2Service>(
+                  builder: (context, niveau2Service, child) {
                 return FutureBuilder(
                     future: niveau2Service.fetchNiveau2Pays(),
                     builder: (context, snapshot) {
@@ -250,7 +250,7 @@ class _Niveau2PageState extends State<Niveau2Page> {
                           ),
                         );
                       }
-          
+
                       if (!snapshot.hasData) {
                         return Padding(
                           padding: EdgeInsets.all(10),
@@ -280,14 +280,18 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                           niveau2pays: e)));
                                         },
                                         child: Container(
-                                          width: MediaQuery.of(context).size.width *
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
                                               0.9,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.2),
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
                                                 offset: const Offset(0, 2),
                                                 blurRadius: 5,
                                                 spreadRadius: 2,
@@ -297,23 +301,28 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                           child: Column(
                                             children: [
                                               ListTile(
-                                                leading: CodePays().getFlag(
-                                                    e.niveau1Pays.pays!.nomPays!),
-                                                title: Text(e.nomN2.toUpperCase(),
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    )),
-                                                subtitle: Text(
-                                                    e.descriptionN2.trim(),
-                                                    style: const TextStyle(
-                                                      color: Colors.black87,
-                                                      fontSize: 17,
-                                                      fontWeight: FontWeight.w500,
-                                                      fontStyle: FontStyle.italic,
-                                                    )),
+                                                leading: CodePays().getFlag(e
+                                                    .niveau1Pays
+                                                    .pays!
+                                                    .nomPays!),
+                                                title:
+                                                    Text(e.nomN2.toUpperCase(),
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 18,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        )),
+                                                subtitle:
+                                                    Text(e.descriptionN2.trim(),
+                                                        style: const TextStyle(
+                                                          color: Colors.black87,
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                        )),
                                               ),
                                               Consumer<Niveau1Service>(builder:
                                                   (context, niveauSer, child) {
@@ -321,23 +330,27 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                     future: Niveau3Service()
                                                         .fetchNiveau3ByNiveau2(
                                                             e.idNiveau2Pays!),
-                                                    builder: (context, snapshot) {
+                                                    builder:
+                                                        (context, snapshot) {
                                                       if (snapshot
                                                               .connectionState ==
-                                                          ConnectionState.waiting) {
+                                                          ConnectionState
+                                                              .waiting) {
                                                         return const Center(
                                                           child:
                                                               CircularProgressIndicator(
-                                                            color: Colors.orange,
+                                                            color:
+                                                                Colors.orange,
                                                           ),
                                                         );
                                                       }
-          
+
                                                       if (!snapshot.hasData) {
                                                         return Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                  horizontal: 15),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -345,10 +358,12 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                             children: [
                                                               Text(
                                                                   "Nombres niveau 3 :",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 17,
+                                                                    fontSize:
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -357,10 +372,12 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                                             .italic,
                                                                   )),
                                                               Text("0",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 18,
+                                                                    fontSize:
+                                                                        18,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800,
@@ -372,9 +389,10 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                         niveau3List =
                                                             snapshot.data!;
                                                         return Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                  horizontal: 15),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -382,10 +400,12 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                             children: [
                                                               Text(
                                                                   "Nombres niveau 3 :",
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 17,
+                                                                    fontSize:
+                                                                        17,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -394,12 +414,15 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                                             .italic,
                                                                   )),
                                                               Text(
-                                                                  niveau3List.length
+                                                                  niveau3List
+                                                                      .length
                                                                       .toString(),
-                                                                  style: TextStyle(
+                                                                  style:
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .black87,
-                                                                    fontSize: 18,
+                                                                    fontSize:
+                                                                        18,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800,
@@ -411,9 +434,11 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                     });
                                               }),
                                               Container(
-                                                alignment: Alignment.bottomRight,
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 20),
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -423,7 +448,8 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                     PopupMenuButton<String>(
                                                       padding: EdgeInsets.zero,
                                                       itemBuilder: (context) =>
-                                                          <PopupMenuEntry<String>>[
+                                                          <PopupMenuEntry<
+                                                              String>>[
                                                         PopupMenuItem<String>(
                                                           child: ListTile(
                                                             leading: e.statutN2 ==
@@ -440,21 +466,25 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                                             .orange[
                                                                         400]),
                                                             title: Text(
-                                                              e.statutN2 == false
+                                                              e.statutN2 ==
+                                                                      false
                                                                   ? "Activer"
                                                                   : "Desactiver",
                                                               style: TextStyle(
                                                                 color: e.statutN2 ==
                                                                         false
-                                                                    ? Colors.green
+                                                                    ? Colors
+                                                                        .green
                                                                     : Colors.orange[
                                                                         400],
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
                                                             onTap: () async {
-                                                              e.statutN2 == false
+                                                              e.statutN2 ==
+                                                                      false
                                                                   ? await Niveau2Service()
                                                                       .activerNiveau2(e
                                                                           .idNiveau2Pays!)
@@ -525,9 +555,9 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                                                 ),
                                                                                 Navigator.of(context).pop(),
                                                                               });
-          
-                                                              ScaffoldMessenger.of(
-                                                                      context)
+
+                                                              ScaffoldMessenger
+                                                                      .of(context)
                                                                   .showSnackBar(
                                                                 const SnackBar(
                                                                   content: Row(
@@ -549,18 +579,22 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                           child: ListTile(
                                                             leading: const Icon(
                                                               Icons.edit,
-                                                              color: Colors.green,
+                                                              color:
+                                                                  Colors.green,
                                                             ),
                                                             title: const Text(
                                                               "Modifier",
                                                               style: TextStyle(
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
                                                             onTap: () async {
-                                                              Navigator.of(context)
+                                                              Navigator.of(
+                                                                      context)
                                                                   .pop();
                                                               bottomUpdatesheet(
                                                                   context, e);
@@ -576,38 +610,34 @@ class _Niveau2PageState extends State<Niveau2Page> {
                                                             title: const Text(
                                                               "Supprimer",
                                                               style: TextStyle(
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
                                                             onTap: () async {
                                                               await Niveau2Service()
                                                                   .deleteNiveau2Pays(e
                                                                       .idNiveau2Pays!)
-                                                                  .then((value) => {
-                                                                        Provider.of<Niveau2Service>(
-                                                                                context,
-                                                                                listen:
-                                                                                    false)
-                                                                            .applyChange(),
-                                                                        Navigator.of(
-                                                                                context)
-                                                                            .pop(),
-                                                                      })
+                                                                  .then(
+                                                                      (value) =>
+                                                                          {
+                                                                            Provider.of<Niveau2Service>(context, listen: false).applyChange(),
+                                                                            Navigator.of(context).pop(),
+                                                                          })
                                                                   .catchError(
-                                                                      (onError) => {
-                                                                            ScaffoldMessenger.of(context)
-                                                                                .showSnackBar(
+                                                                      (onError) =>
+                                                                          {
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
                                                                               const SnackBar(
-                                                                                content:
-                                                                                    Row(
+                                                                                content: Row(
                                                                                   children: [
                                                                                     Text("Impossible de supprimer"),
                                                                                   ],
                                                                                 ),
-                                                                                duration:
-                                                                                    Duration(seconds: 2),
+                                                                                duration: Duration(seconds: 2),
                                                                               ),
                                                                             )
                                                                           });

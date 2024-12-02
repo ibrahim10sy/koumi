@@ -19,7 +19,10 @@ class _AlerteScreenState extends State<AlerteScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(
+                  Icons.arrow_back_sharp,
+                  size: 30,
+                )),
             title: const Text(
               "Panier",
             )));

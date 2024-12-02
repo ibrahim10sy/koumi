@@ -59,7 +59,8 @@ class _ResetPasswordState extends State<ResetPassword> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white),
           ),
         ),
         body: SingleChildScrollView(
@@ -221,7 +222,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                             final codePin = initialPasswordController.text;
 
                             if (password != confirmer) {
-                             
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Row(

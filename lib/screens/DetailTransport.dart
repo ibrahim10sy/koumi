@@ -544,15 +544,15 @@ class _DetailTransportState extends State<DetailTransport> {
                           onPressed: () {
                             Navigator.pop(context, true);
                           },
-                          icon: const Icon(Icons.arrow_back_ios,
-                              color: Colors.white),
+                          icon: const Icon(Icons.arrow_back_sharp,
+                              size: 30, color: Colors.white),
                         )
                       : IconButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: const Icon(Icons.arrow_back_ios,
-                              color: Colors.white),
+                          icon: const Icon(Icons.arrow_back_sharp,
+                              size: 30, color: Colors.white),
                         ),
               title: _isEditing
                   ? Text(
@@ -1137,7 +1137,6 @@ class _DetailTransportState extends State<DetailTransport> {
               value,
               textAlign: TextAlign.right,
               maxLines: 2,
-             
               style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w800,

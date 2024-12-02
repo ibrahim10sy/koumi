@@ -98,7 +98,8 @@ class _Niveau3ListeState extends State<Niveau3Liste> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             widget.niveau2pays.nomN2.toUpperCase(),
             style: const TextStyle(

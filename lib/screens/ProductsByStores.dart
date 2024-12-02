@@ -335,7 +335,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             overflow: TextOverflow.ellipsis,
             widget.nom!.toUpperCase(),
@@ -862,7 +863,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                   .circular(
                                                                       8.0),
                                                           child: Container(
-                                                            height: 90,
+                                                            height: 85,
                                                             child: stockListe[index]
                                                                             .photo ==
                                                                         null ||
@@ -1134,7 +1135,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                       .circular(
                                                                           8.0),
                                                               child: Container(
-                                                                height: 90,
+                                                                height: 85,
                                                                 child: stockListe[index].photo ==
                                                                             null ||
                                                                         stockListe[index]

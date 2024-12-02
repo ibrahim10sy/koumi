@@ -59,7 +59,6 @@ class _SubscribeState extends State<Subscribe> {
                 acteur!.typeActeur!.map((e) => e.libelle!).toList();
             if (type.contains('admin') || type.contains('Admin')) {
               Get.offAll(BottomNavBarAdmin(),
-                 
                   transition: Transition.leftToRight);
             } else {
               Get.offAll(BottomNavigationPage(),
@@ -67,7 +66,8 @@ class _SubscribeState extends State<Subscribe> {
             }
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back_sharp,
+            size: 30,
             color: Colors.white,
           ),
         ),
@@ -89,7 +89,6 @@ class _SubscribeState extends State<Subscribe> {
               children: [
                 TextButton(
                   onPressed: () {
-                   
                     _getResultFromZonePage(context);
                   },
                   child: Row(
@@ -166,7 +165,7 @@ class _SubscribeState extends State<Subscribe> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: GestureDetector(
-                      onTap:(){
+                      onTap: () {
                         //  Navigator.push(
                         //         context,
                         //         MaterialPageRoute(

@@ -17,6 +17,7 @@ import 'package:koumi/screens/VehiculesActeur.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/ZoneProductionService.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
+import 'package:koumi/widgets/TermeConditionPage.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,7 +83,7 @@ class _ProfilState extends State<Profil> {
           backgroundColor: d_colorOr,
           centerTitle: true,
           toolbarHeight: 75,
-          title: const Text( 
+          title: const Text(
             "Mon Profil",
             style: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
@@ -121,8 +122,7 @@ class _ProfilState extends State<Profil> {
                             });
                             Get.to(
                               PinLoginScreen(),
-                              duration: Duration(milliseconds:
-                                      500),
+                              duration: Duration(milliseconds: 500),
                               transition: Transition.leftToRight,
                             );
                           },
@@ -648,24 +648,69 @@ class _ProfilState extends State<Profil> {
                               ),
                             )
                           : Container(),
-                      // _buildType(),
+                       Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 10),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                offset: const Offset(0, 2),
+                                blurRadius: 5,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 15),
+                                child: Row(children: [
+                                  const Icon(
+                                      Icons.align_horizontal_left_outlined,
+                                      color: Colors.black87,
+                                      size: 25),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                     TermsConditionsPage()));
+                                      },
+                                      child: Text(
+                                              "Condition et politique",
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.black87),
+                                            ))
+                                ]),
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Image.asset("assets/images/settings.png",
+                                    width: 50, height: 50),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                         child: ElevatedButton.icon(
                             onPressed: () async {
-                              final acteurProvider =
-                                  Provider.of<ActeurProvider>(context,
-                                      listen: false);
-
-                              // Déconnexion avec le provider
-                              await acteurProvider.logout();
-
-                              Get.offAll(BottomNavigationPage(),
-                                  transition: Transition.leftToRight);
-                              Provider.of<BottomNavigationService>(context,
-                                      listen: false)
-                                  .changeIndex(0);
+                              showDialogD();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
@@ -692,6 +737,67 @@ class _ProfilState extends State<Profil> {
                   ),
                 );
         }));
+  }
+
+  void showDialogD() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning_amber_sharp,
+                color: d_colorOr,
+              ),
+              SizedBox(width: 10),
+              Text("Déconnexion",
+                  maxLines: 2,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+          content: Text(
+            "Attention cette action va vous déconnectera !",
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Ferme le popup
+              },
+              child: Text(
+                "Annuler",
+                style: TextStyle(color: d_colorOr),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                final acteurProvider =
+                    Provider.of<ActeurProvider>(context, listen: false);
+
+                // Déconnexion avec le provider
+                await acteurProvider.logout();
+
+                Get.offAll(BottomNavigationPage(),
+                    transition: Transition.leftToRight);
+                Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(0);
+              },
+              child: Text(
+                "Déconnecter",
+                style: TextStyle(color: d_colorOr),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildProfile(String title, String value) {

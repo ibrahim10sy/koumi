@@ -21,10 +21,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         toolbarHeight: 75,
         leading: IconButton(
           onPressed: () {
-             Navigator.pop(context, true);
+            Navigator.pop(context, true);
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back_sharp,
+            size: 30,
             color: Colors.white,
           ),
         ),

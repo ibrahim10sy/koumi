@@ -75,7 +75,8 @@ class _NotificationPageState extends State<NotificationPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon:
+                  Icon(Icons.arrow_back_sharp, size: 30, color: Colors.white)),
           title: Text(
             "Notifications",
             style: TextStyle(
@@ -250,7 +251,6 @@ class _NotificationPageState extends State<NotificationPage> {
                                               padding: EdgeInsets.zero,
                                               itemBuilder: (context) =>
                                                   <PopupMenuEntry<String>>[
-                                                
                                                 PopupMenuItem<String>(
                                                   child: ListTile(
                                                     leading: Icon(

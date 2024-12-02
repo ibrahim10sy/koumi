@@ -583,7 +583,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   Provider.of<BottomNavigationService>(context, listen: false)
                       .changeIndex(0);
                 },
-                icon: const Icon(Icons.arrow_back_ios))),
+                icon: const Icon(
+                  Icons.arrow_back_sharp,
+                  size: 30,
+                ))),
         backgroundColor: const Color(0xFFFFFFFF),
         body: SingleChildScrollView(
           child: Container(
@@ -734,8 +737,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               print("ho");
 
                               Get.to(ForgetPassScreen(),
-                                  duration: Duration(milliseconds:
-                                      500),
+                                  duration: Duration(milliseconds: 500),
                                   transition: Transition.leftToRight);
                             },
                             child: const Text(
@@ -802,8 +804,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               GestureDetector(
                                 onTap: () {
                                   Get.to(RegisterScreen(),
-                                      duration: Duration(milliseconds:
-                                      500),
+                                      duration: Duration(milliseconds: 500),
                                       transition: Transition.leftToRight);
                                 },
                                 child: const Text(

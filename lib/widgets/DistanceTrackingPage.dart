@@ -115,64 +115,59 @@ class _DistanceTrackerPageState extends State<DistanceTrackerPage> {
         .showSnackBar(SnackBar(content: Text("Suivi Arrêté")));
   }
 
-  
-double _calculateLength(List<Position> positions) {
-  if (positions.isEmpty) return 0.0;
+  double _calculateLength(List<Position> positions) {
+    if (positions.isEmpty) return 0.0;
 
-  // Trouver la latitude maximale (nord) et minimale (sud)
-  double maxLatitude = positions.map((p) => p.latitude).reduce(max);
-  double minLatitude = positions.map((p) => p.latitude).reduce(min);
+    // Trouver la latitude maximale (nord) et minimale (sud)
+    double maxLatitude = positions.map((p) => p.latitude).reduce(max);
+    double minLatitude = positions.map((p) => p.latitude).reduce(min);
 
-  // Calculer la distance entre les points les plus au nord et au sud
-  double length = Geolocator.distanceBetween(
-      maxLatitude,
-      positions.first.longitude, // Longitude d'un point de référence
-      minLatitude,
-      positions.first.longitude);
+    // Calculer la distance entre les points les plus au nord et au sud
+    double length = Geolocator.distanceBetween(
+        maxLatitude,
+        positions.first.longitude, // Longitude d'un point de référence
+        minLatitude,
+        positions.first.longitude);
 
-  return length;
-}
-
-double _calculateWidth(List<Position> positions) {
-  if (positions.isEmpty) return 0.0;
-
-  // Trouver la longitude maximale (est) et minimale (ouest)
-  double maxLongitude = positions.map((p) => p.longitude).reduce(max);
-  double minLongitude = positions.map((p) => p.longitude).reduce(min);
-
-  // Calculer la distance entre les points les plus à l'est et à l'ouest
-  double width = Geolocator.distanceBetween(
-      positions.first.latitude,
-      maxLongitude,
-      positions.first.latitude,
-      minLongitude);
-
-  return width;
-}
-
-double _calculateArea(List<Position> positions) {
-  if (positions.length < 3) return 0.0; // Pas assez de points pour une zone
-
-  const double radiusOfEarth = 6371000; // Rayon de la Terre en mètres.
-  double totalArea = 0.0;
-
-  // Convertir les latitudes et longitudes en radians
-  List<double> latitudes =
-      positions.map((p) => p.latitude * (pi / 180)).toList();
-  List<double> longitudes =
-      positions.map((p) => p.longitude * (pi / 180)).toList();
-
-  // Calcul de l'aire en utilisant la formule de l'aire sphérique de Gauss
-  for (int i = 0; i < latitudes.length; i++) {
-    int j = (i + 1) % latitudes.length;
-    totalArea += (longitudes[j] - longitudes[i]) *
-        (2 + sin(latitudes[i]) + sin(latitudes[j]));
+    return length;
   }
 
-  totalArea = (totalArea.abs() * radiusOfEarth * radiusOfEarth) / 2.0;
-  return totalArea;
-}
+  double _calculateWidth(List<Position> positions) {
+    if (positions.isEmpty) return 0.0;
 
+    // Trouver la longitude maximale (est) et minimale (ouest)
+    double maxLongitude = positions.map((p) => p.longitude).reduce(max);
+    double minLongitude = positions.map((p) => p.longitude).reduce(min);
+
+    // Calculer la distance entre les points les plus à l'est et à l'ouest
+    double width = Geolocator.distanceBetween(positions.first.latitude,
+        maxLongitude, positions.first.latitude, minLongitude);
+
+    return width;
+  }
+
+  double _calculateArea(List<Position> positions) {
+    if (positions.length < 3) return 0.0; // Pas assez de points pour une zone
+
+    const double radiusOfEarth = 6371000; // Rayon de la Terre en mètres.
+    double totalArea = 0.0;
+
+    // Convertir les latitudes et longitudes en radians
+    List<double> latitudes =
+        positions.map((p) => p.latitude * (pi / 180)).toList();
+    List<double> longitudes =
+        positions.map((p) => p.longitude * (pi / 180)).toList();
+
+    // Calcul de l'aire en utilisant la formule de l'aire sphérique de Gauss
+    for (int i = 0; i < latitudes.length; i++) {
+      int j = (i + 1) % latitudes.length;
+      totalArea += (longitudes[j] - longitudes[i]) *
+          (2 + sin(latitudes[i]) + sin(latitudes[j]));
+    }
+
+    totalArea = (totalArea.abs() * radiusOfEarth * radiusOfEarth) / 2.0;
+    return totalArea;
+  }
 
   // double _calculateLength(List<Position> positions) {
   //   if (positions.isEmpty) return 0.0;
@@ -273,7 +268,8 @@ double _calculateArea(List<Position> positions) {
             Navigator.pop(context, true);
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back_sharp,
+            size: 30,
             color: Colors.white,
           ),
         ),

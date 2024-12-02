@@ -25,22 +25,22 @@ class _TypeMaterielPageState extends State<TypeMaterielPage> {
   List<TypeMateriel> typeListe = [];
   late List<Materiels> materielList = [];
   final formkey = GlobalKey<FormState>();
-bool isSearchMode = false;
+  bool isSearchMode = false;
   late ScrollController _scrollController;
   TextEditingController nomController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
   @override
   void initState() {
-   _searchController = TextEditingController();
-      _scrollController = ScrollController();
+    _searchController = TextEditingController();
+    _scrollController = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
     _searchController = TextEditingController();
-      _scrollController = ScrollController();
+    _scrollController = ScrollController();
     super.dispose();
   }
 
@@ -48,15 +48,16 @@ bool isSearchMode = false;
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Type Matériel',
             style: const TextStyle(
@@ -93,7 +94,7 @@ bool isSearchMode = false;
           ]),
       body: Container(
         child: NestedScrollView(
-         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverToBoxAdapter(
                   child: Column(children: [
@@ -218,20 +219,20 @@ bool isSearchMode = false;
             controller: _scrollController,
             child: Column(
               children: [
-                
                 Consumer<TypeMaterielService>(
                     builder: (context, typeService, child) {
                   return FutureBuilder(
                       future: typeService.fetchTypeMateriel(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(
                               color: Colors.orange,
                             ),
                           );
                         }
-          
+
                         if (!snapshot.hasData) {
                           return const Padding(
                             padding: EdgeInsets.all(10),
@@ -255,21 +256,21 @@ bool isSearchMode = false;
                                           onTap: () {
                                             Get.to(ListeMaterielByType(
                                               typeMateriel: e,
-                                              
                                             ));
                                           },
                                           child: Container(
-                                            width:
-                                                MediaQuery.of(context).size.width *
-                                                    0.9,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color:
-                                                      Colors.grey.withOpacity(0.2),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
                                                   offset: const Offset(0, 2),
                                                   blurRadius: 5,
                                                   spreadRadius: 2,
@@ -284,15 +285,16 @@ bool isSearchMode = false;
                                                       width: 80,
                                                       height: 80,
                                                     ),
-                                                    title:
-                                                        Text(e.nom!.toUpperCase(),
-                                                            style: const TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 20,
-                                                              overflow: TextOverflow
-                                                                  .ellipsis,
-                                                            )),
-                                                    subtitle: Text(e.description!,
+                                                    title: Text(
+                                                        e.nom!.toUpperCase(),
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 20,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        )),
+                                                    subtitle: Text(
+                                                        e.description!,
                                                         style: const TextStyle(
                                                           color: Colors.black87,
                                                           fontSize: 17,
@@ -301,13 +303,15 @@ bool isSearchMode = false;
                                                           fontStyle:
                                                               FontStyle.italic,
                                                         ))),
-                                                Consumer<MaterielService>(builder:
-                                                    (context, typeService, child) {
+                                                Consumer<MaterielService>(
+                                                    builder: (context,
+                                                        typeService, child) {
                                                   return FutureBuilder(
                                                       future: typeService
-                                                          .fetchMaterielByType(
-                                                              e.idTypeMateriel!),
-                                                      builder: (context, snapshot) {
+                                                          .fetchMaterielByType(e
+                                                              .idTypeMateriel!),
+                                                      builder:
+                                                          (context, snapshot) {
                                                         if (snapshot
                                                                 .connectionState ==
                                                             ConnectionState
@@ -315,16 +319,18 @@ bool isSearchMode = false;
                                                           return const Center(
                                                             child:
                                                                 CircularProgressIndicator(
-                                                              color: Colors.orange,
+                                                              color:
+                                                                  Colors.orange,
                                                             ),
                                                           );
                                                         }
-          
+
                                                         if (!snapshot.hasData) {
                                                           return Padding(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                    horizontal: 15),
+                                                                    horizontal:
+                                                                        15),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -336,7 +342,8 @@ bool isSearchMode = false;
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 17,
+                                                                      fontSize:
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -349,7 +356,8 @@ bool isSearchMode = false;
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 18,
+                                                                      fontSize:
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w800,
@@ -363,7 +371,8 @@ bool isSearchMode = false;
                                                           return Padding(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                    horizontal: 15),
+                                                                    horizontal:
+                                                                        15),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -375,7 +384,8 @@ bool isSearchMode = false;
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 17,
+                                                                      fontSize:
+                                                                          17,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -391,7 +401,8 @@ bool isSearchMode = false;
                                                                         TextStyle(
                                                                       color: Colors
                                                                           .black87,
-                                                                      fontSize: 18,
+                                                                      fontSize:
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w800,
@@ -403,10 +414,11 @@ bool isSearchMode = false;
                                                       });
                                                 }),
                                                 Container(
-                                                  alignment: Alignment.bottomRight,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 10),
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -414,10 +426,12 @@ bool isSearchMode = false;
                                                     children: [
                                                       _buildEtat(e.statutType!),
                                                       PopupMenuButton<String>(
-                                                        padding: EdgeInsets.zero,
-                                                        itemBuilder: (context) =>
-                                                            <PopupMenuEntry<
-                                                                String>>[
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        itemBuilder:
+                                                            (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
                                                               leading:
@@ -426,25 +440,26 @@ bool isSearchMode = false;
                                                                       ? Icon(
                                                                           Icons
                                                                               .check,
-                                                                          color: Colors
-                                                                              .green,
+                                                                          color:
+                                                                              Colors.green,
                                                                         )
                                                                       : Icon(
                                                                           Icons
                                                                               .disabled_visible,
-                                                                          color: Colors
-                                                                                  .orange[
-                                                                              400],
+                                                                          color:
+                                                                              Colors.orange[400],
                                                                         ),
                                                               title: Text(
                                                                 e.statutType ==
                                                                         false
                                                                     ? "Activer"
                                                                     : "Desactiver",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color: e.statutType ==
                                                                           false
-                                                                      ? Colors.green
+                                                                      ? Colors
+                                                                          .green
                                                                       : Colors.orange[
                                                                           400],
                                                                   fontWeight:
@@ -458,22 +473,21 @@ bool isSearchMode = false;
                                                                     ? await TypeMaterielService()
                                                                         .activerType(e
                                                                             .idTypeMateriel!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<TypeMaterielService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Activer avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                })
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<TypeMaterielService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Activer avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            })
                                                                         .catchError(
                                                                             (onError) =>
                                                                                 {
@@ -492,42 +506,40 @@ bool isSearchMode = false;
                                                                     : await TypeMaterielService()
                                                                         .desactiverType(e
                                                                             .idTypeMateriel!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<TypeMaterielService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: const Duration(seconds: 5),
-                                                                                    ),
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<TypeMaterielService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Une erreur s'est produit"),
+                                                                                    ],
                                                                                   ),
-                                                                                  Navigator.of(context).pop(),
-                                                                                });
-          
-                                                                ScaffoldMessenger
-                                                                        .of(context)
+                                                                                  duration: const Duration(seconds: 5),
+                                                                                ),
+                                                                              ),
+                                                                              Navigator.of(context).pop(),
+                                                                            });
+
+                                                                ScaffoldMessenger.of(
+                                                                        context)
                                                                     .showSnackBar(
                                                                   const SnackBar(
-                                                                    content: Row(
+                                                                    content:
+                                                                        Row(
                                                                       children: [
                                                                         Text(
                                                                             " Desactiver avec succèss "),
                                                                       ],
                                                                     ),
-                                                                    duration:
-                                                                        Duration(
-                                                                            seconds:
-                                                                                2),
+                                                                    duration: Duration(
+                                                                        seconds:
+                                                                            2),
                                                                   ),
                                                                 );
                                                               },
@@ -535,15 +547,18 @@ bool isSearchMode = false;
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.edit,
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                               title: const Text(
                                                                 "Modifier",
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors.green,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .green,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -560,14 +575,18 @@ bool isSearchMode = false;
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.delete,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               title: const Text(
                                                                 "Supprimer",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -578,19 +597,16 @@ bool isSearchMode = false;
                                                                     .deleteType(e
                                                                         .idTypeMateriel!)
                                                                     .then(
-                                                                        (value) => {
-                                                                              Provider.of<TypeMaterielService>(context, listen: false)
-                                                                                  .applyChange(),
-                                                                              Navigator.of(context)
-                                                                                  .pop(),
+                                                                        (value) =>
+                                                                            {
+                                                                              Provider.of<TypeMaterielService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
                                                                             })
                                                                     .catchError(
                                                                         (onError) =>
                                                                             {
-                                                                              print(
-                                                                                  onError.toString()),
-                                                                              ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(
+                                                                              print(onError.toString()),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
                                                                                 const SnackBar(
                                                                                   content: Row(
                                                                                     children: [

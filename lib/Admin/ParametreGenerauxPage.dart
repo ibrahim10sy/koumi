@@ -21,7 +21,6 @@ class ParametreGenerauxPage extends StatefulWidget {
   State<ParametreGenerauxPage> createState() => _ParametreGenerauxPageState();
 }
 
-
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
 class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
@@ -158,7 +157,8 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back_sharp,
+                      size: 30, color: Colors.white),
                 ),
           title: typeActeurData
                   .map((e) => e.libelle!.toLowerCase())

@@ -482,7 +482,8 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(
-                  Icons.arrow_back_ios,
+                  Icons.arrow_back_sharp,
+                  size: 30,
                   color: Colors.white,
                 )),
             title: const Text(
@@ -1262,7 +1263,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1440,7 +1441,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            90,
+                                                                            85,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1695,7 +1696,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsLocaux[index].photo == null ||
                                                                               produitsLocaux[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1876,7 +1877,7 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsEtrangers[index].photo == null ||
                                                                               produitsEtrangers[index].photo!.isEmpty
                                                                           ? Image.asset(

@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:koumi/constants.dart';
 
-
 class ActeurList extends StatefulWidget {
   final TypeActeur typeActeur;
   const ActeurList({super.key, required this.typeActeur});
@@ -60,7 +59,8 @@ class _ActeurListState extends State<ActeurList> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           typeActeurs.libelle!.toUpperCase(),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -207,25 +207,26 @@ class _ActeurListState extends State<ActeurList> {
                                             children: [
                                               ListTile(
                                                   leading: ClipOval(
-                                          child: CachedNetworkImage(
-                                            width: 50,
-                                            height: 50,
-                                            imageUrl:
-                                                "$apiOnlineUrl/acteur/${e.idActeur}/image",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    'assets/images/profil.jpg'),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
-                                              'assets/images/profil.jpg',
-                                              fit: BoxFit.cover,
-                                              width: 50,
-                                              height: 50,
-                                            ),
-                                          ),
-                                        ),
+                                                    child: CachedNetworkImage(
+                                                      width: 50,
+                                                      height: 50,
+                                                      imageUrl:
+                                                          "$apiOnlineUrl/acteur/${e.idActeur}/image",
+                                                      fit: BoxFit.cover,
+                                                      placeholder: (context,
+                                                              url) =>
+                                                          Image.asset(
+                                                              'assets/images/profil.jpg'),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Image.asset(
+                                                        'assets/images/profil.jpg',
+                                                        fit: BoxFit.cover,
+                                                        width: 50,
+                                                        height: 50,
+                                                      ),
+                                                    ),
+                                                  ),
                                                   title: Text(
                                                       e.nomActeur!
                                                           .toUpperCase(),

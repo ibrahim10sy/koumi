@@ -430,7 +430,8 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(
-                  Icons.arrow_back_ios,
+                  Icons.arrow_back_sharp,
+                  size: 30,
                   color: Colors.white,
                 )),
             title: const Text(
@@ -1180,7 +1181,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1355,7 +1356,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1619,7 +1620,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1794,7 +1795,7 @@ class _EngraisAndApportState extends State<EngraisAndApport> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          90,
+                                                                          85,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(

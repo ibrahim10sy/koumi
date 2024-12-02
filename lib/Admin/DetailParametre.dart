@@ -63,7 +63,8 @@ class _DetailParametreState extends State<DetailParametre> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: d_colorGreen),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: d_colorGreen),
               ),
         title: Text(
           'Détails paramètre',

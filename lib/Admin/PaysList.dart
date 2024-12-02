@@ -45,18 +45,20 @@ class _PaysListState extends State<PaysList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: Text(
           region.nomSousRegion.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         // actions: [
         //   IconButton(
@@ -182,7 +184,6 @@ class _PaysListState extends State<PaysList> {
                                                       fontStyle:
                                                           FontStyle.italic,
                                                     ))),
-                                           
                                             Container(
                                               alignment: Alignment.bottomRight,
                                               padding:
@@ -343,7 +344,7 @@ class _PaysListState extends State<PaysList> {
                                                                     (value) => {
                                                                           Provider.of<PaysService>(context, listen: false)
                                                                               .applyChange(),
-                                                                              setState(
+                                                                          setState(
                                                                               () {
                                                                             _liste =
                                                                                 getPaysListe(region.idSousRegion!);
@@ -399,6 +400,4 @@ class _PaysListState extends State<PaysList> {
       ),
     );
   }
-
- 
 }

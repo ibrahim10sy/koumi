@@ -40,18 +40,25 @@ class _DetailCommandeScreenState extends State<DetailCommandeScreen> {
     return LoadingOverlay(
       isLoading: isLoading,
       child: Scaffold(
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
-            backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
-          title: Text("Detail Commande",style: TextStyle(color: Colors.white,fontSize: 18,overflow: TextOverflow.ellipsis),),
+          backgroundColor: d_colorOr,
+          centerTitle: true,
+          toolbarHeight: 75,
+          title: Text(
+            "Detail Commande",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                overflow: TextOverflow.ellipsis),
+          ),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
               },
               icon: const Icon(
-                Icons.arrow_back_ios,
+                Icons.arrow_back_sharp,
+                size: 30,
                 color: Colors.white,
               )),
         ),

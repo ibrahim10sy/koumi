@@ -16,7 +16,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-
 class AddMagasinScreen extends StatefulWidget {
   bool? isRoute;
   bool? isEditable;
@@ -28,18 +27,18 @@ class AddMagasinScreen extends StatefulWidget {
   // File? photo;
   // late Niveau1Pays? niveau1Pays;
 
-  AddMagasinScreen(
-      {super.key,
-      this.isRoute,
-      this.isEditable,
-      this.magasin,
-      // this.idMagasin,
-      // this.nomMagasin,
-      // this.contactMagasin,
-      // this.localiteMagasin,
-      // this.photo,
-      // this.niveau1Pays
-      });
+  AddMagasinScreen({
+    super.key,
+    this.isRoute,
+    this.isEditable,
+    this.magasin,
+    // this.idMagasin,
+    // this.nomMagasin,
+    // this.contactMagasin,
+    // this.localiteMagasin,
+    // this.photo,
+    // this.niveau1Pays
+  });
 
   @override
   State<AddMagasinScreen> createState() => _AddMagasinScreenState();
@@ -381,7 +380,7 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
       nomMagasinController.text = widget.magasin!.nomMagasin!;
       contactMagasinController.text = widget.magasin!.contactMagasin!;
       localiteMagasinController.text = widget.magasin!.localiteMagasin!;
-      localiteController.text =widget.magasin!.niveau1Pays!.nomN1!;
+      localiteController.text = widget.magasin!.niveau1Pays!.nomN1!;
       // photos = widget.photo;
       // print("image : ${widget.photo}");
       niveau1Pays = widget.magasin!.niveau1Pays!;
@@ -572,8 +571,8 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                     onPressed: () {
                       Navigator.pop(context, true);
                     },
-                    icon:
-                        const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                    icon: const Icon(Icons.arrow_back_sharp,
+                        size: 30, color: Colors.white)),
                 title: Text(
                   widget.isEditable! == false
                       ? "Ajouter magasin"
@@ -733,60 +732,61 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                       ),
                       Text("Choisir une photo"),
                       SizedBox(
-                    child: photos != null
-                        ? GestureDetector(
-                            onTap: _showImageSourceDialog,
-                            child: Image.file(
-                              photos!,
-                              fit: BoxFit.fitWidth,
-                              height: 150,
-                              width: 200,
-                            ),
-                          )
-                        : widget.isEditable == false
-                            ?
-                            // :  widget.stock!.photo == null || widget.stock!.photo!.isEmpty ?
-                            SizedBox(
-                                child: IconButton(
-                                  onPressed: _showImageSourceDialog,
-                                  icon: const Icon(
-                                    Icons.add_a_photo_rounded,
-                                    size: 60,
-                                  ),
+                        child: photos != null
+                            ? GestureDetector(
+                                onTap: _showImageSourceDialog,
+                                child: Image.file(
+                                  photos!,
+                                  fit: BoxFit.fitWidth,
+                                  height: 150,
+                                  width: 200,
                                 ),
                               )
-                            : Center(
-                                child: widget.magasin!.photo != null &&
-                                        !widget.magasin!.photo!.isEmpty
-                                    ? GestureDetector(
-                                        onTap: _showImageSourceDialog,
-                                        child: CachedNetworkImage(
-                                          height: 120,
-                                          width: 150,
-                                          imageUrl:
-                                              "https://koumi.ml/api-koumi/Magasin/${widget.magasin!.idMagasin}/image",
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                          errorWidget: (context, url, error) =>
-                                              Image.asset(
-                                            'assets/images/default_image.png',
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )
-                                    : SizedBox(
-                                        child: IconButton(
-                                          onPressed: _showImageSourceDialog,
-                                          icon: const Icon(
-                                            Icons.add_a_photo_rounded,
-                                            size: 60,
-                                          ),
-                                        ),
-                                      )),
-                  ),
+                            : widget.isEditable == false
+                                ?
+                                // :  widget.stock!.photo == null || widget.stock!.photo!.isEmpty ?
+                                SizedBox(
+                                    child: IconButton(
+                                      onPressed: _showImageSourceDialog,
+                                      icon: const Icon(
+                                        Icons.add_a_photo_rounded,
+                                        size: 60,
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: widget.magasin!.photo != null &&
+                                            !widget.magasin!.photo!.isEmpty
+                                        ? GestureDetector(
+                                            onTap: _showImageSourceDialog,
+                                            child: CachedNetworkImage(
+                                              height: 120,
+                                              width: 150,
+                                              imageUrl:
+                                                  "https://koumi.ml/api-koumi/Magasin/${widget.magasin!.idMagasin}/image",
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  const Center(
+                                                      child:
+                                                          CircularProgressIndicator()),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Image.asset(
+                                                'assets/images/default_image.png',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            child: IconButton(
+                                              onPressed: _showImageSourceDialog,
+                                              icon: const Icon(
+                                                Icons.add_a_photo_rounded,
+                                                size: 60,
+                                              ),
+                                            ),
+                                          )),
+                      ),
 
                       const SizedBox(
                         height: 10,

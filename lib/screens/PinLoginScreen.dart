@@ -320,7 +320,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           ),
         );
       } else if (errorMessage.contains(' is not a subtype of type')) {
-      
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
@@ -389,20 +388,21 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         appBar: AppBar(
-            centerTitle: true,
-            toolbarHeight: 75,
-            leading: IconButton(
-              onPressed: () {
-                Get.offAll(BottomNavigationPage(),
-                    transition: Transition.leftToRight);
-                Provider.of<BottomNavigationService>(context, listen: false)
-                    .changeIndex(0);
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-              ),
+          centerTitle: true,
+          toolbarHeight: 75,
+          leading: IconButton(
+            onPressed: () {
+              Get.offAll(BottomNavigationPage(),
+                  transition: Transition.leftToRight);
+              Provider.of<BottomNavigationService>(context, listen: false)
+                  .changeIndex(0);
+            },
+            icon: const Icon(
+              Icons.arrow_back_sharp,
+              size: 30,
             ),
-            ),
+          ),
+        ),
         body: SafeArea(
           minimum: EdgeInsets.only(top: 10),
           child: ListView(
@@ -519,8 +519,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               TextButton(
                 onPressed: () {
                   Get.to(ForgetPassScreen(),
-                      duration: Duration(milliseconds:
-                                      500),
+                      duration: Duration(milliseconds: 500),
                       transition: Transition.leftToRight);
                 },
                 child: const Text(
@@ -551,8 +550,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                       GestureDetector(
                         onTap: () {
                           Get.to(RegisterScreen(),
-                              duration: Duration(milliseconds:
-                                      500),
+                              duration: Duration(milliseconds: 500),
                               transition: Transition.leftToRight);
                         },
                         child: const Text(

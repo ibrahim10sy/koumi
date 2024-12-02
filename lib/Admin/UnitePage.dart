@@ -24,7 +24,7 @@ class _UnitePageState extends State<UnitePage> {
   TextEditingController sigleController = TextEditingController();
   TextEditingController descController = TextEditingController();
   late TextEditingController _searchController;
-bool isSearchMode = false;
+  bool isSearchMode = false;
   late ScrollController _scrollController;
 
   @override
@@ -47,15 +47,16 @@ bool isSearchMode = false;
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-       appBar: AppBar(
-             backgroundColor: d_colorOr,
-            centerTitle: true,
-            toolbarHeight: 75,
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Unité de mesure",
           style: TextStyle(
@@ -218,20 +219,20 @@ bool isSearchMode = false;
             controller: _scrollController,
             child: Column(
               children: [
-               
                 Consumer<UniteService>(
                   builder: (context, typeService, child) {
                     return FutureBuilder(
                         future: typeService.fetchUnite(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Center(
                               child: CircularProgressIndicator(
                                 color: Colors.orange,
                               ),
                             );
                           }
-          
+
                           if (!snapshot.hasData) {
                             return const Padding(
                               padding: EdgeInsets.all(10),
@@ -240,7 +241,8 @@ bool isSearchMode = false;
                           } else {
                             uniteList = snapshot.data!;
                             String searchText = "";
-                            List<Unite> filtereSearch = uniteList.where((search) {
+                            List<Unite> filtereSearch =
+                                uniteList.where((search) {
                               String libelle = search.sigleUnite!.toLowerCase();
                               searchText = _searchController.text.toLowerCase();
                               return libelle.contains(searchText);
@@ -251,17 +253,18 @@ bool isSearchMode = false;
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 10, horizontal: 15),
                                           child: Container(
-                                            width:
-                                                MediaQuery.of(context).size.width *
-                                                    0.9,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(15),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color:
-                                                      Colors.grey.withOpacity(0.2),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
                                                   offset: const Offset(0, 2),
                                                   blurRadius: 5,
                                                   spreadRadius: 2,
@@ -272,39 +275,44 @@ bool isSearchMode = false;
                                               children: [
                                                 ListTile(
                                                     title: Text(
-                                                        e.sigleUnite!.toUpperCase(),
+                                                        e.sigleUnite!
+                                                            .toUpperCase(),
                                                         style: const TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 20,
-                                                          overflow:
-                                                              TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         )),
-                                                    subtitle:
-                                                        Text(e.description!.trim(),
-                                                            style: const TextStyle(
-                                                              color: Colors.black87,
-                                                              fontSize: 17,
-                                                              fontWeight:
-                                                                  FontWeight.w500,
-                                                              fontStyle:
-                                                                  FontStyle.italic,
-                                                            ))),
+                                                    subtitle: Text(
+                                                        e.description!.trim(),
+                                                        style: const TextStyle(
+                                                          color: Colors.black87,
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                        ))),
                                                 Container(
-                                                  alignment: Alignment.bottomRight,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 10),
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      _buildEtat(e.statutUnite!),
+                                                      _buildEtat(
+                                                          e.statutUnite!),
                                                       PopupMenuButton<String>(
-                                                        padding: EdgeInsets.zero,
-                                                        itemBuilder: (context) =>
-                                                            <PopupMenuEntry<
-                                                                String>>[
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        itemBuilder:
+                                                            (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
                                                               leading:
@@ -313,25 +321,26 @@ bool isSearchMode = false;
                                                                       ? Icon(
                                                                           Icons
                                                                               .check,
-                                                                          color: Colors
-                                                                              .green,
+                                                                          color:
+                                                                              Colors.green,
                                                                         )
                                                                       : Icon(
                                                                           Icons
                                                                               .disabled_visible,
-                                                                          color: Colors
-                                                                                  .orange[
-                                                                              400],
+                                                                          color:
+                                                                              Colors.orange[400],
                                                                         ),
                                                               title: Text(
                                                                 e.statutUnite ==
                                                                         false
                                                                     ? "Activer"
                                                                     : "Desactiver",
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color: e.statutUnite ==
                                                                           false
-                                                                      ? Colors.green
+                                                                      ? Colors
+                                                                          .green
                                                                       : Colors.orange[
                                                                           400],
                                                                   fontWeight:
@@ -345,22 +354,21 @@ bool isSearchMode = false;
                                                                     ? await UniteService()
                                                                         .activerUnite(e
                                                                             .idUnite!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<UniteService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Activer avec succèss "),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                })
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<UniteService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Activer avec succèss "),
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            })
                                                                         .catchError(
                                                                             (onError) =>
                                                                                 {
@@ -379,42 +387,40 @@ bool isSearchMode = false;
                                                                     : await UniteService()
                                                                         .desactiverUnite(e
                                                                             .idUnite!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<UniteService>(context, listen: false).applyChange(),
-                                                                                  Navigator.of(context).pop(),
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text("Une erreur s'est produit : $onError"),
-                                                                                        ],
-                                                                                      ),
-                                                                                      duration: const Duration(seconds: 5),
-                                                                                    ),
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<UniteService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text("Une erreur s'est produit : $onError"),
+                                                                                    ],
                                                                                   ),
-                                                                                  Navigator.of(context).pop(),
-                                                                                });
-          
-                                                                ScaffoldMessenger
-                                                                        .of(context)
+                                                                                  duration: const Duration(seconds: 5),
+                                                                                ),
+                                                                              ),
+                                                                              Navigator.of(context).pop(),
+                                                                            });
+
+                                                                ScaffoldMessenger.of(
+                                                                        context)
                                                                     .showSnackBar(
                                                                   const SnackBar(
-                                                                    content: Row(
+                                                                    content:
+                                                                        Row(
                                                                       children: [
                                                                         Text(
                                                                             " Desactiver avec succèss "),
                                                                       ],
                                                                     ),
-                                                                    duration:
-                                                                        Duration(
-                                                                            seconds:
-                                                                                2),
+                                                                    duration: Duration(
+                                                                        seconds:
+                                                                            2),
                                                                   ),
                                                                 );
                                                               },
@@ -422,15 +428,18 @@ bool isSearchMode = false;
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.edit,
-                                                                color: Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                               title: const Text(
                                                                 "Modifier",
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors.green,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .green,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -447,14 +456,18 @@ bool isSearchMode = false;
                                                           ),
                                                           PopupMenuItem<String>(
                                                             child: ListTile(
-                                                              leading: const Icon(
+                                                              leading:
+                                                                  const Icon(
                                                                 Icons.delete,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               title: const Text(
                                                                 "Supprimer",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .red,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -462,20 +475,18 @@ bool isSearchMode = false;
                                                               ),
                                                               onTap: () async {
                                                                 await UniteService()
-                                                                    .deleteUnite(
-                                                                        e.idUnite!)
+                                                                    .deleteUnite(e
+                                                                        .idUnite!)
                                                                     .then(
-                                                                        (value) => {
-                                                                              Provider.of<UniteService>(context, listen: false)
-                                                                                  .applyChange(),
-                                                                              Navigator.of(context)
-                                                                                  .pop(),
+                                                                        (value) =>
+                                                                            {
+                                                                              Provider.of<UniteService>(context, listen: false).applyChange(),
+                                                                              Navigator.of(context).pop(),
                                                                             })
                                                                     .catchError(
                                                                         (onError) =>
                                                                             {
-                                                                              ScaffoldMessenger.of(context)
-                                                                                  .showSnackBar(
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
                                                                                 const SnackBar(
                                                                                   content: Row(
                                                                                     children: [

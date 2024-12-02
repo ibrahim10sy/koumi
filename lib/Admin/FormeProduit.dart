@@ -19,7 +19,7 @@ class _FormeProduitState extends State<FormeProduit> {
   final formkey = GlobalKey<FormState>();
   late TextEditingController _searchController;
   late List<Forme> formeList = [];
-bool isSearchMode = false;
+  bool isSearchMode = false;
   late ScrollController _scrollController;
   late Future _liste;
 
@@ -31,7 +31,7 @@ bool isSearchMode = false;
   @override
   void initState() {
     _searchController = TextEditingController();
-      _scrollController = ScrollController();
+    _scrollController = ScrollController();
     _liste = getListe();
     super.initState();
   }
@@ -55,7 +55,8 @@ bool isSearchMode = false;
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Forme produit",
           style: TextStyle(
@@ -227,20 +228,20 @@ bool isSearchMode = false;
             controller: _scrollController,
             child: Column(
               children: [
-               
                 Consumer<FormeService>(
                   builder: (context, formeService, child) {
                     return FutureBuilder(
                         future: _liste,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const Center(
                               child: CircularProgressIndicator(
                                 color: Colors.orange,
                               ),
                             );
                           }
-          
+
                           if (!snapshot.hasData) {
                             return Padding(
                               padding: EdgeInsets.all(10),
@@ -256,25 +257,29 @@ bool isSearchMode = false;
                             String searchText = "";
                             List<Forme> filteredFiliereSearch =
                                 formeList.where((fil) {
-                              String nomfiliere = fil.libelleForme!.toLowerCase();
+                              String nomfiliere =
+                                  fil.libelleForme!.toLowerCase();
                               searchText = _searchController.text.toLowerCase();
                               return nomfiliere.contains(searchText);
                             }).toList();
                             return filteredFiliereSearch.isEmpty
                                 ? Padding(
                                     padding: EdgeInsets.all(10),
-                                    child: Text('Aucune forme de produit trouvé ',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 17,
-                                          overflow: TextOverflow.ellipsis,
-                                        )),
+                                    child:
+                                        Text('Aucune forme de produit trouvé ',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 17,
+                                              overflow: TextOverflow.ellipsis,
+                                            )),
                                   )
                                 : Column(
                                     children: filteredFiliereSearch
                                         .map((e) => Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 15),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 15),
                                               child: Container(
                                                 width: MediaQuery.of(context)
                                                         .size
@@ -288,7 +293,8 @@ bool isSearchMode = false;
                                                     BoxShadow(
                                                       color: Colors.grey
                                                           .withOpacity(0.2),
-                                                      offset: const Offset(0, 2),
+                                                      offset:
+                                                          const Offset(0, 2),
                                                       blurRadius: 5,
                                                       spreadRadius: 2,
                                                     ),
@@ -297,27 +303,35 @@ bool isSearchMode = false;
                                                 child: Column(
                                                   children: [
                                                     ListTile(
-                                                        leading: _getIconForForme(
-                                                            e.libelleForme!),
+                                                        leading:
+                                                            _getIconForForme(e
+                                                                .libelleForme!),
                                                         title: Text(
                                                             e.libelleForme!
                                                                 .toUpperCase(),
-                                                            style: const TextStyle(
-                                                              color: Colors.black,
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 20,
-                                                              overflow: TextOverflow
-                                                                  .ellipsis,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                             )),
                                                         subtitle: Text(
                                                             e.descriptionForme!
                                                                 .trim(),
-                                                            style: const TextStyle(
-                                                              color: Colors.black87,
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Colors
+                                                                  .black87,
                                                               fontSize: 17,
                                                               fontWeight:
-                                                                  FontWeight.w500,
+                                                                  FontWeight
+                                                                      .w500,
                                                               fontStyle:
-                                                                  FontStyle.italic,
+                                                                  FontStyle
+                                                                      .italic,
                                                             ))),
                                                     Container(
                                                       alignment:
@@ -332,29 +346,29 @@ bool isSearchMode = false;
                                                         children: [
                                                           _buildEtat(
                                                               e.statutForme!),
-                                                          PopupMenuButton<String>(
+                                                          PopupMenuButton<
+                                                              String>(
                                                             padding:
                                                                 EdgeInsets.zero,
-                                                            itemBuilder:
-                                                                (context) =>
-                                                                    <PopupMenuEntry<
-                                                                        String>>[
-                                                              PopupMenuItem<String>(
+                                                            itemBuilder: (context) =>
+                                                                <PopupMenuEntry<
+                                                                    String>>[
+                                                              PopupMenuItem<
+                                                                  String>(
                                                                 child: ListTile(
                                                                   leading: e.statutForme ==
                                                                           false
                                                                       ? Icon(
                                                                           Icons
                                                                               .check,
-                                                                          color: Colors
-                                                                              .green,
+                                                                          color:
+                                                                              Colors.green,
                                                                         )
                                                                       : Icon(
                                                                           Icons
                                                                               .disabled_visible,
-                                                                          color: Colors
-                                                                                  .orange[
-                                                                              400]),
+                                                                          color:
+                                                                              Colors.orange[400]),
                                                                   title: Text(
                                                                     e.statutForme ==
                                                                             false
@@ -366,14 +380,15 @@ bool isSearchMode = false;
                                                                               false
                                                                           ? Colors
                                                                               .green
-                                                                          : Colors.orange[
-                                                                              400],
+                                                                          : Colors
+                                                                              .orange[400],
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold,
                                                                     ),
                                                                   ),
-                                                                  onTap: () async {
+                                                                  onTap:
+                                                                      () async {
                                                                     e.statutForme ==
                                                                             false
                                                                         ? await FormeService()
@@ -397,21 +412,20 @@ bool isSearchMode = false;
                                                                                     ),
                                                                                   )
                                                                                 })
-                                                                            .catchError(
-                                                                                (onError) =>
-                                                                                    {
-                                                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                                                        const SnackBar(
-                                                                                          content: Row(
-                                                                                            children: [
-                                                                                              Text("Une erreur s'est produit"),
-                                                                                            ],
-                                                                                          ),
-                                                                                          duration: Duration(seconds: 5),
-                                                                                        ),
+                                                                            .catchError((onError) =>
+                                                                                {
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                    const SnackBar(
+                                                                                      content: Row(
+                                                                                        children: [
+                                                                                          Text("Une erreur s'est produit"),
+                                                                                        ],
                                                                                       ),
-                                                                                      Navigator.of(context).pop(),
-                                                                                    })
+                                                                                      duration: Duration(seconds: 5),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Navigator.of(context).pop(),
+                                                                                })
                                                                         : await FormeService()
                                                                             .desactiverForme(e
                                                                                 .idForme!)
@@ -437,7 +451,7 @@ bool isSearchMode = false;
                                                                                   ),
                                                                                   Navigator.of(context).pop(),
                                                                                 });
-          
+
                                                                     ScaffoldMessenger.of(
                                                                             context)
                                                                         .showSnackBar(
@@ -445,19 +459,18 @@ bool isSearchMode = false;
                                                                         content:
                                                                             Row(
                                                                           children: [
-                                                                            Text(
-                                                                                "Désactiver avec succèss "),
+                                                                            Text("Désactiver avec succèss "),
                                                                           ],
                                                                         ),
-                                                                        duration: Duration(
-                                                                            seconds:
-                                                                                2),
+                                                                        duration:
+                                                                            Duration(seconds: 2),
                                                                       ),
                                                                     );
                                                                   },
                                                                 ),
                                                               ),
-                                                              PopupMenuItem<String>(
+                                                              PopupMenuItem<
+                                                                  String>(
                                                                 child: ListTile(
                                                                   leading:
                                                                       const Icon(
@@ -465,7 +478,8 @@ bool isSearchMode = false;
                                                                     color: Colors
                                                                         .green,
                                                                   ),
-                                                                  title: const Text(
+                                                                  title:
+                                                                      const Text(
                                                                     "Modifier",
                                                                     style:
                                                                         TextStyle(
@@ -476,7 +490,8 @@ bool isSearchMode = false;
                                                                               .bold,
                                                                     ),
                                                                   ),
-                                                                  onTap: () async {
+                                                                  onTap:
+                                                                      () async {
                                                                     Navigator.of(
                                                                             context)
                                                                         .pop();
@@ -487,10 +502,10 @@ bool isSearchMode = false;
                                                                             (value) {
                                                                       Provider.of<FormeService>(
                                                                               context,
-                                                                              listen:
-                                                                                  false)
+                                                                              listen: false)
                                                                           .applyChange();
-                                                                      setState(() {
+                                                                      setState(
+                                                                          () {
                                                                         _liste =
                                                                             getListe();
                                                                       });
@@ -499,15 +514,18 @@ bool isSearchMode = false;
                                                                   },
                                                                 ),
                                                               ),
-                                                              PopupMenuItem<String>(
+                                                              PopupMenuItem<
+                                                                  String>(
                                                                 child: ListTile(
                                                                   leading:
                                                                       const Icon(
-                                                                    Icons.delete,
-                                                                    color:
-                                                                        Colors.red,
+                                                                    Icons
+                                                                        .delete,
+                                                                    color: Colors
+                                                                        .red,
                                                                   ),
-                                                                  title: const Text(
+                                                                  title:
+                                                                      const Text(
                                                                     "Supprimer",
                                                                     style:
                                                                         TextStyle(
@@ -518,36 +536,35 @@ bool isSearchMode = false;
                                                                               .bold,
                                                                     ),
                                                                   ),
-                                                                  onTap: () async {
+                                                                  onTap:
+                                                                      () async {
                                                                     await FormeService()
                                                                         .deleteForme(e
                                                                             .idForme!)
-                                                                        .then(
-                                                                            (value) =>
-                                                                                {
-                                                                                  Provider.of<FormeService>(context, listen: false).applyChange(),
-                                                                                  setState(() {
-                                                                                    _liste = getListe();
-                                                                                  }),
-                                                                                  Navigator.of(context).pop(),
-                                                                                })
-                                                                        .catchError(
-                                                                            (onError) =>
-                                                                                {
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                                    const SnackBar(
-                                                                                      content: Row(
-                                                                                        children: [
-                                                                                          Text(
-                                                                                            "Impossible de supprimer car cette filière est déjà associé a une categorie",
-                                                                                            style: TextStyle(overflow: TextOverflow.ellipsis),
-                                                                                          ),
-                                                                                        ],
+                                                                        .then((value) =>
+                                                                            {
+                                                                              Provider.of<FormeService>(context, listen: false).applyChange(),
+                                                                              setState(() {
+                                                                                _liste = getListe();
+                                                                              }),
+                                                                              Navigator.of(context).pop(),
+                                                                            })
+                                                                        .catchError((onError) =>
+                                                                            {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                const SnackBar(
+                                                                                  content: Row(
+                                                                                    children: [
+                                                                                      Text(
+                                                                                        "Impossible de supprimer car cette filière est déjà associé a une categorie",
+                                                                                        style: TextStyle(overflow: TextOverflow.ellipsis),
                                                                                       ),
-                                                                                      duration: Duration(seconds: 2),
-                                                                                    ),
-                                                                                  )
-                                                                                });
+                                                                                    ],
+                                                                                  ),
+                                                                                  duration: Duration(seconds: 2),
+                                                                                ),
+                                                                              )
+                                                                            });
                                                                   },
                                                                 ),
                                                               ),

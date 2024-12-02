@@ -14,6 +14,7 @@ import 'package:koumi/screens/ResetPassword.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/ZoneProductionService.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
+import 'package:koumi/widgets/TermeConditionPage.dart';
 import 'package:provider/provider.dart';
 
 class ProfilA extends StatefulWidget {
@@ -516,51 +517,158 @@ class _ProfilAState extends State<ProfilA> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final acteurProvider =
-                          Provider.of<ActeurProvider>(context, listen: false);
-
-                      // Déconnexion avec le provider
-                      await acteurProvider.logout();
-
-                      Get.offAll(BottomNavigationPage(),
-                          // duration: Duration(
-                          //     seconds:
-                          //         1), //duration of transitions, default 1 sec
-                          transition: Transition.leftToRight);
-
-                      Provider.of<BottomNavigationService>(context,
-                              listen: false)
-                          .changeIndex(0);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      elevation: 10, // Orange color code
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 10),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                offset: const Offset(0, 2),
+                                blurRadius: 5,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 15),
+                                child: Row(children: [
+                                  const Icon(
+                                      Icons.align_horizontal_left_outlined,
+                                      color: Colors.black87,
+                                      size: 25),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                     TermsConditionsPage()));
+                                      },
+                                      child: Text(
+                                              "Condition et politique",
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.black87),
+                                            ))
+                                ]),
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Image.asset("assets/images/settings.png",
+                                    width: 50, height: 50),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                      minimumSize: const Size(290, 45),
-                    ),
-                    icon: const Icon(
-                      Icons.logout_rounded,
-                      color: d_colorOr,
-                    ),
-                    label: Text(
-                      "Déconnexion",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: d_colorOr,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    )),
-              )
+
+            Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                        child: ElevatedButton.icon(
+                            onPressed: () async {
+                              showDialogD();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 10, // Orange color code
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              minimumSize: const Size(290, 45),
+                            ),
+                            icon: const Icon(
+                              Icons.logout_rounded,
+                              color: d_colorOr,
+                            ),
+                            label: Text(
+                              "Déconnexion",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: d_colorOr,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            )),
+                      )
             ],
           ),
         ));
   }
 
+ void showDialogD() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning_amber_sharp,
+                color: d_colorOr,
+              ),
+              SizedBox(width: 10),
+              Text("Déconnexion",
+                  maxLines: 2,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+          content: Text(
+            "Attention cette action vous déconnectera !",
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Ferme le popup
+              },
+              child: Text(
+                "Annuler",
+                style: TextStyle(color: d_colorOr),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                final acteurProvider =
+                    Provider.of<ActeurProvider>(context, listen: false);
+
+                // Déconnexion avec le provider
+                await acteurProvider.logout();
+
+                Get.offAll(BottomNavigationPage(),
+                    transition: Transition.leftToRight);
+                Provider.of<BottomNavigationService>(context, listen: false)
+                    .changeIndex(0);
+              },
+              child: Text(
+                "Déconnecter",
+                style: TextStyle(color: d_colorOr),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  
   Widget _buildProfile(String title, String value) {
     return Padding(
       padding: const EdgeInsets.all(10.0),

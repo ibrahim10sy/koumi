@@ -219,7 +219,8 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             widget.isEditable! ? 'Modifier de produit' : 'Ajout de produit',
             style: const TextStyle(
@@ -614,7 +615,6 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                                   _uniteController.clear(),
                                   _origineController.clear(),
                                   _formController.clear(),
-
                                   setState(() {
                                     niveau3 == null;
                                     unite == null;

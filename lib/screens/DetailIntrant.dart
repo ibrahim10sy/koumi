@@ -444,22 +444,25 @@ class _DetailIntrantState extends State<DetailIntrant> {
                           // size: 60,
                         ),
                       )
-                    :  acteur.idActeur != intrants.acteur!.idActeur ?
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pop(context, true);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        )): IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        )),
+                    : acteur.idActeur != intrants.acteur!.idActeur
+                        ? IconButton(
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_sharp,
+                              size: 30,
+                              color: Colors.white,
+                            ))
+                        : IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_sharp,
+                              size: 30,
+                              color: Colors.white,
+                            )),
                 title: _isEditing
                     ? Text(
                         'Modification',
@@ -545,7 +548,6 @@ class _DetailIntrantState extends State<DetailIntrant> {
                         ),
                   SizedBox(height: 30),
                   !_isEditing ? viewData() : _buildEditing(),
-                  
                   const SizedBox(height: 10),
                 ],
               ),

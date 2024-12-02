@@ -220,7 +220,8 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+              icon: const Icon(Icons.arrow_back_sharp,
+                  size: 30, color: Colors.white)),
           title: Text(
             'Mes magasins',
             style: const TextStyle(

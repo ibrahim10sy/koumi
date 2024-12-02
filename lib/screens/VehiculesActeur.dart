@@ -219,7 +219,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                         Navigator.pop(context, true);
                       });
                     },
-                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                    icon: const Icon(Icons.arrow_back_sharp,
+                        size: 30, color: Colors.white),
                   )
                 : Container(),
             title: Text(

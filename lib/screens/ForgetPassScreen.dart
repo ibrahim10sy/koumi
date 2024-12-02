@@ -228,7 +228,10 @@ class _ForgetPassScreenState extends State<ForgetPassScreen>
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.arrow_back_ios),
+              icon: const Icon(
+                Icons.arrow_back_sharp,
+                size: 30,
+              ),
             ),
           ),
           body: SingleChildScrollView(
@@ -242,7 +245,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen>
               //       // Fonction de retour
               //       Navigator.pop(context);
               //     },
-              //     icon: const Icon(Icons.arrow_back_ios),
+              //     icon: const Icon(Icons.arrow_back_sharp, size: 30,),
               //     iconSize: 30,
               //     splashRadius: 20,
               //     padding: EdgeInsets.zero,
@@ -370,7 +373,7 @@ class _ForgetPassScreenState extends State<ForgetPassScreen>
                           setState(() {
                             processedNumberWA =
                                 removePlus(whatsAppController.text);
-                                print("wa num $processedNumberWA");
+                            print("wa num $processedNumberWA");
                           });
                           print("wa change country $processedNumberWA");
 

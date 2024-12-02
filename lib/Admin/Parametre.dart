@@ -148,7 +148,8 @@ class _ParametreState extends State<Parametre> {
               Navigator.of(context).pop();
               // Get.back();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
         title: const Text(
           "Paramètre Système",
           style: TextStyle(

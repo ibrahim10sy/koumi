@@ -11,22 +11,21 @@ class PaymentPage extends StatefulWidget {
 const d_colorGreen = Color.fromRGBO(43, 103, 6, 1);
 const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 
-
 class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-       appBar: AppBar(
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: d_colorOr,
         toolbarHeight: 75,
         leading: IconButton(
           onPressed: () {
-            Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Subscribe()));
-                  
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Subscribe()));
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back_sharp,
+            size: 30,
             color: Colors.white,
           ),
         ),

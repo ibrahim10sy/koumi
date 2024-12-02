@@ -229,7 +229,8 @@ class _AddIntrantState extends State<AddIntrant> {
                 onPressed: () {
                   Navigator.pop(context, true);
                 },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white)),
+                icon: const Icon(Icons.arrow_back_sharp,
+                    size: 30, color: Colors.white)),
             title: Text(
               'Ajouter un intrant ',
               style: const TextStyle(
