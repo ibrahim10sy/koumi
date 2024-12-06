@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
 
     if (isFirstLaunch) {
-      // Demander la permission de localisation
+      
       await _navigateToNextPage();
 
       // Marquer que l'application a été lancée
@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       debugPrint("Email shared isExist : $emailActeur");
     }
-
+ 
 // Vérifier si le codeActeur est présent dans SharedPreferences
     if (codeActeur == null || codeActeur.isEmpty) {
       // Gérer le cas où le codeActeur est manquant

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -32,7 +31,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? detectedCountryCode = "";
   // late TypeActeur monTypeActeur;
   // late Future _mesTypeActeur;
-  Position? _currentPosition;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _errorMessage = "";

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/phone_input_formatter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -88,10 +87,7 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
   String niveau3 = '';
   String? n3Value;
   late TextEditingController _searchController;
-  Future<void> _getCurrentUserLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
-  }
+ 
 
   void validateEmail(String val) {
     if (val.isEmpty) {
@@ -547,14 +543,6 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _getCurrentUserLocation(); // Call the function to get location
-
-    Locale deviceLocale = Localizations.localeOf(context);
-    String countryCode = deviceLocale.countryCode ?? '';
-
-    setState(() {
-      selectedCountry = countryCode.toUpperCase();
-    });
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),

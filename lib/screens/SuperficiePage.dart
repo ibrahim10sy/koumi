@@ -12,7 +12,6 @@ import 'package:koumi/screens/UpdateSuperficie.dart';
 import 'package:koumi/service/SuperficieService.dart';
 import 'package:koumi/widgets/DistanceTrackingPage.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class SuperficiePage extends StatefulWidget {

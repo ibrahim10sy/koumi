@@ -38,7 +38,6 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Titre principal
               const Text(
                 "Bienvenue sur KOUMI",
                 style: TextStyle(
@@ -48,10 +47,8 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Texte d'introduction
               const Text(
-                "KOUMI est une application dédiée à l'agriculture, facilitant la mise en relation des principaux acteurs du secteur agricole. Nous vous invitons à lire attentivement nos conditions générales et notre politique de confidentialité.",
+                "KOUMI est une application dédiée à l'agriculture, facilitant la mise en relation des principaux acteurs du secteur agricole. Nous vous invitons à lire attentivement nos conditions générales d'utilisation et notre politique de confidentialité.",
                 style: TextStyle(
                   fontSize: 16,
                   height: 1.5,
@@ -89,8 +86,6 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
                 "Pour vous désinscrire des notifications WhatsApp, envoyez \"STOP\" au +223 51 55 48 51. Une confirmation vous sera envoyée.",
               ),
               const SizedBox(height: 20),
-
-              // POLITIQUE DE CONFIDENTIALITÉ
               const Text(
                 "Politique de Confidentialité",
                 style: TextStyle(
@@ -109,7 +104,7 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
                 "L'accès à votre localisation nous permet de :\n"
                     "- Mettre en avant des produits disponibles dans votre pays.\n"
                     "- Afficher automatiquement les localités de votre pays lors de la création de compte.\n"
-                    "- Suivre votre position en arrière plan pour calculer la superficie de la surface parcourue, utile dans des scénarios agricoles.",
+                    "- Suivre votre position en arrière-plan pour calculer la superficie de la surface parcourue, utile dans des scénarios agricoles.",
               ),
               _buildSection(
                 "3. Utilisation des Données",
@@ -120,8 +115,6 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
                 "KOUMI s'engage à sécuriser vos informations personnelles. Vos données sont stockées de manière sécurisée et ne sont jamais partagées sans votre consentement.",
               ),
               const SizedBox(height: 20),
-
-              // CONTACTS
               const Text(
                 "Contacts",
                 style: TextStyle(

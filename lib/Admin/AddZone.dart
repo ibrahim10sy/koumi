@@ -95,8 +95,8 @@ class _AddZoneState extends State<AddZone> {
   }
 
   Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-    if (!hasPermission) return;
+    // final hasPermission = await _handleLocationPermission();
+    // if (!hasPermission) return;
 
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
@@ -106,6 +106,7 @@ class _AddZoneState extends State<AddZone> {
       debugPrint(e);
     });
   }
+
 
   @override
   void initState() {

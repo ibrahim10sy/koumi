@@ -54,7 +54,7 @@ class ActeurProvider with ChangeNotifier {
           speculationList,
           codeActeur,
           idActeur,
-          nomActeur,
+          nomActeur, 
           telephoneActeur,
           adresseActeur,
           whatsAppActeur,
@@ -79,30 +79,65 @@ class ActeurProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> logout() async {
-    // Récupérer les données utilisateur avant de les effacer
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? whatsAppActeur = prefs.getString('whatsAppActeur');
-    String? codeActeur = prefs.getString('codeActeur');
+//  Future<void> logout() async {
+//     // Récupérer les données utilisateur avant de les effacer
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String? whatsAppActeur = prefs.getString('whatsAppActeur');
+//     String? codeActeur = prefs.getString('codeActeur');
+//      bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+//     bool isFirstLaunchGPS = prefs.getBool('isFirstLaunchGPS') ?? true;
 
-    // Effacer toutes les préférences
-    // Réinitialiser l'acteur local
-    _acteur = null;
+//     // Effacer toutes les préférences
+//     // Réinitialiser l'acteur local
+//     _acteur = null;
 
-    await prefs.clear();
-    if (whatsAppActeur == null || whatsAppActeur.isEmpty) {
-      debugPrint("whatsAppActeur shared : $whatsAppActeur");
-    } else {
-      debugPrint("whatsAppActeur shared isExist : $whatsAppActeur");
-    }
+//     await prefs.clear();
+//     if (whatsAppActeur == null || whatsAppActeur.isEmpty) {
+//       debugPrint("whatsAppActeur shared : $whatsAppActeur");
+//     } else {
+//       debugPrint("whatsAppActeur shared isExist : $whatsAppActeur");
+//     }
 
-    if (codeActeur != null) {
-      prefs.setString('codeActeur', codeActeur);
-      print("code acteur apres logout : $codeActeur");
-    }
+//     if (codeActeur != null) {
+//       prefs.setString('codeActeur', codeActeur);
+//       print("code acteur apres logout : $codeActeur");
+//     }
 
-    // Mettre à jour l'état de la connexion
-    isLogged = false;
-    notifyListeners();
+//     // Mettre à jour l'état de la connexion
+//     isLogged = false;
+//     notifyListeners();
+//   }
+ 
+
+Future<void> logout() async {
+  // Récupérer les données utilisateur avant de vider les préférences
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? whatsAppActeur = prefs.getString('whatsAppActeur');
+  String? codeActeur = prefs.getString('codeActeur');
+
+  // Effacer toutes les préférences
+  await prefs.clear();
+
+  // Réenregistrer les données à conserver
+  if (whatsAppActeur != null && whatsAppActeur.isNotEmpty) {
+    await prefs.setString('whatsAppActeur', whatsAppActeur);
+    debugPrint("whatsAppActeur réenregistré : $whatsAppActeur");
   }
+  if (codeActeur != null) {
+    await prefs.setString('codeActeur', codeActeur);
+    debugPrint("codeActeur réenregistré : $codeActeur");
+  }
+
+  // Réinitialiser les booléens à false après le nettoyage
+  await prefs.setBool('isFirstLaunch', false);
+  await prefs.setBool('isFirstLaunchGPS', false);
+
+  // Réinitialiser l'acteur local
+  _acteur = null;
+
+  // Mettre à jour l'état de la connexion
+  isLogged = false;
+  notifyListeners();
+}
+
 }

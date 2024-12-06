@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:koumi/providers/CountryProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide carousel_slider;
 import 'package:carousel_slider/carousel_slider.dart';
@@ -12,7 +12,10 @@ import 'package:koumi/Admin/DetailAlerte.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/Alertes.dart';
+import 'package:koumi/widgets/DetectorPays.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 List<Map<String, String>> imageList = [
   {"image_path": 'assets/images/koumi1.png'},
@@ -25,7 +28,8 @@ const d_colorOr = Color.fromRGBO(255, 138, 0, 1);
 class Carrousels extends StatelessWidget {
   Carrousels({super.key});
 
-  final CarouselSliderController carouselController = CarouselSliderController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   int currentIndex = 0;
 
   @override
@@ -98,14 +102,16 @@ class Carrousels extends StatelessWidget {
 }
 
 class Carrousel extends StatefulWidget {
-  Carrousel({super.key});
+  String? pays;
+  Carrousel({super.key, this.pays});
 
   @override
   _CarrouselState createState() => _CarrouselState();
 }
 
 class _CarrouselState extends State<Carrousel> {
-  final CarouselSliderController carouselController = CarouselSliderController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   int currentIndex = 0;
   List<Alertes> alertesList = [];
   late Acteur acteur = Acteur();
@@ -117,21 +123,18 @@ class _CarrouselState extends State<Carrousel> {
   String? country;
   String? detectedCountryCode;
   String? detectedCountry;
+  CountryProvider? countryProvider;
   late BuildContext _currentContext;
 
- 
   var latitude = 'Getting Latitude..'.obs;
   var longitude = 'Getting Longitude..'.obs;
   var address = 'Getting Address..'.obs;
   StreamSubscription<Position>? streamSubscription;
 
-
   @override
   void initState() {
     super.initState();
-
-    getLocation();
-
+    _checkFirstLaunch();
   }
 
   @override
@@ -140,153 +143,230 @@ class _CarrouselState extends State<Carrousel> {
     super.dispose();
   }
 
-Future<void> getLocationNew() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-        return Future.error('carrousel Location services are disabled.');
-      }
+  Future<void> _checkFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool isFirstLaunchGPS = prefs.getBool('isFirstLaunchGPS') ?? true;
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          return Future.error('carrousel Location permissions are denied');
-        }
-      }
+    if (isFirstLaunchGPS) {
+      await requestUserConsent();
 
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('carrousel Location permissions are permanently denied.');
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      Placemark placemark = placemarks.first;
-      setState(() {
-        detectedCountryCode = placemark.isoCountryCode!;
-      });
-    } catch (e) {
-      print('carrousel Error: $e');
+      // Marquer que l'application a été lancée
+      await prefs.setBool('isFirstLaunchGPS', false);
+    } else {
+      requestLocationPermission();
     }
   }
 
-  Future<void> getLocation() async {
+  Future<void> requestUserConsent() async {
+    final consent = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.location_on_outlined,
+                color: d_colorOr,
+              ),
+              SizedBox(width: 10),
+              Text("Autorisation de localisation",
+                  maxLines: 2,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+          content: const Text(
+              'Cette application utilise votre position pour vous offrir des services personnalisés, tels que l\'affichage des produits en fonction de votre localisation et le suivi de vos trajets. Acceptez-vous de partager votre position ?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Refusé
+              },
+              child: const Text('Refuser'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Accepté
+              },
+              child: const Text('Accepter'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (consent == true) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(
+          'isConsentGiven', true); // Sauvegarder le consentement
+      await requestLocationPermission();
+    } else {
+      debugPrint('L\'utilisateur a refusé de partager sa position.');
+    }
+  }
+
+  Future<void> requestLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Vérifie si les services de localisation sont activés
+    // Vérifie si le service de localisation est activé
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('carrousel Location services are disabled.');
+      await showAlertDialog(
+        context,
+        title: 'Service de localisation désactivé',
+        content:
+            'Le service de localisation est désactivé. Pour l\'activer Veuillez vous rendre dans les paramètres ',
+        onConfirm: () async {
+          await Geolocator.openLocationSettings();
+        },
+      );
+      return;
     }
 
-    // Vérifie les permissions de localisation
+    // Vérifie et demande les permissions nécessaires
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('carrousel Location permissions are denied');
+        await showAlertDialog(
+          context,
+          title: 'Permissions refusées',
+          content:
+              'Les permissions de localisation ont été refusées. Vous pouvez les activer dans les paramètres de l\'application.',
+          onConfirm: () async {
+            await Geolocator.openAppSettings();
+          },
+        );
+        return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied.');
+      debugPrint('Location desactivé');
+      return;
     }
+
+    // Si tout est en ordre, commencez à écouter les positions
+    getLocationUpdates();
+  }
+
+  void getLocationUpdates() {
     streamSubscription = Geolocator.getPositionStream(
-    locationSettings: LocationSettings(
+      locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 10000,
-    ),
-).listen((Position position) {
-    latitude.value = 'carrousel Latitude : ${position.latitude}';
-    longitude.value = 'carrousel Longitude : ${position.longitude}';
-    getAddressFromLatLang(position);
-    streamSubscription?.cancel();  // Annule après la première mise à jour
-});
-
+      ),
+    ).listen((Position position) {
+      debugPrint(
+          'Position actuelle : Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+      getAddressFromLatLang(position);
+      streamSubscription?.cancel(); // Annule après la première mise à jour
+    });
   }
 
   Future<void> getAddressFromLatLang(Position position) async {
+    final detectorPays = Provider.of<DetectorPays>(context, listen: false);
     try {
-        List<Placemark> placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
-        if (placemark.isNotEmpty) {
-            Placemark place = placemark[0];
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
 
-            // Comparez avec les valeurs existantes avant de mettre à jour
-            String newDetectedCountryCode = place.isoCountryCode ?? "ML";
-            String newDetectedCountry = place.country ?? "Mali";
+        debugPrint("Address ISO dans acceuil: $detectedC");
+        address.value =
+            'Address dans acceuil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
 
-            if (detectedCountryCode != newDetectedCountryCode || detectedCountry != newDetectedCountry) {
+        // Comparez avec les valeurs existantes avant de mettre à jour
+        String newDetectedCountryCode = place.isoCountryCode ?? "ML";
+        String newDetectedCountry = place.country ?? "Mali";
+
+        if (detectedCountryCode != newDetectedCountryCode ||
+            detectedCountry != newDetectedCountry) {
+          if (mounted) {
+            setState(() {
+              detectedC = place.isoCountryCode;
+              detectedCountryCode = place.isoCountryCode ?? "ML";
+              detectedCountry = place.country ?? "Mali";
+              fetchAlertes(detectedCountry!).then((alerts) {
                 if (mounted) {
-                    setState(() {
-                        detectedCountryCode = newDetectedCountryCode;
-                        detectedCountry = newDetectedCountry;
-                        fetchAlertes(detectedCountry!).then((alerts) {
-                            if (mounted) {
-                                setState(() {
-                                    alertesList = alerts;
-                                    isLoading = false;
-                                });
-                            }
-                        });
-                    });
+                  setState(() {
+                    alertesList = alerts;
+                    isLoading = false;
+                  });
                 }
-            }
-
-            String newAddress = 'Address dans carrousel : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
-            if (address.value != newAddress) {
-                address.value = newAddress;
-                debugPrint(newAddress);
-            }
-        } else {
-            debugPrint("Aucun emplacement trouvé dans carrousel pour les coordonnées fournies.");
+              });
+              print(
+                  "pays dans acceuil: ${detectedCountry} code: ${detectedCountryCode}");
+              if (detectedCountry != null || detectedCountry!.isNotEmpty) {
+                detectorPays.setDetectedCountryAndCode(
+                    detectedCountry!, detectedCountryCode!);
+                print(
+                    "pays dans acceuil: $detectedCountry code: $detectedCountryCode");
+              } else {
+                detectorPays.setDetectedCountryAndCode("Mali", "ML");
+                print("Le pays n'a pas pu être détecté dans acceuil.");
+              }
+            });
+          }
         }
+
+        String newAddress =
+            'Address dans accueil : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
+        if (address.value != newAddress) {
+          address.value = newAddress;
+          debugPrint(newAddress);
+        }
+      } else {
+        debugPrint(
+            "Aucun emplacement trouvé dans accueil pour les coordonnées fournies.");
+      }
     } catch (e) {
-        debugPrint("Une erreur est survenue lors de la récupération de l'adresse : $e");
+      debugPrint(
+          'Une erreur est survenue lors de la récupération de l\'adresse : $e');
     }
-}
+  }
 
-  // Future<void> getAddressFromLatLang(Position position) async {
-  //   try {
-  //     List<Placemark> placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
-  //     if (placemark.isNotEmpty) {
-  //       Placemark place = placemark[0];
+  Future<void> showAlertDialog(
+    BuildContext context, {
+    required String title,
+    required String content,
+    required VoidCallback onConfirm,
+  }) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Paramètres'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onConfirm();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-  //       // Évite les appels répétés de setState si le pays détecté ne change pas
-  //       if (detectedCountryCode != place.isoCountryCode) {
-  //         setState(() {
-  //           detectedCountryCode = place.isoCountryCode ?? "ML";
-  //           detectedCountry = place.country ?? "Mali";
-  //           fetchAlertes(detectedCountry!).then((alerts) {
-  //             if (mounted) {
-  //               setState(() {
-  //                 alertesList = alerts;
-  //                 isLoading = false;
-  //               });
-  //             }
-  //           });
-  //           print("Pays dans carrousel: ${detectedCountry} code: ${detectedCountryCode}");
-  //         });
-  //       }
-
-  //       address.value = 'Address dans carrousel : ${place.locality}, ${place.country}, ${place.isoCountryCode}';
-  //       debugPrint("Address dans carrousel: ${place.locality}, ${place.country}, ${place.isoCountryCode}");
-  //     } else {
-  //       debugPrint("Aucun emplacement trouvé dans carrousel pour les coordonnées fournies.");
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Une erreur est survenue lors de la récupération de l'adresse : $e");
-  //   }
-  // }
+  Future<void> resetConsent() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isConsentGiven');
+  }
 
   bool isLoading = true;
 
@@ -352,13 +432,11 @@ Future<void> getLocationNew() async {
 
   Widget buildImageSlider(
       String imagePath, String text, int index, List<Alertes> alertesList) {
-
     return GestureDetector(
       onTap: () {
         Get.to(() => DetailAlerte(alertes: alertesList[index]),
             transition: Transition.leftToRightWithFade,
-            duration: Duration(milliseconds:
-                                      500));
+            duration: Duration(milliseconds: 500));
       },
       child: Stack(
         children: [
