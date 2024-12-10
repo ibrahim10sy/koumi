@@ -433,6 +433,11 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                         .toLowerCase();
                                     return libelle.contains(searchText);
                                   }).toList();
+
+                                  filtereSearch.sort((a, b) => a.nomMagasin!
+                          .toLowerCase()
+                          .compareTo(b.nomMagasin!.toLowerCase()));
+                          
                                   return filtereSearch.isEmpty
                                       ? SingleChildScrollView(
                                           child: Padding(

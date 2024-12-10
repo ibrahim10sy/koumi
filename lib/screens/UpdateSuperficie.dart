@@ -271,7 +271,7 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                             }
 
                             return DropdownFormField<Niveau3Pays>(
-                              onEmptyActionPressed: (String str) async {},
+                              emptyText: "Aucune localité trouvé",
                               dropdownHeight: 200,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
@@ -400,7 +400,7 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                               }
 
                               return DropdownFormField<Speculation>(
-                                onEmptyActionPressed: (String str) async {},
+                                emptyText: "Aucune spéculation trouvé",
                                 dropdownHeight: 200,
                                 decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(
@@ -528,7 +528,7 @@ class _UpdateSuperficieState extends State<UpdateSuperficie> {
                             }
 
                             return DropdownFormField<Campagne>(
-                              onEmptyActionPressed: (String str) async {},
+                              emptyText: "Aucun campagne trouvé",
                               dropdownHeight: 200,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(

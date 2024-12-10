@@ -649,6 +649,10 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                               type.libelle!.toLowerCase().contains(searchText))
                           .toList();
 
+filteredSearch.sort((a, b) => a.libelle!
+                          .toLowerCase()
+                          .compareTo(b.libelle!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune monnaie trouvée',
@@ -797,6 +801,9 @@ class _NextAddIntratState extends State<NextAddIntrat> {
                               .contains(searchText))
                           .toList();
 
+filteredSearch.sort((a, b) => a.libelleForme!
+                          .toLowerCase()
+                          .compareTo(b.libelleForme!.toLowerCase()));
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune forme trouvée',

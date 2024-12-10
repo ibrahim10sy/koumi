@@ -712,7 +712,7 @@ class _TransportState extends State<Transport> {
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     vertical: 10,
-                                                    horizontal: 0),
+                                                    horizontal:10),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(22),
@@ -743,7 +743,7 @@ class _TransportState extends State<Transport> {
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
-                                                        horizontal: 0),
+                                                        horizontal:10),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(22),
@@ -757,14 +757,13 @@ class _TransportState extends State<Transport> {
                                         }
 
                                         return DropdownFormField<Pays>(
-                                          onEmptyActionPressed:
-                                              (String str) async {},
+                                          emptyText: "Aucun pays trouvé",
                                           dropdownHeight: 200,
                                           decoration: InputDecoration(
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 10,
-                                                      horizontal: 0),
+                                                      horizontal:10),
                                               border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(22),
@@ -839,7 +838,7 @@ class _TransportState extends State<Transport> {
                                       decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 0),
+                                                  vertical: 10, horizontal: 10),
                                           border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(22),
@@ -868,7 +867,7 @@ class _TransportState extends State<Transport> {
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     vertical: 10,
-                                                    horizontal: 0),
+                                                    horizontal:10),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(22),
@@ -899,7 +898,7 @@ class _TransportState extends State<Transport> {
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
-                                                        horizontal: 0),
+                                                        horizontal:10),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(22),
@@ -913,14 +912,13 @@ class _TransportState extends State<Transport> {
                                         }
 
                                         return DropdownFormField<TypeVoiture>(
-                                          onEmptyActionPressed:
-                                              (String str) async {},
+                                         emptyText: "Aucun catégorie trouvé",
                                           dropdownHeight: 200,
                                           decoration: InputDecoration(
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 0,
-                                                      horizontal: 0),
+                                                      horizontal:10),
                                               border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(22),
@@ -998,7 +996,7 @@ class _TransportState extends State<Transport> {
                                       decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 0),
+                                                  vertical: 10, horizontal: 10),
                                           border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(22),
@@ -1114,6 +1112,10 @@ class _TransportState extends State<Transport> {
                                       return libelle.contains(searchText);
                                     }).toList();
 
+                                    produitsLocaux.sort((a, b) => a.nomVehicule
+                          .toLowerCase()
+                          .compareTo(b.nomVehicule.toLowerCase()));
+
                                     List<Vehicule> produitsEtrangers =
                                         vehiculeListe
                                             .where((stock) =>
@@ -1127,6 +1129,10 @@ class _TransportState extends State<Transport> {
                                           _searchController.text.toLowerCase();
                                       return libelle.contains(searchText);
                                     }).toList();
+
+produitsEtrangers.sort((a, b) => a.nomVehicule
+                          .toLowerCase()
+                          .compareTo(b.nomVehicule.toLowerCase()));
 
                                     List<Vehicule> filtereSearch =
                                         vehiculeListe.where((search) {
@@ -1615,6 +1621,11 @@ class _TransportState extends State<Transport> {
                                       return libelle.contains(searchText);
                                     }).toList();
 
+produitsLocaux.sort((a, b) => a.nomVehicule
+                          .toLowerCase()
+                          .compareTo(b.nomVehicule.toLowerCase()));
+
+
                                     List<Vehicule> produitsEtrangers =
                                         vehiculeListe
                                             .where((stock) =>
@@ -1628,6 +1639,11 @@ class _TransportState extends State<Transport> {
                                           _searchController.text.toLowerCase();
                                       return libelle.contains(searchText);
                                     }).toList();
+
+produitsEtrangers.sort((a, b) => a.nomVehicule
+                          .toLowerCase()
+                          .compareTo(b.nomVehicule.toLowerCase()));
+
 
                                     List<Vehicule> filtereSearch =
                                         vehiculeListe.where((search) {

@@ -395,6 +395,12 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                     _searchController.text.trim().toLowerCase();
                                 return libelle.contains(searchText);
                               }).toList();
+
+                               filtereSearch.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
+
+
                               if (filtereSearch.isEmpty &&
                                   _searchController.text.isNotEmpty) {
                                 return SingleChildScrollView(

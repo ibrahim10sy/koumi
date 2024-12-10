@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 
 class DailySummary extends StatelessWidget {
-
   final String summary;
 
   const DailySummary({
@@ -22,7 +20,7 @@ class DailySummary extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: Color.fromARGB(255, 230, 229, 229),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Center(

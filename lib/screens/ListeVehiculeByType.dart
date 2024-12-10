@@ -411,6 +411,11 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                               searchText = _searchController.text.toLowerCase();
                               return libelle.contains(searchText);
                             }).toList();
+
+                            filtereSearch.sort((a, b) => a.nomVehicule
+                          .toLowerCase()
+                          .compareTo(b.nomVehicule.toLowerCase()));
+
                             return GridView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),

@@ -255,6 +255,10 @@ class _RegisterEndScreenState extends State<RegisterEndScreen> {
                               .contains(searchText))
                           .toList();
 
+                      filteredSearch.sort((a, b) => a.nomSpeculation!
+                          .toLowerCase()
+                          .compareTo(b.nomSpeculation!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune spéculation trouvé',

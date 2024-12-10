@@ -79,7 +79,7 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
               ),
               _buildSection(
                 "4. Limite d'Âge",
-                "L'inscription à KOUMI est interdite aux personnes de moins de 13 ans.",
+                "L'inscription à KOUMI est interdite aux personnes de moins de 18 ans.",
               ),
               _buildSection(
                 "5. Désinscription",
@@ -97,7 +97,7 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
               const SizedBox(height: 10),
               _buildSection(
                 "1. Collecte des Données Personnelles",
-                "Nous collectons des informations nécessaires pour fournir nos services, comme votre nom, numéro de téléphone, localisation et préférences. Ces données sont utilisées uniquement pour améliorer votre expérience sur KOUMI.",
+                "Nous collectons des informations nécessaires pour fournir nos services, comme votre nom, numéro de téléphone,adresse email, localisation et préférences. Ces données sont utilisées uniquement pour améliorer votre expérience sur KOUMI.",
               ),
               _buildSection(
                 "2. Accès à la Localisation",

@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:koumi/widgets/weather_detail_widget.dart';
 
-
 class WeatherDetailsCurrent extends StatelessWidget {
-
   final String windSpeed;
   final String windDegree;
   final String pressure;
@@ -42,7 +39,7 @@ class WeatherDetailsCurrent extends StatelessWidget {
         horizontal: 10,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: Color.fromARGB(255, 230, 229, 229),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
@@ -56,21 +53,21 @@ class WeatherDetailsCurrent extends StatelessWidget {
               WeatherDetailWidget(
                 asset: "assets/icons/windspeed.png",
                 value: windSpeed,
-                title: "Wind Speed",
+                title: "Vitesse du vent",
                 isIcon: false,
                 icon: const Icon(Icons.add),
               ),
               WeatherDetailWidget(
                 asset: "assets/icons/winddegree.png",
                 value: windDegree,
-                title: "Wind Degree",
+                title: "Degré de vent",
                 isIcon: false,
                 icon: const Icon(Icons.add),
               ),
               WeatherDetailWidget(
                 asset: "assets/icons/pressure.png",
                 value: pressure,
-                title: "Pressure",
+                title: "Pression",
                 isIcon: false,
                 icon: const Icon(Icons.add),
               ),
@@ -82,21 +79,21 @@ class WeatherDetailsCurrent extends StatelessWidget {
               WeatherDetailWidget(
                 asset: "",
                 value: uvi,
-                title: "UV Index",
+                title: "Indice UV",
                 isIcon: true,
                 icon: const Icon(Icons.sunny),
               ),
               WeatherDetailWidget(
                 asset: "assets/icons/humidity.png",
                 value: humidity,
-                title: "Humidity",
+                title: "Humidié",
                 isIcon: false,
                 icon: const Icon(Icons.add),
               ),
               WeatherDetailWidget(
                 asset: "",
                 value: visibility,
-                title: "Visibility",
+                title: "Visibilité",
                 isIcon: true,
                 icon: const Icon(Icons.visibility_outlined),
               ),
@@ -108,21 +105,21 @@ class WeatherDetailsCurrent extends StatelessWidget {
               WeatherDetailWidget(
                 asset: "assets/icons/clouds.png",
                 value: clouds,
-                title: "Clouds",
+                title: "Nuages",
                 isIcon: false,
                 icon: const Icon(Icons.sunny),
               ),
               WeatherDetailWidget(
                 asset: "",
                 value: dewPoint,
-                title: "Dew Point",
+                title: "Point de rosée",
                 isIcon: true,
                 icon: const Icon(Icons.dew_point),
               ),
               WeatherDetailWidget(
                 asset: "",
                 value: windGust,
-                title: "Wind Gust",
+                title: "Rafale",
                 isIcon: true,
                 icon: const Icon(Icons.wind_power_rounded),
               ),
@@ -132,5 +129,4 @@ class WeatherDetailsCurrent extends StatelessWidget {
       ),
     );
   }
-
 }

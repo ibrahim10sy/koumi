@@ -337,6 +337,8 @@ class _AddAndUpdateProductEndSreenState
                           .where((con) => con.statutZone == true)
                           .toList();
 
+                        
+
                       if (typeListe.isEmpty) {
                         return TextButton(
                           onPressed: () {
@@ -374,6 +376,10 @@ class _AddAndUpdateProductEndSreenState
                               .toLowerCase()
                               .contains(searchText))
                           .toList();
+
+                          filteredSearch.sort((a, b) => a.nomZoneProduction!
+                          .toLowerCase()
+                          .compareTo(b.nomZoneProduction!.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? TextButton(
@@ -616,6 +622,10 @@ class _AddAndUpdateProductEndSreenState
                               .contains(searchText))
                           .toList();
 
+filteredSearch.sort((a, b) => a.nomMagasin!
+                          .toLowerCase()
+                          .compareTo(b.nomMagasin!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? TextButton(
                               onPressed: () {
@@ -833,6 +843,10 @@ class _AddAndUpdateProductEndSreenState
                               .toLowerCase()
                               .contains(searchText))
                           .toList();
+
+  filteredSearch.sort((a, b) => a.nomSpeculation!
+                          .toLowerCase()
+                          .compareTo(b.nomSpeculation!.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? const Text(

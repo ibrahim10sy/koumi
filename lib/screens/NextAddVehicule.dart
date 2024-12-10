@@ -682,6 +682,10 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                               type.libelle!.toLowerCase().contains(searchText))
                           .toList();
 
+filteredSearch.sort((a, b) => a.libelle!
+                          .toLowerCase()
+                          .compareTo(b.libelle!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune monnaie trouvée',
@@ -828,6 +832,10 @@ class _NextAddVehiculeState extends State<NextAddVehicule> {
                           .where((type) =>
                               type.nomN3.toLowerCase().contains(searchText))
                           .toList();
+
+filteredSearch.sort((a, b) => a.nomN3
+                          .toLowerCase()
+                          .compareTo(b.nomN3.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? const Text(

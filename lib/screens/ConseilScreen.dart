@@ -349,6 +349,11 @@ class _ConseilScreenState extends State<ConseilScreen> {
                             searchText = _searchController.text.toLowerCase();
                             return libelle.contains(searchText);
                           }).toList();
+
+                             filtereSearch.sort((a, b) => a.titreConseil
+                          .toLowerCase()
+                          .compareTo(b.titreConseil.toLowerCase()));
+
                           return filtereSearch
                                   .where((element) =>
                                       element.statutConseil == true)

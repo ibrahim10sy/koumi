@@ -129,6 +129,10 @@ class _PageTransporteurState extends State<PageTransporteur> {
                         return libelle.contains(searchText);
                       }).toList();
 
+filtereSearch.sort((a, b) => a.nomActeur!
+                          .toLowerCase()
+                          .compareTo(b.nomActeur!.toLowerCase()));
+
                       return Column(
                           children: filtereSearch
                               .where((element) =>

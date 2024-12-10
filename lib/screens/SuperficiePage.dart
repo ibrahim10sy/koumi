@@ -280,6 +280,9 @@ class _SuperficiePageState extends State<SuperficiePage> {
                           searchText = _searchController.text.toLowerCase();
                           return libelle.contains(searchText);
                         }).toList();
+
+                        
+
                         return filtereSearch.isEmpty
                             ? Padding(
                                 padding: EdgeInsets.all(10),

@@ -469,6 +469,10 @@ class _AddMagasinScreenState extends State<AddMagasinScreen> {
                               type.nomN1!.toLowerCase().contains(searchText))
                           .toList();
 
+                      filteredSearch.sort((a, b) => a.nomN1!
+                          .toLowerCase()
+                          .compareTo(b.nomN1!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune localité trouvée',

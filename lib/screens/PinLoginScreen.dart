@@ -538,7 +538,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Pas de compte ?.",
+                        "Pas de compte ?",
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 19,

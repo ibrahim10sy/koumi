@@ -451,6 +451,12 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                               searchText = _searchController.text.toLowerCase();
                               return libelle.contains(searchText);
                             }).toList();
+
+                            filtereSearch.sort((a, b) => a.nomIntrant!
+                          .toLowerCase()
+                          .compareTo(b.nomIntrant!.toLowerCase()));
+
+
                             return filtereSearch.isEmpty
                                 ? SingleChildScrollView(
                                     child: Padding(

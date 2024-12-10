@@ -454,6 +454,9 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                               .toLowerCase();
                                           return libelle.contains(searchText);
                                         }).toList();
+                                         filtereSearch.sort((a, b) => a.nomVehicule
+                          .toLowerCase()
+                          .compareTo(b.nomVehicule.toLowerCase()));
                                         return vehiculeListe.isEmpty
                                             ? SingleChildScrollView(
                                                 child: Padding(

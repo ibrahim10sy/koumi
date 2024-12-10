@@ -741,6 +741,11 @@ class _AddAndUpdateProductScreenState extends State<AddAndUpdateProductScreen> {
                               type.nomUnite!.toLowerCase().contains(searchText))
                           .toList();
 
+                       filteredSearch.sort((a, b) => a.nomUnite!
+                          .toLowerCase()
+                          .compareTo(b.nomUnite!.toLowerCase()));
+
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune unité trouvée',

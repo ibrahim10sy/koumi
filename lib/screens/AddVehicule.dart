@@ -477,6 +477,10 @@ class _AddVehiculeState extends State<AddVehicule> {
                           .where((type) =>
                               type.nom!.toLowerCase().contains(searchText))
                           .toList();
+                      
+                      filteredSearch.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? const Text(
@@ -623,6 +627,10 @@ class _AddVehiculeState extends State<AddVehicule> {
                           .where((type) =>
                               type.nomN3.toLowerCase().contains(searchText))
                           .toList();
+
+   filteredSearch.sort((a, b) => a.nomN3
+                          .toLowerCase()
+                          .compareTo(b.nomN3.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? const Text(

@@ -254,6 +254,10 @@ class _TypeVehiculeState extends State<TypeVehicule> {
                               searchText = _searchController.text.toLowerCase();
                               return libelle.contains(searchText);
                             }).toList();
+                            filtereSearch.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
+
                             return Column(
                                 children: filtereSearch
                                     .map((e) => Padding(

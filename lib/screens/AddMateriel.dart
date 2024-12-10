@@ -1059,6 +1059,10 @@ class _AddMaterielState extends State<AddMateriel> {
                               type.libelle!.toLowerCase().contains(searchText))
                           .toList();
 
+                      filteredSearch.sort((a, b) => a.libelle!
+                          .toLowerCase()
+                          .compareTo(b.libelle!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune monnaie trouvée',
@@ -1207,6 +1211,11 @@ class _AddMaterielState extends State<AddMateriel> {
                               .toLowerCase()
                               .contains(searchText))
                           .toList();
+
+                        filteredSearch.sort((a, b) => a.nomSpeculation!
+                          .toLowerCase()
+                          .compareTo(b.nomSpeculation!.toLowerCase()));
+
 
                       return filteredSearch.isEmpty
                           ? const Text(
@@ -1357,6 +1366,10 @@ class _AddMaterielState extends State<AddMateriel> {
                               type.nom!.toLowerCase().contains(searchText))
                           .toList();
 
+      filteredSearch.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune type materiel trouvée',
@@ -1503,6 +1516,9 @@ class _AddMaterielState extends State<AddMateriel> {
                               type.nomN3.toLowerCase().contains(searchText))
                           .toList();
 
+    filteredSearch.sort((a, b) => a.nomN3
+                          .toLowerCase()
+                          .compareTo(b.nomN3.toLowerCase()));
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune localité trouvée',

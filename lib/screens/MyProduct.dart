@@ -647,6 +647,12 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                       _searchController.text.toLowerCase();
                                   return nomCat.contains(searchText);
                                 }).toList();
+
+                                filteredSearch.sort((a, b) => a.nomProduit!
+                          .toLowerCase()
+                          .compareTo(b.nomProduit!.toLowerCase()));
+
+
                                 return filteredSearch.isEmpty
                                     ? SingleChildScrollView(
                                         child: Padding(

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:koumi/widgets/OtherTemps.dart';
 import 'package:koumi/widgets/daily_summary.dart';
@@ -6,11 +5,7 @@ import 'package:koumi/widgets/frosted_glass.dart';
 import 'package:koumi/widgets/rise_set_timings.dart';
 import 'package:koumi/widgets/weather_details.dart';
 
-
-
-
 class Day extends StatelessWidget {
-
   final String windSpeed;
   final String windDegree;
   final String pressure;
@@ -36,9 +31,8 @@ class Day extends StatelessWidget {
   final String moonset;
   final String moonPhase;
 
-  const Day ({
+  const Day({
     super.key,
-
     required this.windSpeed,
     required this.windDegree,
     required this.pressure,
@@ -52,12 +46,10 @@ class Day extends StatelessWidget {
     required this.clouds,
     required this.dewPoint,
     required this.windGust,
-
     required this.morningTemp,
     required this.dayTemp,
     required this.eveningTemp,
     required this.nightTemp,
-
     required this.sunrise,
     required this.sunset,
     required this.moonrise,
@@ -77,9 +69,9 @@ class Day extends StatelessWidget {
               icon: icon,
               description: description,
             ),
-            DailySummary(
-              summary: summary,
-            ),
+            // DailySummary(
+            //   summary: summary,
+            // ),
             OtherTemps(
               morningTemp: morningTemp,
               dayTemp: dayTemp,

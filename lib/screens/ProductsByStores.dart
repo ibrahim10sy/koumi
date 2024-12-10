@@ -567,7 +567,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                               }
 
                               return DropdownFormField<CategorieProduit>(
-                                onEmptyActionPressed: (String str) async {},
+                                emptyText: "Aucune catéogire trouvé",
                                 dropdownHeight: 200,
                                 decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(

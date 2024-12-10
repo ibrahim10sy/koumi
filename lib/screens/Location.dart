@@ -622,7 +622,7 @@ class _LocationState extends State<Location> {
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 10,
-                                                      horizontal: 0),
+                                                      horizontal:10),
                                               border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(22),
@@ -654,7 +654,7 @@ class _LocationState extends State<Location> {
                                                       const EdgeInsets
                                                           .symmetric(
                                                           vertical: 10,
-                                                          horizontal: 0),
+                                                          horizontal:10),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -669,14 +669,13 @@ class _LocationState extends State<Location> {
                                           }
 
                                           return DropdownFormField<Pays>(
-                                            onEmptyActionPressed:
-                                                (String str) async {},
+                                           emptyText: "Aucun pays trouvé",
                                             dropdownHeight: 200,
                                             decoration: InputDecoration(
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
-                                                        horizontal: 0),
+                                                        horizontal:10),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(22),
@@ -755,7 +754,7 @@ class _LocationState extends State<Location> {
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     vertical: 10,
-                                                    horizontal: 0),
+                                                    horizontal:10),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(22),
@@ -784,7 +783,7 @@ class _LocationState extends State<Location> {
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 10,
-                                                      horizontal: 0),
+                                                      horizontal:10),
                                               border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(22),
@@ -817,7 +816,7 @@ class _LocationState extends State<Location> {
                                                       const EdgeInsets
                                                           .symmetric(
                                                           vertical: 10,
-                                                          horizontal: 0),
+                                                          horizontal:10),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -833,14 +832,13 @@ class _LocationState extends State<Location> {
 
                                           return DropdownFormField<
                                               TypeMateriel>(
-                                            onEmptyActionPressed:
-                                                (String str) async {},
+                                            emptyText: "Aucun type trouvé",
                                             dropdownHeight: 200,
                                             decoration: InputDecoration(
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
-                                                        horizontal: 0),
+                                                        horizontal:10),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(22),
@@ -916,7 +914,7 @@ class _LocationState extends State<Location> {
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     vertical: 10,
-                                                    horizontal: 0),
+                                                    horizontal:10),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(22),
@@ -1057,6 +1055,10 @@ class _LocationState extends State<Location> {
                                             return nomCat.contains(searchText);
                                           }).toList();
 
+produitsLocaux.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
+
                                           List<Materiels> produitsEtrangers =
                                               materielListe
                                                   .where((stock) =>
@@ -1070,6 +1072,10 @@ class _LocationState extends State<Location> {
                                                 .toLowerCase();
                                             return nomCat.contains(searchText);
                                           }).toList();
+
+produitsEtrangers.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
 
                                           List<Materiels> filteredSearch =
                                               materielListe.where((cate) {
@@ -1498,6 +1504,11 @@ class _LocationState extends State<Location> {
                                             return nomCat.contains(searchText);
                                           }).toList();
 
+produitsLocaux.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
+
+
                                           List<Materiels> produitsEtrangers =
                                               materielListe
                                                   .where((stock) =>
@@ -1511,6 +1522,11 @@ class _LocationState extends State<Location> {
                                                 .toLowerCase();
                                             return nomCat.contains(searchText);
                                           }).toList();
+
+produitsEtrangers.sort((a, b) => a.nom!
+                          .toLowerCase()
+                          .compareTo(b.nom!.toLowerCase()));
+
 
                                           List<Materiels> filteredSearch =
                                               materielListe.where((cate) {

@@ -125,6 +125,12 @@ class _AddIntrantState extends State<AddIntrant> {
                               .contains(searchText))
                           .toList();
 
+                      
+                       filteredSearch.sort((a, b) => a.libelleCategorie!
+                          .toLowerCase()
+                          .compareTo(b.libelleCategorie!.toLowerCase()));
+
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune categorie trouvée',

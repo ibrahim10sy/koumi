@@ -469,6 +469,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               : "ML",
                           controller: whatsAppController,
                           invalidNumberMessage: "Numéro invalide",
+                        
                           searchText: "Chercher un pays",
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(

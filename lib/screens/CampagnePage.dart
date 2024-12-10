@@ -211,6 +211,12 @@ class _CampagnePageState extends State<CampagnePage> {
                             searchText = _searchController.text.toLowerCase();
                             return libelle.contains(searchText);
                           }).toList();
+
+                          
+   filtereSearch.sort((a, b) => a.nomCampagne
+                          .toLowerCase()
+                          .compareTo(b.nomCampagne.toLowerCase()));
+
                           return filtereSearch.isEmpty
                               ? Padding(
                                   padding: EdgeInsets.all(10),

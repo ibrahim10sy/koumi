@@ -617,6 +617,10 @@ class _AddSuperficieState extends State<AddSuperficie> {
                               .contains(searchText))
                           .toList();
 
+                          filteredSearch.sort((a, b) => a.nomCampagne
+                          .toLowerCase()
+                          .compareTo(b.nomCampagne.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune campagne trouvée',
@@ -964,6 +968,10 @@ class _AddSuperficieState extends State<AddSuperficie> {
                               .contains(searchText))
                           .toList();
 
+   filteredSearch.sort((a, b) => a.nomSpeculation!
+                          .toLowerCase()
+                          .compareTo(b.nomSpeculation!.toLowerCase()));
+
                       return filteredSearch.isEmpty
                           ? const Text(
                               'Aucune speculation trouvée',
@@ -1111,6 +1119,11 @@ class _AddSuperficieState extends State<AddSuperficie> {
                           .where((type) =>
                               type.nomN3.toLowerCase().contains(searchText))
                           .toList();
+
+filteredSearch.sort((a, b) => a.nomN3
+                          .toLowerCase()
+                          .compareTo(b.nomN3.toLowerCase()));
+
 
                       return filteredSearch.isEmpty
                           ? const Text(

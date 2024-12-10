@@ -268,10 +268,14 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                       }
 
                       String searchText = _searchController.text.toLowerCase();
-                      List<Niveau3Pays> filteredSearch = typeListe
-                          .where((type) =>
-                              type.nomN3.toLowerCase().contains(searchText))
-                          .toList();
+                    List<Niveau3Pays> filteredSearch = typeListe
+                        .where((type) =>
+                            type.nomN3.toLowerCase().contains(searchText))
+                        .toList();
+
+                    // Trier la liste filtrée par ordre alphabétique
+                    filteredSearch.sort((a, b) =>
+                        a.nomN3.toLowerCase().compareTo(b.nomN3.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? const Text(
@@ -435,6 +439,9 @@ class _RegisterNextScreenState extends State<RegisterNextScreen> {
                                   .contains(searchText) &&
                               typeActeur.libelle!.toLowerCase() != 'admin')
                           .toList();
+                        // Trier la liste filtrée par ordre alphabétique
+                    filteredSearch.sort((a, b) =>
+                        a.libelle!.toLowerCase().compareTo(b.libelle!.toLowerCase()));
 
                       return filteredSearch.isEmpty
                           ? const Text(

@@ -563,7 +563,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
-                                                        horizontal: 0),
+                                                        horizontal:10),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(22),
@@ -595,7 +595,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         const EdgeInsets
                                                             .symmetric(
                                                             vertical: 10,
-                                                            horizontal: 0),
+                                                            horizontal:10),
                                                     border: OutlineInputBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -611,15 +611,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                             }
 
                                             return DropdownFormField<Pays>(
-                                              onEmptyActionPressed:
-                                                  (String str) async {},
+                                            emptyText: "Aucun pays trouvé",
                                               dropdownHeight: 200,
                                               decoration: InputDecoration(
                                                   contentPadding:
                                                       const EdgeInsets
                                                           .symmetric(
                                                           vertical: 10,
-                                                          horizontal: 0),
+                                                          horizontal:10),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -699,7 +698,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 10,
-                                                      horizontal: 0),
+                                                      horizontal:10),
                                               border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(22),
@@ -727,7 +726,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
-                                                        horizontal: 0),
+                                                        horizontal:10),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(22),
@@ -761,7 +760,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         const EdgeInsets
                                                             .symmetric(
                                                             vertical: 10,
-                                                            horizontal: 0),
+                                                            horizontal:10),
                                                     border: OutlineInputBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -778,15 +777,14 @@ class _StoreScreenState extends State<StoreScreen> {
 
                                             return DropdownFormField<
                                                 Niveau1Pays>(
-                                              onEmptyActionPressed:
-                                                  (String str) async {},
+                                              emptyText: "Aucun donnée trouvé",
                                               dropdownHeight: 200,
                                               decoration: InputDecoration(
                                                   contentPadding:
                                                       const EdgeInsets
                                                           .symmetric(
                                                           vertical: 10,
-                                                          horizontal: 0),
+                                                          horizontal:10),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -880,7 +878,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 10,
-                                                      horizontal: 0),
+                                                      horizontal:10),
                                               border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(22),
@@ -1471,6 +1469,11 @@ class _StoreScreenState extends State<StoreScreen> {
                                           return nomCat.contains(searchText);
                                         }).toList();
 
+ produitsLocaux.sort((a, b) => a.nomMagasin!
+                          .toLowerCase()
+                          .compareTo(b.nomMagasin!.toLowerCase()));
+
+
                                         List<Magasin> produitsEtrangers =
                                             magasinListe
                                                 .where(
@@ -1486,6 +1489,10 @@ class _StoreScreenState extends State<StoreScreen> {
                                               .toLowerCase();
                                           return nomCat.contains(searchText);
                                         }).toList();
+
+ produitsEtrangers.sort((a, b) => a.nomMagasin!
+                          .toLowerCase()
+                          .compareTo(b.nomMagasin!.toLowerCase()));
 
                                         List<Magasin> filteredSearch =
                                             magasinListe.where((cate) {

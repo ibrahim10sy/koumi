@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 
 class FrostedGlassCurrent extends StatelessWidget {
-
   final double borderRadius;
 
   final String temp;
@@ -33,7 +31,7 @@ class FrostedGlassCurrent extends StatelessWidget {
         height: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-          color: Theme.of(context).colorScheme.secondary,
+          color: Color.fromARGB(255, 230, 229, 229),
         ),
         child: Center(
           child: Row(
@@ -54,7 +52,7 @@ class FrostedGlassCurrent extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          description,
+                          'Nuages',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(
@@ -62,9 +60,10 @@ class FrostedGlassCurrent extends StatelessWidget {
                         ),
                         Text(
                           "$tempMin°/$tempMax°",
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 14,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 14,
+                                  ),
                         ),
                       ],
                     ),

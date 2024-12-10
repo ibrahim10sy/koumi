@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:koumi/widgets/weather_detail_widget.dart';
 
-
 class OtherTemps extends StatelessWidget {
-
   final String morningTemp;
   final String dayTemp;
   final String eveningTemp;
@@ -31,7 +28,7 @@ class OtherTemps extends StatelessWidget {
         horizontal: 10,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: Color.fromARGB(255, 230, 229, 229),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(

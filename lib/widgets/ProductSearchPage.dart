@@ -54,6 +54,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         if (_recentSearches.length > 5) {
           _recentSearches = _recentSearches.sublist(0, 5);
         }
+        //voir 
         prefs.setStringList('search_history', _recentSearches);
       }
     });
@@ -71,6 +72,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     try {
       final response = await http
           .get(Uri.parse('$apiOnlineUrl/Stock/search?nomProduit=$query'));
+      debugPrint('$apiOnlineUrl/Stock/search?nomProduit=$query');
       if (response.statusCode == 200) {
         List<dynamic> body = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
