@@ -753,7 +753,6 @@ class _IntrantPageState extends State<IntrantPage> {
                                                 ),
                                                 suffixIcon: Icon(Icons.search,
                                                     size: 19),
-                                                   
                                                 labelText:
                                                     "  Filtrer par pays"),
                                             onSaved: (dynamic pays) {
@@ -904,7 +903,8 @@ class _IntrantPageState extends State<IntrantPage> {
 
                                           return DropdownFormField<
                                               CategorieProduit>(
-                                            emptyText: "Aucune catégorie trouvé",
+                                            emptyText:
+                                                "Aucune catégorie trouvé",
                                             dropdownHeight: 200,
                                             decoration: InputDecoration(
                                                 contentPadding:
@@ -1123,9 +1123,11 @@ class _IntrantPageState extends State<IntrantPage> {
                                           return nomCat.contains(searchText);
                                         }).toList();
 
- produitsLocaux.sort((a, b) => a.nomIntrant!
-                          .toLowerCase()
-                          .compareTo(b.nomIntrant!.toLowerCase()));
+                                        produitsLocaux.sort((a, b) => a
+                                            .nomIntrant!
+                                            .toLowerCase()
+                                            .compareTo(
+                                                b.nomIntrant!.toLowerCase()));
 
                                         List<Intrant> produitsEtrangers =
                                             intrantList
@@ -1143,9 +1145,11 @@ class _IntrantPageState extends State<IntrantPage> {
                                           return nomCat.contains(searchText);
                                         }).toList();
 
- produitsEtrangers.sort((a, b) => a.nomIntrant!
-                          .toLowerCase()
-                          .compareTo(b.nomIntrant!.toLowerCase()));
+                                        produitsEtrangers.sort((a, b) => a
+                                            .nomIntrant!
+                                            .toLowerCase()
+                                            .compareTo(
+                                                b.nomIntrant!.toLowerCase()));
 
                                         List<Intrant> filteredSearch =
                                             intrantList.where((cate) {
@@ -1221,8 +1225,12 @@ class _IntrantPageState extends State<IntrantPage> {
                                                               );
                                                             },
                                                             child: Card(
-                                                              color: Color(
-                                                                  0xFFFAFAFA),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      244,
+                                                                      244),
                                                               elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
@@ -1383,8 +1391,12 @@ class _IntrantPageState extends State<IntrantPage> {
                                                               );
                                                             },
                                                             child: Card(
-                                                              color: Color(
-                                                                  0xFFFAFAFA),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      244,
+                                                                      244),
                                                               elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
@@ -1542,10 +1554,11 @@ class _IntrantPageState extends State<IntrantPage> {
                                           return nomCat.contains(searchText);
                                         }).toList();
 
- produitsLocaux.sort((a, b) => a.nomIntrant!
-                          .toLowerCase()
-                          .compareTo(b.nomIntrant!.toLowerCase()));
-
+                                        produitsLocaux.sort((a, b) => a
+                                            .nomIntrant!
+                                            .toLowerCase()
+                                            .compareTo(
+                                                b.nomIntrant!.toLowerCase()));
 
                                         List<Intrant> produitsEtrangers =
                                             intrantList
@@ -1563,10 +1576,11 @@ class _IntrantPageState extends State<IntrantPage> {
                                           return nomCat.contains(searchText);
                                         }).toList();
 
- produitsEtrangers.sort((a, b) => a.nomIntrant!
-                          .toLowerCase()
-                          .compareTo(b.nomIntrant!.toLowerCase()));
-
+                                        produitsEtrangers.sort((a, b) => a
+                                            .nomIntrant!
+                                            .toLowerCase()
+                                            .compareTo(
+                                                b.nomIntrant!.toLowerCase()));
 
                                         List<Intrant> filteredSearch =
                                             intrantList.where((cate) {
@@ -1644,8 +1658,12 @@ class _IntrantPageState extends State<IntrantPage> {
                                                               );
                                                             },
                                                             child: Card(
-                                                              color: Color(
-                                                                  0xFFFAFAFA),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      244,
+                                                                      244),
                                                               elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
@@ -1806,8 +1824,12 @@ class _IntrantPageState extends State<IntrantPage> {
                                                               );
                                                             },
                                                             child: Card(
-                                                              color: Color(
-                                                                  0xFFFAFAFA),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      244,
+                                                                      244),
                                                               elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),

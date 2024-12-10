@@ -649,9 +649,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                 }).toList();
 
                                 filteredSearch.sort((a, b) => a.nomProduit!
-                          .toLowerCase()
-                          .compareTo(b.nomProduit!.toLowerCase()));
-
+                                    .toLowerCase()
+                                    .compareTo(b.nomProduit!.toLowerCase()));
 
                                 return filteredSearch.isEmpty
                                     ? SingleChildScrollView(
@@ -706,7 +705,8 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                                   );
                                                 },
                                                 child: Card(
-                                                  color: Color(0xFFFAFAFA),
+                                                  color: Color.fromARGB(
+                                                      255, 247, 244, 244),
                                                   elevation: 1,
                                                   margin: EdgeInsets.all(8),
                                                   child: Column(

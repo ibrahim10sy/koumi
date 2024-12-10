@@ -689,7 +689,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     }
 
                                     return DropdownFormField<Pays>(
-                                     emptyText: "Aucun pays trouvé",
+                                      emptyText: "Aucun pays trouvé",
                                       dropdownHeight: 200,
                                       decoration: InputDecoration(
                                           contentPadding:
@@ -820,7 +820,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     vertical: 10,
-                                                    horizontal:10),
+                                                    horizontal: 10),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(22),
@@ -834,7 +834,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     }
 
                                     return DropdownFormField<CategorieProduit>(
-                                     emptyText: "Aucune catégorie trouvé",
+                                      emptyText: "Aucune catégorie trouvé",
                                       dropdownHeight: 200,
                                       decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
@@ -1064,9 +1064,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                   return nomCat.contains(searchText);
                                 }).toList();
 
-  produitsLocaux.sort((a, b) => a.nomProduit!
-                          .toLowerCase()
-                          .compareTo(b.nomProduit!.toLowerCase()));
+                                produitsLocaux.sort((a, b) => a.nomProduit!
+                                    .toLowerCase()
+                                    .compareTo(b.nomProduit!.toLowerCase()));
 
                                 List<Stock> produitsEtrangers = stockListe
                                     .where((stock) =>
@@ -1080,10 +1080,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                   return nomCat.contains(searchText);
                                 }).toList();
 
- produitsEtrangers.sort((a, b) => a.nomProduit!
-                          .toLowerCase()
-                          .compareTo(b.nomProduit!.toLowerCase()));
-
+                                produitsEtrangers.sort((a, b) => a.nomProduit!
+                                    .toLowerCase()
+                                    .compareTo(b.nomProduit!.toLowerCase()));
 
                                 List<Stock> filteredSearch =
                                     stockListe.where((cate) {
@@ -1155,8 +1154,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           );
                                                         },
                                                         child: Card(
-                                                          color:
-                                                              Color(0xFFFAFAFA),
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              247,
+                                                              244,
+                                                              244),
                                                           elevation: 1,
                                                           margin:
                                                               EdgeInsets.all(8),
@@ -1346,8 +1348,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           );
                                                         },
                                                         child: Card(
-                                                          color:
-                                                              Color(0xFFFAFAFA),
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              247,
+                                                              244,
+                                                              244),
                                                           elevation: 1,
                                                           margin:
                                                               EdgeInsets.all(8),
@@ -1577,10 +1582,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                   return nomCat.contains(searchText);
                                 }).toList();
 
- produitsLocaux.sort((a, b) => a.nomProduit!
-                          .toLowerCase()
-                          .compareTo(b.nomProduit!.toLowerCase()));
-
+                                produitsLocaux.sort((a, b) => a.nomProduit!
+                                    .toLowerCase()
+                                    .compareTo(b.nomProduit!.toLowerCase()));
 
                                 List<Stock> produitsEtrangers = stockListe
                                     .where((stock) =>
@@ -1594,9 +1598,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                   return nomCat.contains(searchText);
                                 }).toList();
 
- produitsEtrangers.sort((a, b) => a.nomProduit!
-                          .toLowerCase()
-                          .compareTo(b.nomProduit!.toLowerCase()));
+                                produitsEtrangers.sort((a, b) => a.nomProduit!
+                                    .toLowerCase()
+                                    .compareTo(b.nomProduit!.toLowerCase()));
 
                                 List<Stock> filteredSearch =
                                     stockListe.where((cate) {

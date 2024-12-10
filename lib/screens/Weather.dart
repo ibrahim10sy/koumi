@@ -32,8 +32,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   List dates = [];
   List days = [];
 
- 
-
   List<String> hourlyTime = [];
   List<String> hourlyTemp = [];
   List<String> hourlyIcon = [];
@@ -62,11 +60,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void dispose() {
     streamSubscription?.cancel();
     super.dispose();
-  }
-
-  String convertToCelsius(double kelvin) {
-    return (kelvin - 273.15).toStringAsFixed(1) +
-        "°C"; // Conversion en °C avec un chiffre après la virgule
   }
 
   checkLocationStatus() async {
@@ -156,10 +149,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
     });
   }
 
+  double kelvinToCelsius(double? kelvin) {
+    return kelvin! - 273.15;
+  }
+
   getCityName() async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(12.577901, -8.062953);
-    // List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+    // List<Placemark> placemarks =
+    // await placemarkFromCoordinates(12.577901, -8.062953);
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
 
     Placemark place = placemarks[0];
 
@@ -170,9 +167,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   getWeatherData() async {
     try {
-      final response = await http
-          .get(Uri.parse(OpenWeatherAPI().apiUrl(12.577901, -8.062953)));
-      // final response = await http.get(Uri.parse(OpenWeatherAPI().apiUrl(lat, lon)));
+      // final response = await http
+      // .get(Uri.parse(OpenWeatherAPI().apiUrl(12.577901, -8.062953)));
+      final response =
+          await http.get(Uri.parse(OpenWeatherAPI().apiUrl(lat, lon)));
 
       if (response.statusCode == 200) {
         var jsonString = jsonDecode(response.body);
@@ -200,42 +198,63 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   getDaysAndDates() {
     for (int i = 0; i < weatherData!.getDailyWeather().daily.length; i++) {
-      // int? kelvinMinTemp = weatherData?.getDailyWeather().daily[i].dt;
-      // int? kelvinMaxTemp = weatherData?.getDailyWeather().daily[i].dt!;
-      //   getDay(convertToCelsius(kelvinMinTemp!.toDouble()));
-      //   getDate(convertToCelsius(kelvinMaxTemp!.toDouble()));
-      getDay(weatherData?.getDailyWeather().daily[i].dt);
+      double dailyTempKelvin =
+          weatherData!.getDailyWeather().daily[i].temp!.day!;
+      double dailyTempCelsius = kelvinToCelsius(dailyTempKelvin);
+      // int? dateTempKelvin =
+      //     weatherData?.getDailyWeather().daily[i].dt;
+      // double dateTempCelsius = kelvinToCelsius(dateTempKelvin!.toDouble());
+
+      print(
+          "Jour ${getDay(weatherData!.getDailyWeather().daily[i].dt)} : ${dailyTempCelsius.round()}°C");
+      // getDay(dailyTempCelsius.round());
+      // getDay(weatherData?.getDailyWeather().daily[i].dt);
+      // getDate(dateTempCelsius);
       getDate(weatherData?.getDailyWeather().daily[i].dt);
     }
+     setState(() {}); 
   }
 
   getHourlyTime() {
     for (int i = 0; i < weatherData!.getHourlyWeather().hourly.length; i++) {
-      // int? kelvinMinTemp = weatherData?.getHourlyWeather().hourly[i].dt
       getHours(weatherData?.getHourlyWeather().hourly[i].dt);
     }
   }
 
+  getHourlyData() {
+    for (int i = 0; i < weatherData!.getHourlyWeather().hourly.length; i++) {
+      // Conversion de la température en Celsius
+      double tempInKelvin = weatherData!.getHourlyWeather().hourly[i].temp!;
+      hourlyTemp.add(kelvinToCelsius(tempInKelvin).round().toString());
+
+      hourlyIcon.add(weatherData!
+          .getHourlyWeather()
+          .hourly[i]
+          .weather![0]
+          .icon
+          .toString());
+    }
+  }
+
   String getDayByIndex(int index) {
-  List<Map<String, dynamic>> days = [
-    {'index': 1, 'day': 'Lundi'},
-    {'index': 2, 'day': 'Mardi'},
-    {'index': 3, 'day': 'Mercredi'},
-    {'index': 4, 'day': 'Jeudi'},
-    {'index': 5, 'day': 'Vendredi'},
-    {'index': 6, 'day': 'Samedi'},
-    {'index': 7, 'day': 'Dimanche'},
-  ];
+    List<Map<String, dynamic>> days = [
+      {'index': 1, 'day': 'Lundi'},
+      {'index': 2, 'day': 'Mardi'},
+      {'index': 3, 'day': 'Mercredi'},
+      {'index': 4, 'day': 'Jeudi'},
+      {'index': 5, 'day': 'Vendredi'},
+      {'index': 6, 'day': 'Samedi'},
+      {'index': 7, 'day': 'Dimanche'},
+    ];
 
-  // Recherche du jour par index
-  final day = days.firstWhere(
-    (day) => day['index'] == index,
-    orElse: () => {'day': 'Jour introuvable'},
-  );
+    // Recherche du jour par index
+    final day = days.firstWhere(
+      (day) => day['index'] == index,
+      orElse: () => {'day': 'Jour introuvable'},
+    );
 
-  return day['day'];
-}
-
+    return day['day'];
+  }
 
   String getDay(final day) {
     DateTime time = DateTime.fromMillisecondsSinceEpoch(day * 1000);
@@ -244,7 +263,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
     days.add(dayName);
     return dayName;
   }
-
 
   String getDate(final day) {
     DateTime time = DateTime.fromMillisecondsSinceEpoch(day * 1000);
@@ -261,23 +279,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   getHours(final day) {
     hourlyTime.add(getTime(day));
-  }
-
-  getHourlyData() {
-    for (int i = 0; i < weatherData!.getHourlyWeather().hourly.length; i++) {
-      hourlyTemp.add(
-          weatherData!.getHourlyWeather().hourly[i].temp!.round().toString());
-
-      hourlyIcon.add(weatherData!
-          .getHourlyWeather()
-          .hourly[i]
-          .weather![0]
-          .icon
-          .toString());
-      //   double kelvinTemp = weatherData!.getHourlyWeather().hourly[i].temp!;
-      // hourlyTemp.add(convertToCelsius(kelvinTemp)); // Convertir en °C
-      // hourlyIcon.add(weatherData!.getHourlyWeather().hourly[i].weather![0].icon.toString());
-    }
   }
 
   @override
@@ -320,26 +321,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       date: dates[1],
                     ),
                     Tabs(
+                      // day: days[2],
                       day: getDayByIndex(2),
                       date: dates[2],
                     ),
                     Tabs(
+                      // day: days[3],
                       day: getDayByIndex(3),
                       date: dates[3],
                     ),
                     Tabs(
+                      // day: days[4],
                       day: getDayByIndex(4),
                       date: dates[4],
                     ),
                     Tabs(
+                      // day: days[5],
                       day: getDayByIndex(5),
                       date: dates[5],
                     ),
                     Tabs(
+                      // day: days[6],
                       day: getDayByIndex(6),
                       date: dates[6],
                     ),
                     Tabs(
+                      // day: days[7],
                       day: getDayByIndex(7),
                       date: dates[7],
                     ),
@@ -368,17 +375,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               '',
                           humidity:
                               '${weatherData?.getCurrentWeather().current.humidity.toString()}%',
-                          temp: weatherData
+                          temp:  kelvinToCelsius(weatherData
                                   ?.getCurrentWeather()
                                   .current
-                                  .temp!
-                                  .round()
-                                  .toString() ??
+                                  .temp).round().toString() ??
                               '',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[0].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[0].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[0].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[0].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[0].temp?.max!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[0].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getCurrentWeather()
                                   .current
@@ -402,13 +409,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[0].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[0].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[0].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[0].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[0].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[0].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[0].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[0].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[0].temp?.night!).round().toString()}",
                           length:
                               weatherData?.getHourlyWeather().hourly.length ??
                                   0,
@@ -446,9 +453,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[1].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[1].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[1].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[1].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[1].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[1].temp?.max!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[1].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[1]
@@ -472,13 +481,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[1].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[1].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[1].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[1].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[1].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[1].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[1].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[1].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[1].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[1].sunrise),
                           sunset: getTime(
@@ -510,9 +519,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[2].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[2].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[2].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[2].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[2].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[2].temp?.max!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[2].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[2]
@@ -536,13 +547,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[2].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[2].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[2].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[2].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[2].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[2].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[2].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[2].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[2].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[2].sunrise),
                           sunset: getTime(
@@ -574,9 +585,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[3].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[3].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[3].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[3].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[3].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[3].temp?.max!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[3].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[3]
@@ -600,13 +613,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[3].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[3].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[3].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[3].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[3].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[3].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[3].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[3].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[3].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[3].sunrise),
                           sunset: getTime(
@@ -638,9 +651,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[4].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[4].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[4].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[4].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[4].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[4].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[4].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[4]
@@ -664,13 +679,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[4].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[4].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[4].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[4].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[4].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[4].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[4].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[4].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[4].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[4].sunrise),
                           sunset: getTime(
@@ -702,9 +717,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[5].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[5].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[5].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[5].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[5].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[5].temp?.max!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[5].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[5]
@@ -728,13 +745,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[5].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[5].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[5].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[5].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[5].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[5].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[5].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[5].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[5].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[5].sunrise),
                           sunset: getTime(
@@ -766,9 +783,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[6].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[6].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[6].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[6].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[6].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[6].temp?.max!).round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[6]
@@ -792,13 +810,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[6].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[6].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[6].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[6].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[6].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[6].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[6].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[6].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[6].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[6].sunrise),
                           sunset: getTime(
@@ -830,9 +848,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           humidity:
                               '${weatherData?.getDailyWeather().daily[7].humidity.toString()}%',
                           tempMin:
-                              "${weatherData?.getDailyWeather().daily[7].temp?.min!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[7].temp?.min!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[7].temp?.min!.round().toString()}",
                           tempMax:
-                              "${weatherData?.getDailyWeather().daily[7].temp?.max!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[7].temp?.max!).round().toString()}",
+                              // "${weatherData?.getDailyWeather().daily[7].temp?.max!.round().toString()}",
                           icon: weatherData
                                   ?.getDailyWeather()
                                   .daily[7]
@@ -856,13 +876,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           windGust:
                               "${weatherData?.getDailyWeather().daily[7].windGust?.round().toString()} m/s",
                           morningTemp:
-                              "${weatherData?.getDailyWeather().daily[7].temp?.morn!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[7].temp?.morn!).round().toString()}",
                           dayTemp:
-                              "${weatherData?.getDailyWeather().daily[7].temp?.day!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[7].temp?.day!).round().toString()}",
                           eveningTemp:
-                              "${weatherData?.getDailyWeather().daily[7].temp?.eve!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[7].temp?.eve!).round().toString()}",
                           nightTemp:
-                              "${weatherData?.getDailyWeather().daily[7].temp?.night!.round().toString()}",
+                              "${kelvinToCelsius(weatherData?.getDailyWeather().daily[7].temp?.night!).round().toString()}",
                           sunrise: getTime(
                               weatherData?.getDailyWeather().daily[7].sunrise),
                           sunset: getTime(

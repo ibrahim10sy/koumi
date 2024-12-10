@@ -454,9 +454,11 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                               .toLowerCase();
                                           return libelle.contains(searchText);
                                         }).toList();
-                                         filtereSearch.sort((a, b) => a.nomVehicule
-                          .toLowerCase()
-                          .compareTo(b.nomVehicule.toLowerCase()));
+                                        filtereSearch.sort((a, b) => a
+                                            .nomVehicule
+                                            .toLowerCase()
+                                            .compareTo(
+                                                b.nomVehicule.toLowerCase()));
                                         return vehiculeListe.isEmpty
                                             ? SingleChildScrollView(
                                                 child: Padding(
@@ -511,8 +513,8 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                             filtereSearch[index])));
                                                       },
                                                       child: Card(
-                                                        color:
-                                                            Color(0xFFFAFAFA),
+                                                        color: Color.fromARGB(
+                                                            255, 247, 244, 244),
                                                         elevation: 1,
                                                         margin:
                                                             EdgeInsets.all(8),

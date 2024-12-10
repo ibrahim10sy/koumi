@@ -849,7 +849,8 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                     );
                                                   },
                                                   child: Card(
-                                                    color: Color(0xFFFAFAFA),
+                                                    color: Color.fromARGB(
+                                                        255, 247, 244, 244),
                                                     elevation: 1,
                                                     margin: EdgeInsets.all(8),
                                                     child: Column(

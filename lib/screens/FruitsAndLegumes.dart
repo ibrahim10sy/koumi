@@ -1245,8 +1245,12 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                color: Color(
-                                                                    0xFFFAFAFA),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        247,
+                                                                        244,
+                                                                        244),
                                                                 elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
@@ -1423,8 +1427,12 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                color: Color(
-                                                                    0xFFFAFAFA),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        247,
+                                                                        244,
+                                                                        244),
                                                                 elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
@@ -1679,8 +1687,12 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                               );
                                                             },
                                                             child: Card(
-                                                              color: Color(
-                                                                  0xFFFAFAFA),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      244,
+                                                                      244),
                                                               elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),
@@ -1860,8 +1872,12 @@ class _FruitAndLegumesState extends State<FruitAndLegumes> {
                                                               );
                                                             },
                                                             child: Card(
-                                                              color: Color(
-                                                                  0xFFFAFAFA),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      244,
+                                                                      244),
                                                               elevation: 1,
                                                               margin: EdgeInsets
                                                                   .all(8),

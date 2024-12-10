@@ -1291,8 +1291,12 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                color: Color(
-                                                                    0xFFFAFAFA),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        247,
+                                                                        244,
+                                                                        244),
                                                                 elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
@@ -1468,8 +1472,12 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                color: Color(
-                                                                    0xFFFAFAFA),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        247,
+                                                                        244,
+                                                                        244),
                                                                 elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
@@ -1727,8 +1735,12 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                color: Color(
-                                                                    0xFFFAFAFA),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        247,
+                                                                        244,
+                                                                        244),
                                                                 elevation: 1,
                                                                 margin:
                                                                     EdgeInsets
@@ -1905,8 +1917,12 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                 );
                                                               },
                                                               child: Card(
-                                                                color: Color(
-                                                                    0xFFFAFAFA),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        247,
+                                                                        244,
+                                                                        244),
                                                                 elevation: 1,
                                                                 margin:
                                                                     EdgeInsets

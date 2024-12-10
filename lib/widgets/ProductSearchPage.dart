@@ -54,7 +54,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         if (_recentSearches.length > 5) {
           _recentSearches = _recentSearches.sublist(0, 5);
         }
-        //voir 
+        //voir
         prefs.setStringList('search_history', _recentSearches);
       }
     });
@@ -278,7 +278,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                                     );
                                   },
                                   child: Card(
-                                    color: Color(0xFFFAFAFA),
+                                    color: Color.fromARGB(255, 247, 244, 244),
                                     elevation: 1,
                                     margin: EdgeInsets.all(8),
                                     child: Column(
