@@ -26,8 +26,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductsByStoresScreen extends StatefulWidget {
-  String? id, nom, pays;
-  ProductsByStoresScreen({super.key, this.id, this.nom, this.pays});
+  String? id, nom, pays, localite, contact;
+  Acteur? acteur;
+  ProductsByStoresScreen(
+      {super.key,
+      this.id,
+      this.nom,
+      this.pays,
+      this.localite,
+      this.contact,
+      this.acteur});
 
   @override
   State<ProductsByStoresScreen> createState() => _ProductsByStoresScreenState();
@@ -350,7 +358,16 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CodePays().getFlagsApp(p!),
-            )
+            ),
+            IconButton(
+              onPressed: () {
+                _bottomSheet();
+              },
+              icon: Icon(
+                Icons.info_outlined,
+                color: Colors.white,
+              ),
+            ),
           ]),
       body: GestureDetector(
         onTap: () {
@@ -1332,97 +1349,6 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
   }
 
   // Define the _buildShimmerEffects function
-  Widget _buildShimmerEffects() {
-    return Card(
-      margin: EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 85,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            title: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 16,
-                color: Colors.grey,
-              ),
-            ),
-            subtitle: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 15,
-                color: Colors.grey,
-                margin: EdgeInsets.only(top: 4),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                height: 15,
-                color: Colors.grey,
-                margin: EdgeInsets.only(top: 4),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItem(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.italic,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 16),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 16),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEtat(bool isState) {
-    return Container(
-      width: 15,
-      height: 15,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: isState ? Colors.green : Colors.red,
-      ),
-    );
-  }
 
   DropdownButtonFormField<String> buildDropdown(
       List<CategorieProduit> typeList) {
@@ -1488,6 +1414,152 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),
         ),
+      ),
+    );
+  }
+
+  void _bottomSheet() {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height - 200,
+      ),
+      isDismissible: true,
+      isScrollControlled: true,
+      enableDrag: true,
+      showDragHandle: true,
+      context: context,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.97,
+          minChildSize: 0.97,
+          maxChildSize: 0.97,
+          builder: (_, controller) {
+            return Container(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                color: Colors.white,
+              ),
+              child: ListView(
+                controller: controller,
+                children: [
+                  // Title Section
+                  Text(
+                    "Informations sur le magasin et le propriétaire",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                      fontSize: 22,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Store Information
+                  _buildInfoTile(
+                    icon: Icons.store,
+                    title: widget.nom ?? "Nom du magasin",
+                    subtitle: "Le nom du magasin",
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.location_on,
+                    title: widget.localite ?? "Localité",
+                    subtitle: "Où se trouve le magasin",
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.flag,
+                    title: widget.pays ?? "Pays",
+                    subtitle: "Le pays du magasin",
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.phone,
+                    title: widget.contact ?? "Contact",
+                    subtitle: "Le numéro de contact",
+                  ),
+                  Divider(indent: 10, endIndent: 10),
+
+                  // Owner Information Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      "Informations sur le propriétaire",
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                    ),
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.person,
+                    title: widget.acteur!.nomActeur ?? "Nom du propriétaire",
+                    subtitle: "Le nom du propriétaire",
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.phone,
+                    title: widget.acteur!.whatsAppActeur ??
+                        "Téléphone du propriétaire",
+                    subtitle: "Le numéro de téléphone du propriétaire",
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.email,
+                    title:
+                        widget.acteur!.emailActeur ?? "Email du propriétaire",
+                    subtitle: "L'email du propriétaire",
+                  ),
+                  _buildInfoTile(
+                    icon: Icons.location_on,
+                    title: widget.acteur!.adresseActeur ??
+                        "Adresse du propriétaire",
+                    subtitle: "L'adresse du propriétaire",
+                  ),
+                  Divider(indent: 10, endIndent: 10),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+// Helper function to create ListTile with custom styles
+  Widget _buildInfoTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(
+          icon,
+          color: Colors.orange,
+          size: 28,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.black87,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[600],
+          ),
+        ),
+        horizontalTitleGap: 8,
       ),
     );
   }

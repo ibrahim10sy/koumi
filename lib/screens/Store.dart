@@ -1106,7 +1106,12 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                           .nomMagasin,
                                                                       pays: produitsLocaux[
                                                                               index]
-                                                                          .pays),
+                                                                          .pays,
+                                                                       localite:  produitsLocaux[index].localiteMagasin,
+                                                                        contact: produitsLocaux[index].contactMagasin ,
+                                                                          acteur: produitsLocaux[index].acteur,
+                                                                          ),
+                                                                      
                                                                 ),
                                                               );
                                                             },
@@ -1153,7 +1158,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     padding: const EdgeInsets
                                                                         .symmetric(
                                                                         horizontal:
-                                                                            3,
+                                                                            0,
                                                                         vertical:
                                                                             5),
                                                                     child:
@@ -1183,31 +1188,72 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         SizedBox(
                                                                             height:
                                                                                 5),
-                                                                        Row(
-                                                                          children: [
-                                                                            Icon(
-                                                                              Icons.location_on,
-                                                                              color: d_colorOr, // Couleur de l'icône
-                                                                              size: 24.0,
-                                                                            ),
-                                                                            SizedBox(width: 5),
-                                                                            Text(
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              produitsLocaux[index].localiteMagasin!,
-                                                                              style: TextStyle(
-                                                                                fontSize: 15,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Colors.black87,
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.location_on,
+                                                                                color: d_colorOr, // Couleur de l'icône
+                                                                                size: 24.0,
                                                                               ),
-                                                                            ),
-                                                                          ],
+                                                                              SizedBox(width: 5),
+                                                                              Text(
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                maxLines: 2,
+                                                                                produitsLocaux[index].localiteMagasin!,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 15,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
-                                                                  _buildItem(produitsLocaux[
-                                                                          index]
-                                                                      .contactMagasin!)
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            3,
+                                                                        vertical:
+                                                                            5),
+                                                                    child:
+                                                                        Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topLeft,
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Icon(
+                                                                            Icons.phone, // Icône de localisation
+                                                                            color:
+                                                                                d_colorOr, // Couleur de l'icône
+                                                                            size:
+                                                                                24.0, // Taille de l'icône
+                                                                          ),
+                                                                          SizedBox(
+                                                                              width: 5),
+                                                                          Text(
+                                                                            produitsLocaux[index].contactMagasin!,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            style: const TextStyle(
+                                                                                color: Colors.black,
+                                                                                fontWeight: FontWeight.w800,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                fontSize: 15),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -1283,6 +1329,11 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     pays: produitsEtrangers[
                                                                             index]
                                                                         .pays,
+                                                                    localite: produitsEtrangers[
+                                                                            index].localiteMagasin,
+                                                                    contact: produitsEtrangers[
+                                                                            index].contactMagasin,
+                                                                    acteur: produitsEtrangers[index].acteur,
                                                                   ),
                                                                 ),
                                                               );
@@ -1330,7 +1381,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     padding: const EdgeInsets
                                                                         .symmetric(
                                                                         horizontal:
-                                                                            3,
+                                                                            0,
                                                                         vertical:
                                                                             5),
                                                                     child:
@@ -1360,33 +1411,76 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         SizedBox(
                                                                             height:
                                                                                 5),
-                                                                        Row(
-                                                                          children: [
-                                                                            Icon(
-                                                                              Icons.location_on,
-                                                                              color: d_colorOr, // Couleur de l'icône
-                                                                              size: 24.0,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 5,
-                                                                            ),
-                                                                            Text(
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              produitsEtrangers[index].localiteMagasin!,
-                                                                              style: TextStyle(
-                                                                                fontSize: 16,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Colors.black87,
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.location_on,
+                                                                                color: d_colorOr, // Couleur de l'icône
+                                                                                size: 24.0,
                                                                               ),
-                                                                            ),
-                                                                          ],
+                                                                              SizedBox(
+                                                                                width: 5,
+                                                                              ),
+                                                                              Text(
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                maxLines: 2,
+                                                                                produitsEtrangers[index].localiteMagasin!,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 16,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.black87,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
-                                                                  _buildItem(produitsEtrangers[
-                                                                          index]
-                                                                      .contactMagasin!)
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            3,
+                                                                        vertical:
+                                                                            5),
+                                                                    child:
+                                                                        Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .topLeft,
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Icon(
+                                                                            Icons.phone, // Icône de localisation
+                                                                            color:
+                                                                                d_colorOr, // Couleur de l'icône
+                                                                            size:
+                                                                                24.0, // Taille de l'icône
+                                                                          ),
+                                                                          SizedBox(
+                                                                              width: 5),
+                                                                          Text(
+                                                                            produitsEtrangers[index].contactMagasin!,
+                                                                            maxLines:
+                                                                                2,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            style: const TextStyle(
+                                                                                color: Colors.black,
+                                                                                fontWeight: FontWeight.w800,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                fontSize: 15),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -1586,6 +1680,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             .nomMagasin,
                                                                         pays: produitsLocaux[index]
                                                                             .pays,
+                                                                        localite:  produitsLocaux[index].localiteMagasin,
+                                                                        contact: produitsLocaux[index].contactMagasin,
+                                                                        acteur: produitsLocaux[index].acteur,
                                                                       ),
                                                                     ),
                                                                   );
@@ -1637,7 +1734,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         padding: const EdgeInsets
                                                                             .symmetric(
                                                                             horizontal:
-                                                                                3,
+                                                                                0,
                                                                             vertical:
                                                                                 5),
                                                                         child:
@@ -1661,31 +1758,62 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                               ),
                                                                             ),
                                                                             SizedBox(height: 5),
-                                                                            Row(
-                                                                              children: [
-                                                                                Icon(
-                                                                                  Icons.location_on,
-                                                                                  color: d_colorOr, // Couleur de l'icône
-                                                                                  size: 24.0,
-                                                                                ),
-                                                                                SizedBox(width: 5),
-                                                                                Text(
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                  produitsLocaux[index].localiteMagasin!,
-                                                                                  style: TextStyle(
-                                                                                    fontSize: 16,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Colors.black87,
+                                                                            Align(
+                                                                              alignment: Alignment.topLeft,
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.location_on,
+                                                                                    color: d_colorOr, // Couleur de l'icône
+                                                                                    size: 24.0,
                                                                                   ),
-                                                                                ),
-                                                                              ],
+                                                                                  SizedBox(width: 5),
+                                                                                  Text(
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    maxLines: 2,
+                                                                                    produitsLocaux[index].localiteMagasin!,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 16,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Colors.black87,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                           ],
                                                                         ),
                                                                       ),
-                                                                      _buildItem(
-                                                                          produitsLocaux[index]
-                                                                              .contactMagasin!)
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                3,
+                                                                            vertical:
+                                                                                5),
+                                                                        child:
+                                                                            Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.phone, // Icône de localisation
+                                                                                color: d_colorOr, // Couleur de l'icône
+                                                                                size: 24.0, // Taille de l'icône
+                                                                              ),
+                                                                              SizedBox(width: 5),
+                                                                              Text(
+                                                                                produitsLocaux[index].contactMagasin!,
+                                                                                maxLines: 2,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w800, overflow: TextOverflow.ellipsis, fontSize: 15),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -1762,6 +1890,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             .nomMagasin,
                                                                         pays: produitsEtrangers[index]
                                                                             .pays,
+                                                                        localite:  produitsEtrangers[index].localiteMagasin,
+                                                                        contact: produitsEtrangers[index].contactMagasin ,
+                                                                        acteur: produitsEtrangers[index].acteur,
                                                                       ),
                                                                     ),
                                                                   );
@@ -1813,7 +1944,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         padding: const EdgeInsets
                                                                             .symmetric(
                                                                             horizontal:
-                                                                                3,
+                                                                                0,
                                                                             vertical:
                                                                                 5),
                                                                         child:
@@ -1836,31 +1967,62 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                               ),
                                                                             ),
                                                                             SizedBox(height: 5),
-                                                                            Row(
-                                                                              children: [
-                                                                                Icon(
-                                                                                  Icons.location_on,
-                                                                                  color: d_colorOr, // Couleur de l'icône
-                                                                                  size: 24.0,
-                                                                                ),
-                                                                                SizedBox(width: 5),
-                                                                                Text(
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                  produitsEtrangers[index].localiteMagasin!,
-                                                                                  style: TextStyle(
-                                                                                    fontSize: 15,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Colors.black87,
+                                                                            Align(
+                                                                              alignment: Alignment.topLeft,
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.location_on,
+                                                                                    color: d_colorOr, // Couleur de l'icône
+                                                                                    size: 24.0,
                                                                                   ),
-                                                                                ),
-                                                                              ],
+                                                                                  SizedBox(width: 5),
+                                                                                  Text(
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    maxLines: 2,
+                                                                                    produitsEtrangers[index].localiteMagasin!,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 15,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      color: Colors.black87,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                           ],
                                                                         ),
                                                                       ),
-                                                                      _buildItem(
-                                                                          produitsEtrangers[index]
-                                                                              .contactMagasin!)
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                3,
+                                                                            vertical:
+                                                                                5),
+                                                                        child:
+                                                                            Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.phone, // Icône de localisation
+                                                                                color: d_colorOr, // Couleur de l'icône
+                                                                                size: 24.0, // Taille de l'icône
+                                                                              ),
+                                                                              SizedBox(width: 5),
+                                                                              Text(
+                                                                                produitsEtrangers[index].contactMagasin!,
+                                                                                maxLines: 2,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w800, overflow: TextOverflow.ellipsis, fontSize: 15),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -1967,25 +2129,28 @@ class _StoreScreenState extends State<StoreScreen> {
   Widget _buildItem(String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      child: Row(
-        children: [
-          Icon(
-            Icons.phone, // Icône de localisation
-            color: d_colorOr, // Couleur de l'icône
-            size: 24.0, // Taille de l'icône
-          ),
-          SizedBox(width: 5),
-          Text(
-            value,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 15),
-          ),
-        ],
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Row(
+          children: [
+            Icon(
+              Icons.phone, // Icône de localisation
+              color: d_colorOr, // Couleur de l'icône
+              size: 24.0, // Taille de l'icône
+            ),
+            SizedBox(width: 5),
+            Text(
+              value,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: 15),
+            ),
+          ],
+        ),
       ),
     );
   }
