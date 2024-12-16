@@ -1174,7 +1174,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                             8.0),
                                                                 child:
                                                                     Container(
-                                                                  height: 85,
+                                                                  height: 80,
                                                                   child: produitsLocaux[index].photo ==
                                                                               null ||
                                                                           produitsLocaux[index]
@@ -1368,7 +1368,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                             8.0),
                                                                 child:
                                                                     Container(
-                                                                  height: 85,
+                                                                  height: 80,
                                                                   child: produitsEtrangers[index].photo ==
                                                                               null ||
                                                                           produitsEtrangers[index]
@@ -1696,7 +1696,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                               8.0),
                                                                   child:
                                                                       Container(
-                                                                    height: 85,
+                                                                    height: 80,
                                                                     child: produitsLocaux[index].photo ==
                                                                                 null ||
                                                                             produitsLocaux[index]
@@ -1890,7 +1890,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                                               8.0),
                                                                   child:
                                                                       Container(
-                                                                    height: 85,
+                                                                    height: 80,
                                                                     child: produitsEtrangers[index].photo ==
                                                                                 null ||
                                                                             produitsEtrangers[index]
@@ -2055,7 +2055,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

@@ -1185,7 +1185,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1364,7 +1364,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1630,7 +1630,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1809,7 +1809,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1952,7 +1952,7 @@ class _SemenceAndPlantState extends State<SemenceAndPlant> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

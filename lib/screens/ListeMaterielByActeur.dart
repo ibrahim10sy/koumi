@@ -396,10 +396,9 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                                 return libelle.contains(searchText);
                               }).toList();
 
-                               filtereSearch.sort((a, b) => a.nom!
-                          .toLowerCase()
-                          .compareTo(b.nom!.toLowerCase()));
-
+                              filtereSearch.sort((a, b) => a.nom!
+                                  .toLowerCase()
+                                  .compareTo(b.nom!.toLowerCase()));
 
                               if (filtereSearch.isEmpty &&
                                   _searchController.text.isNotEmpty) {
@@ -810,7 +809,7 @@ class _ListeMaterielByActeurState extends State<ListeMaterielByActeur> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

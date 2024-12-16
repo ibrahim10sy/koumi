@@ -529,7 +529,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                                                                       .circular(
                                                                           8.0),
                                                               child: SizedBox(
-                                                                height: 85,
+                                                                height: 80,
                                                                 child: filtereSearch[index].photoVehicule ==
                                                                             null ||
                                                                         filtereSearch[index]
@@ -833,7 +833,7 @@ class _VehiculeActeurState extends State<VehiculeActeur> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

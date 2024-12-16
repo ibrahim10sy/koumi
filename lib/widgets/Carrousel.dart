@@ -102,8 +102,8 @@ class Carrousels extends StatelessWidget {
 }
 
 class Carrousel extends StatefulWidget {
-  String? pays;
-  Carrousel({super.key, this.pays});
+ 
+  Carrousel({super.key});
 
   @override
   _CarrouselState createState() => _CarrouselState();
@@ -179,7 +179,10 @@ class _CarrouselState extends State<Carrousel> {
             ],
           ),
           content: const Text(
-              'Cette application utilise votre position pour vous offrir des services personnalisés, tels que l\'affichage des produits en fonction de votre localisation et le suivi de vos trajets. Acceptez-vous de partager votre position ?'),
+              'Cette application utilise votre position pour vous offrir des services personnalisés, tels que l\'affichage des produits en fonction de votre localisation et le suivi de vos trajets. Acceptez-vous de partager votre position ?'
+              ,textAlign: TextAlign.justify,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
           actions: [
             TextButton(
               onPressed: () {

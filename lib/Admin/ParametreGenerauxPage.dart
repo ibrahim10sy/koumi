@@ -429,8 +429,8 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                             placeholder: AssetImage(
                                                 "assets/images/fav.png"),
                                             placeholderFit: BoxFit.cover,
-                                            width: 85,
-                                            height: 85,
+                                            width:85,
+                                            height:85,
                                             fit: BoxFit.cover,
                                             imageErrorBuilder:
                                                 (context, error, stackTrace) {
@@ -438,8 +438,8 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                                               return Image.asset(
                                                 'assets/images/fav.png',
                                                 fit: BoxFit.contain,
-                                                width: 85,
-                                                height: 85,
+                                                width:85,
+                                                height:85,
                                               );
                                             },
                                           ),
@@ -913,7 +913,7 @@ class _ParametreGenerauxPageState extends State<ParametreGenerauxPage> {
                   const SizedBox(height: 10),
                   Container(
                     width: double.infinity,
-                    height: 80,
+                    height: 85,
                     color: Colors.white,
                   ),
                 ],

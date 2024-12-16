@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AnimatedBackground extends StatefulWidget {
@@ -45,7 +44,10 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFFFFFF), _colorAnimation.value!], // Use _colorAnimation.value!
+              colors: [
+                Color(0xFFFFFF),
+                _colorAnimation.value!
+              ], // Use _colorAnimation.value!
             ),
           ),
         );
@@ -253,7 +255,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
 //   Widget _textFieldOTP({bool first, last}) {
 //     return Container(
-//       height: 85,
+//       height:80,
 //       child: AspectRatio(
 //         aspectRatio: 1.0,
 //         child: TextField(

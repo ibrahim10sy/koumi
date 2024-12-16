@@ -719,7 +719,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                                                             BorderRadius
                                                                 .circular(8.0),
                                                         child: SizedBox(
-                                                          height: 85,
+                                                          height: 80,
                                                           child: filteredSearch[
                                                                               index]
                                                                           .photo ==
@@ -1099,7 +1099,7 @@ class _MyProductScreenState extends State<MyProductScreen> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

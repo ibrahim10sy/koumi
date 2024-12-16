@@ -2087,7 +2087,7 @@ class _ComplementAlimentaireState extends State<ComplementAlimentaire> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

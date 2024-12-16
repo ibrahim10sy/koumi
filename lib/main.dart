@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';   
-import 'package:koumi/providers/ActeurProvider.dart';
+import 'package:koumi/providers/ActeurProvider.dart'; 
 import 'package:koumi/providers/CartProvider.dart';
-import 'package:koumi/providers/CountryProvider.dart';
+import 'package:koumi/providers/CountryProvider.dart'; 
 import 'package:koumi/providers/ParametreGenerauxProvider.dart';
 import 'package:koumi/service/ActeurService.dart';
 import 'package:koumi/service/AlerteService.dart';

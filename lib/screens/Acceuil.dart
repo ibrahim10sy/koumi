@@ -59,7 +59,7 @@ class _AccueilState extends State<Accueil> {
       appBar: const CustomAppBar(),
       body: ListView(
         children: [
-          SizedBox(height: 180, child: Carrousel(pays: detectedCountry)),
+          SizedBox(height: 180, child: Carrousel()),
           const SizedBox(
             height: 10,
           ),

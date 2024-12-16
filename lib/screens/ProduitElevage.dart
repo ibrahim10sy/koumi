@@ -1313,7 +1313,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            80,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1494,7 +1494,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            80,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1757,7 +1757,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            80,
                                                                         child: produitsLocaux[index].photo == null ||
                                                                                 produitsLocaux[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -1939,7 +1939,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                                                                       child:
                                                                           Container(
                                                                         height:
-                                                                            85,
+                                                                            80,
                                                                         child: produitsEtrangers[index].photo == null ||
                                                                                 produitsEtrangers[index].photo!.isEmpty
                                                                             ? Image.asset(
@@ -2083,7 +2083,7 @@ class _ProduitElevageState extends State<ProduitElevage> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

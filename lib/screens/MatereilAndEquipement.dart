@@ -1152,13 +1152,13 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       child:
                                                                           SizedBox(
                                                                         height:
-                                                                            85,
+                                                                            80,
                                                                         child: produitsLocaux[index].photoMateriel == null ||
                                                                                 produitsLocaux[index].photoMateriel!.isEmpty
                                                                             ? Image.asset(
                                                                                 "assets/images/default_image.png",
                                                                                 fit: BoxFit.cover,
-                                                                                // height: 85,
+                                                                                // height:80,
                                                                               )
                                                                             : CachedNetworkImage(
                                                                                 imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsLocaux[index].idMateriel}/image",
@@ -1329,13 +1329,13 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                       child:
                                                                           SizedBox(
                                                                         height:
-                                                                            85,
+                                                                            80,
                                                                         child: produitsEtrangers[index].photoMateriel == null ||
                                                                                 produitsEtrangers[index].photoMateriel!.isEmpty
                                                                             ? Image.asset(
                                                                                 "assets/images/default_image.png",
                                                                                 fit: BoxFit.cover,
-                                                                                // height: 85,
+                                                                                // height:80,
                                                                               )
                                                                             : CachedNetworkImage(
                                                                                 imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsEtrangers[index].idMateriel}/image",
@@ -1621,12 +1621,12 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                           child:
                                                                               SizedBox(
                                                                             height:
-                                                                                85,
+                                                                                80,
                                                                             child: produitsLocaux[index].photoMateriel == null || produitsLocaux[index].photoMateriel!.isEmpty
                                                                                 ? Image.asset(
                                                                                     "assets/images/default_image.png",
                                                                                     fit: BoxFit.cover,
-                                                                                    // height: 85,
+                                                                                    // height:80,
                                                                                   )
                                                                                 : CachedNetworkImage(
                                                                                     imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsLocaux[index].idMateriel}/image",
@@ -1795,12 +1795,12 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                                                                           child:
                                                                               SizedBox(
                                                                             height:
-                                                                                85,
+                                                                                80,
                                                                             child: produitsEtrangers[index].photoMateriel == null || produitsEtrangers[index].photoMateriel!.isEmpty
                                                                                 ? Image.asset(
                                                                                     "assets/images/default_image.png",
                                                                                     fit: BoxFit.cover,
-                                                                                    // height: 85,
+                                                                                    // height:80,
                                                                                   )
                                                                                 : CachedNetworkImage(
                                                                                     imageUrl: "https://koumi.ml/api-koumi/Materiel/${produitsEtrangers[index].idMateriel}/image",
@@ -1935,7 +1935,7 @@ class _MaterielAndEquipementState extends State<MaterielAndEquipement> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

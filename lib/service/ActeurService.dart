@@ -1005,6 +1005,68 @@ class ActeurService extends ChangeNotifier {
       throw Exception(jsonDecode(utf8.decode(response.bodyBytes))["message"]);
     }
   }
+  
+  // Future demandeActeur(String idActeur,String msg) async {
+  //   final response = await http.put(Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$msg'));
+
+  //   if (response.statusCode == 200 ||
+  //       response.statusCode == 201 ||
+  //       response.statusCode == 202) {
+  //     applyChange();
+  //   } else {
+  //     print('Échec de la requête avec le code d\'état: ${response.statusCode}');
+  //     throw Exception(jsonDecode(utf8.decode(response.bodyBytes))["message"]);
+  //   }
+  // }
+
+ Future<void> demandeActeur({
+    required String idActeur,
+    required msg,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$msg'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final donneesResponse = json.decode(response.body);
+        applyChange();
+        debugPrint('Acteur service : ${donneesResponse.toString()}');
+      } else {
+        throw Exception(
+          'Impossible : ${msg} et code : ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      debugPrint('Erreur : $e');
+      throw Exception('Erreur : $e');
+    }
+  }
+
+// Future demandeActeur(String idActeur, String msg) async {
+//   // URL encoding the message to safely handle special characters
+//   final encodedMsg = Uri.encodeComponent(msg);
+
+//   // Construct the URL with the encoded message
+//   final url = Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$encodedMsg');
+
+//   try {
+//     final response = await http.put(url);
+
+//     if (response.statusCode >= 200 && response.statusCode < 300) {
+//       applyChange();
+//     } else {
+//       // If the response is not successful, throw an exception with the message
+//       print('Échec de la requête avec le code d\'état: ${response.statusCode}');
+//       throw Exception(jsonDecode(utf8.decode(response.bodyBytes))["message"]);
+//     }
+//   } catch (e) {
+//     print("Error: $e");
+//     throw Exception("Une erreur est survenue lors de la requête.");
+//   }
+// }
+
 
   Future<Acteur> addTypesToActeur(
       String idActeur, List<TypeActeur> typeActeurs) async {

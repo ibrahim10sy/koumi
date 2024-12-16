@@ -20,7 +20,6 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LocationMateriel extends StatefulWidget {
-  
   LocationMateriel({super.key});
 
   @override
@@ -220,7 +219,6 @@ class _LocationMaterielState extends State<LocationMateriel> {
 
   @override
   void initState() {
-    
     final paysProvider = Provider.of<DetectorPays>(context, listen: false);
     paysProvider.hasLocation
         ? detectedCountry =
@@ -241,8 +239,8 @@ class _LocationMaterielState extends State<LocationMateriel> {
     _searchController = TextEditingController();
     _typeList = http.get(Uri.parse('$apiOnlineUrl/TypeMateriel/read'));
 
-    materielListeFuture = MaterielService().fetchMateriel(
-        detectedCountry != null ? detectedCountry! : "mali");
+    materielListeFuture = MaterielService()
+        .fetchMateriel(detectedCountry != null ? detectedCountry! : "mali");
     print("mat ${materielListeFuture.toString()}");
     materielListeFuture1 = getAllMateriel();
     super.initState();
@@ -304,8 +302,8 @@ class _LocationMaterielState extends State<LocationMateriel> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-         appBar: AppBar(
-             backgroundColor: d_colorOr,
+        appBar: AppBar(
+            backgroundColor: d_colorOr,
             centerTitle: true,
             toolbarHeight: 75,
             title: Text(
@@ -615,7 +613,7 @@ class _LocationMaterielState extends State<LocationMateriel> {
                                                 borderRadius:
                                                     BorderRadius.circular(8.0),
                                                 child: SizedBox(
-                                                  height: 85,
+                                                  height: 80,
                                                   child: filtereSearch[index]
                                                                   .photoMateriel ==
                                                               null ||
@@ -733,7 +731,7 @@ class _LocationMaterielState extends State<LocationMateriel> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

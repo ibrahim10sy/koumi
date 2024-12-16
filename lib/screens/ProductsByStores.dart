@@ -881,7 +881,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                   .circular(
                                                                       8.0),
                                                           child: Container(
-                                                            height: 85,
+                                                            height: 80,
                                                             child: stockListe[index]
                                                                             .photo ==
                                                                         null ||
@@ -1153,7 +1153,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                                                                       .circular(
                                                                           8.0),
                                                               child: Container(
-                                                                height: 85,
+                                                                height: 80,
                                                                 child: stockListe[index].photo ==
                                                                             null ||
                                                                         stockListe[index]
@@ -1304,7 +1304,7 @@ class _ProductsByStoresScreenState extends State<ProductsByStoresScreen> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

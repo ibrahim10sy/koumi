@@ -1097,21 +1097,28 @@ class _StoreScreenState extends State<StoreScreen> {
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder: (context) => ProductsByStoresScreen(
-                                                                      id: produitsLocaux[
-                                                                              index]
-                                                                          .idMagasin,
-                                                                      nom: produitsLocaux[
-                                                                              index]
-                                                                          .nomMagasin,
-                                                                      pays: produitsLocaux[
-                                                                              index]
-                                                                          .pays,
-                                                                       localite:  produitsLocaux[index].localiteMagasin,
-                                                                        contact: produitsLocaux[index].contactMagasin ,
-                                                                          acteur: produitsLocaux[index].acteur,
-                                                                          ),
-                                                                      
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ProductsByStoresScreen(
+                                                                    id: produitsLocaux[
+                                                                            index]
+                                                                        .idMagasin,
+                                                                    nom: produitsLocaux[
+                                                                            index]
+                                                                        .nomMagasin,
+                                                                    pays: produitsLocaux[
+                                                                            index]
+                                                                        .pays,
+                                                                    localite: produitsLocaux[
+                                                                            index]
+                                                                        .localiteMagasin,
+                                                                    contact: produitsLocaux[
+                                                                            index]
+                                                                        .contactMagasin,
+                                                                    acteur: produitsLocaux[
+                                                                            index]
+                                                                        .acteur,
+                                                                  ),
                                                                 ),
                                                               );
                                                             },
@@ -1133,7 +1140,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsLocaux[index].photo == null ||
                                                                               produitsLocaux[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1330,10 +1337,14 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             index]
                                                                         .pays,
                                                                     localite: produitsEtrangers[
-                                                                            index].localiteMagasin,
+                                                                            index]
+                                                                        .localiteMagasin,
                                                                     contact: produitsEtrangers[
-                                                                            index].contactMagasin,
-                                                                    acteur: produitsEtrangers[index].acteur,
+                                                                            index]
+                                                                        .contactMagasin,
+                                                                    acteur: produitsEtrangers[
+                                                                            index]
+                                                                        .acteur,
                                                                   ),
                                                                 ),
                                                               );
@@ -1356,7 +1367,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                     child:
                                                                         Container(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsEtrangers[index].photo == null ||
                                                                               produitsEtrangers[index].photo!.isEmpty
                                                                           ? Image.asset(
@@ -1680,9 +1691,12 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             .nomMagasin,
                                                                         pays: produitsLocaux[index]
                                                                             .pays,
-                                                                        localite:  produitsLocaux[index].localiteMagasin,
-                                                                        contact: produitsLocaux[index].contactMagasin,
-                                                                        acteur: produitsLocaux[index].acteur,
+                                                                        localite:
+                                                                            produitsLocaux[index].localiteMagasin,
+                                                                        contact:
+                                                                            produitsLocaux[index].contactMagasin,
+                                                                        acteur:
+                                                                            produitsLocaux[index].acteur,
                                                                       ),
                                                                     ),
                                                                   );
@@ -1710,7 +1724,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         child:
                                                                             Container(
                                                                           height:
-                                                                              85,
+                                                                              80,
                                                                           child: produitsLocaux[index].photo == null || produitsLocaux[index].photo!.isEmpty
                                                                               ? Image.asset(
                                                                                   "assets/images/default_image.png",
@@ -1890,9 +1904,12 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                             .nomMagasin,
                                                                         pays: produitsEtrangers[index]
                                                                             .pays,
-                                                                        localite:  produitsEtrangers[index].localiteMagasin,
-                                                                        contact: produitsEtrangers[index].contactMagasin ,
-                                                                        acteur: produitsEtrangers[index].acteur,
+                                                                        localite:
+                                                                            produitsEtrangers[index].localiteMagasin,
+                                                                        contact:
+                                                                            produitsEtrangers[index].contactMagasin,
+                                                                        acteur:
+                                                                            produitsEtrangers[index].acteur,
                                                                       ),
                                                                     ),
                                                                   );
@@ -1920,7 +1937,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                                         child:
                                                                             Container(
                                                                           height:
-                                                                              85,
+                                                                              80,
                                                                           child: produitsEtrangers[index].photo == null || produitsEtrangers[index].photo!.isEmpty
                                                                               ? Image.asset(
                                                                                   "assets/images/default_image.png",
@@ -2082,7 +2099,7 @@ class _StoreScreenState extends State<StoreScreen> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

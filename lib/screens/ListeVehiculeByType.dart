@@ -413,8 +413,8 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                             }).toList();
 
                             filtereSearch.sort((a, b) => a.nomVehicule
-                          .toLowerCase()
-                          .compareTo(b.nomVehicule.toLowerCase()));
+                                .toLowerCase()
+                                .compareTo(b.nomVehicule.toLowerCase()));
 
                             return GridView.builder(
                               shrinkWrap: true,
@@ -742,7 +742,7 @@ class _ListeVehiculeByTypeState extends State<ListeVehiculeByType> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

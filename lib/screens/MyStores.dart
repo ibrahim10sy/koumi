@@ -435,9 +435,9 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                                   }).toList();
 
                                   filtereSearch.sort((a, b) => a.nomMagasin!
-                          .toLowerCase()
-                          .compareTo(b.nomMagasin!.toLowerCase()));
-                          
+                                      .toLowerCase()
+                                      .compareTo(b.nomMagasin!.toLowerCase()));
+
                                   return filtereSearch.isEmpty
                                       ? SingleChildScrollView(
                                           child: Padding(
@@ -848,7 +848,7 @@ class _MyStoresScreenState extends State<MyStoresScreen> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

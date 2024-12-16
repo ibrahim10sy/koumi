@@ -1161,7 +1161,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1340,7 +1340,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1608,7 +1608,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsLocaux[index].photoIntrant == null ||
                                                                               produitsLocaux[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1787,7 +1787,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                                                                     child:
                                                                         SizedBox(
                                                                       height:
-                                                                          85,
+                                                                          80,
                                                                       child: produitsEtrangers[index].photoIntrant == null ||
                                                                               produitsEtrangers[index].photoIntrant!.isEmpty
                                                                           ? Image.asset(
@@ -1930,7 +1930,7 @@ class _ProduitPhytosanitaireState extends State<ProduitPhytosanitaire> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

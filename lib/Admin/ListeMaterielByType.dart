@@ -363,7 +363,7 @@ class _ListeMaterielByTypeState extends State<ListeMaterielByType> {
                                                         BorderRadius.circular(
                                                             8.0),
                                                     child: SizedBox(
-                                                        height: 85,
+                                                        height: 80,
                                                         child: filtereSearch[
                                                                             index]
                                                                         .photoMateriel ==

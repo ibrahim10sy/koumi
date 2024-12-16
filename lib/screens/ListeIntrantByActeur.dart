@@ -453,9 +453,8 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                             }).toList();
 
                             filtereSearch.sort((a, b) => a.nomIntrant!
-                          .toLowerCase()
-                          .compareTo(b.nomIntrant!.toLowerCase()));
-
+                                .toLowerCase()
+                                .compareTo(b.nomIntrant!.toLowerCase()));
 
                             return filtereSearch.isEmpty
                                 ? SingleChildScrollView(
@@ -901,7 +900,7 @@ class _ListeIntrantByActeurState extends State<ListeIntrantByActeur> {
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      height: 85,
+                      height: 80,
                       color: Colors.grey,
                     ),
                   ),

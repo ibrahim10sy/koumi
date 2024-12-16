@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:koumi/Admin/EditProfil.dart';
 import 'package:koumi/Admin/ParametreGenerauxPage.dart';
 import 'package:koumi/Admin/Zone.dart';
+
+import 'package:koumi/service/ActeurService.dart';
 import 'package:koumi/constants.dart';
 import 'package:koumi/models/Acteur.dart';
 import 'package:koumi/models/TypeActeur.dart';
@@ -17,6 +19,7 @@ import 'package:koumi/screens/VehiculesActeur.dart';
 import 'package:koumi/service/BottomNavigationService.dart';
 import 'package:koumi/service/ZoneProductionService.dart';
 import 'package:koumi/widgets/BottomNavigationPage.dart';
+import 'package:koumi/widgets/DeleteActeur.dart';
 import 'package:koumi/widgets/TermeConditionPage.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:provider/provider.dart';
@@ -347,7 +350,7 @@ class _ProfilState extends State<Profil> {
                                                         )));
                                           },
                                           child: Text(
-                                            "Changer son mot de passe",
+                                            "Changer de code de Pin ",
                                             style: TextStyle(
                                                 fontSize: 17,
                                                 color: Colors.black87),
@@ -648,7 +651,7 @@ class _ProfilState extends State<Profil> {
                               ),
                             )
                           : Container(),
-                       Padding(
+                      Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 15, horizontal: 10),
                         child: Container(
@@ -684,14 +687,74 @@ class _ProfilState extends State<Profil> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                     TermsConditionsPage()));
+                                                    TermsConditionsPage()));
                                       },
                                       child: Text(
-                                              "Condition et politique",
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  color: Colors.black87),
-                                            ))
+                                        "Condition et politique",
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black87),
+                                      ))
+                                ]),
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Image.asset("assets/images/settings.png",
+                                    width: 50, height: 50),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 10),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                offset: const Offset(0, 2),
+                                blurRadius: 5,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 15),
+                                child: Row(children: [
+                                  const Icon(
+                                      Icons.align_horizontal_left_outlined,
+                                      color: Colors.black87,
+                                      size: 25),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DeleteActeur(
+                                                      acteurs: acteur,
+                                                    )));
+                                        // _showConfirmationDialog(context);
+                                      },
+                                      child: Text(
+                                        "Supprimer le compte",
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black87),
+                                      ))
                                 ]),
                               ),
                               Container(
@@ -769,14 +832,14 @@ class _ProfilState extends State<Profil> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Ferme le popup
+                Navigator.of(context).pop();
               },
               child: Text(
-                "Annuler",
+                'Annuler',
                 style: TextStyle(color: d_colorOr),
               ),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 final acteurProvider =
                     Provider.of<ActeurProvider>(context, listen: false);
@@ -789,9 +852,12 @@ class _ProfilState extends State<Profil> {
                 Provider.of<BottomNavigationService>(context, listen: false)
                     .changeIndex(0);
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: d_colorOr,
+              ),
               child: Text(
                 "Déconnecter",
-                style: TextStyle(color: d_colorOr),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -799,6 +865,101 @@ class _ProfilState extends State<Profil> {
       },
     );
   }
+
+  // void _showConfirmationDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           children: [
+  //             Icon(Icons.info, color: d_colorOr),
+  //             SizedBox(width: 8),
+  //             Text(
+  //               'Confirmation',
+  //               maxLines: 2,
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.bold,
+  //                 color: Colors.black,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         content: Text(
+  //             'Êtes-vous sûr de vouloir supprimer votre compte ? . Car votre compte sera supprimé dans les 24 heures. Et vous recevrez un message de confirmation par e-mail.'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: Text(
+  //               'Annuler',
+  //               style: TextStyle(color: d_colorOr),
+  //             ),
+  //           ),
+  //           ElevatedButton(
+  //             onPressed: () async {
+  //               try {
+  //                 await ActeurService()
+  //                     .demandeActeur(acteur!.idActeur!)
+  //                     .then((onValue) async {
+  //                   Navigator.of(context).pop();
+  //                   print("Send");
+  //                   final acteurProvider =
+  //                       Provider.of<ActeurProvider>(context, listen: false);
+
+  //                   // Déconnexion avec le provider
+  //                   await acteurProvider.logout();
+
+  //                   Get.offAll(BottomNavigationPage(),
+  //                       transition: Transition.leftToRight);
+  //                   Provider.of<BottomNavigationService>(context, listen: false)
+  //                       .changeIndex(0);
+
+  //                   ScaffoldMessenger.of(context).showSnackBar(
+  //                     SnackBar(
+  //                       content: Row(
+  //                         children: [
+  //                           Icon(Icons.check_circle, color: d_colorOr),
+  //                           SizedBox(width: 8),
+  //                           Text('Votre compte sera supprimé dans 24 heures.'),
+  //                         ],
+  //                       ),
+  //                       duration: Duration(seconds: 5),
+  //                     ),
+  //                   );
+  //                 }).catchError((onError) {
+  //                   ScaffoldMessenger.of(context).showSnackBar(
+  //                     SnackBar(
+  //                       content: Row(
+  //                         children: [
+  //                           Icon(Icons.warning, color: d_colorOr),
+  //                           SizedBox(width: 8),
+  //                           Text('Une erreur s\'est produite. '),
+  //                         ],
+  //                       ),
+  //                       duration: Duration(seconds: 3),
+  //                     ),
+  //                   );
+  //                 });
+  //               } catch (e) {
+  //                 print(e.toString());
+  //               }
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: d_colorOr,
+  //             ),
+  //             child: Text('Confirmer',
+  //                 style: TextStyle(
+  //                   color: Colors.white,
+  //                 )),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildProfile(String title, String value) {
     return Padding(

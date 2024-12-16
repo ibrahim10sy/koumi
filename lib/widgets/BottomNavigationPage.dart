@@ -29,7 +29,7 @@ const d_colorOr = Color.fromRGBO(254, 243, 231, 1);
 
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int activePageIndex = 0;
-  Acteur? acteur = Acteur();
+  Acteur? acteur;
   List<TypeActeur>? typeActeurData = [];
   late String type;
   bool isExist = false;
