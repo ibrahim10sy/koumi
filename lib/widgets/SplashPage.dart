@@ -22,14 +22,6 @@ class _SplashPageState extends State<SplashPage> {
     // _navigateToNextPage();
   }
 
-  // Fonction pour naviguer vers la page suivante après un délai
-  // Future<void> _navigateToNextPage() async {
-  //   Navigator.pushReplacement(
-  //     context,
-  //     MaterialPageRoute(builder: (context) =>  BottomNavigationPage()), // Remplacez Accueil par votre page d'accueil
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
                   animationPath: 'assets/anime.json',
                   title: 'Pourquoi la localisation est requise ?',
                   description:
-                      "Nous avons besoin de votre localisation pour vous fournir des services adaptés à votre emplacement, comme des recommandations personnalisées sur des produits et des alertes géolocalisées.Vous pouvez consulter notre politique de condifentialité dans '\Profil'. ",
+                      "Nous avons besoin de votre localisation pour vous fournir des services adaptés à votre emplacement, comme des recommandations personnalisées sur des produits et des alertes géolocalisées.Pour en savoir plus, veuillez consulter notre politique de condifentialité dans '\Profil'. ",
                 ),
                 // Étape 2
                 _buildStep(

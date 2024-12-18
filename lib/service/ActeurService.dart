@@ -33,7 +33,7 @@ class ActeurService extends ChangeNotifier {
   }) async {
     try {
       var requete = http.MultipartRequest('POST', Uri.parse('$baseUrl/create'));
-      
+
       requete.fields['acteur'] = jsonEncode({
         'nomActeur': nomActeur,
         'adresseActeur': adresseActeur,
@@ -1005,7 +1005,19 @@ class ActeurService extends ChangeNotifier {
       throw Exception(jsonDecode(utf8.decode(response.bodyBytes))["message"]);
     }
   }
-  
+  Future demandeActeur(String idActeur,String mes) async {
+    final response = await http.put(Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$mes'));
+
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 ||
+        response.statusCode == 202) {
+      applyChange();
+    } else {
+      print('Échec de la requête avec le code d\'état: ${response.statusCode}');
+      throw Exception(jsonDecode(utf8.decode(response.bodyBytes))["message"]);
+    }
+  }
+
   // Future demandeActeur(String idActeur,String msg) async {
   //   final response = await http.put(Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$msg'));
 
@@ -1019,30 +1031,36 @@ class ActeurService extends ChangeNotifier {
   //   }
   // }
 
- Future<void> demandeActeur({
-    required String idActeur,
-    required msg,
-  }) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$msg'),
-        headers: {'Content-Type': 'application/json'},
-      );
+  // Future<void> demandeActeur({
+  //   required String idActeur,
+  //   required mes,
+  // }) async {
+  //   try {
+  //     final response = await http.put(
+  //       Uri.parse('$baseUrl/deleteActeur/$idActeur?msg=$mes'),
+  //       // headers: {'Content-Type': 'application/json'},
+  //     );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final donneesResponse = json.decode(response.body);
-        applyChange();
-        debugPrint('Acteur service : ${donneesResponse.toString()}');
-      } else {
-        throw Exception(
-          'Impossible : ${msg} et code : ${response.statusCode}',
-        );
-      }
-    } catch (e) {
-      debugPrint('Erreur : $e');
-      throw Exception('Erreur : $e');
-    }
-  }
+  //     if (response.statusCode == 200 ||
+  //         response.statusCode == 201 ||
+  //         response.statusCode == 202) {
+  //       debugPrint(
+  //           'Response brute : ${response.body}'); // Affichez la réponse brute
+  //       try {
+  //         final donneesResponse = json.decode(response.body);
+  //         applyChange();
+  //         debugPrint('Acteur service : ${donneesResponse.toString()}');
+  //       } catch (e) {
+  //         debugPrint('Erreur lors du décodage JSON : $e');
+  //         throw Exception(
+  //             'Le serveur a renvoyé un format inattendu : ${response.body}');
+  //       }
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Erreur : $e');
+  //     throw Exception('Erreur : $e');
+  //   }
+  // }
 
 // Future demandeActeur(String idActeur, String msg) async {
 //   // URL encoding the message to safely handle special characters
@@ -1066,7 +1084,6 @@ class ActeurService extends ChangeNotifier {
 //     throw Exception("Une erreur est survenue lors de la requête.");
 //   }
 // }
-
 
   Future<Acteur> addTypesToActeur(
       String idActeur, List<TypeActeur> typeActeurs) async {

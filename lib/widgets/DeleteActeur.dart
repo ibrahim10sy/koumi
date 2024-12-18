@@ -38,99 +38,96 @@ class _DeleteActeurState extends State<DeleteActeur> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingOverlay(
-      isLoading: _isLoading,
-      child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-        appBar: AppBar(
-          backgroundColor: d_colorOr,
-          centerTitle: true,
-          toolbarHeight: 75,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.arrow_back_sharp,
-                  size: 30, color: Colors.white)),
-          title: Text(
-            'Supprimer mon compte',
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-          ),
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+      appBar: AppBar(
+        backgroundColor: d_colorOr,
+        centerTitle: true,
+        toolbarHeight: 75,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back_sharp,
+                size: 30, color: Colors.white)),
+        title: Text(
+          'Supprimer mon compte',
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Pourquoi nous quittez-vous ?",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.black87),
-                ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Pourquoi nous quittez-vous ?",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black87),
               ),
-              Column(
-                children: _reasons.map((reason) {
-                  return RadioListTile<String>(
-                    title: Text(reason),
-                    activeColor: d_colorOr,
-                    value: reason,
-                    groupValue: _selectedReason,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedReason = value;
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Votre compte sera définitivement supprimé dans 24 heures. Un message de confirmation vous sera envoyé.",
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_selectedReason == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Veuillez sélectionner une raison."),
-                          backgroundColor: Colors.redAccent,
-                        ),
-                      );
-                    } else {
-                      _showConfirmationDialog(context);
-                    }
+            ),
+            Column(
+              children: _reasons.map((reason) {
+                return RadioListTile<String>(
+                  title: Text(reason),
+                  activeColor: d_colorOr,
+                  value: reason,
+                  groupValue: _selectedReason,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedReason = value;
+                    });
                   },
-                  child: Text('Confirmer',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: d_colorOr,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    minimumSize: const Size(250, 40),
-                  ),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Votre compte sera définitivement supprimé dans 24 heures. Un message de confirmation vous sera envoyé.",
+                textAlign: TextAlign.justify,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 30),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_selectedReason == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Veuillez sélectionner une raison."),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  } else {
+                    _showConfirmationDialog(context);
+                  }
+                },
+                child: Text('Confirmer',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    )),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: d_colorOr,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  minimumSize: const Size(250, 40),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -160,32 +157,35 @@ class _DeleteActeurState extends State<DeleteActeur> {
                 style: TextStyle(color: d_colorOr),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                // Navigator.of(context).pop();
-                try {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  await ActeurService()
-                      .demandeActeur(
-                          idActeur: acteur.idActeur!, msg: _selectedReason!)
-                      .then((onValue) async {
+            LoadingOverlay(
+          isLoading: _isLoading,
+              child: ElevatedButton(
+                onPressed: () async {
+                  try {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                      
+                    // Appel de l'API pour supprimer l'utilisateur
+                    await ActeurService()
+                        .demandeActeur(acteur.idActeur!, _selectedReason!);
+                      
                     setState(() {
                       _isLoading = false;
                     });
-                    print("Send");
+                      
+                    // Récupération du provider et déconnexion
                     final acteurProvider =
                         Provider.of<ActeurProvider>(context, listen: false);
-
-                    // Déconnexion avec le provider
                     await acteurProvider.logout();
-
+                      
+                    // Navigation après déconnexion
                     Get.offAll(BottomNavigationPage(),
                         transition: Transition.leftToRight);
                     Provider.of<BottomNavigationService>(context, listen: false)
                         .changeIndex(0);
-
+                      
+                    // Afficher le message de confirmation
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Row(
@@ -198,37 +198,35 @@ class _DeleteActeurState extends State<DeleteActeur> {
                         duration: Duration(seconds: 5),
                       ),
                     );
-                  }).catchError((onError) {
+                  } catch (error) {
                     setState(() {
                       _isLoading = false;
                     });
+                    print("Erreur : ${error.toString()}");
+                      
+                    // Affichage d'un message d'erreur
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Row(
                           children: [
                             Icon(Icons.warning, color: d_colorOr),
                             SizedBox(width: 8),
-                            Text('Une erreur s\'est produite. '),
+                            Text('Une erreur s\'est produite.'),
                           ],
                         ),
                         duration: Duration(seconds: 3),
                       ),
                     );
-                  });
-                } catch (e) {
-                  setState(() {
-                    _isLoading = false;
-                  });
-                  print(e.toString());
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: d_colorOr,
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: d_colorOr,
+                ),
+                child: Text('Confirmer',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
               ),
-              child: Text('Confirmer',
-                  style: TextStyle(
-                    color: Colors.white,
-                  )),
             ),
           ],
         );
