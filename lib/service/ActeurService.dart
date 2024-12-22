@@ -743,67 +743,6 @@ class ActeurService extends ChangeNotifier {
     }
   }
 
-  // Future<void> verifyOtpCodeWhatsApp(
-  //     String whatsAppActeur, String resetToken, BuildContext context) async {
-  //   final Uri url = Uri.parse(
-  //       '$baseUrl/verifierOtpCodeWhatsAppActeur?whatsAppActeur=$whatsAppActeur&resetToken=$resetToken');
-
-  //   try {
-  //     final response = await http.get(url);
-  //     if (response.statusCode == 200 || response.statusCode == 201) {}
-  //   } catch (e) {
-  //     // Afficher une alerte pour les erreurs de connexion
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Erreur de vérification'),
-  //           content: Text('Le code saisi est incorrect .'),
-  //           actions: <Widget>[
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //     throw Exception('Une erreur est survenue : $e');
-  //   }
-  // }
-
-  // Future<void> verifyOtpCodeEmail(
-  //     String emailActeur, String resetToken, BuildContext context) async {
-  //   final Uri url = Uri.parse(
-  //       '$baseUrl/verifierOtpCodeEmail?emailActeur=$emailActeur&resetToken=$resetToken');
-
-  //   try {
-  //     final response = await http.get(url);
-  //     if (response.statusCode == 200) {}
-  //   } catch (e) {
-  //     // Afficher une alerte pour les erreurs de connexion
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Erreur de vérification'),
-  //           content: Text('Code incorrect'),
-  //           actions: <Widget>[
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //     throw Exception('Une erreur est survenue : $e');
-  //   }
-  // }
 
   Future<void> updatePassword({
     required String id,
